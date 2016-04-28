@@ -1,12 +1,15 @@
 ﻿using Microsoft.Azure.KeyVault;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Drawing.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Windows.Forms.Design;
 
 namespace VaultExplorer
 {
@@ -29,58 +32,200 @@ namespace VaultExplorer
         }
     }
 
-    [DefaultProperty("Name")]
-    public class SecretObject
+    public class NullableDateTimePickerEditor : UITypeEditor
     {
-        [Description("The secret Name")]
-        public string Name { get; set; }
+        IWindowsFormsEditorService editorService;
+        DateTimePicker picker = new DateTimePicker();
 
-        [Description("The secret Value")]
-        [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
-        public string Value { get; set; }
+        public NullableDateTimePickerEditor()
+        {
+            picker.Format = DateTimePickerFormat.Long;
+        }
 
-        [Description("The secret Id")]
-        public string Id { get; set; }
+        public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
+        {
+            return UITypeEditorEditStyle.DropDown;
+        }
 
-        [Description("The content type of the secret")]
-        public string ContentType { get; set; }
+        public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
+        {
+            if (provider != null)
+            {
+                this.editorService = provider.GetService(typeof(IWindowsFormsEditorService)) as IWindowsFormsEditorService;
+            }
 
-        [Description("The tags for the secret")]
-        public List<TagItem> Tags { get; set; }
+            if (this.editorService != null)
+            {
+                if (value != null)
+                {
+                    picker.Value = Convert.ToDateTime(value);
+                }
+                this.editorService.DropDownControl(picker);
+                value = new Nullable<DateTime>(picker.Value);
+            }
 
-        [Description("Creation time in UTC")]
+            return value;
+        }
+    }
+
+    [DefaultProperty("Name")]
+    public class SecretObject : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(string info) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
+
+        [DisplayName("Name")]
+        public string Name { get; }
+
+        [DisplayName("Identifier")]
+        public string Id { get; }
+
+        [DisplayName("Creation time (UTC)")]
         public DateTime? Created { get; }
 
-        [Description("Determines whether the key is enabled")]
-        public bool? Enabled { get; set; }
-
-        [Description("Expiry date in UTC")]
-        public DateTime? Expires { get; set; }
-
-        [Description("Not before date in UTC")]
-        public DateTime? NotBefore { get; set; }
-
-        [Description("Last updated time in UTC")]
+        [DisplayName("Last updated time (UTC)")]
         public DateTime? Updated { get; }
 
-        public SecretIdentifier SecretIdentifier { get; }
-
-        public SecretObject(Secret secret)
+        private ObservableCollection<TagItem> _tags;
+        [DisplayName("Custom Tags")]
+        public ObservableCollection<TagItem> Tags
         {
+            get
+            {
+                return _tags;
+            }
+            set
+            {
+                _tags = value;
+                NotifyPropertyChanged(nameof(Tags));
+            }
+        }
+
+        private bool? _enabled;
+        [DisplayName("Enabled")]
+        public bool? Enabled
+        {
+            get
+            {
+                return _enabled;
+            }
+            set
+            {
+                _enabled = value;
+                NotifyPropertyChanged(nameof(Enabled));
+            }
+        }
+
+        private DateTime? _expires;
+        [DisplayName("Valid until time (UTC)")]
+        [Editor(typeof(NullableDateTimePickerEditor), typeof(UITypeEditor))]
+        public DateTime? Expires
+        {
+            get
+            {
+                return _expires;
+            }
+            set
+            {
+                _expires = value;
+                NotifyPropertyChanged(nameof(Expires));
+            }
+        }
+
+        private DateTime? _notBefore;
+        [DisplayName("Valid from time (UTC)")]
+        [Editor(typeof(NullableDateTimePickerEditor), typeof(UITypeEditor))]
+        public DateTime? NotBefore
+        {
+            get
+            {
+                return _notBefore;
+            }
+            set
+            {
+                _notBefore = value;
+                NotifyPropertyChanged(nameof(NotBefore));
+            }
+        }
+
+        private string _contentType;
+        [DisplayName("Content Type")]
+        public string ContentType
+        {
+            get
+            {
+                return _contentType;
+            }
+            set
+            {
+                _contentType = value;
+                NotifyPropertyChanged(nameof(ContentType));
+            }
+        }
+
+        private string _value;
+        [DisplayName("Value")]
+        [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
+        public string Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                _value = value;
+                NotifyPropertyChanged(nameof(Value));
+            }
+        }
+
+        public SecretObject(Secret secret, PropertyChangedEventHandler propertyChanged)
+        {
+            // get only
             Name = secret.SecretIdentifier.Name;
-            Value = secret.Value;
             Id = secret.Id;
-            ContentType = secret.ContentType;
-            Tags = new List<TagItem>();
+            Created = secret.Attributes.Created;
+            Updated = secret.Attributes.Updated;
+
+            // get and set
+            _tags = new ObservableCollection<TagItem>();
             if (null != secret.Tags)
             {
-                secret.Tags.Select((kvp) => { Tags.Add(new TagItem(kvp)); return kvp; });
+                foreach (var kvp in secret.Tags)
+                {
+                    _tags.Add(new TagItem(kvp));
+                }
             }
-            Created = secret.Attributes.Created;
-            Enabled = secret.Attributes.Enabled;
-            Expires = secret.Attributes.Expires;
-            NotBefore = secret.Attributes.NotBefore;
-            Updated = secret.Attributes.Updated;
+            _tags.SetPropertyChangedEventHandler(propertyChanged);
+            _enabled = secret.Attributes.Enabled;
+            _expires = secret.Attributes.Expires;
+            _notBefore = secret.Attributes.NotBefore;
+            _contentType = secret.ContentType;
+            _value = secret.Value;
+
+            PropertyChanged += propertyChanged;
         }
+
+        public Dictionary<string, string> TagsToDictionary()
+        {
+            if (_tags.Count == 0)
+            {
+                return null;
+            }
+            var result = new Dictionary<string, string>();
+            foreach (var tagItem in _tags)
+            {
+                result.Add(tagItem.Key, tagItem.Value);
+            }
+            return result;
+        }
+
+        public SecretAttributes ToSecretAttributes() => new SecretAttributes()
+        {
+            Enabled = _enabled,
+            Expires = _expires,
+            NotBefore = _notBefore
+        };
     }
 }
