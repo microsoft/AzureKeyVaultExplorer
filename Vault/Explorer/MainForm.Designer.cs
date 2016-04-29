@@ -44,6 +44,8 @@
             this.uxButtonList = new System.Windows.Forms.Button();
             this.uxButtonAdd = new System.Windows.Forms.Button();
             this.uxButtonDelete = new System.Windows.Forms.Button();
+            this.uxButtonCopy = new System.Windows.Forms.Button();
+            this.uxButtonExit = new System.Windows.Forms.Button();
             label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -62,7 +64,7 @@
             label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(69, 13);
-            label1.TabIndex = 1;
+            label1.TabIndex = 0;
             label1.Text = "Environment:";
             // 
             // label2
@@ -72,7 +74,7 @@
             label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(30, 13);
-            label2.TabIndex = 4;
+            label2.TabIndex = 2;
             label2.Text = "Geo:";
             // 
             // splitContainer1
@@ -91,6 +93,8 @@
             // 
             // splitContainer1.Panel2
             // 
+            splitContainer1.Panel2.Controls.Add(this.uxButtonExit);
+            splitContainer1.Panel2.Controls.Add(this.uxButtonCopy);
             splitContainer1.Panel2.Controls.Add(this.uxButtonRefresh);
             splitContainer1.Panel2.Controls.Add(this.uxButtonSave);
             splitContainer1.Panel2.Controls.Add(this.uxPropertyGridSecret);
@@ -115,7 +119,7 @@
             this.uxListViewSecrets.Name = "uxListViewSecrets";
             this.uxListViewSecrets.Size = new System.Drawing.Size(566, 251);
             this.uxListViewSecrets.Sorting = System.Windows.Forms.SortOrder.Ascending;
-            this.uxListViewSecrets.TabIndex = 6;
+            this.uxListViewSecrets.TabIndex = 0;
             this.uxListViewSecrets.UseCompatibleStateImageBehavior = false;
             this.uxListViewSecrets.View = System.Windows.Forms.View.Details;
             this.uxListViewSecrets.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.uxListViewSecrets_ColumnClick);
@@ -138,12 +142,12 @@
             // 
             // uxButtonRefresh
             // 
-            this.uxButtonRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.uxButtonRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.uxButtonRefresh.Enabled = false;
-            this.uxButtonRefresh.Location = new System.Drawing.Point(488, 164);
+            this.uxButtonRefresh.Location = new System.Drawing.Point(164, 165);
             this.uxButtonRefresh.Name = "uxButtonRefresh";
             this.uxButtonRefresh.Size = new System.Drawing.Size(75, 23);
-            this.uxButtonRefresh.TabIndex = 4;
+            this.uxButtonRefresh.TabIndex = 3;
             this.uxButtonRefresh.Text = "&Refresh";
             this.uxButtonRefresh.UseVisualStyleBackColor = true;
             this.uxButtonRefresh.Click += new System.EventHandler(this.uxListViewSecrets_SelectedIndexChanged);
@@ -152,10 +156,10 @@
             // 
             this.uxButtonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.uxButtonSave.Enabled = false;
-            this.uxButtonSave.Location = new System.Drawing.Point(3, 164);
+            this.uxButtonSave.Location = new System.Drawing.Point(83, 165);
             this.uxButtonSave.Name = "uxButtonSave";
             this.uxButtonSave.Size = new System.Drawing.Size(75, 23);
-            this.uxButtonSave.TabIndex = 4;
+            this.uxButtonSave.TabIndex = 2;
             this.uxButtonSave.Text = "&Save";
             this.uxButtonSave.UseVisualStyleBackColor = true;
             this.uxButtonSave.Click += new System.EventHandler(this.uxButtonSave_Click);
@@ -170,8 +174,8 @@
             this.uxPropertyGridSecret.Margin = new System.Windows.Forms.Padding(2);
             this.uxPropertyGridSecret.Name = "uxPropertyGridSecret";
             this.uxPropertyGridSecret.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.uxPropertyGridSecret.Size = new System.Drawing.Size(566, 159);
-            this.uxPropertyGridSecret.TabIndex = 3;
+            this.uxPropertyGridSecret.Size = new System.Drawing.Size(566, 160);
+            this.uxPropertyGridSecret.TabIndex = 0;
             this.uxPropertyGridSecret.ToolbarVisible = false;
             // 
             // uxComboBoxEnv
@@ -186,7 +190,7 @@
             this.uxComboBoxEnv.Margin = new System.Windows.Forms.Padding(2);
             this.uxComboBoxEnv.Name = "uxComboBoxEnv";
             this.uxComboBoxEnv.Size = new System.Drawing.Size(80, 21);
-            this.uxComboBoxEnv.TabIndex = 0;
+            this.uxComboBoxEnv.TabIndex = 1;
             // 
             // uxComboBoxGeo
             // 
@@ -212,7 +216,7 @@
             this.uxButtonList.Margin = new System.Windows.Forms.Padding(2);
             this.uxButtonList.Name = "uxButtonList";
             this.uxButtonList.Size = new System.Drawing.Size(62, 32);
-            this.uxButtonList.TabIndex = 6;
+            this.uxButtonList.TabIndex = 4;
             this.uxButtonList.Text = "&List";
             this.uxButtonList.UseVisualStyleBackColor = true;
             this.uxButtonList.Click += new System.EventHandler(this.uxButtonList_Click);
@@ -225,7 +229,7 @@
             this.uxButtonAdd.Margin = new System.Windows.Forms.Padding(2);
             this.uxButtonAdd.Name = "uxButtonAdd";
             this.uxButtonAdd.Size = new System.Drawing.Size(62, 32);
-            this.uxButtonAdd.TabIndex = 8;
+            this.uxButtonAdd.TabIndex = 5;
             this.uxButtonAdd.Text = "&Add...";
             this.uxButtonAdd.UseVisualStyleBackColor = true;
             this.uxButtonAdd.Click += new System.EventHandler(this.uxButtonAdd_Click);
@@ -238,10 +242,33 @@
             this.uxButtonDelete.Margin = new System.Windows.Forms.Padding(2);
             this.uxButtonDelete.Name = "uxButtonDelete";
             this.uxButtonDelete.Size = new System.Drawing.Size(62, 32);
-            this.uxButtonDelete.TabIndex = 8;
+            this.uxButtonDelete.TabIndex = 6;
             this.uxButtonDelete.Text = "&Delete...";
             this.uxButtonDelete.UseVisualStyleBackColor = true;
             this.uxButtonDelete.Click += new System.EventHandler(this.uxButtonDelete_Click);
+            // 
+            // uxButtonCopy
+            // 
+            this.uxButtonCopy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.uxButtonCopy.Enabled = false;
+            this.uxButtonCopy.Location = new System.Drawing.Point(3, 165);
+            this.uxButtonCopy.Name = "uxButtonCopy";
+            this.uxButtonCopy.Size = new System.Drawing.Size(75, 23);
+            this.uxButtonCopy.TabIndex = 1;
+            this.uxButtonCopy.Text = "&Copy";
+            this.uxButtonCopy.UseVisualStyleBackColor = true;
+            this.uxButtonCopy.Click += new System.EventHandler(this.uxButtonCopy_Click);
+            // 
+            // uxButtonExit
+            // 
+            this.uxButtonExit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.uxButtonExit.Location = new System.Drawing.Point(488, 165);
+            this.uxButtonExit.Name = "uxButtonExit";
+            this.uxButtonExit.Size = new System.Drawing.Size(75, 23);
+            this.uxButtonExit.TabIndex = 4;
+            this.uxButtonExit.Text = "E&xit";
+            this.uxButtonExit.UseVisualStyleBackColor = true;
+            this.uxButtonExit.Click += new System.EventHandler(this.uxButtonExit_Click);
             // 
             // MainForm
             // 
@@ -283,6 +310,8 @@
         private System.Windows.Forms.Button uxButtonDelete;
         private System.Windows.Forms.Button uxButtonSave;
         private System.Windows.Forms.Button uxButtonRefresh;
+        private System.Windows.Forms.Button uxButtonCopy;
+        private System.Windows.Forms.Button uxButtonExit;
     }
 }
 

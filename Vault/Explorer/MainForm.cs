@@ -87,7 +87,7 @@ namespace VaultExplorer
 
         private async void uxListViewSecrets_SelectedIndexChanged(object sender, EventArgs e)
         {
-            uxButtonDelete.Enabled = uxButtonRefresh.Enabled = (uxListViewSecrets.SelectedItems.Count == 1);
+            uxButtonDelete.Enabled = uxButtonRefresh.Enabled = uxButtonCopy.Enabled = (uxListViewSecrets.SelectedItems.Count == 1);
             if (uxListViewSecrets.SelectedItems.Count > 0)
             {
                 try
@@ -166,20 +166,37 @@ namespace VaultExplorer
             uxListViewSecrets.ListViewItemSorter = new ListViewItemComparer(e.Column, _sortOder);
         }
 
+        private void uxButtonCopy_Click(object sender, EventArgs e)
+        {
+            SecretObject so = uxPropertyGridSecret.SelectedObject as SecretObject;
+            if (so != null)
+            {
+                Clipboard.SetText(so.Value);
+            }
+        }
+
         private async void uxButtonSave_Click(object sender, EventArgs e)
         {
             uxButtonSave.Enabled = false;
             try
             {
                 Cursor.Current = Cursors.WaitCursor;
-                SecretObject so = (SecretObject)uxPropertyGridSecret.SelectedObject;
-                await _vault.SetSecretAsync(so.Name, so.Value, so.TagsToDictionary(), so.ContentType, so.ToSecretAttributes());
+                SecretObject so = uxPropertyGridSecret.SelectedObject as SecretObject;
+                if (so != null)
+                {
+                    await _vault.SetSecretAsync(so.Name, so.Value, so.TagsToDictionary(), so.ContentType, so.ToSecretAttributes());
+                }
             }
             finally
             {
                 uxButtonSave.Enabled = true;
                 Cursor.Current = Cursors.Default;
             }
+        }
+
+        private void uxButtonExit_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }

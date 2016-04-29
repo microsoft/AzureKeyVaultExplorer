@@ -40,6 +40,15 @@
     <Reference Include="Hyak.Common">
       <HintPath>$(PkgHyak_Common)\lib\net45\Hyak.Common.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>$(PkgNewtonsoft_Json)\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory">
+      <HintPath>$(PkgMicrosoft_IdentityModel_Clients_ActiveDirectory)\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory.WindowsForms">
+      <HintPath>$(PkgMicrosoft_IdentityModel_Clients_ActiveDirectory)\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.WindowsForms.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Threading.Tasks">
       <HintPath>$(PkgMicrosoft_Bcl_Async)\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
     </Reference>
