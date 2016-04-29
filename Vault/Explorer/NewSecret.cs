@@ -41,6 +41,7 @@ namespace VaultExplorer
 
         private void uxTextBoxValue_TextChanged(object sender, EventArgs e)
         {
+            uxLabelValue.Text = $"Value: ({uxTextBoxValue.Text.Length} chars)";
             _valueValid = (uxTextBoxValue.Text.Length >= 1) && (uxTextBoxValue.Text.Length <= SecretValueMaxLength);
             uxErrorProvider.SetError(uxTextBoxValue, _valueValid ? null :
                 $"Secret value length must be in the following range [1..{SecretValueMaxLength}]");

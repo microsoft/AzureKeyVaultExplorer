@@ -121,6 +121,7 @@ namespace VaultExplorer
             {
                 try
                 {
+                    uxButtonAdd.Enabled = false;
                     Cursor.Current = Cursors.WaitCursor;
                     Secret s = await _vault.SetSecretAsync(nsDlg.SecretName, nsDlg.SecretValue);
                     uxListViewSecrets.Items.RemoveByKey(nsDlg.SecretName);
@@ -130,6 +131,7 @@ namespace VaultExplorer
                 }
                 finally
                 {
+                    uxButtonAdd.Enabled = true;
                     Cursor.Current = Cursors.Default;
                 }
             }
@@ -144,12 +146,14 @@ namespace VaultExplorer
                 {
                     try
                     {
+                        uxButtonDelete.Enabled = false;
                         Cursor.Current = Cursors.WaitCursor;
                         await _vault.DeleteSecretAsync(secretName);
                         uxListViewSecrets.Items.RemoveByKey(secretName);
                     }
                     finally
                     {
+                        uxButtonDelete.Enabled = true;
                         Cursor.Current = Cursors.Default;
                     }
                 }
