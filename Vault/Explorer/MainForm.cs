@@ -42,19 +42,25 @@ namespace VaultExplorer
 
         private void uxListViewSecrets_SelectedIndexChanged(object sender, EventArgs e)
         {
-            bool flag = (uxListViewSecrets.SelectedItems.Count == 1);
-            uxButtonEdit.Enabled = uxButtonDelete.Enabled = uxButtonCopy.Enabled = flag;
-            uxMenuItemEdit.Enabled = uxMenuItemDelete.Enabled = uxMenuItemCopy.Enabled = flag;
-            uxPropertyGridSecret.SelectedObject = flag ? uxListViewSecrets.SelectedItems[0] : null;
+            bool itemSelected = (uxListViewSecrets.SelectedItems.Count == 1);
+            bool secretEnabled = itemSelected ? (uxListViewSecrets.SelectedItems[0] as SecretListViewItem).Attributes.Enabled ?? false : false;
+            uxButtonEdit.Enabled = uxButtonCopy.Enabled = uxMenuItemEdit.Enabled = uxMenuItemCopy.Enabled = secretEnabled;
+            uxButtonDelete.Enabled = uxMenuItemDelete.Enabled = itemSelected;
+            uxPropertyGridSecret.SelectedObject = itemSelected ? uxListViewSecrets.SelectedItems[0] : null;
         }
 
-        private async Task AddOrUpdateSecret(SecretObject so)
+        private async Task AddOrUpdateSecret(string oldSecretName, SecretObject soNew)
         {
-            Secret s = await _vault.SetSecretAsync(so.Name, so.Value, so.TagsToDictionary(), so.ContentType, so.ToSecretAttributes());
-            uxListViewSecrets.Items.RemoveByKey(so.Name);
-            var lvi = uxListViewSecrets.Items.Add(new SecretListViewItem(s));
-            lvi.EnsureVisible();
-            lvi.Focused = lvi.Selected = true;
+            Secret s = await _vault.SetSecretAsync(soNew.Name, soNew.Value, soNew.TagsToDictionary(), soNew.ContentType, soNew.ToSecretAttributes());
+            if ((oldSecretName != null) && (oldSecretName != soNew.Name)) // Delete old key
+            {
+                await _vault.DeleteSecretAsync(oldSecretName);
+                uxListViewSecrets.Items.RemoveByKey(oldSecretName);
+            }
+            uxListViewSecrets.Items.RemoveByKey(soNew.Name);
+            var slvi = uxListViewSecrets.Items.Add(new SecretListViewItem(s));
+            slvi.EnsureVisible();
+            slvi.Focused = slvi.Selected = true;
         }
 
         private async void uxButtonAddSecret_Click(object sender, EventArgs e)
@@ -67,7 +73,7 @@ namespace VaultExplorer
             {
                 using (NewUxOperation(uxButtonAdd))
                 {
-                    await AddOrUpdateSecret(nsDlg.SecretObject);
+                    await AddOrUpdateSecret(null, nsDlg.SecretObject);
                 }
             }
         }
@@ -87,7 +93,7 @@ namespace VaultExplorer
                     SecretDialog nsDlg = new SecretDialog(s);
                     if (nsDlg.ShowDialog() == DialogResult.OK)
                     {
-                        await AddOrUpdateSecret(nsDlg.SecretObject);
+                        await AddOrUpdateSecret(secretName, nsDlg.SecretObject);
                     }
                 }
             }

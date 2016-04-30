@@ -41,7 +41,6 @@ namespace VaultExplorer
         public SecretDialog(Secret s) : this(s, "Edit secret")
         {
             uxTextBoxName.Text = s.SecretIdentifier.Name;
-            uxTextBoxName.Enabled = false;
             uxTextBoxValue.Text = s.Value;
             _changed = false;
             InvalidateOkButton();
