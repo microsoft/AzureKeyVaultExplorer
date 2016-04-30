@@ -72,21 +72,25 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="NewSecret.cs">
+    <Compile Include="SecretDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NewSecret.Designer.cs">
-      <DependentUpon>NewSecret.cs</DependentUpon>
+    <Compile Include="SecretDialog.Designer.cs">
+      <DependentUpon>SecretDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="ObservableCollection.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReadOnlyPropertyDescriptor.cs" />
+    <Compile Include="SecretListViewItem.cs" />
     <Compile Include="SecretObject.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="UxOperation.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NewSecret.resx">
-      <DependentUpon>NewSecret.cs</DependentUpon>
+    <EmbeddedResource Include="SecretDialog.resx">
+      <DependentUpon>SecretDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

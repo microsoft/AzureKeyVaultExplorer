@@ -28,62 +28,73 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.Label label1;
-            System.Windows.Forms.Label label2;
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.SplitContainer splitContainer1;
             System.Windows.Forms.ColumnHeader columnHeader1;
             System.Windows.Forms.ColumnHeader columnHeader2;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+            System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+            System.Windows.Forms.ToolStrip uxToolStrip;
+            System.Windows.Forms.ToolStripLabel toolStripLabel1;
+            System.Windows.Forms.ToolStripLabel toolStripLabel2;
+            System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+            System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+            System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
             this.uxListViewSecrets = new System.Windows.Forms.ListView();
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.uxButtonRefresh = new System.Windows.Forms.Button();
-            this.uxButtonSave = new System.Windows.Forms.Button();
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.uxContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.uxMenuItemAddSecret = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxMenuItemAddCertificate = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxMenuItemEdit = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxMenuItemDelete = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxMenuItemCopy = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxMenuItemRefresh = new System.Windows.Forms.ToolStripMenuItem();
             this.uxPropertyGridSecret = new System.Windows.Forms.PropertyGrid();
-            this.uxComboBoxEnv = new System.Windows.Forms.ComboBox();
-            this.uxComboBoxGeo = new System.Windows.Forms.ComboBox();
-            this.uxButtonList = new System.Windows.Forms.Button();
-            this.uxButtonAdd = new System.Windows.Forms.Button();
-            this.uxButtonDelete = new System.Windows.Forms.Button();
-            this.uxButtonCopy = new System.Windows.Forms.Button();
-            this.uxButtonExit = new System.Windows.Forms.Button();
-            label1 = new System.Windows.Forms.Label();
-            label2 = new System.Windows.Forms.Label();
+            this.uxComboBoxEnv = new System.Windows.Forms.ToolStripComboBox();
+            this.uxComboBoxGeo = new System.Windows.Forms.ToolStripComboBox();
+            this.uxButtonList = new System.Windows.Forms.ToolStripButton();
+            this.uxButtonAdd = new System.Windows.Forms.ToolStripSplitButton();
+            this.uxAddSecret = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxAddCertificate = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxButtonEdit = new System.Windows.Forms.ToolStripButton();
+            this.uxButtonDelete = new System.Windows.Forms.ToolStripButton();
+            this.uxButtonCopy = new System.Windows.Forms.ToolStripButton();
+            this.uxButtonHelp = new System.Windows.Forms.ToolStripButton();
+            this.uxButtonExit = new System.Windows.Forms.ToolStripButton();
+            this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
+            this.uxStatusStrip = new System.Windows.Forms.StatusStrip();
+            this.uxStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            uxToolStrip = new System.Windows.Forms.ToolStrip();
+            toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+            toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
+            toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             ((System.ComponentModel.ISupportInitialize)(splitContainer1)).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
+            this.uxContextMenuStrip.SuspendLayout();
+            uxToolStrip.SuspendLayout();
+            this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
+            this.toolStripContainer1.ContentPanel.SuspendLayout();
+            this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
+            this.toolStripContainer1.SuspendLayout();
+            this.uxStatusStrip.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(9, 20);
-            label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(69, 13);
-            label1.TabIndex = 0;
-            label1.Text = "Environment:";
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(172, 20);
-            label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(30, 13);
-            label2.TabIndex = 2;
-            label2.Text = "Geo:";
             // 
             // splitContainer1
             // 
-            splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            splitContainer1.Location = new System.Drawing.Point(11, 48);
-            splitContainer1.Margin = new System.Windows.Forms.Padding(2);
+            splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            splitContainer1.Location = new System.Drawing.Point(0, 0);
+            splitContainer1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             splitContainer1.Name = "splitContainer1";
             splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -93,15 +104,11 @@
             // 
             // splitContainer1.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(this.uxButtonExit);
-            splitContainer1.Panel2.Controls.Add(this.uxButtonCopy);
-            splitContainer1.Panel2.Controls.Add(this.uxButtonRefresh);
-            splitContainer1.Panel2.Controls.Add(this.uxButtonSave);
             splitContainer1.Panel2.Controls.Add(this.uxPropertyGridSecret);
-            splitContainer1.Size = new System.Drawing.Size(566, 443);
-            splitContainer1.SplitterDistance = 251;
-            splitContainer1.SplitterWidth = 3;
-            splitContainer1.TabIndex = 7;
+            splitContainer1.Size = new System.Drawing.Size(1032, 562);
+            splitContainer1.SplitterDistance = 291;
+            splitContainer1.SplitterWidth = 6;
+            splitContainer1.TabIndex = 8;
             // 
             // uxListViewSecrets
             // 
@@ -109,26 +116,29 @@
             this.uxListViewSecrets.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             columnHeader1,
             columnHeader2,
-            this.columnHeader3});
+            this.columnHeader3,
+            this.columnHeader4});
+            this.uxListViewSecrets.ContextMenuStrip = this.uxContextMenuStrip;
             this.uxListViewSecrets.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uxListViewSecrets.FullRowSelect = true;
             this.uxListViewSecrets.HideSelection = false;
             this.uxListViewSecrets.Location = new System.Drawing.Point(0, 0);
-            this.uxListViewSecrets.Margin = new System.Windows.Forms.Padding(2);
+            this.uxListViewSecrets.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.uxListViewSecrets.MultiSelect = false;
             this.uxListViewSecrets.Name = "uxListViewSecrets";
-            this.uxListViewSecrets.Size = new System.Drawing.Size(566, 251);
+            this.uxListViewSecrets.Size = new System.Drawing.Size(1032, 291);
             this.uxListViewSecrets.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.uxListViewSecrets.TabIndex = 0;
             this.uxListViewSecrets.UseCompatibleStateImageBehavior = false;
             this.uxListViewSecrets.View = System.Windows.Forms.View.Details;
             this.uxListViewSecrets.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.uxListViewSecrets_ColumnClick);
             this.uxListViewSecrets.SelectedIndexChanged += new System.EventHandler(this.uxListViewSecrets_SelectedIndexChanged);
+            this.uxListViewSecrets.DoubleClick += new System.EventHandler(this.uxButtonEdit_Click);
             // 
             // columnHeader1
             // 
             columnHeader1.Text = "Name";
-            columnHeader1.Width = 180;
+            columnHeader1.Width = 350;
             // 
             // columnHeader2
             // 
@@ -140,62 +150,150 @@
             this.columnHeader3.Text = "Updated";
             this.columnHeader3.Width = 140;
             // 
-            // uxButtonRefresh
+            // columnHeader4
             // 
-            this.uxButtonRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.uxButtonRefresh.Enabled = false;
-            this.uxButtonRefresh.Location = new System.Drawing.Point(164, 165);
-            this.uxButtonRefresh.Name = "uxButtonRefresh";
-            this.uxButtonRefresh.Size = new System.Drawing.Size(75, 23);
-            this.uxButtonRefresh.TabIndex = 3;
-            this.uxButtonRefresh.Text = "&Refresh";
-            this.uxButtonRefresh.UseVisualStyleBackColor = true;
-            this.uxButtonRefresh.Click += new System.EventHandler(this.uxListViewSecrets_SelectedIndexChanged);
+            this.columnHeader4.Text = "Content Type";
+            this.columnHeader4.Width = 120;
             // 
-            // uxButtonSave
+            // uxContextMenuStrip
             // 
-            this.uxButtonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.uxButtonSave.Enabled = false;
-            this.uxButtonSave.Location = new System.Drawing.Point(83, 165);
-            this.uxButtonSave.Name = "uxButtonSave";
-            this.uxButtonSave.Size = new System.Drawing.Size(75, 23);
-            this.uxButtonSave.TabIndex = 2;
-            this.uxButtonSave.Text = "&Save";
-            this.uxButtonSave.UseVisualStyleBackColor = true;
-            this.uxButtonSave.Click += new System.EventHandler(this.uxButtonSave_Click);
+            this.uxContextMenuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.uxContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.uxMenuItemAddSecret,
+            this.uxMenuItemAddCertificate,
+            this.uxMenuItemEdit,
+            this.uxMenuItemDelete,
+            toolStripSeparator5,
+            this.uxMenuItemCopy,
+            toolStripSeparator4,
+            this.uxMenuItemRefresh});
+            this.uxContextMenuStrip.Name = "uxContextMenuStrip";
+            this.uxContextMenuStrip.Size = new System.Drawing.Size(194, 172);
+            // 
+            // uxMenuItemAddSecret
+            // 
+            this.uxMenuItemAddSecret.Enabled = false;
+            this.uxMenuItemAddSecret.Image = ((System.Drawing.Image)(resources.GetObject("uxMenuItemAddSecret.Image")));
+            this.uxMenuItemAddSecret.Name = "uxMenuItemAddSecret";
+            this.uxMenuItemAddSecret.Size = new System.Drawing.Size(193, 26);
+            this.uxMenuItemAddSecret.Text = "Add &Secret...";
+            this.uxMenuItemAddSecret.Click += new System.EventHandler(this.uxButtonAddSecret_Click);
+            // 
+            // uxMenuItemAddCertificate
+            // 
+            this.uxMenuItemAddCertificate.Enabled = false;
+            this.uxMenuItemAddCertificate.Image = ((System.Drawing.Image)(resources.GetObject("uxMenuItemAddCertificate.Image")));
+            this.uxMenuItemAddCertificate.Name = "uxMenuItemAddCertificate";
+            this.uxMenuItemAddCertificate.Size = new System.Drawing.Size(193, 26);
+            this.uxMenuItemAddCertificate.Text = "Add Ce&rtificate...";
+            // 
+            // uxMenuItemEdit
+            // 
+            this.uxMenuItemEdit.Enabled = false;
+            this.uxMenuItemEdit.Image = ((System.Drawing.Image)(resources.GetObject("uxMenuItemEdit.Image")));
+            this.uxMenuItemEdit.Name = "uxMenuItemEdit";
+            this.uxMenuItemEdit.Size = new System.Drawing.Size(193, 26);
+            this.uxMenuItemEdit.Text = "&Edit...";
+            this.uxMenuItemEdit.Click += new System.EventHandler(this.uxButtonEdit_Click);
+            // 
+            // uxMenuItemDelete
+            // 
+            this.uxMenuItemDelete.Enabled = false;
+            this.uxMenuItemDelete.Image = ((System.Drawing.Image)(resources.GetObject("uxMenuItemDelete.Image")));
+            this.uxMenuItemDelete.Name = "uxMenuItemDelete";
+            this.uxMenuItemDelete.Size = new System.Drawing.Size(193, 26);
+            this.uxMenuItemDelete.Text = "&Delete...";
+            this.uxMenuItemDelete.Click += new System.EventHandler(this.uxButtonDelete_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            toolStripSeparator5.Name = "toolStripSeparator5";
+            toolStripSeparator5.Size = new System.Drawing.Size(190, 6);
+            // 
+            // uxMenuItemCopy
+            // 
+            this.uxMenuItemCopy.Enabled = false;
+            this.uxMenuItemCopy.Image = ((System.Drawing.Image)(resources.GetObject("uxMenuItemCopy.Image")));
+            this.uxMenuItemCopy.Name = "uxMenuItemCopy";
+            this.uxMenuItemCopy.Size = new System.Drawing.Size(193, 26);
+            this.uxMenuItemCopy.Text = "&Copy";
+            this.uxMenuItemCopy.Click += new System.EventHandler(this.uxButtonCopy_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            toolStripSeparator4.Name = "toolStripSeparator4";
+            toolStripSeparator4.Size = new System.Drawing.Size(190, 6);
+            // 
+            // uxMenuItemRefresh
+            // 
+            this.uxMenuItemRefresh.Image = ((System.Drawing.Image)(resources.GetObject("uxMenuItemRefresh.Image")));
+            this.uxMenuItemRefresh.Name = "uxMenuItemRefresh";
+            this.uxMenuItemRefresh.Size = new System.Drawing.Size(193, 26);
+            this.uxMenuItemRefresh.Text = "Re&fresh";
+            this.uxMenuItemRefresh.Click += new System.EventHandler(this.uxButtonList_Click);
             // 
             // uxPropertyGridSecret
             // 
-            this.uxPropertyGridSecret.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.uxPropertyGridSecret.DisabledItemForeColor = System.Drawing.SystemColors.WindowText;
+            this.uxPropertyGridSecret.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uxPropertyGridSecret.HelpVisible = false;
             this.uxPropertyGridSecret.Location = new System.Drawing.Point(0, 0);
-            this.uxPropertyGridSecret.Margin = new System.Windows.Forms.Padding(2);
+            this.uxPropertyGridSecret.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.uxPropertyGridSecret.Name = "uxPropertyGridSecret";
             this.uxPropertyGridSecret.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.uxPropertyGridSecret.Size = new System.Drawing.Size(566, 160);
+            this.uxPropertyGridSecret.Size = new System.Drawing.Size(1032, 265);
             this.uxPropertyGridSecret.TabIndex = 0;
             this.uxPropertyGridSecret.ToolbarVisible = false;
+            // 
+            // uxToolStrip
+            // 
+            uxToolStrip.Dock = System.Windows.Forms.DockStyle.None;
+            uxToolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
+            uxToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            toolStripLabel1,
+            this.uxComboBoxEnv,
+            toolStripLabel2,
+            this.uxComboBoxGeo,
+            this.uxButtonList,
+            toolStripSeparator1,
+            this.uxButtonAdd,
+            this.uxButtonEdit,
+            this.uxButtonDelete,
+            toolStripSeparator2,
+            this.uxButtonCopy,
+            toolStripSeparator3,
+            this.uxButtonHelp,
+            this.uxButtonExit});
+            uxToolStrip.Location = new System.Drawing.Point(3, 0);
+            uxToolStrip.Name = "uxToolStrip";
+            uxToolStrip.Size = new System.Drawing.Size(860, 28);
+            uxToolStrip.TabIndex = 0;
+            // 
+            // toolStripLabel1
+            // 
+            toolStripLabel1.Name = "toolStripLabel1";
+            toolStripLabel1.Size = new System.Drawing.Size(92, 25);
+            toolStripLabel1.Text = "Environment";
             // 
             // uxComboBoxEnv
             // 
             this.uxComboBoxEnv.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.uxComboBoxEnv.FormattingEnabled = true;
             this.uxComboBoxEnv.Items.AddRange(new object[] {
-            "Int",
-            "PPE",
-            "Prod"});
-            this.uxComboBoxEnv.Location = new System.Drawing.Point(82, 17);
-            this.uxComboBoxEnv.Margin = new System.Windows.Forms.Padding(2);
+            "int",
+            "ppe",
+            "prod"});
             this.uxComboBoxEnv.Name = "uxComboBoxEnv";
-            this.uxComboBoxEnv.Size = new System.Drawing.Size(80, 21);
-            this.uxComboBoxEnv.TabIndex = 1;
+            this.uxComboBoxEnv.Size = new System.Drawing.Size(121, 28);
+            // 
+            // toolStripLabel2
+            // 
+            toolStripLabel2.Name = "toolStripLabel2";
+            toolStripLabel2.Size = new System.Drawing.Size(36, 25);
+            toolStripLabel2.Text = "Geo";
             // 
             // uxComboBoxGeo
             // 
             this.uxComboBoxGeo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.uxComboBoxGeo.FormattingEnabled = true;
             this.uxComboBoxGeo.Items.AddRange(new object[] {
             "us - United States",
             "eu - Europe",
@@ -203,115 +301,205 @@
             "jp - Japan",
             "au - Australia",
             "in - India"});
-            this.uxComboBoxGeo.Location = new System.Drawing.Point(206, 17);
-            this.uxComboBoxGeo.Margin = new System.Windows.Forms.Padding(2);
             this.uxComboBoxGeo.Name = "uxComboBoxGeo";
-            this.uxComboBoxGeo.Size = new System.Drawing.Size(111, 21);
-            this.uxComboBoxGeo.TabIndex = 3;
+            this.uxComboBoxGeo.Size = new System.Drawing.Size(121, 28);
             // 
             // uxButtonList
             // 
-            this.uxButtonList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.uxButtonList.Location = new System.Drawing.Point(382, 11);
-            this.uxButtonList.Margin = new System.Windows.Forms.Padding(2);
+            this.uxButtonList.Image = ((System.Drawing.Image)(resources.GetObject("uxButtonList.Image")));
+            this.uxButtonList.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonList.Name = "uxButtonList";
-            this.uxButtonList.Size = new System.Drawing.Size(62, 32);
-            this.uxButtonList.TabIndex = 4;
+            this.uxButtonList.Size = new System.Drawing.Size(55, 25);
             this.uxButtonList.Text = "&List";
-            this.uxButtonList.UseVisualStyleBackColor = true;
             this.uxButtonList.Click += new System.EventHandler(this.uxButtonList_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new System.Drawing.Size(6, 28);
             // 
             // uxButtonAdd
             // 
-            this.uxButtonAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.uxButtonAdd.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.uxAddSecret,
+            this.uxAddCertificate});
             this.uxButtonAdd.Enabled = false;
-            this.uxButtonAdd.Location = new System.Drawing.Point(448, 11);
-            this.uxButtonAdd.Margin = new System.Windows.Forms.Padding(2);
+            this.uxButtonAdd.Image = ((System.Drawing.Image)(resources.GetObject("uxButtonAdd.Image")));
+            this.uxButtonAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonAdd.Name = "uxButtonAdd";
-            this.uxButtonAdd.Size = new System.Drawing.Size(62, 32);
-            this.uxButtonAdd.TabIndex = 5;
-            this.uxButtonAdd.Text = "&Add...";
-            this.uxButtonAdd.UseVisualStyleBackColor = true;
-            this.uxButtonAdd.Click += new System.EventHandler(this.uxButtonAdd_Click);
+            this.uxButtonAdd.Size = new System.Drawing.Size(76, 25);
+            this.uxButtonAdd.Text = "&Add";
+            this.uxButtonAdd.Click += new System.EventHandler(this.uxButtonAddSecret_Click);
+            // 
+            // uxAddSecret
+            // 
+            this.uxAddSecret.Image = ((System.Drawing.Image)(resources.GetObject("uxAddSecret.Image")));
+            this.uxAddSecret.Name = "uxAddSecret";
+            this.uxAddSecret.Size = new System.Drawing.Size(161, 26);
+            this.uxAddSecret.Text = "&Secret...";
+            this.uxAddSecret.Click += new System.EventHandler(this.uxButtonAddSecret_Click);
+            // 
+            // uxAddCertificate
+            // 
+            this.uxAddCertificate.Image = ((System.Drawing.Image)(resources.GetObject("uxAddCertificate.Image")));
+            this.uxAddCertificate.Name = "uxAddCertificate";
+            this.uxAddCertificate.Size = new System.Drawing.Size(161, 26);
+            this.uxAddCertificate.Text = "Ce&rtificate...";
+            this.uxAddCertificate.Click += new System.EventHandler(this.uxAddCertificate_Click);
+            // 
+            // uxButtonEdit
+            // 
+            this.uxButtonEdit.Enabled = false;
+            this.uxButtonEdit.Image = ((System.Drawing.Image)(resources.GetObject("uxButtonEdit.Image")));
+            this.uxButtonEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.uxButtonEdit.Name = "uxButtonEdit";
+            this.uxButtonEdit.Size = new System.Drawing.Size(59, 25);
+            this.uxButtonEdit.Text = "&Edit";
+            this.uxButtonEdit.Click += new System.EventHandler(this.uxButtonEdit_Click);
             // 
             // uxButtonDelete
             // 
-            this.uxButtonDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.uxButtonDelete.Enabled = false;
-            this.uxButtonDelete.Location = new System.Drawing.Point(515, 11);
-            this.uxButtonDelete.Margin = new System.Windows.Forms.Padding(2);
+            this.uxButtonDelete.Image = ((System.Drawing.Image)(resources.GetObject("uxButtonDelete.Image")));
+            this.uxButtonDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonDelete.Name = "uxButtonDelete";
-            this.uxButtonDelete.Size = new System.Drawing.Size(62, 32);
-            this.uxButtonDelete.TabIndex = 6;
-            this.uxButtonDelete.Text = "&Delete...";
-            this.uxButtonDelete.UseVisualStyleBackColor = true;
+            this.uxButtonDelete.Size = new System.Drawing.Size(77, 25);
+            this.uxButtonDelete.Text = "&Delete";
             this.uxButtonDelete.Click += new System.EventHandler(this.uxButtonDelete_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            toolStripSeparator2.Name = "toolStripSeparator2";
+            toolStripSeparator2.Size = new System.Drawing.Size(6, 28);
             // 
             // uxButtonCopy
             // 
-            this.uxButtonCopy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.uxButtonCopy.Enabled = false;
-            this.uxButtonCopy.Location = new System.Drawing.Point(3, 165);
+            this.uxButtonCopy.Image = ((System.Drawing.Image)(resources.GetObject("uxButtonCopy.Image")));
+            this.uxButtonCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonCopy.Name = "uxButtonCopy";
-            this.uxButtonCopy.Size = new System.Drawing.Size(75, 23);
-            this.uxButtonCopy.TabIndex = 1;
+            this.uxButtonCopy.Size = new System.Drawing.Size(67, 25);
             this.uxButtonCopy.Text = "&Copy";
-            this.uxButtonCopy.UseVisualStyleBackColor = true;
             this.uxButtonCopy.Click += new System.EventHandler(this.uxButtonCopy_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            toolStripSeparator3.Name = "toolStripSeparator3";
+            toolStripSeparator3.Size = new System.Drawing.Size(6, 28);
+            // 
+            // uxButtonHelp
+            // 
+            this.uxButtonHelp.Image = ((System.Drawing.Image)(resources.GetObject("uxButtonHelp.Image")));
+            this.uxButtonHelp.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.uxButtonHelp.Name = "uxButtonHelp";
+            this.uxButtonHelp.Size = new System.Drawing.Size(65, 25);
+            this.uxButtonHelp.Text = "He&lp";
             // 
             // uxButtonExit
             // 
-            this.uxButtonExit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.uxButtonExit.Location = new System.Drawing.Point(488, 165);
+            this.uxButtonExit.Image = ((System.Drawing.Image)(resources.GetObject("uxButtonExit.Image")));
+            this.uxButtonExit.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonExit.Name = "uxButtonExit";
-            this.uxButtonExit.Size = new System.Drawing.Size(75, 23);
-            this.uxButtonExit.TabIndex = 4;
+            this.uxButtonExit.Size = new System.Drawing.Size(57, 25);
             this.uxButtonExit.Text = "E&xit";
-            this.uxButtonExit.UseVisualStyleBackColor = true;
             this.uxButtonExit.Click += new System.EventHandler(this.uxButtonExit_Click);
+            // 
+            // toolStripContainer1
+            // 
+            // 
+            // toolStripContainer1.BottomToolStripPanel
+            // 
+            this.toolStripContainer1.BottomToolStripPanel.Controls.Add(this.uxStatusStrip);
+            // 
+            // toolStripContainer1.ContentPanel
+            // 
+            this.toolStripContainer1.ContentPanel.Controls.Add(splitContainer1);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1032, 562);
+            this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
+            this.toolStripContainer1.Name = "toolStripContainer1";
+            this.toolStripContainer1.Size = new System.Drawing.Size(1032, 615);
+            this.toolStripContainer1.TabIndex = 8;
+            this.toolStripContainer1.Text = "toolStripContainer1";
+            // 
+            // toolStripContainer1.TopToolStripPanel
+            // 
+            this.toolStripContainer1.TopToolStripPanel.Controls.Add(uxToolStrip);
+            // 
+            // uxStatusStrip
+            // 
+            this.uxStatusStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.uxStatusStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.uxStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.uxStatusLabel});
+            this.uxStatusStrip.Location = new System.Drawing.Point(0, 0);
+            this.uxStatusStrip.Name = "uxStatusStrip";
+            this.uxStatusStrip.Size = new System.Drawing.Size(1032, 25);
+            this.uxStatusStrip.TabIndex = 0;
+            // 
+            // uxStatusLabel
+            // 
+            this.uxStatusLabel.Name = "uxStatusLabel";
+            this.uxStatusLabel.Size = new System.Drawing.Size(50, 20);
+            this.uxStatusLabel.Text = "Ready";
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(588, 500);
-            this.Controls.Add(this.uxButtonDelete);
-            this.Controls.Add(this.uxButtonAdd);
-            this.Controls.Add(splitContainer1);
-            this.Controls.Add(this.uxButtonList);
-            this.Controls.Add(label2);
-            this.Controls.Add(this.uxComboBoxGeo);
-            this.Controls.Add(label1);
-            this.Controls.Add(this.uxComboBoxEnv);
+            this.ClientSize = new System.Drawing.Size(1032, 615);
+            this.Controls.Add(this.toolStripContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2);
-            this.MinimumSize = new System.Drawing.Size(604, 495);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.MinimumSize = new System.Drawing.Size(799, 598);
             this.Name = "MainForm";
-            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
-            this.Text = "Windows Defender Services Azure Key Vaults Explorer";
+            this.Text = "Windows Defender Services - Azure Key Vaults Explorer";
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(splitContainer1)).EndInit();
             splitContainer1.ResumeLayout(false);
+            this.uxContextMenuStrip.ResumeLayout(false);
+            uxToolStrip.ResumeLayout(false);
+            uxToolStrip.PerformLayout();
+            this.toolStripContainer1.BottomToolStripPanel.ResumeLayout(false);
+            this.toolStripContainer1.BottomToolStripPanel.PerformLayout();
+            this.toolStripContainer1.ContentPanel.ResumeLayout(false);
+            this.toolStripContainer1.TopToolStripPanel.ResumeLayout(false);
+            this.toolStripContainer1.TopToolStripPanel.PerformLayout();
+            this.toolStripContainer1.ResumeLayout(false);
+            this.toolStripContainer1.PerformLayout();
+            this.uxStatusStrip.ResumeLayout(false);
+            this.uxStatusStrip.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.ComboBox uxComboBoxEnv;
-        private System.Windows.Forms.ComboBox uxComboBoxGeo;
-        private System.Windows.Forms.Button uxButtonList;
+        private System.Windows.Forms.ToolStripContainer toolStripContainer1;
+        private System.Windows.Forms.StatusStrip uxStatusStrip;
+        private System.Windows.Forms.ToolStripStatusLabel uxStatusLabel;
         private System.Windows.Forms.ListView uxListViewSecrets;
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.PropertyGrid uxPropertyGridSecret;
-        private System.Windows.Forms.Button uxButtonAdd;
-        private System.Windows.Forms.Button uxButtonDelete;
-        private System.Windows.Forms.Button uxButtonSave;
-        private System.Windows.Forms.Button uxButtonRefresh;
-        private System.Windows.Forms.Button uxButtonCopy;
-        private System.Windows.Forms.Button uxButtonExit;
+        private System.Windows.Forms.ToolStripComboBox uxComboBoxEnv;
+        private System.Windows.Forms.ToolStripComboBox uxComboBoxGeo;
+        private System.Windows.Forms.ToolStripButton uxButtonList;
+        private System.Windows.Forms.ToolStripButton uxButtonCopy;
+        private System.Windows.Forms.ToolStripButton uxButtonHelp;
+        private System.Windows.Forms.ToolStripButton uxButtonEdit;
+        private System.Windows.Forms.ToolStripButton uxButtonDelete;
+        private System.Windows.Forms.ToolStripSplitButton uxButtonAdd;
+        private System.Windows.Forms.ToolStripMenuItem uxAddSecret;
+        private System.Windows.Forms.ToolStripMenuItem uxAddCertificate;
+        private System.Windows.Forms.ToolStripButton uxButtonExit;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
+        private System.Windows.Forms.ContextMenuStrip uxContextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem uxMenuItemAddSecret;
+        private System.Windows.Forms.ToolStripMenuItem uxMenuItemAddCertificate;
+        private System.Windows.Forms.ToolStripMenuItem uxMenuItemEdit;
+        private System.Windows.Forms.ToolStripMenuItem uxMenuItemDelete;
+        private System.Windows.Forms.ToolStripMenuItem uxMenuItemRefresh;
+        private System.Windows.Forms.ToolStripMenuItem uxMenuItemCopy;
     }
 }
 

@@ -76,16 +76,8 @@ namespace VaultExplorer
         private void NotifyPropertyChanged(string info) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
 
         [DisplayName("Name")]
-        public string Name { get; }
-
-        [DisplayName("Identifier")]
-        public string Id { get; }
-
-        [DisplayName("Creation time (UTC)")]
-        public DateTime? Created { get; }
-
-        [DisplayName("Last updated time (UTC)")]
-        public DateTime? Updated { get; }
+        [Browsable(false)]
+        public string Name { get; set; }
 
         private ObservableCollection<TagItem> _tags;
         [DisplayName("Custom Tags")]
@@ -167,6 +159,7 @@ namespace VaultExplorer
         private string _value;
         [DisplayName("Value")]
         [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
+        [Browsable(false)]
         public string Value
         {
             get
@@ -182,12 +175,6 @@ namespace VaultExplorer
 
         public SecretObject(Secret secret, PropertyChangedEventHandler propertyChanged)
         {
-            // get only
-            Name = secret.SecretIdentifier.Name;
-            Id = secret.Id;
-            Created = secret.Attributes.Created;
-            Updated = secret.Attributes.Updated;
-
             // get and set
             _tags = new ObservableCollection<TagItem>();
             if (null != secret.Tags)
