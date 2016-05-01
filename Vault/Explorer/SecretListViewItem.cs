@@ -14,33 +14,25 @@ namespace VaultExplorer
         public readonly SecretAttributes Attributes;
         public readonly string ContentType;
         public readonly string Id;
-        public readonly SecretIdentifier Identifier;
         public readonly Dictionary<string, string> Tags;
 
-        public SecretListViewItem(SecretItem si) : base(si.Identifier.Name)
+        private SecretListViewItem(string name, SecretAttributes attributes, string contentType, 
+            string id, Dictionary<string, string> tags) : base(name)
         {
-            Attributes = si.Attributes;
-            ContentType = si.ContentType;
-            Id = si.Id;
-            Identifier = si.Identifier;
-            Tags = si.Tags;
+            ImageIndex = 0;
+            Attributes = attributes;
+            ContentType = contentType;
+            Id = id;
+            Tags = tags;
 
-            Name = si.Identifier.Name;
-            SubItems.Add(Utils.NullableDateTimeToString(si.Attributes.Updated));
-            SubItems.Add(Utils.GetChangedBy(si.Tags));
+            Name = name;
+            SubItems.Add(Utils.NullableDateTimeToString(attributes.Updated));
+            SubItems.Add(Utils.GetChangedBy(tags));
         }
-        public SecretListViewItem(Secret s) : base(s.SecretIdentifier.Name)
-        {
-            Attributes = s.Attributes;
-            ContentType = s.ContentType;
-            Id = s.Id;
-            Identifier = s.SecretIdentifier;
-            Tags = s.Tags;
 
-            Name = s.SecretIdentifier.Name;
-            SubItems.Add(Utils.NullableDateTimeToString(s.Attributes.Updated));
-            SubItems.Add(Utils.GetChangedBy(s.Tags));
-        }
+        public SecretListViewItem(SecretItem si) : this(si.Identifier.Name, si.Attributes, si.ContentType, si.Id, si.Tags) { }
+
+        public SecretListViewItem(Secret s) : this(s.SecretIdentifier.Name, s.Attributes, s.ContentType, s.Id, s.Tags) { }
 
         public void RefreshAndSelect()
         {
@@ -77,7 +69,7 @@ namespace VaultExplorer
         {
             List<PropertyDescriptor> properties = new List<PropertyDescriptor>()
             {
-                new ReadOnlyPropertyDescriptor("Name", Identifier.Name),
+                new ReadOnlyPropertyDescriptor("Name", Name),
                 new ReadOnlyPropertyDescriptor("Identifier", Id),
                 new ReadOnlyPropertyDescriptor("Creation time", Utils.NullableDateTimeToString(Attributes.Created)),
                 new ReadOnlyPropertyDescriptor("Last updated time", Utils.NullableDateTimeToString(Attributes.Updated)),

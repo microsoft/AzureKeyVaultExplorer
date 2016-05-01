@@ -33,7 +33,6 @@
             System.Windows.Forms.ColumnHeader columnHeader1;
             System.Windows.Forms.ColumnHeader columnHeader2;
             System.Windows.Forms.ColumnHeader columnHeader3;
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
             System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
             System.Windows.Forms.ToolStrip uxToolStrip;
@@ -42,10 +41,13 @@
             System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
             System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
             System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.uxListViewSecrets = new System.Windows.Forms.ListView();
             this.uxContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.uxMenuItemAdd = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemAddSecret = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemAddCertificate = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxMenuItemAddFile = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemEdit = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemToggle = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemDelete = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,10 +56,11 @@
             this.uxPropertyGridSecret = new System.Windows.Forms.PropertyGrid();
             this.uxComboBoxEnv = new System.Windows.Forms.ToolStripComboBox();
             this.uxComboBoxGeo = new System.Windows.Forms.ToolStripComboBox();
-            this.uxButtonList = new System.Windows.Forms.ToolStripButton();
+            this.uxButtonRefresh = new System.Windows.Forms.ToolStripButton();
             this.uxButtonAdd = new System.Windows.Forms.ToolStripSplitButton();
             this.uxAddSecret = new System.Windows.Forms.ToolStripMenuItem();
             this.uxAddCertificate = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxAddFile = new System.Windows.Forms.ToolStripMenuItem();
             this.uxButtonEdit = new System.Windows.Forms.ToolStripButton();
             this.uxButtonToggle = new System.Windows.Forms.ToolStripButton();
             this.uxButtonDelete = new System.Windows.Forms.ToolStripButton();
@@ -67,6 +70,9 @@
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.uxStatusStrip = new System.Windows.Forms.StatusStrip();
             this.uxStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.uxOpenConfigFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.uxOpenCertFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.uxSmallImageList = new System.Windows.Forms.ImageList(this.components);
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -128,6 +134,7 @@
             this.uxListViewSecrets.MultiSelect = false;
             this.uxListViewSecrets.Name = "uxListViewSecrets";
             this.uxListViewSecrets.Size = new System.Drawing.Size(1154, 291);
+            this.uxListViewSecrets.SmallImageList = this.uxSmallImageList;
             this.uxListViewSecrets.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.uxListViewSecrets.TabIndex = 0;
             this.uxListViewSecrets.UseCompatibleStateImageBehavior = false;
@@ -135,6 +142,7 @@
             this.uxListViewSecrets.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.uxListViewSecrets_ColumnClick);
             this.uxListViewSecrets.SelectedIndexChanged += new System.EventHandler(this.uxListViewSecrets_SelectedIndexChanged);
             this.uxListViewSecrets.DoubleClick += new System.EventHandler(this.uxButtonEdit_Click);
+            this.uxListViewSecrets.KeyUp += new System.Windows.Forms.KeyEventHandler(this.uxListViewSecrets_KeyUp);
             // 
             // columnHeader1
             // 
@@ -155,8 +163,7 @@
             // 
             this.uxContextMenuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.uxContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.uxMenuItemAddSecret,
-            this.uxMenuItemAddCertificate,
+            this.uxMenuItemAdd,
             this.uxMenuItemEdit,
             this.uxMenuItemToggle,
             this.uxMenuItemDelete,
@@ -165,78 +172,98 @@
             toolStripSeparator4,
             this.uxMenuItemRefresh});
             this.uxContextMenuStrip.Name = "uxContextMenuStrip";
-            this.uxContextMenuStrip.Size = new System.Drawing.Size(194, 198);
+            this.uxContextMenuStrip.Size = new System.Drawing.Size(144, 172);
+            // 
+            // uxMenuItemAdd
+            // 
+            this.uxMenuItemAdd.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.uxMenuItemAddSecret,
+            this.uxMenuItemAddCertificate,
+            this.uxMenuItemAddFile});
+            this.uxMenuItemAdd.Enabled = false;
+            this.uxMenuItemAdd.Image = global::VaultExplorer.Properties.Resources.lock_add;
+            this.uxMenuItemAdd.Name = "uxMenuItemAdd";
+            this.uxMenuItemAdd.Size = new System.Drawing.Size(143, 26);
+            this.uxMenuItemAdd.Text = "&Add";
+            this.uxMenuItemAdd.Click += new System.EventHandler(this.uxButtonAdd_Click);
             // 
             // uxMenuItemAddSecret
             // 
-            this.uxMenuItemAddSecret.Enabled = false;
-            this.uxMenuItemAddSecret.Image = ((System.Drawing.Image)(resources.GetObject("uxMenuItemAddSecret.Image")));
+            this.uxMenuItemAddSecret.Image = global::VaultExplorer.Properties.Resources.key;
             this.uxMenuItemAddSecret.Name = "uxMenuItemAddSecret";
-            this.uxMenuItemAddSecret.Size = new System.Drawing.Size(193, 26);
-            this.uxMenuItemAddSecret.Text = "Add &Secret...";
-            this.uxMenuItemAddSecret.Click += new System.EventHandler(this.uxButtonAddSecret_Click);
+            this.uxMenuItemAddSecret.Size = new System.Drawing.Size(209, 26);
+            this.uxMenuItemAddSecret.Text = "&Secret...";
+            this.uxMenuItemAddSecret.Click += new System.EventHandler(this.uxButtonAdd_Click);
             // 
             // uxMenuItemAddCertificate
             // 
-            this.uxMenuItemAddCertificate.Enabled = false;
-            this.uxMenuItemAddCertificate.Image = ((System.Drawing.Image)(resources.GetObject("uxMenuItemAddCertificate.Image")));
+            this.uxMenuItemAddCertificate.Image = global::VaultExplorer.Properties.Resources.certificate;
             this.uxMenuItemAddCertificate.Name = "uxMenuItemAddCertificate";
-            this.uxMenuItemAddCertificate.Size = new System.Drawing.Size(193, 26);
-            this.uxMenuItemAddCertificate.Text = "Add Ce&rtificate...";
+            this.uxMenuItemAddCertificate.Size = new System.Drawing.Size(209, 26);
+            this.uxMenuItemAddCertificate.Text = "Certificate...";
+            this.uxMenuItemAddCertificate.Click += new System.EventHandler(this.uxButtonAdd_Click);
+            // 
+            // uxMenuItemAddFile
+            // 
+            this.uxMenuItemAddFile.Image = global::VaultExplorer.Properties.Resources.folder_key;
+            this.uxMenuItemAddFile.Name = "uxMenuItemAddFile";
+            this.uxMenuItemAddFile.Size = new System.Drawing.Size(209, 26);
+            this.uxMenuItemAddFile.Text = "Configuration &file...";
+            this.uxMenuItemAddFile.Click += new System.EventHandler(this.uxButtonAdd_Click);
             // 
             // uxMenuItemEdit
             // 
             this.uxMenuItemEdit.Enabled = false;
-            this.uxMenuItemEdit.Image = ((System.Drawing.Image)(resources.GetObject("uxMenuItemEdit.Image")));
+            this.uxMenuItemEdit.Image = global::VaultExplorer.Properties.Resources.lock_edit;
             this.uxMenuItemEdit.Name = "uxMenuItemEdit";
-            this.uxMenuItemEdit.Size = new System.Drawing.Size(193, 26);
+            this.uxMenuItemEdit.Size = new System.Drawing.Size(143, 26);
             this.uxMenuItemEdit.Text = "&Edit...";
             this.uxMenuItemEdit.Click += new System.EventHandler(this.uxButtonEdit_Click);
             // 
             // uxMenuItemToggle
             // 
             this.uxMenuItemToggle.Enabled = false;
-            this.uxMenuItemToggle.Image = ((System.Drawing.Image)(resources.GetObject("uxMenuItemToggle.Image")));
+            this.uxMenuItemToggle.Image = global::VaultExplorer.Properties.Resources.lock_break;
             this.uxMenuItemToggle.Name = "uxMenuItemToggle";
-            this.uxMenuItemToggle.Size = new System.Drawing.Size(193, 26);
+            this.uxMenuItemToggle.Size = new System.Drawing.Size(143, 26);
             this.uxMenuItemToggle.Text = "Disabl&e...";
             this.uxMenuItemToggle.Click += new System.EventHandler(this.uxButtonToggle_Click);
             // 
             // uxMenuItemDelete
             // 
             this.uxMenuItemDelete.Enabled = false;
-            this.uxMenuItemDelete.Image = ((System.Drawing.Image)(resources.GetObject("uxMenuItemDelete.Image")));
+            this.uxMenuItemDelete.Image = global::VaultExplorer.Properties.Resources.lock_delete;
             this.uxMenuItemDelete.Name = "uxMenuItemDelete";
-            this.uxMenuItemDelete.Size = new System.Drawing.Size(193, 26);
+            this.uxMenuItemDelete.Size = new System.Drawing.Size(143, 26);
             this.uxMenuItemDelete.Text = "&Delete...";
             this.uxMenuItemDelete.Click += new System.EventHandler(this.uxButtonDelete_Click);
             // 
             // toolStripSeparator5
             // 
             toolStripSeparator5.Name = "toolStripSeparator5";
-            toolStripSeparator5.Size = new System.Drawing.Size(190, 6);
+            toolStripSeparator5.Size = new System.Drawing.Size(140, 6);
             // 
             // uxMenuItemCopy
             // 
             this.uxMenuItemCopy.Enabled = false;
             this.uxMenuItemCopy.Image = ((System.Drawing.Image)(resources.GetObject("uxMenuItemCopy.Image")));
             this.uxMenuItemCopy.Name = "uxMenuItemCopy";
-            this.uxMenuItemCopy.Size = new System.Drawing.Size(193, 26);
+            this.uxMenuItemCopy.Size = new System.Drawing.Size(143, 26);
             this.uxMenuItemCopy.Text = "&Copy";
             this.uxMenuItemCopy.Click += new System.EventHandler(this.uxButtonCopy_Click);
             // 
             // toolStripSeparator4
             // 
             toolStripSeparator4.Name = "toolStripSeparator4";
-            toolStripSeparator4.Size = new System.Drawing.Size(190, 6);
+            toolStripSeparator4.Size = new System.Drawing.Size(140, 6);
             // 
             // uxMenuItemRefresh
             // 
-            this.uxMenuItemRefresh.Image = ((System.Drawing.Image)(resources.GetObject("uxMenuItemRefresh.Image")));
+            this.uxMenuItemRefresh.Image = global::VaultExplorer.Properties.Resources.lock_go;
             this.uxMenuItemRefresh.Name = "uxMenuItemRefresh";
-            this.uxMenuItemRefresh.Size = new System.Drawing.Size(193, 26);
-            this.uxMenuItemRefresh.Text = "Re&fresh";
-            this.uxMenuItemRefresh.Click += new System.EventHandler(this.uxButtonList_Click);
+            this.uxMenuItemRefresh.Size = new System.Drawing.Size(143, 26);
+            this.uxMenuItemRefresh.Text = "&Refresh";
+            this.uxMenuItemRefresh.Click += new System.EventHandler(this.uxButtonRefresh_Click);
             // 
             // uxPropertyGridSecret
             // 
@@ -260,7 +287,7 @@
             this.uxComboBoxEnv,
             toolStripLabel2,
             this.uxComboBoxGeo,
-            this.uxButtonList,
+            this.uxButtonRefresh,
             toolStripSeparator1,
             this.uxButtonAdd,
             this.uxButtonEdit,
@@ -273,7 +300,7 @@
             this.uxButtonExit});
             uxToolStrip.Location = new System.Drawing.Point(3, 0);
             uxToolStrip.Name = "uxToolStrip";
-            uxToolStrip.Size = new System.Drawing.Size(943, 28);
+            uxToolStrip.Size = new System.Drawing.Size(970, 28);
             uxToolStrip.TabIndex = 0;
             // 
             // toolStripLabel1
@@ -311,14 +338,14 @@
             this.uxComboBoxGeo.Name = "uxComboBoxGeo";
             this.uxComboBoxGeo.Size = new System.Drawing.Size(121, 28);
             // 
-            // uxButtonList
+            // uxButtonRefresh
             // 
-            this.uxButtonList.Image = ((System.Drawing.Image)(resources.GetObject("uxButtonList.Image")));
-            this.uxButtonList.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.uxButtonList.Name = "uxButtonList";
-            this.uxButtonList.Size = new System.Drawing.Size(55, 25);
-            this.uxButtonList.Text = "&List";
-            this.uxButtonList.Click += new System.EventHandler(this.uxButtonList_Click);
+            this.uxButtonRefresh.Image = global::VaultExplorer.Properties.Resources.lock_go;
+            this.uxButtonRefresh.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.uxButtonRefresh.Name = "uxButtonRefresh";
+            this.uxButtonRefresh.Size = new System.Drawing.Size(82, 25);
+            this.uxButtonRefresh.Text = "&Refresh";
+            this.uxButtonRefresh.Click += new System.EventHandler(this.uxButtonRefresh_Click);
             // 
             // toolStripSeparator1
             // 
@@ -329,35 +356,44 @@
             // 
             this.uxButtonAdd.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.uxAddSecret,
-            this.uxAddCertificate});
+            this.uxAddCertificate,
+            this.uxAddFile});
             this.uxButtonAdd.Enabled = false;
-            this.uxButtonAdd.Image = ((System.Drawing.Image)(resources.GetObject("uxButtonAdd.Image")));
+            this.uxButtonAdd.Image = global::VaultExplorer.Properties.Resources.lock_add;
             this.uxButtonAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonAdd.Name = "uxButtonAdd";
             this.uxButtonAdd.Size = new System.Drawing.Size(76, 25);
             this.uxButtonAdd.Text = "&Add";
-            this.uxButtonAdd.Click += new System.EventHandler(this.uxButtonAddSecret_Click);
+            this.uxButtonAdd.Click += new System.EventHandler(this.uxButtonAdd_Click);
             // 
             // uxAddSecret
             // 
-            this.uxAddSecret.Image = ((System.Drawing.Image)(resources.GetObject("uxAddSecret.Image")));
+            this.uxAddSecret.Image = global::VaultExplorer.Properties.Resources.key;
             this.uxAddSecret.Name = "uxAddSecret";
-            this.uxAddSecret.Size = new System.Drawing.Size(161, 26);
+            this.uxAddSecret.Size = new System.Drawing.Size(209, 26);
             this.uxAddSecret.Text = "&Secret...";
-            this.uxAddSecret.Click += new System.EventHandler(this.uxButtonAddSecret_Click);
+            this.uxAddSecret.Click += new System.EventHandler(this.uxButtonAdd_Click);
             // 
             // uxAddCertificate
             // 
-            this.uxAddCertificate.Image = ((System.Drawing.Image)(resources.GetObject("uxAddCertificate.Image")));
+            this.uxAddCertificate.Image = global::VaultExplorer.Properties.Resources.certificate;
             this.uxAddCertificate.Name = "uxAddCertificate";
-            this.uxAddCertificate.Size = new System.Drawing.Size(161, 26);
+            this.uxAddCertificate.Size = new System.Drawing.Size(209, 26);
             this.uxAddCertificate.Text = "Ce&rtificate...";
-            this.uxAddCertificate.Click += new System.EventHandler(this.uxAddCertificate_Click);
+            this.uxAddCertificate.Click += new System.EventHandler(this.uxButtonAdd_Click);
+            // 
+            // uxAddFile
+            // 
+            this.uxAddFile.Image = global::VaultExplorer.Properties.Resources.folder_key;
+            this.uxAddFile.Name = "uxAddFile";
+            this.uxAddFile.Size = new System.Drawing.Size(209, 26);
+            this.uxAddFile.Text = "Configuration &file...";
+            this.uxAddFile.Click += new System.EventHandler(this.uxButtonAdd_Click);
             // 
             // uxButtonEdit
             // 
             this.uxButtonEdit.Enabled = false;
-            this.uxButtonEdit.Image = ((System.Drawing.Image)(resources.GetObject("uxButtonEdit.Image")));
+            this.uxButtonEdit.Image = global::VaultExplorer.Properties.Resources.lock_edit;
             this.uxButtonEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonEdit.Name = "uxButtonEdit";
             this.uxButtonEdit.Size = new System.Drawing.Size(59, 25);
@@ -367,7 +403,7 @@
             // uxButtonToggle
             // 
             this.uxButtonToggle.Enabled = false;
-            this.uxButtonToggle.Image = ((System.Drawing.Image)(resources.GetObject("uxButtonToggle.Image")));
+            this.uxButtonToggle.Image = global::VaultExplorer.Properties.Resources.lock_break;
             this.uxButtonToggle.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonToggle.Name = "uxButtonToggle";
             this.uxButtonToggle.Size = new System.Drawing.Size(83, 25);
@@ -377,7 +413,7 @@
             // uxButtonDelete
             // 
             this.uxButtonDelete.Enabled = false;
-            this.uxButtonDelete.Image = ((System.Drawing.Image)(resources.GetObject("uxButtonDelete.Image")));
+            this.uxButtonDelete.Image = global::VaultExplorer.Properties.Resources.lock_delete;
             this.uxButtonDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonDelete.Name = "uxButtonDelete";
             this.uxButtonDelete.Size = new System.Drawing.Size(77, 25);
@@ -414,7 +450,7 @@
             // 
             // uxButtonExit
             // 
-            this.uxButtonExit.Image = ((System.Drawing.Image)(resources.GetObject("uxButtonExit.Image")));
+            this.uxButtonExit.Image = global::VaultExplorer.Properties.Resources.door_out;
             this.uxButtonExit.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonExit.Name = "uxButtonExit";
             this.uxButtonExit.Size = new System.Drawing.Size(57, 25);
@@ -460,6 +496,22 @@
             this.uxStatusLabel.Size = new System.Drawing.Size(50, 20);
             this.uxStatusLabel.Text = "Ready";
             // 
+            // uxOpenConfigFileDialog
+            // 
+            this.uxOpenConfigFileDialog.Filter = "JSON files|*.json|XML files|*.xml|All files|*.*";
+            this.uxOpenConfigFileDialog.Title = "Open configuration file";
+            // 
+            // uxOpenCertFileDialog
+            // 
+            this.uxOpenCertFileDialog.Filter = "X509 Certificate|*.cer;*.crt|All files|*.*";
+            this.uxOpenCertFileDialog.Title = "Open certificate file";
+            // 
+            // uxSmallImageList
+            // 
+            this.uxSmallImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("uxSmallImageList.ImageStream")));
+            this.uxSmallImageList.TransparentColor = System.Drawing.Color.Transparent;
+            this.uxSmallImageList.Images.SetKeyName(0, "key.png");
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -499,7 +551,7 @@
         private System.Windows.Forms.PropertyGrid uxPropertyGridSecret;
         private System.Windows.Forms.ToolStripComboBox uxComboBoxEnv;
         private System.Windows.Forms.ToolStripComboBox uxComboBoxGeo;
-        private System.Windows.Forms.ToolStripButton uxButtonList;
+        private System.Windows.Forms.ToolStripButton uxButtonRefresh;
         private System.Windows.Forms.ToolStripButton uxButtonCopy;
         private System.Windows.Forms.ToolStripButton uxButtonHelp;
         private System.Windows.Forms.ToolStripButton uxButtonEdit;
@@ -509,14 +561,20 @@
         private System.Windows.Forms.ToolStripMenuItem uxAddCertificate;
         private System.Windows.Forms.ToolStripButton uxButtonExit;
         private System.Windows.Forms.ContextMenuStrip uxContextMenuStrip;
-        private System.Windows.Forms.ToolStripMenuItem uxMenuItemAddSecret;
-        private System.Windows.Forms.ToolStripMenuItem uxMenuItemAddCertificate;
+        private System.Windows.Forms.ToolStripMenuItem uxMenuItemAdd;
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemEdit;
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemDelete;
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemRefresh;
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemCopy;
         private System.Windows.Forms.ToolStripButton uxButtonToggle;
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemToggle;
+        private System.Windows.Forms.ToolStripMenuItem uxMenuItemAddSecret;
+        private System.Windows.Forms.ToolStripMenuItem uxMenuItemAddCertificate;
+        private System.Windows.Forms.ToolStripMenuItem uxMenuItemAddFile;
+        private System.Windows.Forms.ToolStripMenuItem uxAddFile;
+        private System.Windows.Forms.OpenFileDialog uxOpenConfigFileDialog;
+        private System.Windows.Forms.OpenFileDialog uxOpenCertFileDialog;
+        private System.Windows.Forms.ImageList uxSmallImageList;
     }
 }
 

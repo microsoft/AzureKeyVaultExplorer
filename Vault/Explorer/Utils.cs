@@ -11,6 +11,8 @@ namespace VaultExplorer
 {
     public static class Utils
     {
+        public const int MaxSecretValueLength = 25 * 1024; // 25 KB
+
         public static readonly StringDictionary GeoRegions = new StringDictionary()
         {
             { "us", "west,east" },

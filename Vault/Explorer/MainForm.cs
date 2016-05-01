@@ -1,6 +1,9 @@
 ﻿using Microsoft.Azure.KeyVault;
 using Microsoft.PS.Common.Vault;
 using System;
+using System.Diagnostics;
+using System.IO;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -21,12 +24,12 @@ namespace VaultExplorer
 
         private UxOperation NewUxOperation(ToolStripItem controlToToggle) => new UxOperation(controlToToggle, uxStatusLabel);
 
-        private async void uxButtonList_Click(object sender, EventArgs e)
+        private async void uxButtonRefresh_Click(object sender, EventArgs e)
         {
             string geo = ((string)uxComboBoxGeo.SelectedItem).Substring(0, 2);
             string env = (string)uxComboBoxEnv.SelectedItem;
 
-            using (NewUxOperation(uxButtonList))
+            using (NewUxOperation(uxButtonRefresh))
             {
                 _vault = new Vault(geo, env, Utils.GeoRegions[geo]);
                 //uxListViewSecrets.BeginUpdate();
@@ -36,7 +39,7 @@ namespace VaultExplorer
                     uxListViewSecrets.Items.Add(new SecretListViewItem(s));
                 }
                 //uxListViewSecrets.EndUpdate();
-                uxButtonAdd.Enabled = uxMenuItemAddSecret.Enabled = uxMenuItemAddCertificate.Enabled = true;
+                uxButtonAdd.Enabled = uxMenuItemAdd.Enabled = uxMenuItemAddCertificate.Enabled = true;
             }
         }
 
@@ -50,6 +53,32 @@ namespace VaultExplorer
             uxButtonToggle.Text = secretEnabled ? "Disabl&e" : "&Enable";
             uxMenuItemToggle.Text = uxButtonToggle.Text + "...";
             uxPropertyGridSecret.SelectedObject = itemSelected ? uxListViewSecrets.SelectedItems[0] : null;
+        }
+
+        private void uxListViewSecrets_KeyUp(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Insert:
+                    uxButtonAdd.PerformClick();
+                    return;
+                case Keys.Delete:
+                    uxButtonDelete.PerformClick();
+                    return;
+            }
+            if (!e.Control) return;
+            switch (e.KeyCode)
+            {
+                case Keys.C:
+                    uxButtonCopy.PerformClick();
+                    return;
+                case Keys.E:
+                    uxButtonEdit.PerformClick();
+                    return;
+                case Keys.R:
+                    uxButtonRefresh.PerformClick();
+                    return;
+            }
         }
 
         private async Task AddOrUpdateSecret(Secret sOld, SecretObject soNew)
@@ -76,9 +105,37 @@ namespace VaultExplorer
             slvi.RefreshAndSelect();
         }
 
-        private async void uxButtonAddSecret_Click(object sender, EventArgs e)
+        private async void uxButtonAdd_Click(object sender, EventArgs e)
         {
-            SecretDialog nsDlg = new SecretDialog();
+            SecretDialog nsDlg = null;
+            // Add secret
+            if ((sender == uxButtonAdd) || (sender == uxMenuItemAdd) || (sender == uxAddSecret) || (sender == uxMenuItemAddSecret))
+            {
+                nsDlg = new SecretDialog();
+            }
+            // Add certificate
+            if ((sender == uxAddCertificate) || (sender == uxMenuItemAddCertificate))
+            {
+                if (uxOpenCertFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    nsDlg = new SecretDialog(X509Certificate2.CreateFromCertFile(uxOpenCertFileDialog.FileName));
+                }
+            }
+            // Add configuration file
+            if ((sender == uxAddFile) || (sender == uxMenuItemAddFile))
+            {
+                if (uxOpenConfigFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    FileInfo fi = new FileInfo(uxOpenConfigFileDialog.FileName);
+                    if (fi.Length > Utils.MaxSecretValueLength)
+                    {
+                        MessageBox.Show($"Configuration file {fi.FullName} size is {fi.Length:N0} bytes. Maximum file size allowed is {Utils.MaxSecretValueLength:N0} bytes.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    nsDlg = new SecretDialog(fi.FullName);
+                }
+            }
+            Debug.Assert(nsDlg != null);
             if ((nsDlg.ShowDialog() == DialogResult.OK) &&
                 (!uxListViewSecrets.Items.ContainsKey(nsDlg.SecretObject.Name) ||
                 (uxListViewSecrets.Items.ContainsKey(nsDlg.SecretObject.Name) && 
@@ -89,10 +146,6 @@ namespace VaultExplorer
                     await AddOrUpdateSecret(null, nsDlg.SecretObject);
                 }
             }
-        }
-        private void uxAddCertificate_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("To be implemeneted, stay tuned");
         }
 
         private async void uxButtonEdit_Click(object sender, EventArgs e)

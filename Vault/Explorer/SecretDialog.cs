@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -24,6 +26,7 @@ namespace VaultExplorer
         {
             InitializeComponent();
             Text = title;
+            uxTextBoxValue.MaxLength = Utils.MaxSecretValueLength;
             uxErrorProvider.SetIconAlignment(uxTextBoxName, ErrorIconAlignment.MiddleLeft);
             uxErrorProvider.SetIconAlignment(uxSplitContainer, ErrorIconAlignment.TopLeft);
             uxTextBoxName_TextChanged(this, EventArgs.Empty);
@@ -43,6 +46,18 @@ namespace VaultExplorer
             uxTextBoxValue.Text = s.Value;
             _changed = false;
             InvalidateOkButton();
+        }
+
+        public SecretDialog(string filename) : this()
+        {
+            uxTextBoxName.Text = Path.GetFileNameWithoutExtension(filename);
+            uxTextBoxValue.Text = File.ReadAllText(filename);
+        }
+
+        public SecretDialog(X509Certificate cert) : this()
+        {
+            uxTextBoxName.Text = cert.Subject;
+            uxTextBoxValue.Text = Convert.ToBase64String(cert.GetRawCertData());
         }
 
         private void uxTextBoxName_TextChanged(object sender, EventArgs e)
