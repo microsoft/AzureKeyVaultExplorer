@@ -26,5 +26,26 @@ namespace VaultExplorer
             if (dt == null) return "Unknown";
             return dt.Value.ToLocalTime().ToString();
         }
+
+        private const string ChangedByKey = "ChangedBy";
+
+        public static Dictionary<string, string> AddChangedBy(Dictionary<string, string> tags)
+        {
+            if (tags == null)
+            {
+                tags = new Dictionary<string, string>();
+            }
+            tags[ChangedByKey] = $"{Environment.UserDomainName}\\{Environment.UserName}";
+            return tags;
+        }
+
+        public static string GetChangedBy(Dictionary<string, string> tags)
+        {
+            if ((tags == null) || (!tags.ContainsKey(ChangedByKey)))
+            {
+                return "";
+            }
+            return tags[ChangedByKey];
+        }
     }
 }

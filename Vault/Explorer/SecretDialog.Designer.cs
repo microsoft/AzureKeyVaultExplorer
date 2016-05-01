@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.Label label1;
-            this.uxLabelValue = new System.Windows.Forms.Label();
+            System.Windows.Forms.Label uxLabelValue;
             this.uxTextBoxName = new System.Windows.Forms.TextBox();
             this.uxButtonOK = new System.Windows.Forms.Button();
             this.uxButtonCancel = new System.Windows.Forms.Button();
@@ -38,7 +38,9 @@
             this.uxSplitContainer = new System.Windows.Forms.SplitContainer();
             this.uxTextBoxValue = new System.Windows.Forms.TextBox();
             this.uxPropertyGridSecret = new System.Windows.Forms.PropertyGrid();
+            this.uxLabelBytesLeft = new System.Windows.Forms.Label();
             label1 = new System.Windows.Forms.Label();
+            uxLabelValue = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.uxErrorProvider)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uxSplitContainer)).BeginInit();
             this.uxSplitContainer.Panel1.SuspendLayout();
@@ -58,13 +60,13 @@
             // 
             // uxLabelValue
             // 
-            this.uxLabelValue.AutoSize = true;
-            this.uxLabelValue.Location = new System.Drawing.Point(16, 72);
-            this.uxLabelValue.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.uxLabelValue.Name = "uxLabelValue";
-            this.uxLabelValue.Size = new System.Drawing.Size(48, 17);
-            this.uxLabelValue.TabIndex = 3;
-            this.uxLabelValue.Text = "Value:";
+            uxLabelValue.AutoSize = true;
+            uxLabelValue.Location = new System.Drawing.Point(16, 72);
+            uxLabelValue.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            uxLabelValue.Name = "uxLabelValue";
+            uxLabelValue.Size = new System.Drawing.Size(48, 17);
+            uxLabelValue.TabIndex = 3;
+            uxLabelValue.Text = "Value:";
             // 
             // uxTextBoxName
             // 
@@ -72,7 +74,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.uxTextBoxName.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.uxTextBoxName.Location = new System.Drawing.Point(20, 31);
-            this.uxTextBoxName.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.uxTextBoxName.Margin = new System.Windows.Forms.Padding(4);
             this.uxTextBoxName.MaxLength = 256;
             this.uxTextBoxName.Name = "uxTextBoxName";
             this.uxTextBoxName.Size = new System.Drawing.Size(639, 26);
@@ -85,7 +87,7 @@
             this.uxButtonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.uxButtonOK.Enabled = false;
             this.uxButtonOK.Location = new System.Drawing.Point(452, 570);
-            this.uxButtonOK.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.uxButtonOK.Margin = new System.Windows.Forms.Padding(4);
             this.uxButtonOK.Name = "uxButtonOK";
             this.uxButtonOK.Size = new System.Drawing.Size(100, 28);
             this.uxButtonOK.TabIndex = 5;
@@ -98,7 +100,7 @@
             this.uxButtonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.uxButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.uxButtonCancel.Location = new System.Drawing.Point(560, 570);
-            this.uxButtonCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.uxButtonCancel.Margin = new System.Windows.Forms.Padding(4);
             this.uxButtonCancel.Name = "uxButtonCancel";
             this.uxButtonCancel.Size = new System.Drawing.Size(100, 28);
             this.uxButtonCancel.TabIndex = 6;
@@ -137,7 +139,7 @@
             this.uxTextBoxValue.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.uxTextBoxValue.Location = new System.Drawing.Point(0, 0);
             this.uxTextBoxValue.Margin = new System.Windows.Forms.Padding(4);
-            this.uxTextBoxValue.MaxLength = 32768;
+            this.uxTextBoxValue.MaxLength = 25600;
             this.uxTextBoxValue.Multiline = true;
             this.uxTextBoxValue.Name = "uxTextBoxValue";
             this.uxTextBoxValue.ScrollBars = System.Windows.Forms.ScrollBars.Both;
@@ -158,9 +160,19 @@
             this.uxPropertyGridSecret.TabIndex = 8;
             this.uxPropertyGridSecret.ToolbarVisible = false;
             // 
+            // uxLabelBytesLeft
+            // 
+            this.uxLabelBytesLeft.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.uxLabelBytesLeft.Location = new System.Drawing.Point(405, 72);
+            this.uxLabelBytesLeft.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.uxLabelBytesLeft.Name = "uxLabelBytesLeft";
+            this.uxLabelBytesLeft.Size = new System.Drawing.Size(254, 17);
+            this.uxLabelBytesLeft.TabIndex = 3;
+            this.uxLabelBytesLeft.Text = "xxx bytes left";
+            this.uxLabelBytesLeft.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // SecretDialog
             // 
-            this.AcceptButton = this.uxButtonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.uxButtonCancel;
@@ -168,12 +180,14 @@
             this.Controls.Add(this.uxSplitContainer);
             this.Controls.Add(this.uxButtonCancel);
             this.Controls.Add(this.uxButtonOK);
-            this.Controls.Add(this.uxLabelValue);
+            this.Controls.Add(this.uxLabelBytesLeft);
+            this.Controls.Add(uxLabelValue);
             this.Controls.Add(this.uxTextBoxName);
             this.Controls.Add(label1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(500, 500);
             this.Name = "SecretDialog";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -197,9 +211,9 @@
         private System.Windows.Forms.Button uxButtonOK;
         private System.Windows.Forms.Button uxButtonCancel;
         private System.Windows.Forms.ErrorProvider uxErrorProvider;
-        private System.Windows.Forms.Label uxLabelValue;
         private System.Windows.Forms.TextBox uxTextBoxValue;
         private System.Windows.Forms.PropertyGrid uxPropertyGridSecret;
         private System.Windows.Forms.SplitContainer uxSplitContainer;
+        private System.Windows.Forms.Label uxLabelBytesLeft;
     }
 }

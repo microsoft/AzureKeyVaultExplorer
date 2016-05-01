@@ -14,7 +14,6 @@ namespace VaultExplorer
 {
     public partial class SecretDialog : Form
     {
-        private const int SecretValueMaxLength = 10240; // 10 KB
         private static Regex s_secretNameRegex = new Regex("^[0-9a-zA-Z-]{1,127}$", RegexOptions.Singleline | RegexOptions.Compiled);
         private bool _nameValid;
         private bool _valueValid;
@@ -48,6 +47,7 @@ namespace VaultExplorer
 
         private void uxTextBoxName_TextChanged(object sender, EventArgs e)
         {
+            _changed = true;
             _nameValid = s_secretNameRegex.Match(uxTextBoxName.Text).Success;
             uxErrorProvider.SetError(uxTextBoxName, _nameValid ? null :
                 $"Secret name must match the following regex {s_secretNameRegex}");
@@ -57,10 +57,10 @@ namespace VaultExplorer
         private void uxTextBoxValue_TextChanged(object sender, EventArgs e)
         {
             _changed = true;
-            uxLabelValue.Text = $"Value: ({uxTextBoxValue.Text.Length} chars)";
-            _valueValid = (uxTextBoxValue.Text.Length >= 1) && (uxTextBoxValue.Text.Length <= SecretValueMaxLength);
+            uxLabelBytesLeft.Text = $"{uxTextBoxValue.MaxLength - uxTextBoxValue.Text.Length} bytes left";
+            _valueValid = (uxTextBoxValue.Text.Length >= 1) && (uxTextBoxValue.Text.Length <= uxTextBoxValue.MaxLength);
             uxErrorProvider.SetError(uxSplitContainer, _valueValid ? null :
-                $"Secret value length must be in the following range [1..{SecretValueMaxLength}]");
+                $"Secret value length must be in the following range [1..{uxTextBoxValue.MaxLength}]");
             InvalidateOkButton();
         }
 

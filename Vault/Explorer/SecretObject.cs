@@ -196,16 +196,12 @@ namespace VaultExplorer
 
         public Dictionary<string, string> TagsToDictionary()
         {
-            if (_tags.Count == 0)
-            {
-                return null;
-            }
             var result = new Dictionary<string, string>();
             foreach (var tagItem in _tags)
             {
                 result.Add(tagItem.Key, tagItem.Value);
             }
-            return result;
+            return Utils.AddChangedBy(result);
         }
 
         public SecretAttributes ToSecretAttributes() => new SecretAttributes()

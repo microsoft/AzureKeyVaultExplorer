@@ -3,7 +3,9 @@ using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault
 {
-
+    /// <summary>
+    /// Simple ListViewItemComparer to sort by column 
+    /// </summary>
     class ListViewItemComparer : IComparer
     {
         private readonly int _column = 0;
@@ -14,6 +16,7 @@ namespace Microsoft.PS.Common.Vault
             _column = column;
             _sortOrder = sortOrder;
         }
+
         public int Compare(object x, object y)
         {
             int c = string.Compare(((ListViewItem)x).SubItems[_column].Text, ((ListViewItem)y).SubItems[_column].Text);

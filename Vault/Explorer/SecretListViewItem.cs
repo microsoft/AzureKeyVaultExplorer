@@ -2,13 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace VaultExplorer
 {
+    /// <summary>
+    /// Secret list view item which also presents itself nicely to PropertyGrid
+    /// </summary>
     public class SecretListViewItem : ListViewItem, ICustomTypeDescriptor
     {
         public readonly SecretAttributes Attributes;
@@ -26,9 +26,8 @@ namespace VaultExplorer
             Tags = si.Tags;
 
             Name = si.Identifier.Name;
-            SubItems.Add(Utils.NullableDateTimeToString(si.Attributes.Created));
             SubItems.Add(Utils.NullableDateTimeToString(si.Attributes.Updated));
-            SubItems.Add(si.ContentType);
+            SubItems.Add(Utils.GetChangedBy(si.Tags));
         }
         public SecretListViewItem(Secret s) : base(s.SecretIdentifier.Name)
         {
@@ -39,9 +38,15 @@ namespace VaultExplorer
             Tags = s.Tags;
 
             Name = s.SecretIdentifier.Name;
-            SubItems.Add(Utils.NullableDateTimeToString(s.Attributes.Created));
             SubItems.Add(Utils.NullableDateTimeToString(s.Attributes.Updated));
-            SubItems.Add(s.ContentType);
+            SubItems.Add(Utils.GetChangedBy(s.Tags));
+        }
+
+        public void RefreshAndSelect()
+        {
+            EnsureVisible();
+            Focused = Selected = false;
+            Focused = Selected = true;
         }
 
         #region ICustomTypeDescriptor interface to show properties in PropertyGrid
@@ -66,11 +71,7 @@ namespace VaultExplorer
 
         public PropertyDescriptor GetDefaultProperty() => null;
 
-        PropertyDescriptorCollection
-            System.ComponentModel.ICustomTypeDescriptor.GetProperties()
-        {
-            return ((ICustomTypeDescriptor)this).GetProperties(new Attribute[0]);
-        }
+        PropertyDescriptorCollection ICustomTypeDescriptor.GetProperties() => ((ICustomTypeDescriptor)this).GetProperties(new Attribute[0]);
 
         public PropertyDescriptorCollection GetProperties(Attribute[] attributes)
         {
@@ -78,8 +79,8 @@ namespace VaultExplorer
             {
                 new ReadOnlyPropertyDescriptor("Name", Identifier.Name),
                 new ReadOnlyPropertyDescriptor("Identifier", Id),
-                new ReadOnlyPropertyDescriptor("Creation time (UTC)", Attributes.Created),
-                new ReadOnlyPropertyDescriptor("Last updated time (UTC)", Attributes.Updated),
+                new ReadOnlyPropertyDescriptor("Creation time", Utils.NullableDateTimeToString(Attributes.Created)),
+                new ReadOnlyPropertyDescriptor("Last updated time", Utils.NullableDateTimeToString(Attributes.Updated)),
                 new ReadOnlyPropertyDescriptor("Enabled", Attributes.Enabled),
                 new ReadOnlyPropertyDescriptor("Valid from time (UTC)", Attributes.NotBefore),
                 new ReadOnlyPropertyDescriptor("Valid until time (UTC)", Attributes.Expires),

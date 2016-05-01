@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace VaultExplorer
 {
     /// <summary>
-    /// User experience operatoin
+    /// User experience operation, to be used with using() keyword
     /// </summary>
     public class UxOperation : IDisposable
     {
@@ -19,6 +15,7 @@ namespace VaultExplorer
         {
             _controlToToggle = controlToToggle;
             _statusLabel = statusLabel;
+
             _controlToToggle.Enabled = false;
             _statusLabel.Text = "Busy";
             Cursor.Current = Cursors.WaitCursor;

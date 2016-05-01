@@ -32,6 +32,7 @@
             System.Windows.Forms.SplitContainer splitContainer1;
             System.Windows.Forms.ColumnHeader columnHeader1;
             System.Windows.Forms.ColumnHeader columnHeader2;
+            System.Windows.Forms.ColumnHeader columnHeader3;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
             System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
@@ -42,12 +43,11 @@
             System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
             System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
             this.uxListViewSecrets = new System.Windows.Forms.ListView();
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.uxContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.uxMenuItemAddSecret = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemAddCertificate = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemEdit = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxMenuItemToggle = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemRefresh = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,6 +59,7 @@
             this.uxAddSecret = new System.Windows.Forms.ToolStripMenuItem();
             this.uxAddCertificate = new System.Windows.Forms.ToolStripMenuItem();
             this.uxButtonEdit = new System.Windows.Forms.ToolStripButton();
+            this.uxButtonToggle = new System.Windows.Forms.ToolStripButton();
             this.uxButtonDelete = new System.Windows.Forms.ToolStripButton();
             this.uxButtonCopy = new System.Windows.Forms.ToolStripButton();
             this.uxButtonHelp = new System.Windows.Forms.ToolStripButton();
@@ -69,6 +70,7 @@
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             uxToolStrip = new System.Windows.Forms.ToolStrip();
@@ -105,7 +107,7 @@
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(this.uxPropertyGridSecret);
-            splitContainer1.Size = new System.Drawing.Size(1032, 562);
+            splitContainer1.Size = new System.Drawing.Size(1154, 562);
             splitContainer1.SplitterDistance = 291;
             splitContainer1.SplitterWidth = 6;
             splitContainer1.TabIndex = 8;
@@ -116,8 +118,7 @@
             this.uxListViewSecrets.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             columnHeader1,
             columnHeader2,
-            this.columnHeader3,
-            this.columnHeader4});
+            columnHeader3});
             this.uxListViewSecrets.ContextMenuStrip = this.uxContextMenuStrip;
             this.uxListViewSecrets.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uxListViewSecrets.FullRowSelect = true;
@@ -126,7 +127,7 @@
             this.uxListViewSecrets.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.uxListViewSecrets.MultiSelect = false;
             this.uxListViewSecrets.Name = "uxListViewSecrets";
-            this.uxListViewSecrets.Size = new System.Drawing.Size(1032, 291);
+            this.uxListViewSecrets.Size = new System.Drawing.Size(1154, 291);
             this.uxListViewSecrets.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.uxListViewSecrets.TabIndex = 0;
             this.uxListViewSecrets.UseCompatibleStateImageBehavior = false;
@@ -142,18 +143,13 @@
             // 
             // columnHeader2
             // 
-            columnHeader2.Text = "Created";
+            columnHeader2.Text = "Updated";
             columnHeader2.Width = 140;
             // 
             // columnHeader3
             // 
-            this.columnHeader3.Text = "Updated";
-            this.columnHeader3.Width = 140;
-            // 
-            // columnHeader4
-            // 
-            this.columnHeader4.Text = "Content Type";
-            this.columnHeader4.Width = 120;
+            columnHeader3.Text = "Changed by";
+            columnHeader3.Width = 200;
             // 
             // uxContextMenuStrip
             // 
@@ -162,13 +158,14 @@
             this.uxMenuItemAddSecret,
             this.uxMenuItemAddCertificate,
             this.uxMenuItemEdit,
+            this.uxMenuItemToggle,
             this.uxMenuItemDelete,
             toolStripSeparator5,
             this.uxMenuItemCopy,
             toolStripSeparator4,
             this.uxMenuItemRefresh});
             this.uxContextMenuStrip.Name = "uxContextMenuStrip";
-            this.uxContextMenuStrip.Size = new System.Drawing.Size(194, 172);
+            this.uxContextMenuStrip.Size = new System.Drawing.Size(194, 198);
             // 
             // uxMenuItemAddSecret
             // 
@@ -195,6 +192,15 @@
             this.uxMenuItemEdit.Size = new System.Drawing.Size(193, 26);
             this.uxMenuItemEdit.Text = "&Edit...";
             this.uxMenuItemEdit.Click += new System.EventHandler(this.uxButtonEdit_Click);
+            // 
+            // uxMenuItemToggle
+            // 
+            this.uxMenuItemToggle.Enabled = false;
+            this.uxMenuItemToggle.Image = ((System.Drawing.Image)(resources.GetObject("uxMenuItemToggle.Image")));
+            this.uxMenuItemToggle.Name = "uxMenuItemToggle";
+            this.uxMenuItemToggle.Size = new System.Drawing.Size(193, 26);
+            this.uxMenuItemToggle.Text = "Disabl&e...";
+            this.uxMenuItemToggle.Click += new System.EventHandler(this.uxButtonToggle_Click);
             // 
             // uxMenuItemDelete
             // 
@@ -241,7 +247,7 @@
             this.uxPropertyGridSecret.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.uxPropertyGridSecret.Name = "uxPropertyGridSecret";
             this.uxPropertyGridSecret.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.uxPropertyGridSecret.Size = new System.Drawing.Size(1032, 265);
+            this.uxPropertyGridSecret.Size = new System.Drawing.Size(1154, 265);
             this.uxPropertyGridSecret.TabIndex = 0;
             this.uxPropertyGridSecret.ToolbarVisible = false;
             // 
@@ -258,6 +264,7 @@
             toolStripSeparator1,
             this.uxButtonAdd,
             this.uxButtonEdit,
+            this.uxButtonToggle,
             this.uxButtonDelete,
             toolStripSeparator2,
             this.uxButtonCopy,
@@ -266,7 +273,7 @@
             this.uxButtonExit});
             uxToolStrip.Location = new System.Drawing.Point(3, 0);
             uxToolStrip.Name = "uxToolStrip";
-            uxToolStrip.Size = new System.Drawing.Size(860, 28);
+            uxToolStrip.Size = new System.Drawing.Size(943, 28);
             uxToolStrip.TabIndex = 0;
             // 
             // toolStripLabel1
@@ -357,6 +364,16 @@
             this.uxButtonEdit.Text = "&Edit";
             this.uxButtonEdit.Click += new System.EventHandler(this.uxButtonEdit_Click);
             // 
+            // uxButtonToggle
+            // 
+            this.uxButtonToggle.Enabled = false;
+            this.uxButtonToggle.Image = ((System.Drawing.Image)(resources.GetObject("uxButtonToggle.Image")));
+            this.uxButtonToggle.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.uxButtonToggle.Name = "uxButtonToggle";
+            this.uxButtonToggle.Size = new System.Drawing.Size(83, 25);
+            this.uxButtonToggle.Text = "Disabl&e";
+            this.uxButtonToggle.Click += new System.EventHandler(this.uxButtonToggle_Click);
+            // 
             // uxButtonDelete
             // 
             this.uxButtonDelete.Enabled = false;
@@ -393,7 +410,7 @@
             this.uxButtonHelp.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonHelp.Name = "uxButtonHelp";
             this.uxButtonHelp.Size = new System.Drawing.Size(65, 25);
-            this.uxButtonHelp.Text = "He&lp";
+            this.uxButtonHelp.Text = "&Help";
             // 
             // uxButtonExit
             // 
@@ -414,11 +431,11 @@
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(splitContainer1);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1032, 562);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1154, 562);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer1.Name = "toolStripContainer1";
-            this.toolStripContainer1.Size = new System.Drawing.Size(1032, 615);
+            this.toolStripContainer1.Size = new System.Drawing.Size(1154, 615);
             this.toolStripContainer1.TabIndex = 8;
             this.toolStripContainer1.Text = "toolStripContainer1";
             // 
@@ -434,7 +451,7 @@
             this.uxStatusLabel});
             this.uxStatusStrip.Location = new System.Drawing.Point(0, 0);
             this.uxStatusStrip.Name = "uxStatusStrip";
-            this.uxStatusStrip.Size = new System.Drawing.Size(1032, 25);
+            this.uxStatusStrip.Size = new System.Drawing.Size(1154, 25);
             this.uxStatusStrip.TabIndex = 0;
             // 
             // uxStatusLabel
@@ -447,7 +464,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1032, 615);
+            this.ClientSize = new System.Drawing.Size(1154, 615);
             this.Controls.Add(this.toolStripContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -479,7 +496,6 @@
         private System.Windows.Forms.StatusStrip uxStatusStrip;
         private System.Windows.Forms.ToolStripStatusLabel uxStatusLabel;
         private System.Windows.Forms.ListView uxListViewSecrets;
-        private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.PropertyGrid uxPropertyGridSecret;
         private System.Windows.Forms.ToolStripComboBox uxComboBoxEnv;
         private System.Windows.Forms.ToolStripComboBox uxComboBoxGeo;
@@ -492,7 +508,6 @@
         private System.Windows.Forms.ToolStripMenuItem uxAddSecret;
         private System.Windows.Forms.ToolStripMenuItem uxAddCertificate;
         private System.Windows.Forms.ToolStripButton uxButtonExit;
-        private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.ContextMenuStrip uxContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemAddSecret;
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemAddCertificate;
@@ -500,6 +515,8 @@
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemDelete;
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemRefresh;
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemCopy;
+        private System.Windows.Forms.ToolStripButton uxButtonToggle;
+        private System.Windows.Forms.ToolStripMenuItem uxMenuItemToggle;
     }
 }
 

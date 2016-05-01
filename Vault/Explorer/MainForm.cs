@@ -43,24 +43,37 @@ namespace VaultExplorer
         private void uxListViewSecrets_SelectedIndexChanged(object sender, EventArgs e)
         {
             bool itemSelected = (uxListViewSecrets.SelectedItems.Count == 1);
-            bool secretEnabled = itemSelected ? (uxListViewSecrets.SelectedItems[0] as SecretListViewItem).Attributes.Enabled ?? false : false;
+            bool secretEnabled = itemSelected ? (uxListViewSecrets.SelectedItems[0] as SecretListViewItem).Attributes.Enabled ?? true : false;
             uxButtonEdit.Enabled = uxButtonCopy.Enabled = uxMenuItemEdit.Enabled = uxMenuItemCopy.Enabled = secretEnabled;
             uxButtonDelete.Enabled = uxMenuItemDelete.Enabled = itemSelected;
+            uxButtonToggle.Enabled = uxMenuItemToggle.Enabled = itemSelected;
+            uxButtonToggle.Text = secretEnabled ? "Disabl&e" : "&Enable";
+            uxMenuItemToggle.Text = uxButtonToggle.Text + "...";
             uxPropertyGridSecret.SelectedObject = itemSelected ? uxListViewSecrets.SelectedItems[0] : null;
         }
 
-        private async Task AddOrUpdateSecret(string oldSecretName, SecretObject soNew)
+        private async Task AddOrUpdateSecret(Secret sOld, SecretObject soNew)
         {
-            Secret s = await _vault.SetSecretAsync(soNew.Name, soNew.Value, soNew.TagsToDictionary(), soNew.ContentType, soNew.ToSecretAttributes());
+            Secret s = null;
+            // New secret, secret rename or new value
+            if ((sOld == null) || (sOld.SecretIdentifier.Name != soNew.Name) || (sOld.Value != soNew.Value))
+            {
+                s = await _vault.SetSecretAsync(soNew.Name, soNew.Value, soNew.TagsToDictionary(), soNew.ContentType, soNew.ToSecretAttributes());
+            }
+            else // Same secret name and value
+            {
+                s = await _vault.UpdateSecretAsync(soNew.Name, soNew.TagsToDictionary(), soNew.ContentType, soNew.ToSecretAttributes());
+            }
+            string oldSecretName = sOld?.SecretIdentifier.Name;
             if ((oldSecretName != null) && (oldSecretName != soNew.Name)) // Delete old key
             {
                 await _vault.DeleteSecretAsync(oldSecretName);
                 uxListViewSecrets.Items.RemoveByKey(oldSecretName);
             }
             uxListViewSecrets.Items.RemoveByKey(soNew.Name);
-            var slvi = uxListViewSecrets.Items.Add(new SecretListViewItem(s));
-            slvi.EnsureVisible();
-            slvi.Focused = slvi.Selected = true;
+            var slvi = new SecretListViewItem(s);
+            uxListViewSecrets.Items.Add(slvi);
+            slvi.RefreshAndSelect();
         }
 
         private async void uxButtonAddSecret_Click(object sender, EventArgs e)
@@ -86,14 +99,37 @@ namespace VaultExplorer
         {
             if (uxListViewSecrets.SelectedItems.Count == 1)
             {
-                string secretName = uxListViewSecrets.SelectedItems[0].Text;
-                using (NewUxOperation(uxButtonEdit))
+                var slvi = uxListViewSecrets.SelectedItems[0] as SecretListViewItem;
+                if (slvi.Attributes.Enabled ?? true)
                 {
-                    var s = await _vault.GetSecretAsync(secretName);
-                    SecretDialog nsDlg = new SecretDialog(s);
-                    if (nsDlg.ShowDialog() == DialogResult.OK)
+                    using (NewUxOperation(uxButtonEdit))
                     {
-                        await AddOrUpdateSecret(secretName, nsDlg.SecretObject);
+                        var s = await _vault.GetSecretAsync(slvi.Name);
+                        SecretDialog nsDlg = new SecretDialog(s);
+                        if (nsDlg.ShowDialog() == DialogResult.OK)
+                        {
+                            await AddOrUpdateSecret(s, nsDlg.SecretObject);
+                        }
+                    }
+                }
+            }
+        }
+
+        private async void uxButtonToggle_Click(object sender, EventArgs e)
+        {
+            if (uxListViewSecrets.SelectedItems.Count == 1)
+            {
+                var slvi = uxListViewSecrets.SelectedItems[0] as SecretListViewItem;
+                string action = (slvi.Attributes.Enabled ?? true) ? "disable" : "enable";
+                if (MessageBox.Show($"Are you sure you want to {action} secret '{slvi.Name}'?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    using (NewUxOperation(uxButtonToggle))
+                    {
+                        Secret s = await _vault.UpdateSecretAsync(slvi.Name, Utils.AddChangedBy(slvi.Tags), null, new SecretAttributes() { Enabled = !slvi.Attributes.Enabled }); // Toggle only Enabled attribute
+                        slvi = new SecretListViewItem(s);
+                        uxListViewSecrets.Items.RemoveByKey(slvi.Name);
+                        uxListViewSecrets.Items.Add(slvi);
+                        slvi.RefreshAndSelect();
                     }
                 }
             }
