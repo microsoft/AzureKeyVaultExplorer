@@ -34,6 +34,7 @@
             System.Windows.Forms.ColumnHeader columnHeader2;
             System.Windows.Forms.ColumnHeader columnHeader3;
             System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
             System.Windows.Forms.ToolStrip uxToolStrip;
             System.Windows.Forms.ToolStripLabel toolStripLabel1;
@@ -41,7 +42,6 @@
             System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
             System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
             System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.uxListViewSecrets = new System.Windows.Forms.ListView();
             this.uxContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.uxMenuItemAdd = new System.Windows.Forms.ToolStripMenuItem();
@@ -53,6 +53,7 @@
             this.uxMenuItemDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemRefresh = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxSmallImageList = new System.Windows.Forms.ImageList(this.components);
             this.uxPropertyGridSecret = new System.Windows.Forms.PropertyGrid();
             this.uxComboBoxEnv = new System.Windows.Forms.ToolStripComboBox();
             this.uxComboBoxGeo = new System.Windows.Forms.ToolStripComboBox();
@@ -72,7 +73,6 @@
             this.uxStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.uxOpenConfigFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.uxOpenCertFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.uxSmallImageList = new System.Windows.Forms.ImageList(this.components);
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -183,7 +183,7 @@
             this.uxMenuItemAdd.Enabled = false;
             this.uxMenuItemAdd.Image = global::VaultExplorer.Properties.Resources.lock_add;
             this.uxMenuItemAdd.Name = "uxMenuItemAdd";
-            this.uxMenuItemAdd.Size = new System.Drawing.Size(143, 26);
+            this.uxMenuItemAdd.Size = new System.Drawing.Size(181, 26);
             this.uxMenuItemAdd.Text = "&Add";
             this.uxMenuItemAdd.Click += new System.EventHandler(this.uxButtonAdd_Click);
             // 
@@ -193,7 +193,7 @@
             this.uxMenuItemAddSecret.Name = "uxMenuItemAddSecret";
             this.uxMenuItemAddSecret.Size = new System.Drawing.Size(209, 26);
             this.uxMenuItemAddSecret.Text = "&Secret...";
-            this.uxMenuItemAddSecret.Click += new System.EventHandler(this.uxButtonAdd_Click);
+            this.uxMenuItemAddSecret.Click += new System.EventHandler(this.uxButtonAddItem_Click);
             // 
             // uxMenuItemAddCertificate
             // 
@@ -201,7 +201,7 @@
             this.uxMenuItemAddCertificate.Name = "uxMenuItemAddCertificate";
             this.uxMenuItemAddCertificate.Size = new System.Drawing.Size(209, 26);
             this.uxMenuItemAddCertificate.Text = "Certificate...";
-            this.uxMenuItemAddCertificate.Click += new System.EventHandler(this.uxButtonAdd_Click);
+            this.uxMenuItemAddCertificate.Click += new System.EventHandler(this.uxButtonAddItem_Click);
             // 
             // uxMenuItemAddFile
             // 
@@ -209,7 +209,7 @@
             this.uxMenuItemAddFile.Name = "uxMenuItemAddFile";
             this.uxMenuItemAddFile.Size = new System.Drawing.Size(209, 26);
             this.uxMenuItemAddFile.Text = "Configuration &file...";
-            this.uxMenuItemAddFile.Click += new System.EventHandler(this.uxButtonAdd_Click);
+            this.uxMenuItemAddFile.Click += new System.EventHandler(this.uxButtonAddItem_Click);
             // 
             // uxMenuItemEdit
             // 
@@ -264,6 +264,13 @@
             this.uxMenuItemRefresh.Size = new System.Drawing.Size(143, 26);
             this.uxMenuItemRefresh.Text = "&Refresh";
             this.uxMenuItemRefresh.Click += new System.EventHandler(this.uxButtonRefresh_Click);
+            // 
+            // uxSmallImageList
+            // 
+            this.uxSmallImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("uxSmallImageList.ImageStream")));
+            this.uxSmallImageList.TransparentColor = System.Drawing.Color.Transparent;
+            this.uxSmallImageList.Images.SetKeyName(0, "key.png");
+            this.uxSmallImageList.Images.SetKeyName(1, "key_delete.png");
             // 
             // uxPropertyGridSecret
             // 
@@ -372,7 +379,7 @@
             this.uxAddSecret.Name = "uxAddSecret";
             this.uxAddSecret.Size = new System.Drawing.Size(209, 26);
             this.uxAddSecret.Text = "&Secret...";
-            this.uxAddSecret.Click += new System.EventHandler(this.uxButtonAdd_Click);
+            this.uxAddSecret.Click += new System.EventHandler(this.uxButtonAddItem_Click);
             // 
             // uxAddCertificate
             // 
@@ -380,7 +387,7 @@
             this.uxAddCertificate.Name = "uxAddCertificate";
             this.uxAddCertificate.Size = new System.Drawing.Size(209, 26);
             this.uxAddCertificate.Text = "Ce&rtificate...";
-            this.uxAddCertificate.Click += new System.EventHandler(this.uxButtonAdd_Click);
+            this.uxAddCertificate.Click += new System.EventHandler(this.uxButtonAddItem_Click);
             // 
             // uxAddFile
             // 
@@ -388,7 +395,7 @@
             this.uxAddFile.Name = "uxAddFile";
             this.uxAddFile.Size = new System.Drawing.Size(209, 26);
             this.uxAddFile.Text = "Configuration &file...";
-            this.uxAddFile.Click += new System.EventHandler(this.uxButtonAdd_Click);
+            this.uxAddFile.Click += new System.EventHandler(this.uxButtonAddItem_Click);
             // 
             // uxButtonEdit
             // 
@@ -505,12 +512,6 @@
             // 
             this.uxOpenCertFileDialog.Filter = "X509 Certificate|*.cer;*.crt|All files|*.*";
             this.uxOpenCertFileDialog.Title = "Open certificate file";
-            // 
-            // uxSmallImageList
-            // 
-            this.uxSmallImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("uxSmallImageList.ImageStream")));
-            this.uxSmallImageList.TransparentColor = System.Drawing.Color.Transparent;
-            this.uxSmallImageList.Images.SetKeyName(0, "key.png");
             // 
             // MainForm
             // 

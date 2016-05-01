@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.Label label1;
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SecretDialog));
             System.Windows.Forms.Label uxLabelValue;
             this.uxTextBoxName = new System.Windows.Forms.TextBox();
             this.uxButtonOK = new System.Windows.Forms.Button();
@@ -39,6 +40,7 @@
             this.uxTextBoxValue = new System.Windows.Forms.TextBox();
             this.uxPropertyGridSecret = new System.Windows.Forms.PropertyGrid();
             this.uxLabelBytesLeft = new System.Windows.Forms.Label();
+            this.uxToolTip = new System.Windows.Forms.ToolTip(this.components);
             label1 = new System.Windows.Forms.Label();
             uxLabelValue = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.uxErrorProvider)).BeginInit();
@@ -50,13 +52,18 @@
             // 
             // label1
             // 
-            label1.AutoSize = true;
+            label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            label1.Image = global::VaultExplorer.Properties.Resources.information;
+            label1.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             label1.Location = new System.Drawing.Point(16, 11);
             label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(49, 17);
+            label1.Size = new System.Drawing.Size(643, 17);
             label1.TabIndex = 1;
             label1.Text = "Name:";
+            label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.uxToolTip.SetToolTip(label1, resources.GetString("label1.ToolTip"));
             // 
             // uxLabelValue
             // 
@@ -171,6 +178,12 @@
             this.uxLabelBytesLeft.Text = "xxx bytes left";
             this.uxLabelBytesLeft.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
+            // uxToolTip
+            // 
+            this.uxToolTip.AutoPopDelay = 10000;
+            this.uxToolTip.InitialDelay = 500;
+            this.uxToolTip.ReshowDelay = 100;
+            // 
             // SecretDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -215,5 +228,6 @@
         private System.Windows.Forms.PropertyGrid uxPropertyGridSecret;
         private System.Windows.Forms.SplitContainer uxSplitContainer;
         private System.Windows.Forms.Label uxLabelBytesLeft;
+        private System.Windows.Forms.ToolTip uxToolTip;
     }
 }

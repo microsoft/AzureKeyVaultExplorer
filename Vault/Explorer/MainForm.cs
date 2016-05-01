@@ -81,6 +81,11 @@ namespace VaultExplorer
             }
         }
 
+        private void uxButtonAdd_Click(object sender, EventArgs e)
+        {
+            (sender as ToolStripDropDownItem)?.ShowDropDown();
+        }
+
         private async Task AddOrUpdateSecret(Secret sOld, SecretObject soNew)
         {
             Secret s = null;
@@ -105,38 +110,32 @@ namespace VaultExplorer
             slvi.RefreshAndSelect();
         }
 
-        private async void uxButtonAdd_Click(object sender, EventArgs e)
+        private async void uxButtonAddItem_Click(object sender, EventArgs e)
         {
             SecretDialog nsDlg = null;
             // Add secret
-            if ((sender == uxButtonAdd) || (sender == uxMenuItemAdd) || (sender == uxAddSecret) || (sender == uxMenuItemAddSecret))
+            if ((sender == uxAddSecret) || (sender == uxMenuItemAddSecret))
             {
                 nsDlg = new SecretDialog();
             }
             // Add certificate
-            if ((sender == uxAddCertificate) || (sender == uxMenuItemAddCertificate))
+            if (((sender == uxAddCertificate) || (sender == uxMenuItemAddCertificate)) && ((uxOpenCertFileDialog.ShowDialog() == DialogResult.OK)))
             {
-                if (uxOpenCertFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    nsDlg = new SecretDialog(X509Certificate2.CreateFromCertFile(uxOpenCertFileDialog.FileName));
-                }
+                nsDlg = new SecretDialog(X509Certificate2.CreateFromCertFile(uxOpenCertFileDialog.FileName));
             }
             // Add configuration file
-            if ((sender == uxAddFile) || (sender == uxMenuItemAddFile))
+            if (((sender == uxAddFile) || (sender == uxMenuItemAddFile)) && (uxOpenConfigFileDialog.ShowDialog() == DialogResult.OK))
             {
-                if (uxOpenConfigFileDialog.ShowDialog() == DialogResult.OK)
+                FileInfo fi = new FileInfo(uxOpenConfigFileDialog.FileName);
+                if (fi.Length > Utils.MaxSecretValueLength)
                 {
-                    FileInfo fi = new FileInfo(uxOpenConfigFileDialog.FileName);
-                    if (fi.Length > Utils.MaxSecretValueLength)
-                    {
-                        MessageBox.Show($"Configuration file {fi.FullName} size is {fi.Length:N0} bytes. Maximum file size allowed is {Utils.MaxSecretValueLength:N0} bytes.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                    nsDlg = new SecretDialog(fi.FullName);
+                    MessageBox.Show($"Configuration file {fi.FullName} size is {fi.Length:N0} bytes. Maximum file size allowed for secret value is {Utils.MaxSecretValueLength:N0} bytes.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
+                nsDlg = new SecretDialog(fi.FullName);
             }
-            Debug.Assert(nsDlg != null);
-            if ((nsDlg.ShowDialog() == DialogResult.OK) &&
+            if ((nsDlg != null) &&
+                (nsDlg.ShowDialog() == DialogResult.OK) &&
                 (!uxListViewSecrets.Items.ContainsKey(nsDlg.SecretObject.Name) ||
                 (uxListViewSecrets.Items.ContainsKey(nsDlg.SecretObject.Name) && 
                 (MessageBox.Show($"Are you sure you want to replace secret '{nsDlg.SecretObject.Name}' with new value?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes))))

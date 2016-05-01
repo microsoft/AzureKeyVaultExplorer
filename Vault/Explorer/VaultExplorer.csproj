@@ -132,6 +132,8 @@
     <None Include="Resources\certificate.png" />
     <None Include="Resources\key.png" />
     <None Include="Resources\folder_key.png" />
+    <None Include="Resources\information.png" />
+    <None Include="Resources\key_delete.png" />
     <Content Include="VaultExplorer.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -19,7 +19,7 @@ namespace VaultExplorer
         private SecretListViewItem(string name, SecretAttributes attributes, string contentType, 
             string id, Dictionary<string, string> tags) : base(name)
         {
-            ImageIndex = 0;
+            ImageIndex = (attributes.Enabled ?? true) ? 0 : 1;
             Attributes = attributes;
             ContentType = contentType;
             Id = id;
