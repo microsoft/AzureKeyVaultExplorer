@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace VaultExplorer
@@ -20,6 +21,7 @@ namespace VaultExplorer
             string id, Dictionary<string, string> tags) : base(name)
         {
             ImageIndex = (attributes.Enabled ?? true) ? 0 : 1;
+            ForeColor = (attributes.Enabled ?? true) ? SystemColors.WindowText : SystemColors.GrayText;
             Attributes = attributes;
             ContentType = contentType;
             Id = id;

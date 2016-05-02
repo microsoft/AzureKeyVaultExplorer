@@ -183,7 +183,7 @@
             this.uxMenuItemAdd.Enabled = false;
             this.uxMenuItemAdd.Image = global::VaultExplorer.Properties.Resources.lock_add;
             this.uxMenuItemAdd.Name = "uxMenuItemAdd";
-            this.uxMenuItemAdd.Size = new System.Drawing.Size(181, 26);
+            this.uxMenuItemAdd.Size = new System.Drawing.Size(143, 26);
             this.uxMenuItemAdd.Text = "&Add";
             this.uxMenuItemAdd.Click += new System.EventHandler(this.uxButtonAdd_Click);
             // 
