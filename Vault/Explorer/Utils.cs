@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -11,6 +12,8 @@ namespace VaultExplorer
 {
     public static class Utils
     {
+        public static Regex ValidSecretNameRegex = new Regex("^[0-9a-zA-Z-]{1,127}$", RegexOptions.Singleline | RegexOptions.Compiled);
+
         public const int MaxSecretValueLength = 25 * 1024; // 25 KB
 
         public const int MaxNumberOfTags = 15;

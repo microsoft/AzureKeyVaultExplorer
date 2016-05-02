@@ -1,22 +1,14 @@
 ﻿using Microsoft.Azure.KeyVault;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace VaultExplorer
 {
     public partial class SecretDialog : Form
     {
-        private static Regex s_secretNameRegex = new Regex("^[0-9a-zA-Z-]{1,127}$", RegexOptions.Singleline | RegexOptions.Compiled);
         private bool _nameValid;
         private bool _valueValid;
         private bool _changed;
@@ -27,8 +19,6 @@ namespace VaultExplorer
             InitializeComponent();
             Text = title;
             uxTextBoxValue.MaxLength = Utils.MaxSecretValueLength;
-            uxErrorProvider.SetIconAlignment(uxTextBoxName, ErrorIconAlignment.MiddleLeft);
-            uxErrorProvider.SetIconAlignment(uxSplitContainer, ErrorIconAlignment.TopLeft);
             uxTextBoxName_TextChanged(this, EventArgs.Empty);
             uxTextBoxValue_TextChanged(this, EventArgs.Empty);
             SecretObject = new SecretObject(s, SecretObject_PropertyChanged);
@@ -63,9 +53,9 @@ namespace VaultExplorer
         private void uxTextBoxName_TextChanged(object sender, EventArgs e)
         {
             _changed = true;
-            _nameValid = s_secretNameRegex.Match(uxTextBoxName.Text).Success;
+            _nameValid = Utils.ValidSecretNameRegex.Match(uxTextBoxName.Text).Success;
             uxErrorProvider.SetError(uxTextBoxName, _nameValid ? null :
-                $"Secret name must match the following regex {s_secretNameRegex}");
+                $"Secret name must match the following regex {Utils.ValidSecretNameRegex}");
             InvalidateOkButton();
         }
 
