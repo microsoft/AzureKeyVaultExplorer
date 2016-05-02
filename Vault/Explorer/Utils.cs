@@ -13,6 +13,12 @@ namespace VaultExplorer
     {
         public const int MaxSecretValueLength = 25 * 1024; // 25 KB
 
+        public const int MaxNumberOfTags = 15;
+
+        public const int MaxTagNameLength = 256;
+
+        public const int MaxTagValueLength = 256;
+
         public static readonly StringDictionary GeoRegions = new StringDictionary()
         {
             { "us", "west,east" },

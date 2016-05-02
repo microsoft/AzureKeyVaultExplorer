@@ -13,25 +13,6 @@ using System.Windows.Forms.Design;
 
 namespace VaultExplorer
 {
-    public class TagItem
-    {
-        public string Key { get; set; }
-
-        public string Value { get; set; }
-
-        public TagItem()
-        {
-            Key = "";
-            Value = "";
-        }
-
-        public TagItem(KeyValuePair<string, string> kvp)
-        {
-            Key = kvp.Key;
-            Value = kvp.Value;
-        }
-    }
-
     public class NullableDateTimePickerEditor : UITypeEditor
     {
         IWindowsFormsEditorService editorService;
@@ -79,9 +60,9 @@ namespace VaultExplorer
         [Browsable(false)]
         public string Name { get; set; }
 
-        private ObservableCollection<TagItem> _tags;
+        private ObservableTagItemsCollection _tags;
         [DisplayName("Custom Tags")]
-        public ObservableCollection<TagItem> Tags
+        public ObservableTagItemsCollection Tags
         {
             get
             {
@@ -176,7 +157,7 @@ namespace VaultExplorer
         public SecretObject(Secret secret, PropertyChangedEventHandler propertyChanged)
         {
             // get and set
-            _tags = new ObservableCollection<TagItem>();
+            _tags = new ObservableTagItemsCollection();
             if (null != secret.Tags)
             {
                 foreach (var kvp in secret.Tags)
@@ -199,7 +180,7 @@ namespace VaultExplorer
             var result = new Dictionary<string, string>();
             foreach (var tagItem in _tags)
             {
-                result.Add(tagItem.Key, tagItem.Value);
+                result.Add(tagItem.Name, tagItem.Value);
             }
             return Utils.AddChangedBy(result);
         }
