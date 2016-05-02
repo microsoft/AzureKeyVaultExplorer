@@ -40,6 +40,7 @@ namespace VaultExplorer
                 }
                 //uxListViewSecrets.EndUpdate();
                 uxButtonAdd.Enabled = uxMenuItemAdd.Enabled = uxMenuItemAddCertificate.Enabled = true;
+                uxImageSearch.Enabled = uxTextBoxSearch.Enabled = true;
             }
         }
 
@@ -107,6 +108,7 @@ namespace VaultExplorer
             uxListViewSecrets.Items.RemoveByKey(soNew.Name);
             var slvi = new SecretListViewItem(s);
             uxListViewSecrets.Items.Add(slvi);
+            uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search
             slvi.RefreshAndSelect();
         }
 
@@ -203,6 +205,33 @@ namespace VaultExplorer
             }
         }
 
+        private void uxTimerSearchTextTypingCompleted_Tick(object sender, EventArgs e)
+        {
+            uxTimerSearchTextTypingCompleted.Stop();
+
+            SecretListViewItem selectItem = null;
+            uxListViewSecrets.BeginUpdate();
+            foreach (var item in uxListViewSecrets.Items)
+            {
+                SecretListViewItem slvi = item as SecretListViewItem;
+                bool contains = slvi.Contains(uxTextBoxSearch.Text);
+                slvi.Strikeout = !contains;
+                if ((selectItem == null) && contains)
+                {
+                    selectItem = slvi;
+                }
+            }
+            selectItem?.RefreshAndSelect();
+            uxListViewSecrets.EndUpdate();
+        }
+
+
+        private void uxTextBoxSearch_TextChanged(object sender, EventArgs e)
+        {
+            uxTimerSearchTextTypingCompleted.Stop(); // Wait for user to finish the typing in a text box
+            uxTimerSearchTextTypingCompleted.Start();
+        }
+
         private async void uxButtonCopy_Click(object sender, EventArgs e)
         {
             if (uxListViewSecrets.SelectedItems.Count == 1)
@@ -214,6 +243,11 @@ namespace VaultExplorer
                     Clipboard.SetText(s.Value);
                 }
             }
+        }
+
+        private void uxButtonHelp_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://microsoft.visualstudio.com/DefaultCollection/Windows%20Defender/_git/WD.Services.Common?path=%2FVault%2FVaultWiki.md");
         }
 
         private void uxButtonExit_Click(object sender, EventArgs e)
@@ -229,11 +263,6 @@ namespace VaultExplorer
             }
             _sortColumn = e.Column;
             uxListViewSecrets.ListViewItemSorter = new ListViewItemComparer(e.Column, _sortOder);
-        }
-
-        private void uxButtonHelp_Click(object sender, EventArgs e)
-        {
-            Process.Start("https://microsoft.visualstudio.com/DefaultCollection/Windows%20Defender/_git/WD.Services.Common?path=%2FVault%2FVaultWiki.md");
         }
     }
 }

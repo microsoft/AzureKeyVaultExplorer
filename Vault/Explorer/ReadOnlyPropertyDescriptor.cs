@@ -5,23 +5,21 @@ namespace VaultExplorer
 {
     public class ReadOnlyPropertyDescriptor : PropertyDescriptor
     {
-        private readonly string _name;
-        private readonly object _value;
+        public readonly object Value;
 
         internal ReadOnlyPropertyDescriptor(string name, object value) : base(name, null)
         {
-            _name = name;
-            _value = value;
+            Value = value;
         }
 
-        public override Type PropertyType => (_value == null) ? typeof(string) : _value.GetType();
+        public override Type PropertyType => (Value == null) ? typeof(string) : Value.GetType();
 
         public override void SetValue(object component, object value)
         {
             throw new InvalidOperationException();
         }
 
-        public override object GetValue(object component) => _value;
+        public override object GetValue(object component) => Value;
 
         public override bool IsReadOnly => true;
 

@@ -120,6 +120,7 @@
             this.uxSplitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.uxErrorProvider.SetIconAlignment(this.uxSplitContainer, System.Windows.Forms.ErrorIconAlignment.TopLeft);
             this.uxSplitContainer.Location = new System.Drawing.Point(15, 75);
             this.uxSplitContainer.Margin = new System.Windows.Forms.Padding(2);
             this.uxSplitContainer.Name = "uxSplitContainer";

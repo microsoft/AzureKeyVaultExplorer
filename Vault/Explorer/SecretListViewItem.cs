@@ -20,7 +20,7 @@ namespace VaultExplorer
         private SecretListViewItem(string name, SecretAttributes attributes, string contentType, 
             string id, Dictionary<string, string> tags) : base(name)
         {
-            ImageIndex = (attributes.Enabled ?? true) ? 0 : 1;
+            ImageIndex = (attributes.Enabled ?? true) ? 1 : 2;
             ForeColor = (attributes.Enabled ?? true) ? SystemColors.WindowText : SystemColors.GrayText;
             Attributes = attributes;
             ContentType = contentType;
@@ -41,6 +41,33 @@ namespace VaultExplorer
             EnsureVisible();
             Focused = Selected = false;
             Focused = Selected = true;
+        }
+
+        public bool Strikeout
+        {
+            get
+            {
+                return (ImageIndex == 0);
+            }
+            set
+            {
+                ForeColor = value ? SystemColors.GrayText : SystemColors.WindowText;
+                ImageIndex = value ? 0 : (Attributes.Enabled ?? true) ? 1 : 2;
+            }
+        }
+
+        public bool Contains(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return true;
+            foreach (var pd in GetProperties(null))
+            {
+                ReadOnlyPropertyDescriptor ropd = pd as ReadOnlyPropertyDescriptor;
+                if ((ropd.Name.IndexOf(text, StringComparison.InvariantCultureIgnoreCase) >= 0) ||
+                    (ropd.Value?.ToString().IndexOf(text, StringComparison.InvariantCultureIgnoreCase) >= 0))
+                    return true;
+            }
+            return false;
         }
 
         #region ICustomTypeDescriptor interface to show properties in PropertyGrid
