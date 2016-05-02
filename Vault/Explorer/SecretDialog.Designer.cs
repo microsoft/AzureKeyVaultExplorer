@@ -180,7 +180,7 @@
             // 
             // uxToolTip
             // 
-            this.uxToolTip.AutoPopDelay = 10000;
+            this.uxToolTip.AutoPopDelay = 30000;
             this.uxToolTip.InitialDelay = 500;
             this.uxToolTip.ReshowDelay = 100;
             // 
