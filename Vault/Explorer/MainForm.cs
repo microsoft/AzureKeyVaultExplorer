@@ -230,5 +230,10 @@ namespace VaultExplorer
             _sortColumn = e.Column;
             uxListViewSecrets.ListViewItemSorter = new ListViewItemComparer(e.Column, _sortOder);
         }
+
+        private void uxButtonHelp_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://microsoft.visualstudio.com/DefaultCollection/Windows%20Defender/_git/WD.Services.Common?path=%2FVault%2FVaultWiki.md");
+        }
     }
 }

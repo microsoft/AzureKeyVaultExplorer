@@ -307,7 +307,7 @@
             this.uxButtonExit});
             uxToolStrip.Location = new System.Drawing.Point(3, 0);
             uxToolStrip.Name = "uxToolStrip";
-            uxToolStrip.Size = new System.Drawing.Size(970, 28);
+            uxToolStrip.Size = new System.Drawing.Size(1009, 28);
             uxToolStrip.TabIndex = 0;
             // 
             // toolStripLabel1
@@ -454,6 +454,7 @@
             this.uxButtonHelp.Name = "uxButtonHelp";
             this.uxButtonHelp.Size = new System.Drawing.Size(65, 25);
             this.uxButtonHelp.Text = "&Help";
+            this.uxButtonHelp.Click += new System.EventHandler(this.uxButtonHelp_Click);
             // 
             // uxButtonExit
             // 
