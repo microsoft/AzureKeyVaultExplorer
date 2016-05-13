@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
+using ICSharpCode.TextEditor;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
@@ -12,16 +13,27 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private bool _nameValid;
         private bool _valueValid;
         private bool _changed;
+        private readonly TextEditorControl uxTextBoxValue;
         public readonly SecretObject SecretObject;
 
         private SecretDialog(Secret s, string title)
         {
             InitializeComponent();
-            SecretObject = new SecretObject(s, SecretObject_PropertyChanged);
+            uxPropertyGridSecret.SelectedObject = SecretObject = new SecretObject(s, SecretObject_PropertyChanged);
             Text = title;
-            uxTextBoxName_TextChanged(this, EventArgs.Empty);
-            uxTextBoxValue_TextChanged(this, EventArgs.Empty);
-            uxPropertyGridSecret.SelectedObject = SecretObject;
+            uxTextBoxValue = new TextEditorControl()
+            {
+                Parent = uxSplitContainer.Panel1,
+                BorderStyle = BorderStyle.FixedSingle,
+                Dock = DockStyle.Fill,
+                ShowMatchingBracket = true,
+                ConvertTabsToSpaces = true,
+                VRulerRow = 120,
+            };
+            uxTextBoxValue.TextChanged += uxTextBoxValue_TextChanged;
+            uxTextBoxValue.SetHighlighting(SecretObject.ContentType.ToSyntaxHighlightingMode());
+            uxTextBoxName.Text = "";
+            uxTextBoxValue.Text = "";
         }
 
         public SecretDialog() : this(new Secret() { Attributes = new SecretAttributes(), ContentType = ContentTypeEnumConverter.GetDescription(ContentType.Text) }, "New Secret")
@@ -75,6 +87,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             if (e.PropertyName == nameof(SecretObject.ContentType)) // ContentType changed, refresh
             {
                 uxTextBoxValue_TextChanged(sender, null);
+                uxTextBoxValue.SetHighlighting(SecretObject.ContentType.ToSyntaxHighlightingMode());
             }
             InvalidateOkButton();
         }

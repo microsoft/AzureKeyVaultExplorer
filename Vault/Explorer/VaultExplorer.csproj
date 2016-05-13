@@ -31,6 +31,9 @@
     <ApplicationIcon>VaultExplorer.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.TextEditor">
+      <HintPath>..\..\.packages\ICSharpCode.TextEditor.3.2.1.6466\lib\Net20\ICSharpCode.TextEditor.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Azure.KeyVault.dll">
       <HintPath>$(PkgMicrosoft_Azure_KeyVault)\lib\net45\Microsoft.Azure.KeyVault.dll</HintPath>
     </Reference>

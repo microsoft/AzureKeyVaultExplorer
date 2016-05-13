@@ -203,5 +203,27 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     return ContentType.None;                
             }
         }
+
+        public static string ToSyntaxHighlightingMode(this ContentType contentType)
+        {
+            switch (contentType)
+            {
+                case ContentType.None:
+                case ContentType.Text:
+                case ContentType.Csv:
+                case ContentType.Tsv:
+                    return "HTML";
+                case ContentType.Xml:
+                    return "XML";
+                case ContentType.Json:
+                case ContentType.Certificate:
+                case ContentType.JsonGZipBase64:
+                    return "JavaScript";
+                case ContentType.Base64:
+                    return "HTML";
+                default:
+                    throw new ArgumentException($"Invalid ContentType {contentType}");
+            }
+        }
     }
 }

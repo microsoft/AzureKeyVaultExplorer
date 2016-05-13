@@ -149,8 +149,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
             set
             {
-                _value = value;
-                NotifyPropertyChanged(nameof(Value));
+                if (_value != value)
+                {
+                    _value = value;
+                    NotifyPropertyChanged(nameof(Value));
+                }
             }
         }
 
