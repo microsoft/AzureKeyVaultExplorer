@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace VaultExplorer
+namespace Microsoft.PS.Common.Vault.Explorer
 {
     /// <summary>
     /// Secret list view item which also presents itself nicely to PropertyGrid

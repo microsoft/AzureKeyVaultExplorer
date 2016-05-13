@@ -1,17 +1,13 @@
 ﻿using Microsoft.Azure.KeyVault;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Drawing.Design;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
-namespace VaultExplorer
+namespace Microsoft.PS.Common.Vault.Explorer
 {
     public class NullableDateTimePickerEditor : UITypeEditor
     {
@@ -122,9 +118,10 @@ namespace VaultExplorer
             }
         }
 
-        private string _contentType;
+        private ContentType _contentType;
         [DisplayName("Content Type")]
-        public string ContentType
+        [TypeConverter(typeof(ContentTypeEnumConverter))]
+        public ContentType ContentType
         {
             get
             {
@@ -137,6 +134,9 @@ namespace VaultExplorer
             }
         }
 
+        /// <summary>
+        /// Human readable value of the secret
+        /// </summary>
         private string _value;
         [DisplayName("Value")]
         [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
@@ -154,6 +154,12 @@ namespace VaultExplorer
             }
         }
 
+        /// <summary>
+        /// Raw value to store in the vault
+        /// </summary>
+        [Browsable(false)]
+        public string RawValue => ContentType.ToRawValue(_value);
+
         public SecretObject(Secret secret, PropertyChangedEventHandler propertyChanged)
         {
             // get and set
@@ -169,8 +175,8 @@ namespace VaultExplorer
             _enabled = secret.Attributes.Enabled;
             _expires = secret.Attributes.Expires;
             _notBefore = secret.Attributes.NotBefore;
-            _contentType = secret.ContentType;
-            _value = secret.Value;
+            _contentType = ContentTypeEnumConverter.GetValue(secret.ContentType);
+            _value = _contentType.FromRawValue(secret.Value);
 
             PropertyChanged += propertyChanged;
         }

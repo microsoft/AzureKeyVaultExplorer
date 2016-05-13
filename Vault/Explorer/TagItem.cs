@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace VaultExplorer
+namespace Microsoft.PS.Common.Vault.Explorer
 {
     public class TagItem
     {

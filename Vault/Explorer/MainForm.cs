@@ -7,7 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace VaultExplorer
+namespace Microsoft.PS.Common.Vault.Explorer
 {
     public partial class MainForm : Form
     {
@@ -23,6 +23,11 @@ namespace VaultExplorer
         }
 
         private UxOperation NewUxOperation(ToolStripItem controlToToggle) => new UxOperation(controlToToggle, uxStatusLabel);
+
+        private void RefreshSecertsCount()
+        {
+            uxStatusLabelSecertsCount.Text = $"{uxListViewSecrets.Items.Count} secret(s)";
+        }
 
         private async void uxButtonRefresh_Click(object sender, EventArgs e)
         {
@@ -41,6 +46,7 @@ namespace VaultExplorer
                 //uxListViewSecrets.EndUpdate();
                 uxButtonAdd.Enabled = uxMenuItemAdd.Enabled = uxMenuItemAddCertificate.Enabled = true;
                 uxImageSearch.Enabled = uxTextBoxSearch.Enabled = true;
+                RefreshSecertsCount();
             }
         }
 
@@ -91,13 +97,13 @@ namespace VaultExplorer
         {
             Secret s = null;
             // New secret, secret rename or new value
-            if ((sOld == null) || (sOld.SecretIdentifier.Name != soNew.Name) || (sOld.Value != soNew.Value))
+            if ((sOld == null) || (sOld.SecretIdentifier.Name != soNew.Name) || (sOld.Value != soNew.RawValue))
             {
-                s = await _vault.SetSecretAsync(soNew.Name, soNew.Value, soNew.TagsToDictionary(), soNew.ContentType, soNew.ToSecretAttributes());
+                s = await _vault.SetSecretAsync(soNew.Name, soNew.RawValue, soNew.TagsToDictionary(), ContentTypeEnumConverter.GetDescription(soNew.ContentType), soNew.ToSecretAttributes());
             }
             else // Same secret name and value
             {
-                s = await _vault.UpdateSecretAsync(soNew.Name, soNew.TagsToDictionary(), soNew.ContentType, soNew.ToSecretAttributes());
+                s = await _vault.UpdateSecretAsync(soNew.Name, soNew.TagsToDictionary(), ContentTypeEnumConverter.GetDescription(soNew.ContentType), soNew.ToSecretAttributes());
             }
             string oldSecretName = sOld?.SecretIdentifier.Name;
             if ((oldSecretName != null) && (oldSecretName != soNew.Name)) // Delete old key
@@ -110,6 +116,7 @@ namespace VaultExplorer
             uxListViewSecrets.Items.Add(slvi);
             uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search
             slvi.RefreshAndSelect();
+            RefreshSecertsCount();
         }
 
         private async void uxButtonAddItem_Click(object sender, EventArgs e)
@@ -129,9 +136,9 @@ namespace VaultExplorer
             if (((sender == uxAddFile) || (sender == uxMenuItemAddFile)) && (uxOpenConfigFileDialog.ShowDialog() == DialogResult.OK))
             {
                 FileInfo fi = new FileInfo(uxOpenConfigFileDialog.FileName);
-                if (fi.Length > Utils.MaxSecretValueLength)
+                if (fi.Length > Consts.MaxSecretValueLength)
                 {
-                    MessageBox.Show($"Configuration file {fi.FullName} size is {fi.Length:N0} bytes. Maximum file size allowed for secret value is {Utils.MaxSecretValueLength:N0} bytes.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Configuration file {fi.FullName} size is {fi.Length:N0} bytes. Maximum file size allowed for secret value is {Consts.MaxSecretValueLength:N0} bytes.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 nsDlg = new SecretDialog(fi.FullName);
@@ -200,6 +207,7 @@ namespace VaultExplorer
                     {
                         await _vault.DeleteSecretAsync(secretName);
                         uxListViewSecrets.Items.RemoveByKey(secretName);
+                        RefreshSecertsCount();
                     }
                 }
             }
@@ -239,8 +247,8 @@ namespace VaultExplorer
                 string secretName = uxListViewSecrets.SelectedItems[0].Text;
                 using (NewUxOperation(uxButtonCopy))
                 {
-                    var s = await _vault.GetSecretAsync(secretName);
-                    Clipboard.SetText(s.Value);
+                    var so = new SecretObject(await _vault.GetSecretAsync(secretName), null);
+                    Clipboard.SetText(so.Value);
                 }
             }
         }

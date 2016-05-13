@@ -8,20 +8,10 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace VaultExplorer
+namespace Microsoft.PS.Common.Vault.Explorer
 {
     public static class Utils
     {
-        public static Regex ValidSecretNameRegex = new Regex("^[0-9a-zA-Z-]{1,127}$", RegexOptions.Singleline | RegexOptions.Compiled);
-
-        public const int MaxSecretValueLength = 25 * 1024; // 25 KB
-
-        public const int MaxNumberOfTags = 15;
-
-        public const int MaxTagNameLength = 256;
-
-        public const int MaxTagValueLength = 256;
-
         public static readonly StringDictionary GeoRegions = new StringDictionary()
         {
             { "us", "west,east" },
@@ -38,25 +28,23 @@ namespace VaultExplorer
             return dt.Value.ToLocalTime().ToString();
         }
 
-        private const string ChangedByKey = "ChangedBy";
-
         public static Dictionary<string, string> AddChangedBy(Dictionary<string, string> tags)
         {
             if (tags == null)
             {
                 tags = new Dictionary<string, string>();
             }
-            tags[ChangedByKey] = $"{Environment.UserDomainName}\\{Environment.UserName}";
+            tags[Consts.ChangedByKey] = $"{Environment.UserDomainName}\\{Environment.UserName}";
             return tags;
         }
 
         public static string GetChangedBy(Dictionary<string, string> tags)
         {
-            if ((tags == null) || (!tags.ContainsKey(ChangedByKey)))
+            if ((tags == null) || (!tags.ContainsKey(Consts.ChangedByKey)))
             {
                 return "";
             }
-            return tags[ChangedByKey];
+            return tags[Consts.ChangedByKey];
         }
     }
 }
