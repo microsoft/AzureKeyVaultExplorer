@@ -136,9 +136,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
             if (((sender == uxAddFile) || (sender == uxMenuItemAddFile)) && (uxOpenConfigFileDialog.ShowDialog() == DialogResult.OK))
             {
                 FileInfo fi = new FileInfo(uxOpenConfigFileDialog.FileName);
-                if (fi.Length > Consts.MaxSecretValueLength)
+                if (fi.Length > CommonConsts.MB)
                 {
-                    MessageBox.Show($"Configuration file {fi.FullName} size is {fi.Length:N0} bytes. Maximum file size allowed for secret value is {Consts.MaxSecretValueLength:N0} bytes.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Configuration file {fi.FullName} size is {fi.Length:N0} bytes. Maximum file size allowed for secret value (before compression) is 1 MB.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 nsDlg = new SecretDialog(fi.FullName);
