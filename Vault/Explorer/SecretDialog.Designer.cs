@@ -122,7 +122,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.uxErrorProvider.SetIconAlignment(this.uxSplitContainer, System.Windows.Forms.ErrorIconAlignment.TopLeft);
             this.uxSplitContainer.Location = new System.Drawing.Point(15, 75);
-            this.uxSplitContainer.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.uxSplitContainer.Margin = new System.Windows.Forms.Padding(2);
             this.uxSplitContainer.Name = "uxSplitContainer";
             this.uxSplitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -159,7 +159,7 @@
             this.uxPropertyGridSecret.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uxPropertyGridSecret.HelpVisible = false;
             this.uxPropertyGridSecret.Location = new System.Drawing.Point(0, 0);
-            this.uxPropertyGridSecret.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.uxPropertyGridSecret.Margin = new System.Windows.Forms.Padding(2);
             this.uxPropertyGridSecret.Name = "uxPropertyGridSecret";
             this.uxPropertyGridSecret.PropertySort = System.Windows.Forms.PropertySort.NoSort;
             this.uxPropertyGridSecret.Size = new System.Drawing.Size(479, 89);
