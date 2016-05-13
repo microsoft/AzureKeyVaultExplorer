@@ -200,7 +200,7 @@
             this.Controls.Add(uxLabelValue);
             this.Controls.Add(this.uxTextBoxName);
             this.Controls.Add(label1);
-            this.MaximizeBox = false;
+            this.MaximizeBox = true;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(378, 413);
             this.Name = "SecretDialog";
