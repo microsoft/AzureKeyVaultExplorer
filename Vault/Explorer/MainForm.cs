@@ -36,7 +36,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
             using (NewUxOperation(uxButtonRefresh))
             {
-                _vault = new Vault(geo, env, Utils.GeoRegions[geo]);
+                _vault = new Vault(VaultAccessTypeEnum.ReadWrite, "wdvault", geo, env, Utils.GeoRegions[geo]);
                 //uxListViewSecrets.BeginUpdate();
                 uxListViewSecrets.Items.Clear();
                 foreach (var s in await _vault.ListSecretsAsync())
