@@ -91,6 +91,7 @@
     <Compile Include="TagItem.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="UxOperation.cs" />
+    <Compile Include="VaultAlias..cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

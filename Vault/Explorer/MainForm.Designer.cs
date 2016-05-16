@@ -37,7 +37,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
             System.Windows.Forms.ToolStripLabel toolStripLabel1;
-            System.Windows.Forms.ToolStripLabel toolStripLabel2;
             System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
             System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
             System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
@@ -55,8 +54,7 @@
             this.uxSmallImageList = new System.Windows.Forms.ImageList(this.components);
             this.uxPropertyGridSecret = new System.Windows.Forms.PropertyGrid();
             this.uxToolStrip = new System.Windows.Forms.ToolStrip();
-            this.uxComboBoxEnv = new System.Windows.Forms.ToolStripComboBox();
-            this.uxComboBoxGeo = new System.Windows.Forms.ToolStripComboBox();
+            this.uxComboBoxVaultAlias = new System.Windows.Forms.ToolStripComboBox();
             this.uxButtonRefresh = new System.Windows.Forms.ToolStripButton();
             this.uxButtonAdd = new System.Windows.Forms.ToolStripSplitButton();
             this.uxAddSecret = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,10 +71,10 @@
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.uxStatusStrip = new System.Windows.Forms.StatusStrip();
             this.uxStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.uxStatusLabelSecertsCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.uxOpenConfigFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.uxOpenCertFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.uxTimerSearchTextTypingCompleted = new System.Windows.Forms.Timer(this.components);
-            this.uxStatusLabelSecertsCount = new System.Windows.Forms.ToolStripStatusLabel();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -84,7 +82,6 @@
             toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
-            toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
             toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -292,14 +289,8 @@
             // toolStripLabel1
             // 
             toolStripLabel1.Name = "toolStripLabel1";
-            toolStripLabel1.Size = new System.Drawing.Size(92, 25);
-            toolStripLabel1.Text = "Environment";
-            // 
-            // toolStripLabel2
-            // 
-            toolStripLabel2.Name = "toolStripLabel2";
-            toolStripLabel2.Size = new System.Drawing.Size(36, 25);
-            toolStripLabel2.Text = "Geo";
+            toolStripLabel1.Size = new System.Drawing.Size(42, 25);
+            toolStripLabel1.Text = "Vault";
             // 
             // toolStripSeparator1
             // 
@@ -322,9 +313,7 @@
             this.uxToolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.uxToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             toolStripLabel1,
-            this.uxComboBoxEnv,
-            toolStripLabel2,
-            this.uxComboBoxGeo,
+            this.uxComboBoxVaultAlias,
             this.uxButtonRefresh,
             toolStripSeparator1,
             this.uxButtonAdd,
@@ -340,31 +329,16 @@
             this.uxButtonExit});
             this.uxToolStrip.Location = new System.Drawing.Point(3, 0);
             this.uxToolStrip.Name = "uxToolStrip";
-            this.uxToolStrip.Size = new System.Drawing.Size(1112, 28);
+            this.uxToolStrip.Size = new System.Drawing.Size(1071, 28);
             this.uxToolStrip.TabIndex = 0;
             // 
-            // uxComboBoxEnv
+            // uxComboBoxVaultAlias
             // 
-            this.uxComboBoxEnv.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.uxComboBoxEnv.Items.AddRange(new object[] {
-            "int",
-            "ppe",
-            "prod"});
-            this.uxComboBoxEnv.Name = "uxComboBoxEnv";
-            this.uxComboBoxEnv.Size = new System.Drawing.Size(121, 28);
-            // 
-            // uxComboBoxGeo
-            // 
-            this.uxComboBoxGeo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.uxComboBoxGeo.Items.AddRange(new object[] {
-            "us - United States",
-            "eu - Europe",
-            "as - Asia",
-            "jp - Japan",
-            "au - Australia",
-            "in - India"});
-            this.uxComboBoxGeo.Name = "uxComboBoxGeo";
-            this.uxComboBoxGeo.Size = new System.Drawing.Size(121, 28);
+            this.uxComboBoxVaultAlias.DropDownHeight = 200;
+            this.uxComboBoxVaultAlias.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.uxComboBoxVaultAlias.IntegralHeight = false;
+            this.uxComboBoxVaultAlias.Name = "uxComboBoxVaultAlias";
+            this.uxComboBoxVaultAlias.Size = new System.Drawing.Size(250, 28);
             // 
             // uxButtonRefresh
             // 
@@ -530,6 +504,14 @@
             this.uxStatusLabel.Text = "Ready";
             this.uxStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // uxStatusLabelSecertsCount
+            // 
+            this.uxStatusLabelSecertsCount.Name = "uxStatusLabelSecertsCount";
+            this.uxStatusLabelSecertsCount.Size = new System.Drawing.Size(1307, 20);
+            this.uxStatusLabelSecertsCount.Spring = true;
+            this.uxStatusLabelSecertsCount.Text = "0 secret(s)";
+            this.uxStatusLabelSecertsCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // uxOpenConfigFileDialog
             // 
             this.uxOpenConfigFileDialog.Filter = "JSON files|*.json|XML files|*.xml|All files|*.*";
@@ -545,14 +527,6 @@
             this.uxTimerSearchTextTypingCompleted.Interval = 250;
             this.uxTimerSearchTextTypingCompleted.Tick += new System.EventHandler(this.uxTimerSearchTextTypingCompleted_Tick);
             // 
-            // uxStatusLabelSecertsCount
-            // 
-            this.uxStatusLabelSecertsCount.Name = "uxStatusLabelSecertsCount";
-            this.uxStatusLabelSecertsCount.Size = new System.Drawing.Size(1268, 20);
-            this.uxStatusLabelSecertsCount.Spring = true;
-            this.uxStatusLabelSecertsCount.Text = "0 secret(s)";
-            this.uxStatusLabelSecertsCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -563,7 +537,7 @@
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.MinimumSize = new System.Drawing.Size(798, 596);
             this.Name = "MainForm";
-            this.Text = "Windows Defender Services - Azure Key Vaults Explorer";
+            this.Text = "Azure Key Vaults Explorer";
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(splitContainer1)).EndInit();
@@ -590,8 +564,7 @@
         private System.Windows.Forms.ToolStripStatusLabel uxStatusLabel;
         private System.Windows.Forms.ListView uxListViewSecrets;
         private System.Windows.Forms.PropertyGrid uxPropertyGridSecret;
-        private System.Windows.Forms.ToolStripComboBox uxComboBoxEnv;
-        private System.Windows.Forms.ToolStripComboBox uxComboBoxGeo;
+        private System.Windows.Forms.ToolStripComboBox uxComboBoxVaultAlias;
         private System.Windows.Forms.ToolStripButton uxButtonRefresh;
         private System.Windows.Forms.ToolStripButton uxButtonCopy;
         private System.Windows.Forms.ToolStripButton uxButtonHelp;

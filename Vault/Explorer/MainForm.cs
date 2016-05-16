@@ -1,6 +1,9 @@
 ﻿using Microsoft.Azure.KeyVault;
 using Microsoft.PS.Common.Vault;
+using Microsoft.PS.Common.Vault.Explorer.Properties;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
@@ -18,8 +21,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public MainForm()
         {
             InitializeComponent();
-            uxComboBoxEnv.SelectedIndex = 0;
-            uxComboBoxGeo.SelectedIndex = 0;
+
+            var vaultAliases = JsonConvert.DeserializeObject<VaultAlias[]>(Settings.Default.VaultAliases);
+            uxComboBoxVaultAlias.Items.AddRange(vaultAliases);
+            uxComboBoxVaultAlias.SelectedIndex = 0;
         }
 
         private UxOperation NewUxOperation(ToolStripItem controlToToggle) => new UxOperation(controlToToggle, uxStatusLabel);
@@ -31,12 +36,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private async void uxButtonRefresh_Click(object sender, EventArgs e)
         {
-            string geo = ((string)uxComboBoxGeo.SelectedItem).Substring(0, 2);
-            string env = (string)uxComboBoxEnv.SelectedItem;
+            var va = (VaultAlias)uxComboBoxVaultAlias.SelectedItem;
 
             using (NewUxOperation(uxButtonRefresh))
             {
-                _vault = new Vault(VaultAccessTypeEnum.ReadWrite, "wdvault", geo, env, Utils.GeoRegions[geo]);
+                _vault = new Vault(VaultAccessTypeEnum.ReadWrite, va.VaultNames);
                 //uxListViewSecrets.BeginUpdate();
                 uxListViewSecrets.Items.Clear();
                 foreach (var s in await _vault.ListSecretsAsync())
