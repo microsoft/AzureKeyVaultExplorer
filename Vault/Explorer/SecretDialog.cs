@@ -5,6 +5,8 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 using ICSharpCode.TextEditor;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
@@ -50,19 +52,31 @@ namespace Microsoft.PS.Common.Vault.Explorer
             InvalidateOkButton();
         }
 
-        public SecretDialog(string filename) : this()
+        public SecretDialog(FileInfo fi) : this()
         {
-            string extension = Path.GetExtension(filename)?.ToLowerInvariant();
-            SecretObject.ContentType = ContentTypeUtils.FromExtension(extension);
-            uxTextBoxName.Text = Path.GetFileNameWithoutExtension(filename);
-            uxTextBoxValue.Text = File.ReadAllText(filename);
-        }
+            uxTextBoxName.Text = Path.GetFileNameWithoutExtension(fi.Name);
 
-        public SecretDialog(X509Certificate cert) : this()
-        {
-            SecretObject.ContentType = ContentType.Certificate;
-            uxTextBoxName.Text = cert.Subject;
-            uxTextBoxValue.Text = Convert.ToBase64String(cert.GetRawCertData());
+            string extension = fi.Extension?.ToLowerInvariant();
+            SecretObject.ContentType = ContentTypeUtils.FromExtension(extension);
+            string password = null;
+            switch (SecretObject.ContentType)
+            {
+                case ContentType.Certificate:
+                    break;
+                case ContentType.Pkcs12:
+                case ContentType.Pkcs12Base64:
+                    var pwdDlg = new PasswordDialog();
+                    if (pwdDlg.ShowDialog() != DialogResult.OK) return;
+                    password = pwdDlg.Password;
+                    break;
+                default:
+                    uxTextBoxValue.Text = File.ReadAllText(fi.FullName);
+                    return;
+            }
+            // Certificate flow
+            var cvo = new CertificateValueObject(fi, password);
+            cvo.FillTags(SecretObject.Tags);
+            uxTextBoxValue.Text = cvo.ToString();
         }
 
         private void uxTextBoxName_TextChanged(object sender, EventArgs e)
@@ -87,6 +101,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
             _changed = true;
             if (e.PropertyName == nameof(SecretObject.ContentType)) // ContentType changed, refresh
             {
+                if ((SecretObject.ContentType == ContentType.Pkcs12Base64) && 
+                    Consts.ValidBase64Regex.Match(SecretObject.Value).Success) // Allow first conversion from none to the right content type
+                {
+                    var cvo = JsonConvert.DeserializeObject<CertificateValueObject>(Encoding.UTF8.GetString(Convert.FromBase64String(SecretObject.Value)));
+                    cvo.FillTags(SecretObject.Tags);
+                    uxTextBoxValue.Text = cvo.ToString();
+                }
                 uxTextBoxValue_TextChanged(sender, null);
                 uxTextBoxValue.SetHighlighting(SecretObject.ContentType.ToSyntaxHighlightingMode());
             }

@@ -131,21 +131,20 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 nsDlg = new SecretDialog();
             }
-            // Add certificate
-            if (((sender == uxAddCertificate) || (sender == uxMenuItemAddCertificate)) && ((uxOpenCertFileDialog.ShowDialog() == DialogResult.OK)))
+            // Add certificate or configuration file
+            if ((sender == uxAddCertificate) || (sender == uxMenuItemAddCertificate) || (sender == uxAddFile) || (sender == uxMenuItemAddFile))
             {
-                nsDlg = new SecretDialog(X509Certificate2.CreateFromCertFile(uxOpenCertFileDialog.FileName));
-            }
-            // Add configuration file
-            if (((sender == uxAddFile) || (sender == uxMenuItemAddFile)) && (uxOpenConfigFileDialog.ShowDialog() == DialogResult.OK))
-            {
-                FileInfo fi = new FileInfo(uxOpenConfigFileDialog.FileName);
-                if (fi.Length > CommonConsts.MB)
+                uxOpenFileDialog.FilterIndex = (sender == uxAddCertificate) || (sender == uxMenuItemAddCertificate) ? 1 : 3;
+                if (uxOpenFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    MessageBox.Show($"Configuration file {fi.FullName} size is {fi.Length:N0} bytes. Maximum file size allowed for secret value (before compression) is 1 MB.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
+                    FileInfo fi = new FileInfo(uxOpenFileDialog.FileName);
+                    if (fi.Length > CommonConsts.MB)
+                    {
+                        MessageBox.Show($"File {fi.FullName} size is {fi.Length:N0} bytes. Maximum file size allowed for secret value (before compression) is 1 MB.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    nsDlg = new SecretDialog(fi);
                 }
-                nsDlg = new SecretDialog(fi.FullName);
             }
             if ((nsDlg != null) &&
                 (nsDlg.ShowDialog() == DialogResult.OK) &&

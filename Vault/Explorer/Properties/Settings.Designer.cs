@@ -44,13 +44,21 @@ namespace Microsoft.PS.Common.Vault.Explorer.Properties {
     ""VaultNames"": [""wdvaultau1eastprod"", ""wdvaultau1southeastprod""]
   },
   {
+    ""Alias"": ""Defender Key Vault Ops"",
+    ""VaultNames"": [""defenderkeyvault""]
+  },
+  {
     ""Alias"": ""Defender Key Vault Dev"",
     ""VaultNames"": [""defenderkeyvaultdev""]
   },
   {
-    ""Alias"": ""Defender Key Vault AMOps"",
-    ""VaultNames"": [""defenderkeyvault""]
-  }
+    ""Alias"": ""Defender Key Vault Research"",
+    ""VaultNames"": [""defenderkeyvaultresearch""]
+  },
+  {
+    ""Alias"": ""Defender Key Vault Build"",
+    ""VaultNames"": [""defenderkeyvaultbuild""]
+  },
 ]
                 ")]
         public string VaultAliases {

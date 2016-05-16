@@ -33,5 +33,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
             base.InsertItem(index, item);
         }
+
+        public void AddOrReplace(TagItem item)
+        {
+            // TODO
+        }
     }
 }

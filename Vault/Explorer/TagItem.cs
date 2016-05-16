@@ -8,16 +8,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public string Value { get; set; }
 
-        public TagItem()
-        {
-            Name = "";
-            Value = "";
-        }
+        public TagItem() : this("", "") { }
 
-        public TagItem(KeyValuePair<string, string> kvp)
+        public TagItem(KeyValuePair<string, string> kvp) : this(kvp.Key, kvp.Value) { }
+
+        public TagItem(string name, string value)
         {
-            Name = kvp.Key;
-            Value = kvp.Value;
+            Name = name;
+            Value = value;
         }
     }
 }

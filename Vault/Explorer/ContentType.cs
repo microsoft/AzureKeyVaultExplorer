@@ -12,7 +12,9 @@ using System.Threading.Tasks;
 namespace Microsoft.PS.Common.Vault.Explorer
 {
     /// <summary>
-    /// See here: http://www.freeformatter.com/mime-types-list.html
+    /// See here:
+    /// http://www.freeformatter.com/mime-types-list.html
+    /// http://pki-tutorial.readthedocs.io/en/latest/mime.html
     /// </summary>
     public enum ContentType
     {
@@ -30,6 +32,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
         Json,
         [Description("application/pkix-cert")]
         Certificate,
+        [Description("application/x-pkcs12")]
+        Pkcs12,
+        [Description("application/x-pkcs12b64")]
+        Pkcs12Base64,
         [Description("application/x-base64")]
         Base64,
         [Description("application/x-json-gzb64")]
@@ -123,7 +129,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 case ContentType.Xml:
                 case ContentType.Json:
                 case ContentType.Certificate:
+                case ContentType.Pkcs12:
                     return rawValue;
+                case ContentType.Pkcs12Base64:
                 case ContentType.Base64:
                     return Encoding.UTF8.GetString(Convert.FromBase64String(rawValue));
                 case ContentType.JsonGZipBase64:
@@ -158,7 +166,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 case ContentType.Xml:
                 case ContentType.Json:
                 case ContentType.Certificate:
+                case ContentType.Pkcs12:
                     return value;
+                case ContentType.Pkcs12Base64:
                 case ContentType.Base64:
                     return Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
                 case ContentType.JsonGZipBase64:
@@ -194,7 +204,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 case ".json":
                     return ContentType.Json;
                 case ".cer":
+                case ".crt":
                     return ContentType.Certificate;
+                case ".pfx":
+                case ".p12":
+                    return ContentType.Pkcs12;
+                case ".pfxb64":
+                case ".p12b64":
+                    return ContentType.Pkcs12Base64;
                 case ".base64":
                     return ContentType.Base64;
                 case ".gzb64":
@@ -217,6 +234,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     return "XML";
                 case ContentType.Json:
                 case ContentType.Certificate:
+                case ContentType.Pkcs12:
+                case ContentType.Pkcs12Base64:
                 case ContentType.JsonGZipBase64:
                     return "JavaScript";
                 case ContentType.Base64:

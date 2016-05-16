@@ -76,6 +76,14 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="NullableDateTimePickerEditor.cs" />
+    <Compile Include="PasswordDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PasswordDialog.Designer.cs">
+      <DependentUpon>PasswordDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CertificateValueObject.cs" />
     <Compile Include="SecretDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -94,6 +102,9 @@
     <Compile Include="VaultAlias..cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PasswordDialog.resx">
+      <DependentUpon>PasswordDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SecretDialog.resx">
       <DependentUpon>SecretDialog.cs</DependentUpon>
