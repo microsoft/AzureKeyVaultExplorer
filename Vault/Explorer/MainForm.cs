@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private Vault _vault;
         private SortOrder _sortOder = SortOrder.Ascending;
         private int _sortColumn = 0;
+        private Rectangle _dragRect;
 
         public MainForm()
         {
@@ -131,6 +133,27 @@ namespace Microsoft.PS.Common.Vault.Explorer
             RefreshSecertsCount();
         }
 
+        private FileInfo GetFileInfo(object sender, EventArgs e)
+        {
+            FileInfo fi = null;
+            if (e is AddFileEventArgs) // File was dropped
+            {
+                fi = new FileInfo((e as AddFileEventArgs).FileName);
+            }
+            else
+            {
+                uxOpenFileDialog.FilterIndex = (sender == uxAddCertificate) || (sender == uxMenuItemAddCertificate) ? 1 : 3;
+                if (uxOpenFileDialog.ShowDialog() != DialogResult.OK) return null;
+                fi = new FileInfo(uxOpenFileDialog.FileName);
+            }
+            if (fi.Length > CommonConsts.MB)
+            {
+                MessageBox.Show($"File {fi.FullName} size is {fi.Length:N0} bytes. Maximum file size allowed for secret value (before compression) is 1 MB.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null;
+            }
+            return fi;
+        }
+
         private async void uxButtonAddItem_Click(object sender, EventArgs e)
         {
             SecretDialog nsDlg = null;
@@ -142,17 +165,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
             // Add certificate or configuration file
             if ((sender == uxAddCertificate) || (sender == uxMenuItemAddCertificate) || (sender == uxAddFile) || (sender == uxMenuItemAddFile))
             {
-                uxOpenFileDialog.FilterIndex = (sender == uxAddCertificate) || (sender == uxMenuItemAddCertificate) ? 1 : 3;
-                if (uxOpenFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    FileInfo fi = new FileInfo(uxOpenFileDialog.FileName);
-                    if (fi.Length > CommonConsts.MB)
-                    {
-                        MessageBox.Show($"File {fi.FullName} size is {fi.Length:N0} bytes. Maximum file size allowed for secret value (before compression) is 1 MB.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                    nsDlg = new SecretDialog(fi);
-                }
+                FileInfo fi = GetFileInfo(sender, e);
+                if (fi == null) return;
+                nsDlg = new SecretDialog(fi);
             }
             if ((nsDlg != null) &&
                 (nsDlg.ShowDialog() == DialogResult.OK) &&
@@ -272,7 +287,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 using (NewUxOperation(uxButtonSave))
                 {
                     var so = new SecretObject(await _vault.GetSecretAsync(secretName), null);
-                    uxSaveFileDialog.FileName = secretName + so.ContentType.ToExtension();
+                    uxSaveFileDialog.FileName = so.GetFileName();
                     if (uxSaveFileDialog.ShowDialog() == DialogResult.OK)
                     {
                         File.WriteAllBytes(uxSaveFileDialog.FileName, so.GetSaveToFileValue());
@@ -283,7 +298,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void uxButtonHelp_Click(object sender, EventArgs e)
         {
-            Process.Start("https://microsoft.visualstudio.com/DefaultCollection/Windows%20Defender/_git/WD.Services.Common?path=%2FVault%2FVaultWiki.md");
+            Process.Start("http://aka.ms/vaultexplorer");
         }
 
         private void uxButtonExit_Click(object sender, EventArgs e)
@@ -300,5 +315,56 @@ namespace Microsoft.PS.Common.Vault.Explorer
             _sortColumn = e.Column;
             uxListViewSecrets.ListViewItemSorter = new ListViewItemComparer(e.Column, _sortOder);
         }
+
+        #region Drag & Drop
+
+        private void uxListViewSecrets_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+        }
+
+        private void uxListViewSecrets_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            foreach (string file in files)
+            {
+                uxButtonAddItem_Click(uxAddFile, new AddFileEventArgs(file));
+            }
+        }
+
+        private void uxListViewSecrets_MouseDown(object sender, MouseEventArgs e)
+        {
+            Size dragsize = SystemInformation.DragSize;
+            _dragRect = new Rectangle(new Point(e.X - (dragsize.Width / 2), e.Y - (dragsize.Height / 2)), dragsize);
+        }
+
+        private async void uxListViewSecrets_MouseMove(object sender, MouseEventArgs e)
+        {
+            // The mouse has moved outside of the drag-rectangle and we have item selected, start drag operation
+            if ((uxListViewSecrets.SelectedItems.Count == 1) && (e.Button == MouseButtons.Left) && (_dragRect != Rectangle.Empty) && (!_dragRect.Contains(e.X, e.Y)))
+            {
+                string secretName = uxListViewSecrets.SelectedItems[0].Text;
+                using (NewUxOperation(uxButtonSave))
+                {
+                    var so = new SecretObject(await _vault.GetSecretAsync(secretName), null);
+                    var dataObject = new DataObjectEx(new DataObjectEx.SelectedItem[1] { so.GetSaveToFileDataObject() });
+                    uxListViewSecrets.DoDragDrop(dataObject, DragDropEffects.Copy);
+                }
+            }
+        }
+
+        private void uxListViewSecrets_MouseUp(object sender, MouseEventArgs e)
+        {
+            _dragRect = Rectangle.Empty; // Reset
+        }
+
+        private void MainForm_Shown(object sender, EventArgs e)
+        {
+            uxToolTip.ToolTipTitle = Text;
+            uxToolTip.Show("", uxListViewSecrets, 0);
+            uxToolTip.Show("Tip: You can just drag & drop secret as file to and from Windows Explorer", uxListViewSecrets, uxListViewSecrets.Width - 250, 0, 5000);
+        }
+
+        #endregion
     }
 }

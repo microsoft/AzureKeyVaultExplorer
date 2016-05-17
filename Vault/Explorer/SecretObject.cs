@@ -129,6 +129,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public SecretObject(Secret secret, PropertyChangedEventHandler propertyChanged)
         {
+            Name = secret.SecretIdentifier?.Name;
             // get and set
             _tags = new ObservableTagItemsCollection();
             if (null != secret.Tags)
@@ -165,6 +166,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
             NotBefore = _notBefore
         };
 
+        public string GetFileName() => Name + ContentType.ToExtension();
+
         public string GetClipboardValue()
         {
             return ContentType.IsCertificate() ? CertificateValueObject.FromJson(Value).Password : Value;
@@ -173,6 +176,18 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public byte[] GetSaveToFileValue()
         {
             return ContentType.IsCertificate() ? Convert.FromBase64String(CertificateValueObject.FromJson(Value).Data) : Encoding.UTF8.GetBytes(Value);
+        }
+
+        public DataObjectEx.SelectedItem GetSaveToFileDataObject()
+        {
+            byte[] contents = GetSaveToFileValue();
+            return new DataObjectEx.SelectedItem()
+            {
+                FileName = GetFileName(),
+                FileContents = contents,
+                FileSize = contents.Length,
+                WriteTime = DateTime.Now,
+            };
         }
     }
 }
