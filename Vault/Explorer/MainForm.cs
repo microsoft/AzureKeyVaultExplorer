@@ -51,6 +51,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 uxButtonAdd.Enabled = uxMenuItemAdd.Enabled = uxMenuItemAddCertificate.Enabled = true;
                 uxImageSearch.Enabled = uxTextBoxSearch.Enabled = true;
                 RefreshSecertsCount();
+                uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search
             }
         }
 
