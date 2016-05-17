@@ -1,9 +1,11 @@
 ﻿using Microsoft.Azure.KeyVault;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Drawing.Design;
+using System.Text;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
@@ -162,5 +164,15 @@ namespace Microsoft.PS.Common.Vault.Explorer
             Expires = _expires,
             NotBefore = _notBefore
         };
+
+        public string GetClipboardValue()
+        {
+            return ContentType.IsCertificate() ? CertificateValueObject.FromJson(Value).Password : Value;
+        }
+
+        public byte[] GetSaveToFileValue()
+        {
+            return ContentType.IsCertificate() ? Convert.FromBase64String(CertificateValueObject.FromJson(Value).Data) : Encoding.UTF8.GetBytes(Value);
+        }
     }
 }

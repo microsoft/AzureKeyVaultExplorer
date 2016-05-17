@@ -200,6 +200,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 case ".tsv":
                     return ContentType.Tsv;
                 case ".xml":
+                case ".config":
                     return ContentType.Xml;
                 case ".json":
                     return ContentType.Json;
@@ -212,12 +213,41 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 case ".pfxb64":
                 case ".p12b64":
                     return ContentType.Pkcs12Base64;
+                case ".b64":
                 case ".base64":
                     return ContentType.Base64;
                 case ".gzb64":
                     return ContentType.JsonGZipBase64;
                 default:
-                    return ContentType.None;                
+                    return ContentType.None;
+            }
+        }
+
+        public static string ToExtension(this ContentType contentType)
+        {
+            switch (contentType)
+            {
+                case ContentType.None:
+                case ContentType.Base64:
+                    return "";
+                case ContentType.Text:
+                    return ".txt";
+                case ContentType.Csv:
+                    return ".csv";
+                case ContentType.Tsv:
+                    return ".tsv";
+                case ContentType.Xml:
+                    return ".xml";
+                case ContentType.Json:
+                case ContentType.JsonGZipBase64:
+                    return ".json";
+                case ContentType.Certificate:
+                    return ".cer";
+                case ContentType.Pkcs12:
+                case ContentType.Pkcs12Base64:
+                    return ".pfx";
+                default:
+                    throw new ArgumentException($"Invalid ContentType {contentType}");
             }
         }
 
@@ -229,7 +259,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 case ContentType.Text:
                 case ContentType.Csv:
                 case ContentType.Tsv:
-                    return "HTML";
+                    return "ASP/XHTML";
                 case ContentType.Xml:
                     return "XML";
                 case ContentType.Json:
@@ -244,5 +274,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     throw new ArgumentException($"Invalid ContentType {contentType}");
             }
         }
+
+        /// <summary>
+        /// True if content type is certificate, otherwise False
+        /// </summary>
+        public static bool IsCertificate(this ContentType contentType) => (contentType == ContentType.Certificate) || (contentType == ContentType.Pkcs12) || (contentType == ContentType.Pkcs12Base64);
     }
 }

@@ -23,20 +23,20 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 throw new ArgumentOutOfRangeException("Tags.Count", $"Too many tags, maximum number of tags for secret is only {Consts.MaxNumberOfTags}");
             }
-            if (item.Name.Length > Consts.MaxTagNameLength)
-            {
-                throw new ArgumentOutOfRangeException("Name.Length", $"Tag name '{item.Name}' is too long, name can be up to {Consts.MaxTagNameLength} chars");
-            }
-            if (item.Value.Length > Consts.MaxTagValueLength)
-            {
-                throw new ArgumentOutOfRangeException("Value.Length", $"Tag value '{item.Value}' is too long, value can be up to {Consts.MaxTagValueLength} chars");
-            }
             base.InsertItem(index, item);
         }
 
         public void AddOrReplace(TagItem item)
         {
-            // TODO
+            int i = IndexOf(item);
+            if (i == -1)
+            {
+                Add(item);
+            }
+            else
+            {
+                SetItem(i, item);
+            }
         }
     }
 }

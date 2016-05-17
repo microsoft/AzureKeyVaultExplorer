@@ -58,7 +58,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             bool itemSelected = (uxListViewSecrets.SelectedItems.Count == 1);
             bool secretEnabled = itemSelected ? (uxListViewSecrets.SelectedItems[0] as SecretListViewItem).Attributes.Enabled ?? true : false;
-            uxButtonEdit.Enabled = uxButtonCopy.Enabled = uxMenuItemEdit.Enabled = uxMenuItemCopy.Enabled = secretEnabled;
+            uxButtonEdit.Enabled = uxButtonCopy.Enabled = uxButtonSave.Enabled = secretEnabled;
+            uxMenuItemEdit.Enabled = uxMenuItemCopy.Enabled = uxMenuItemSave.Enabled = secretEnabled;
             uxButtonDelete.Enabled = uxMenuItemDelete.Enabled = itemSelected;
             uxButtonToggle.Enabled = uxMenuItemToggle.Enabled = itemSelected;
             uxButtonToggle.Text = secretEnabled ? "Disabl&e" : "&Enable";
@@ -76,6 +77,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 case Keys.Delete:
                     uxButtonDelete.PerformClick();
                     return;
+                case Keys.Enter:
+                    uxButtonEdit.PerformClick();
+                    return;
             }
             if (!e.Control) return;
             switch (e.KeyCode)
@@ -88,6 +92,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     return;
                 case Keys.R:
                     uxButtonRefresh.PerformClick();
+                    return;
+                case Keys.S:
+                    uxButtonSave.PerformClick();
                     return;
             }
         }
@@ -251,7 +258,24 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 using (NewUxOperation(uxButtonCopy))
                 {
                     var so = new SecretObject(await _vault.GetSecretAsync(secretName), null);
-                    Clipboard.SetText(so.Value);
+                    Clipboard.SetText(so.GetClipboardValue());
+                }
+            }
+        }
+
+        private async void uxButtonSave_Click(object sender, EventArgs e)
+        {
+            if (uxListViewSecrets.SelectedItems.Count == 1)
+            {
+                string secretName = uxListViewSecrets.SelectedItems[0].Text;
+                using (NewUxOperation(uxButtonSave))
+                {
+                    var so = new SecretObject(await _vault.GetSecretAsync(secretName), null);
+                    uxSaveFileDialog.FileName = secretName + so.ContentType.ToExtension();
+                    if (uxSaveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        File.WriteAllBytes(uxSaveFileDialog.FileName, so.GetSaveToFileValue());
+                    }
                 }
             }
         }

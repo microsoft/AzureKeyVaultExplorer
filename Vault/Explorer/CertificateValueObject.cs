@@ -37,19 +37,20 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
         }
 
-        public void FillTags(ICollection<TagItem> tags)
+        public void FillTags(ObservableTagItemsCollection tags)
         {
-            tags.Add(new TagItem("Thumbprint", _cert.Thumbprint.ToLowerInvariant()));
-            tags.Add(new TagItem("Expiration", _cert.GetExpirationDateString()));
-            tags.Add(new TagItem("CertName", _cert.Subject));
-            tags.Add(new TagItem("Owner", $"{Environment.UserDomainName}\\{Environment.UserName}"));
+            tags.AddOrReplace(new TagItem("Thumbprint", _cert.Thumbprint.ToLowerInvariant()));
+            tags.AddOrReplace(new TagItem("Expiration", _cert.GetExpirationDateString()));
+            tags.AddOrReplace(new TagItem("Subject", _cert.Subject.Replace("CN=", "")));
             var sans = 
                 from X509Extension ext in _cert.Extensions
                 where ext.Oid.Value == "2.5.29.17" // Subject Alternative Name
                 select ext.Format(false).Replace("DNS Name=", "");
-            tags.Add(new TagItem("SAN", string.Join(";", sans)));           
+            tags.AddOrReplace(new TagItem("SAN", string.Join(";", sans)));           
         }
 
         public override string ToString() => JsonConvert.SerializeObject(this, Formatting.Indented);
+
+        public static CertificateValueObject FromJson(string json) => JsonConvert.DeserializeObject<CertificateValueObject>(json);
     }
 }

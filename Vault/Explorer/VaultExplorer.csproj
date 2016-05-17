@@ -69,6 +69,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContentType.cs" />
+    <Compile Include="ExceptionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ExceptionDialog.Designer.cs">
+      <DependentUpon>ExceptionDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="ListViewItemComparer.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -100,6 +106,9 @@
     <Compile Include="Utils.cs" />
     <Compile Include="UxOperation.cs" />
     <Compile Include="VaultAlias..cs" />
+    <EmbeddedResource Include="ExceptionDialog.resx">
+      <DependentUpon>ExceptionDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -155,7 +164,9 @@
     <None Include="Resources\information.png" />
     <None Include="Resources\key_delete.png" />
     <None Include="Resources\magnifier.png" />
+    <None Include="Resources\disk.png" />
     <Content Include="Resources\empty.png" />
+    <None Include="Resources\error.png" />
     <Content Include="VaultExplorer.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

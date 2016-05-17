@@ -1,14 +1,49 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
     public class TagItem
     {
-        public string Name { get; set; }
+        private string _name;
+        private string _value;
 
-        public string Value { get; set; }
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                Guard.ArgumentNotNullOrEmptyString(value, nameof(value));
+                if (value.Length > Consts.MaxTagNameLength)
+                {
+                    throw new ArgumentOutOfRangeException("Name.Length", $"Tag name '{value}' is too long, name can be up to {Consts.MaxTagNameLength} chars");
+                }
+                _name = value;
+            }
+        }
 
-        public TagItem() : this("", "") { }
+        public string Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                Guard.ArgumentNotNull(value, nameof(value));
+                if (value.Length > Consts.MaxTagValueLength)
+                {
+                    throw new ArgumentOutOfRangeException("Value.Length", $"Tag value '{value}' is too long, value can be up to {Consts.MaxTagValueLength} chars");
+                }
+                _value = value;
+            }
+        }
+
+        public TagItem() : this("name", "") { }
 
         public TagItem(KeyValuePair<string, string> kvp) : this(kvp.Key, kvp.Value) { }
 
@@ -16,6 +51,23 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             Name = name;
             Value = value;
+        }
+
+        public override string ToString() => $"{Name}";
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as TagItem);
+        }
+
+        public bool Equals(TagItem ti)
+        {
+            return (ti != null) && (0 == string.Compare(ti.Name, Name, true));
+        }
+
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
         }
     }
 }

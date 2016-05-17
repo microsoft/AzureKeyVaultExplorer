@@ -39,19 +39,31 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxTextBoxValue.Text = "";
         }
 
+        /// <summary>
+        /// New empty secret
+        /// </summary>
         public SecretDialog() : this(new Secret() { Attributes = new SecretAttributes(), ContentType = ContentTypeEnumConverter.GetDescription(ContentType.Text) }, "New Secret")
         {
             _changed = true;
         }
 
+        /// <summary>
+        /// Edit secret
+        /// </summary>
+        /// <param name="s"></param>
         public SecretDialog(Secret s) : this(s, "Edit secret")
         {
             uxTextBoxName.Text = s.SecretIdentifier.Name;
             uxTextBoxValue.Text = SecretObject.Value;
+            uxTextBoxValue.IsReadOnly = SecretObject.ContentType.IsCertificate();
             _changed = false;
             InvalidateOkButton();
         }
 
+        /// <summary>
+        /// New secret from file
+        /// </summary>
+        /// <param name="fi"></param>
         public SecretDialog(FileInfo fi) : this()
         {
             uxTextBoxName.Text = Path.GetFileNameWithoutExtension(fi.Name);
@@ -77,6 +89,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             var cvo = new CertificateValueObject(fi, password);
             cvo.FillTags(SecretObject.Tags);
             uxTextBoxValue.Text = cvo.ToString();
+            uxTextBoxValue.IsReadOnly = true;
         }
 
         private void uxTextBoxName_TextChanged(object sender, EventArgs e)
@@ -102,12 +115,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
             if (e.PropertyName == nameof(SecretObject.ContentType)) // ContentType changed, refresh
             {
                 if ((SecretObject.ContentType == ContentType.Pkcs12Base64) && 
-                    Consts.ValidBase64Regex.Match(SecretObject.Value).Success) // Allow first conversion from none to the right content type
+                    Consts.ValidBase64Regex.Match(SecretObject.Value).Success) // Allow first conversion from none to Pkcs12Base64 content type
                 {
-                    var cvo = JsonConvert.DeserializeObject<CertificateValueObject>(Encoding.UTF8.GetString(Convert.FromBase64String(SecretObject.Value)));
+                    var cvo = CertificateValueObject.FromJson(Encoding.UTF8.GetString(Convert.FromBase64String(SecretObject.Value)));
                     cvo.FillTags(SecretObject.Tags);
                     uxTextBoxValue.Text = cvo.ToString();
                 }
+                uxTextBoxValue.IsReadOnly = false;
                 uxTextBoxValue_TextChanged(sender, null);
                 uxTextBoxValue.SetHighlighting(SecretObject.ContentType.ToSyntaxHighlightingMode());
             }

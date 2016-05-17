@@ -16,7 +16,15 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            Application.ThreadException += Application_ThreadException;
             Application.Run(new MainForm());
+        }
+
+        private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
+        {
+            var ed = new ExceptionDialog(e.Exception);
+            ed.ShowDialog();
         }
     }
 }

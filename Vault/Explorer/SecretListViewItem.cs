@@ -13,19 +13,25 @@ namespace Microsoft.PS.Common.Vault.Explorer
     public class SecretListViewItem : ListViewItem, ICustomTypeDescriptor
     {
         public readonly SecretAttributes Attributes;
-        public readonly string ContentType;
+        public readonly string ContentTypeStr;
+        public readonly ContentType ContentType;
         public readonly string Id;
         public readonly Dictionary<string, string> Tags;
 
-        private SecretListViewItem(string name, SecretAttributes attributes, string contentType, 
+        private readonly int BaseImageIndex;
+
+        private SecretListViewItem(string name, SecretAttributes attributes, string contentTypeStr, 
             string id, Dictionary<string, string> tags) : base(name)
         {
-            ImageIndex = (attributes.Enabled ?? true) ? 1 : 2;
-            ForeColor = (attributes.Enabled ?? true) ? SystemColors.WindowText : SystemColors.GrayText;
             Attributes = attributes;
-            ContentType = contentType;
+            ContentTypeStr = contentTypeStr;
+            ContentType = ContentTypeEnumConverter.GetValue(contentTypeStr);
             Id = id;
             Tags = tags;
+
+            BaseImageIndex = ContentType.IsCertificate() ? 3 : 1;
+            ImageIndex = (Attributes.Enabled ?? true) ? BaseImageIndex : BaseImageIndex + 1;
+            ForeColor = (Attributes.Enabled ?? true) ? SystemColors.WindowText : SystemColors.GrayText;
 
             Name = name;
             SubItems.Add(Utils.NullableDateTimeToString(attributes.Updated));
@@ -52,7 +58,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             set
             {
                 ForeColor = value ? SystemColors.GrayText : SystemColors.WindowText;
-                ImageIndex = value ? 0 : (Attributes.Enabled ?? true) ? 1 : 2;
+                ImageIndex = value ? 0 : (Attributes.Enabled ?? true) ? BaseImageIndex : BaseImageIndex + 1;
             }
         }
 
@@ -105,7 +111,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 new ReadOnlyPropertyDescriptor("Enabled", Attributes.Enabled),
                 new ReadOnlyPropertyDescriptor("Valid from time (UTC)", Attributes.NotBefore),
                 new ReadOnlyPropertyDescriptor("Valid until time (UTC)", Attributes.Expires),
-                new ReadOnlyPropertyDescriptor("Content Type", ContentType)
+                new ReadOnlyPropertyDescriptor("Content Type", ContentTypeStr)
             };
             if (Tags != null)
             {
