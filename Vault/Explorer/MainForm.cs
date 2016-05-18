@@ -15,6 +15,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 {
     public partial class MainForm : Form
     {
+        private VaultAlias _currentVaultAlias;
         private Vault _vault;
         private SortOrder _sortOder = SortOrder.Ascending;
         private int _sortColumn = 0;
@@ -23,9 +24,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public MainForm()
         {
             InitializeComponent();
-
-            var vaultAliases = JsonConvert.DeserializeObject<VaultAlias[]>(Settings.Default.VaultAliases);
-            uxComboBoxVaultAlias.Items.AddRange(vaultAliases);
+            uxComboBoxVaultAlias.Items.AddRange(Utils.LoadFromJsonFile<VaultAliases>("VaultAliases.json").ToArray());
             uxComboBoxVaultAlias.SelectedIndex = 0;
         }
 
@@ -38,13 +37,16 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxStatusLabelSecertsCount.Text = $"{uxListViewSecrets.Items.Count} secret(s)";
         }
 
+        private void uxComboBoxVaultAlias_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _currentVaultAlias = (VaultAlias)uxComboBoxVaultAlias.SelectedItem;
+        }
+
         private async void uxButtonRefresh_Click(object sender, EventArgs e)
         {
-            var va = (VaultAlias)uxComboBoxVaultAlias.SelectedItem;
-
             using (NewUxOperationWithProgress(uxButtonRefresh))
             {
-                _vault = new Vault(VaultAccessTypeEnum.ReadWrite, va.VaultNames);
+                _vault = new Vault(VaultAccessTypeEnum.ReadWrite, _currentVaultAlias.VaultNames);
                 //uxListViewSecrets.BeginUpdate();
                 uxListViewSecrets.Items.Clear();
                 foreach (var s in await _vault.ListSecretsAsync())
@@ -162,14 +164,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
             // Add secret
             if ((sender == uxAddSecret) || (sender == uxMenuItemAddSecret))
             {
-                nsDlg = new SecretDialog();
+                nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds);
             }
             // Add certificate or configuration file
             if ((sender == uxAddCertificate) || (sender == uxMenuItemAddCertificate) || (sender == uxAddFile) || (sender == uxMenuItemAddFile))
             {
                 FileInfo fi = GetFileInfo(sender, e);
                 if (fi == null) return;
-                nsDlg = new SecretDialog(fi);
+                nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds, fi);
             }
             if ((nsDlg != null) &&
                 (nsDlg.ShowDialog() == DialogResult.OK) &&
@@ -196,7 +198,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     {
                         s = await _vault.GetSecretAsync(slvi.Name);
                     }
-                    SecretDialog nsDlg = new SecretDialog(s);
+                    SecretDialog nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds, s);
                     if (nsDlg.ShowDialog() == DialogResult.OK)
                     {
                         using (NewUxOperationWithProgress(uxButtonEdit))

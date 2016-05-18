@@ -22,52 +22,5 @@ namespace Microsoft.PS.Common.Vault.Explorer.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"
-[
-  {
-    ""Alias"": ""WD.Services US Int"",
-    ""VaultNames"": [""wdvaultus1westint"", ""wdvaultus1eastint""]
-  },
-  {
-    ""Alias"": ""WD.Services US PPE"",
-    ""VaultNames"": [""wdvaultus1westppe"", ""wdvaultus1eastppe""]
-  },
-  {
-    ""Alias"": ""WD.Services US Prod"",
-    ""VaultNames"": [""wdvaultus1westprod"", ""wdvaultus1eastprod""]
-  },
-  {
-    ""Alias"": ""WD.Services AU Prod"",
-    ""VaultNames"": [""wdvaultau1eastprod"", ""wdvaultau1southeastprod""]
-  },
-  {
-    ""Alias"": ""Defender Key Vault Ops"",
-    ""VaultNames"": [""defenderkeyvault""]
-  },
-  {
-    ""Alias"": ""Defender Key Vault Dev"",
-    ""VaultNames"": [""defenderkeyvaultdev""]
-  },
-  {
-    ""Alias"": ""Defender Key Vault Research"",
-    ""VaultNames"": [""defenderkeyvaultresearch""]
-  },
-  {
-    ""Alias"": ""Defender Key Vault Build"",
-    ""VaultNames"": [""defenderkeyvaultbuild""]
-  },
-]
-                ")]
-        public string VaultAliases {
-            get {
-                return ((string)(this["VaultAliases"]));
-            }
-            set {
-                this["VaultAliases"] = value;
-            }
-        }
     }
 }

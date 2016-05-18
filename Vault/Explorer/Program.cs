@@ -18,13 +18,24 @@ namespace Microsoft.PS.Common.Vault.Explorer
             Application.SetCompatibleTextRenderingDefault(false);
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             Application.ThreadException += Application_ThreadException;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Application.Run(new MainForm());
+        }
+
+        private static void ShowError(Exception e)
+        {
+            var ed = new ExceptionDialog(e);
+            ed.ShowDialog();
+        }
+
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            ShowError(e.ExceptionObject as Exception);
         }
 
         private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
-            var ed = new ExceptionDialog(e.Exception);
-            ed.ShowDialog();
+            ShowError(e.Exception);
         }
     }
 }
