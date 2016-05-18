@@ -102,6 +102,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadOnlyPropertyDescriptor.cs" />
+    <Compile Include="SecretKind.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="SecretListViewItem.cs" />
     <Compile Include="SecretObject.cs" />
     <Compile Include="TagItem.cs" />
@@ -139,6 +142,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="VaultAliases.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="SecretKinds.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

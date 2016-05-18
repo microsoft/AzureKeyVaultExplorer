@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using ICSharpCode.TextEditor;
 using System.Text;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
@@ -15,14 +16,15 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private bool _nameValid;
         private bool _valueValid;
         private bool _changed;
+        private SecretKind _currentSecretKind;
         private readonly TextEditorControl uxTextBoxValue;
-        public readonly SecretObject SecretObject;
+        public readonly SecretObject SecretObject;      
 
-        private SecretDialog(Secret s, string title)
+        private SecretDialog(string[] secretKinds, Secret s, string title)
         {
             InitializeComponent();
-            uxPropertyGridSecret.SelectedObject = SecretObject = new SecretObject(s, SecretObject_PropertyChanged);
             Text = title;
+            uxPropertyGridSecret.SelectedObject = SecretObject = new SecretObject(s, SecretObject_PropertyChanged);
             uxTextBoxValue = new TextEditorControl()
             {
                 Parent = uxSplitContainer.Panel1,
@@ -35,6 +37,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
             };
             uxTextBoxValue.TextChanged += uxTextBoxValue_TextChanged;
             uxTextBoxValue.SetHighlighting(SecretObject.ContentType.ToSyntaxHighlightingMode());
+
+            var sk = Utils.LoadFromJsonFile<SecretKinds>("SecretKinds.json");
+            foreach (var name in secretKinds)
+            {
+                uxMenuSecretKind.Items.Add(sk[name]);
+            }
+            uxMenuSecretKind.Items[0].PerformClick();
             uxTextBoxName.Text = "";
             uxTextBoxValue.Text = "";
         }
@@ -42,7 +51,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <summary>
         /// New empty secret
         /// </summary>
-        public SecretDialog() : this(new Secret() { Attributes = new SecretAttributes(), ContentType = ContentTypeEnumConverter.GetDescription(ContentType.Text) }, "New Secret")
+        public SecretDialog(string[] secretKinds) : this(secretKinds, new Secret() { Attributes = new SecretAttributes(), ContentType = ContentTypeEnumConverter.GetDescription(ContentType.Text) }, "New Secret")
         {
             _changed = true;
         }
@@ -50,8 +59,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <summary>
         /// Edit secret
         /// </summary>
-        /// <param name="s"></param>
-        public SecretDialog(Secret s) : this(s, "Edit secret")
+        public SecretDialog(string[] secretKinds, Secret s) : this(secretKinds, s, "Edit secret")
         {
             uxTextBoxName.Text = s.SecretIdentifier.Name;
             uxTextBoxValue.Text = SecretObject.Value;
@@ -63,8 +71,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <summary>
         /// New secret from file
         /// </summary>
-        /// <param name="fi"></param>
-        public SecretDialog(FileInfo fi) : this()
+        public SecretDialog(string[] secretKinds, FileInfo fi) : this(secretKinds)
         {
             uxTextBoxName.Text = Path.GetFileNameWithoutExtension(fi.Name);
 
@@ -95,9 +102,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private void uxTextBoxName_TextChanged(object sender, EventArgs e)
         {
             _changed = true;
-            _nameValid = Consts.ValidSecretNameRegex.Match(uxTextBoxName.Text).Success;
-            uxErrorProvider.SetError(uxTextBoxName, _nameValid ? null : 
-                $"Secret name must match the following regex {Consts.ValidSecretNameRegex}");
+            _nameValid = _currentSecretKind.NameRegex.Match(uxTextBoxName.Text).Success;
+            uxErrorProvider.SetError(uxTextBoxName, _nameValid ? null : $"Secret name must match the following regex {_currentSecretKind.NameRegex}");
             SecretObject.Name = uxTextBoxName.Text;
             InvalidateOkButton();
         }
@@ -136,15 +142,33 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private void uxTimerValueTypingCompleted_Tick(object sender, EventArgs e)
         {
             uxTimerValueTypingCompleted.Stop();
+            _valueValid = _currentSecretKind.ValueRegex.Match(uxTextBoxValue.Text).Success;
+            uxErrorProvider.SetError(uxSplitContainer, _valueValid ? null : $"Secret value must match the following regex {_currentSecretKind.ValueRegex}");
 
             SecretObject.Value = uxTextBoxValue.Text;
             int rawValueLength = SecretObject.RawValue.Length;
 
             uxLabelBytesLeft.Text = $"{rawValueLength:N0} bytes / {Consts.MaxSecretValueLength - rawValueLength:N0} bytes left";
-            _valueValid = (rawValueLength >= 1) && (rawValueLength <= Consts.MaxSecretValueLength);
-            uxErrorProvider.SetError(uxSplitContainer, _valueValid ? null :
-                $"Secret value length must be in the following range [1..{Consts.MaxSecretValueLength}]");
+            if (_valueValid) // Make sure that we are in the 25KB limit
+            {
+                _valueValid = (rawValueLength >= 1) && (rawValueLength <= Consts.MaxSecretValueLength);
+                uxErrorProvider.SetError(uxSplitContainer, _valueValid ? null : $"Secret value length must be in the following range [1..{Consts.MaxSecretValueLength}]");
+            }
             InvalidateOkButton();
+        }
+
+        private void uxLinkLabelSecretKind_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            uxMenuSecretKind.Show(uxLinkLabelSecretKind, 0, uxLinkLabelSecretKind.Height);
+        }
+
+        private void uxMenuSecretKind_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            _currentSecretKind = (SecretKind)e.ClickedItem;
+            uxLinkLabelSecretKind.Text = _currentSecretKind.Text + " secret name \u25BC:"; // Add black down triangle char
+            uxToolTip.SetToolTip(uxLinkLabelSecretKind, _currentSecretKind.Description);
+            uxTextBoxName_TextChanged(sender, null);
+            uxTextBoxValue_TextChanged(sender, null);
         }
     }
 }
