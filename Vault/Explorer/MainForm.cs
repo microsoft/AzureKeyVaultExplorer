@@ -29,7 +29,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxComboBoxVaultAlias.SelectedIndex = 0;
         }
 
-        private UxOperation NewUxOperation(ToolStripItem controlToToggle) => new UxOperation(controlToToggle, uxStatusLabel);
+        private UxOperation NewUxOperationWithProgress(ToolStripItem controlToToggle) => new UxOperation(controlToToggle, uxStatusLabel, uxStatusProgressBar);
+
+        private UxOperation NewUxOperation(ToolStripItem controlToToggle) => new UxOperation(controlToToggle, uxStatusLabel, null);
 
         private void RefreshSecertsCount()
         {
@@ -40,7 +42,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             var va = (VaultAlias)uxComboBoxVaultAlias.SelectedItem;
 
-            using (NewUxOperation(uxButtonRefresh))
+            using (NewUxOperationWithProgress(uxButtonRefresh))
             {
                 _vault = new Vault(VaultAccessTypeEnum.ReadWrite, va.VaultNames);
                 //uxListViewSecrets.BeginUpdate();
@@ -175,7 +177,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 (uxListViewSecrets.Items.ContainsKey(nsDlg.SecretObject.Name) && 
                 (MessageBox.Show($"Are you sure you want to replace secret '{nsDlg.SecretObject.Name}' with new value?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes))))
             {
-                using (NewUxOperation(uxButtonAdd))
+                using (NewUxOperationWithProgress(uxButtonAdd))
                 {
                     await AddOrUpdateSecret(null, nsDlg.SecretObject);
                 }
@@ -189,11 +191,15 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 var slvi = uxListViewSecrets.SelectedItems[0] as SecretListViewItem;
                 if (slvi.Attributes.Enabled ?? true)
                 {
-                    using (NewUxOperation(uxButtonEdit))
+                    Secret s;
+                    using (NewUxOperationWithProgress(uxButtonEdit))
                     {
-                        var s = await _vault.GetSecretAsync(slvi.Name);
-                        SecretDialog nsDlg = new SecretDialog(s);
-                        if (nsDlg.ShowDialog() == DialogResult.OK)
+                        s = await _vault.GetSecretAsync(slvi.Name);
+                    }
+                    SecretDialog nsDlg = new SecretDialog(s);
+                    if (nsDlg.ShowDialog() == DialogResult.OK)
+                    {
+                        using (NewUxOperationWithProgress(uxButtonEdit))
                         {
                             await AddOrUpdateSecret(s, nsDlg.SecretObject);
                         }
@@ -210,7 +216,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 string action = (slvi.Attributes.Enabled ?? true) ? "disable" : "enable";
                 if (MessageBox.Show($"Are you sure you want to {action} secret '{slvi.Name}'?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    using (NewUxOperation(uxButtonToggle))
+                    using (NewUxOperationWithProgress(uxButtonToggle))
                     {
                         Secret s = await _vault.UpdateSecretAsync(slvi.Name, Utils.AddChangedBy(slvi.Tags), null, new SecretAttributes() { Enabled = !slvi.Attributes.Enabled }); // Toggle only Enabled attribute
                         slvi = new SecretListViewItem(s);
@@ -229,7 +235,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 string secretName = uxListViewSecrets.SelectedItems[0].Text;
                 if (MessageBox.Show($"Are you sure you want to delete secret '{secretName}'?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    using (NewUxOperation(uxButtonDelete))
+                    using (NewUxOperationWithProgress(uxButtonDelete))
                     {
                         await _vault.DeleteSecretAsync(secretName);
                         uxListViewSecrets.Items.RemoveByKey(secretName);
@@ -271,7 +277,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             if (uxListViewSecrets.SelectedItems.Count == 1)
             {
                 string secretName = uxListViewSecrets.SelectedItems[0].Text;
-                using (NewUxOperation(uxButtonCopy))
+                using (NewUxOperationWithProgress(uxButtonCopy))
                 {
                     var so = new SecretObject(await _vault.GetSecretAsync(secretName), null);
                     Clipboard.SetText(so.GetClipboardValue());
@@ -284,14 +290,15 @@ namespace Microsoft.PS.Common.Vault.Explorer
             if (uxListViewSecrets.SelectedItems.Count == 1)
             {
                 string secretName = uxListViewSecrets.SelectedItems[0].Text;
-                using (NewUxOperation(uxButtonSave))
+                SecretObject so;
+                using (NewUxOperationWithProgress(uxButtonSave))
                 {
-                    var so = new SecretObject(await _vault.GetSecretAsync(secretName), null);
-                    uxSaveFileDialog.FileName = so.GetFileName();
-                    if (uxSaveFileDialog.ShowDialog() == DialogResult.OK)
-                    {
-                        File.WriteAllBytes(uxSaveFileDialog.FileName, so.GetSaveToFileValue());
-                    }
+                    so = new SecretObject(await _vault.GetSecretAsync(secretName), null);
+                }
+                uxSaveFileDialog.FileName = so.GetFileName();
+                if (uxSaveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    File.WriteAllBytes(uxSaveFileDialog.FileName, so.GetSaveToFileValue());
                 }
             }
         }
@@ -356,13 +363,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private void uxListViewSecrets_MouseUp(object sender, MouseEventArgs e)
         {
             _dragRect = Rectangle.Empty; // Reset
-        }
-
-        private void MainForm_Shown(object sender, EventArgs e)
-        {
-            uxToolTip.ToolTipTitle = Text;
-            uxToolTip.Show("", uxListViewSecrets, 0);
-            uxToolTip.Show("Tip: You can just drag & drop secret as file to and from Windows Explorer", uxListViewSecrets, uxListViewSecrets.Width - 250, 0, 5000);
         }
 
         #endregion

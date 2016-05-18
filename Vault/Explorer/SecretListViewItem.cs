@@ -36,6 +36,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
             Name = name;
             SubItems.Add(Utils.NullableDateTimeToString(attributes.Updated));
             SubItems.Add(Utils.GetChangedBy(tags));
+
+            ToolTipText = string.Format("Creation time:\t\t{0}\nLast updated time:\t{1}",
+                Utils.NullableDateTimeToString(Attributes.Created),
+                Utils.NullableDateTimeToString(Attributes.Updated));
         }
 
         public SecretListViewItem(SecretItem si) : this(si.Identifier.Name, si.Attributes, si.ContentType, si.Id, si.Tags) { }
