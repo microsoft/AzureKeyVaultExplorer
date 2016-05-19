@@ -64,6 +64,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxTextBoxName.Text = s.SecretIdentifier.Name;
             uxTextBoxValue.Text = SecretObject.Value;
             uxTextBoxValue.IsReadOnly = SecretObject.ContentType.IsCertificate();
+            SecretKind autoDetectSecretKind = null;
+            foreach (var item in uxMenuSecretKind.Items) // Auto detect 'last' secret kind based on the name
+            {
+                SecretKind sk = (SecretKind)item;
+                autoDetectSecretKind = sk.NameRegex.IsMatch(uxTextBoxName.Text) ? sk : autoDetectSecretKind;
+            }
+            autoDetectSecretKind?.PerformClick();
             _changed = false;
             InvalidateOkButton();
         }
@@ -102,7 +109,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private void uxTextBoxName_TextChanged(object sender, EventArgs e)
         {
             _changed = true;
-            _nameValid = _currentSecretKind.NameRegex.Match(uxTextBoxName.Text).Success;
+            _nameValid = _currentSecretKind.NameRegex.IsMatch(uxTextBoxName.Text);
             uxErrorProvider.SetError(uxTextBoxName, _nameValid ? null : $"Secret name must match the following regex {_currentSecretKind.NameRegex}");
             SecretObject.Name = uxTextBoxName.Text;
             InvalidateOkButton();
@@ -121,7 +128,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             if (e.PropertyName == nameof(SecretObject.ContentType)) // ContentType changed, refresh
             {
                 if ((SecretObject.ContentType == ContentType.Pkcs12Base64) && 
-                    Consts.ValidBase64Regex.Match(SecretObject.Value).Success) // Allow first conversion from none to Pkcs12Base64 content type
+                    Consts.ValidBase64Regex.IsMatch(SecretObject.Value)) // Allow first conversion from none to Pkcs12Base64 content type
                 {
                     var cvo = CertificateValueObject.FromJson(Encoding.UTF8.GetString(Convert.FromBase64String(SecretObject.Value)));
                     cvo.FillTags(SecretObject.Tags);
@@ -142,7 +149,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private void uxTimerValueTypingCompleted_Tick(object sender, EventArgs e)
         {
             uxTimerValueTypingCompleted.Stop();
-            _valueValid = _currentSecretKind.ValueRegex.Match(uxTextBoxValue.Text).Success;
+            _valueValid = _currentSecretKind.ValueRegex.IsMatch(uxTextBoxValue.Text);
             uxErrorProvider.SetError(uxSplitContainer, _valueValid ? null : $"Secret value must match the following regex {_currentSecretKind.ValueRegex}");
 
             SecretObject.Value = uxTextBoxValue.Text;
@@ -164,8 +171,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void uxMenuSecretKind_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
+            foreach (var item in uxMenuSecretKind.Items) ((SecretKind)item).Checked = false;
             _currentSecretKind = (SecretKind)e.ClickedItem;
-            uxLinkLabelSecretKind.Text = _currentSecretKind.Text + " secret name \u25BC:"; // Add black down triangle char
+            _currentSecretKind.Checked = true;
+            uxLinkLabelSecretKind.Text = _currentSecretKind.Text + " secret name \u25BC"; // Add black down triangle char
             uxToolTip.SetToolTip(uxLinkLabelSecretKind, _currentSecretKind.Description);
             uxTextBoxName_TextChanged(sender, null);
             uxTextBoxValue_TextChanged(sender, null);

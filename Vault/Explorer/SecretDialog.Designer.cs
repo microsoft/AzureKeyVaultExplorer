@@ -87,7 +87,7 @@
             this.uxLinkLabelSecretKind.Size = new System.Drawing.Size(928, 15);
             this.uxLinkLabelSecretKind.TabIndex = 0;
             this.uxLinkLabelSecretKind.TabStop = true;
-            this.uxLinkLabelSecretKind.Text = "Custom secret name:";
+            this.uxLinkLabelSecretKind.Text = "Custom secret name";
             this.uxLinkLabelSecretKind.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.uxLinkLabelSecretKind_LinkClicked);
             // 
             // uxTextBoxName

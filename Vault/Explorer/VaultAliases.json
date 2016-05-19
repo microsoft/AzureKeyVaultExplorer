@@ -1,7 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------
-// Vault Explorer Configuration
-// Author: Eli Zeitlin
+// Vault Explorer Configuration file
 //
+// Defines an array of single or dual vaults for each alias and relevant secret kinds
+//
+// Author: Eli Zeitlin
 // --------------------------------------------------------------------------------------
 
 [
@@ -12,17 +14,17 @@
   },
   {
     "Alias": "WD.Services US PPE",
-    "VaultNames": ["wdvaultus1westppe", "wdvaultus1eastppe"],
+    "VaultNames": [ "wdvaultus1westppe", "wdvaultus1eastppe" ],
     "SecretKinds": [ "Custom", "WD.ServiceFabricService.Configuration.Secret" ]
   },
   {
     "Alias": "WD.Services US Prod",
-    "VaultNames": ["wdvaultus1westprod", "wdvaultus1eastprod"],
+    "VaultNames": [ "wdvaultus1westprod", "wdvaultus1eastprod" ],
     "SecretKinds": [ "Custom", "WD.ServiceFabricService.Configuration.Secret" ]
   },
   {
     "Alias": "WD.Services AU Prod",
-    "VaultNames": ["wdvaultau1eastprod", "wdvaultau1southeastprod"],
+    "VaultNames": [ "wdvaultau1eastprod", "wdvaultau1southeastprod" ],
     "SecretKinds": [ "Custom", "WD.ServiceFabricService.Configuration.Secret" ]
   },
   {
@@ -32,27 +34,27 @@
   },
   {
     "Alias": "Defender Key Vault Dev",
-    "VaultNames": ["defenderkeyvaultdev"],
+    "VaultNames": [ "defenderkeyvaultdev" ],
     "SecretKinds": [ "Custom" ]
   },
   {
     "Alias": "Defender Key Vault Research",
-    "VaultNames": ["defenderkeyvaultresearch"],
+    "VaultNames": [ "defenderkeyvaultresearch" ],
     "SecretKinds": [ "Custom" ]
   },
   {
     "Alias": "Defender Key Vault Build",
-    "VaultNames": ["defenderkeyvaultbuild"],
+    "VaultNames": [ "defenderkeyvaultbuild" ],
     "SecretKinds": [ "Custom" ]
   },
   {
     "Alias": "WCD Production Vault",
-    "VaultNames": ["wcd-production-vault", "wcd-production-vault-dr"],
+    "VaultNames": [ "wcd-production-vault", "wcd-production-vault-dr" ],
     "SecretKinds": [ "Custom" ]
   },
   {
     "Alias": "WCD Staging Vault",
-    "VaultNames": ["wcd-staging-vault", "wcd-staging-vault-dr"],
+    "VaultNames": [ "wcd-staging-vault", "wcd-staging-vault-dr" ],
     "SecretKinds": [ "Custom" ]
   }
 ]
