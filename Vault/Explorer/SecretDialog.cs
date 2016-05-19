@@ -112,7 +112,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 SecretKind sk = (SecretKind)item;
                 autoDetectSecretKind = sk.NameRegex.IsMatch(uxTextBoxName.Text) ? sk : autoDetectSecretKind;
             }
-            autoDetectSecretKind?.PerformClick();
+            // Apply secret kind, only when both Content Type and SecretKind are certificate or both not
+            if ((SecretObject.ContentType.IsCertificate() && autoDetectSecretKind.IsCertificate) ||
+                (!SecretObject.ContentType.IsCertificate() && !autoDetectSecretKind.IsCertificate))
+            {
+                autoDetectSecretKind?.PerformClick();
+            }
         }
 
         private void AutoDetectCertificate()

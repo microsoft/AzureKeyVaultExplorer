@@ -1,10 +1,12 @@
 ﻿using Microsoft.Azure.KeyVault;
+using Microsoft.PS.Common.Types;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -30,6 +32,16 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return dt.Value.ToLocalTime().ToString();
         }
 
+        public static string CalculateMd5(string value)
+        {
+            byte[] buff = Encoding.UTF8.GetBytes(value);
+            using (MD5 md5 = MD5.Create())
+            {
+                byte[] hash = md5.ComputeHash(buff);
+                return BitConverter.ToString(hash).Replace("-", string.Empty).ToLower();
+            }
+        }
+
         public static Dictionary<string, string> AddChangedBy(Dictionary<string, string> tags)
         {
             if (tags == null)
@@ -47,6 +59,15 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 return "";
             }
             return tags[Consts.ChangedByKey];
+        }
+
+        public static string GetMd5(Dictionary<string, string> tags)
+        {
+            if ((tags == null) || (!tags.ContainsKey(Consts.Md5Key)))
+            {
+                return "";
+            }
+            return tags[Consts.Md5Key];
         }
 
         public static T LoadFromJsonFile<T>(string filename)
