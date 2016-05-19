@@ -170,12 +170,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public string GetClipboardValue()
         {
-            return ContentType.IsCertificate() ? CertificateValueObject.FromJson(Value).Password : Value;
+            return ContentType.IsCertificate() ? CertificateValueObject.FromValue(Value).Password : Value;
         }
 
         public byte[] GetSaveToFileValue()
         {
-            return ContentType.IsCertificate() ? Convert.FromBase64String(CertificateValueObject.FromJson(Value).Data) : Encoding.UTF8.GetBytes(Value);
+            return ContentType.IsCertificate() ? Convert.FromBase64String(CertificateValueObject.FromValue(Value).Data) : Encoding.UTF8.GetBytes(Value);
         }
 
         public DataObjectEx.SelectedItem GetSaveToFileDataObject()

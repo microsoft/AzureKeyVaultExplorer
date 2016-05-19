@@ -172,6 +172,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 FileInfo fi = GetFileInfo(sender, e);
                 if (fi == null) return;
                 nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds, fi);
+                if (nsDlg.DialogResult == DialogResult.Cancel) return; // User clicked cancel during password prompt
             }
             if ((nsDlg != null) &&
                 (nsDlg.ShowDialog() == DialogResult.OK) &&
@@ -329,7 +330,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void uxListViewSecrets_DragEnter(object sender, DragEventArgs e)
         {
-            e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+            e.Effect = (_vault != null) && e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
         }
 
         private void uxListViewSecrets_DragDrop(object sender, DragEventArgs e)
