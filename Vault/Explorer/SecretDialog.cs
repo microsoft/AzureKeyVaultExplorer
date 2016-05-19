@@ -16,6 +16,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private bool _nameValid;
         private bool _valueValid;
         private bool _changed;
+        private CertificateValueObject _certificateObj;
         private SecretKind _currentSecretKind;
         private readonly TextEditorControl uxTextBoxValue;
         public readonly SecretObject SecretObject;      
@@ -57,25 +58,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         /// <summary>
-        /// Edit secret
-        /// </summary>
-        public SecretDialog(string[] secretKinds, Secret s) : this(secretKinds, s, "Edit secret")
-        {
-            uxTextBoxName.Text = s.SecretIdentifier.Name;
-            uxTextBoxValue.Text = SecretObject.Value;
-            uxTextBoxValue.IsReadOnly = SecretObject.ContentType.IsCertificate();
-            SecretKind autoDetectSecretKind = null;
-            foreach (var item in uxMenuSecretKind.Items) // Auto detect 'last' secret kind based on the name
-            {
-                SecretKind sk = (SecretKind)item;
-                autoDetectSecretKind = sk.NameRegex.IsMatch(uxTextBoxName.Text) ? sk : autoDetectSecretKind;
-            }
-            autoDetectSecretKind?.PerformClick();
-            _changed = false;
-            InvalidateOkButton();
-        }
-
-        /// <summary>
         /// New secret from file
         /// </summary>
         public SecretDialog(string[] secretKinds, FileInfo fi) : this(secretKinds)
@@ -92,7 +74,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 case ContentType.Pkcs12:
                 case ContentType.Pkcs12Base64:
                     var pwdDlg = new PasswordDialog();
-                    if (pwdDlg.ShowDialog() != DialogResult.OK) return;
+                    if (pwdDlg.ShowDialog() != DialogResult.OK)
+                    {
+                        DialogResult = DialogResult.Cancel;
+                        return;
+                    }
                     password = pwdDlg.Password;
                     break;
                 default:
@@ -100,17 +86,61 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     return;
             }
             // Certificate flow
-            var cvo = new CertificateValueObject(fi, password);
-            cvo.FillTags(SecretObject.Tags);
-            uxTextBoxValue.Text = cvo.ToString();
-            uxTextBoxValue.IsReadOnly = true;
+            RefreshCertificate(new CertificateValueObject(fi, password));
+            AutoDetectSecretKind();
+        }
+
+        /// <summary>
+        /// Edit secret
+        /// </summary>
+        public SecretDialog(string[] secretKinds, Secret s) : this(secretKinds, s, "Edit secret")
+        {
+            uxTextBoxName.Text = s.SecretIdentifier.Name;
+            uxTextBoxValue.Text = SecretObject.Value;
+            uxTextBoxValue.IsReadOnly = SecretObject.ContentType.IsCertificate();
+            AutoDetectSecretKind();
+            AutoDetectCertificate();
+            _changed = false;
+            InvalidateOkButton();
+        }
+
+        private void AutoDetectSecretKind()
+        {
+            SecretKind autoDetectSecretKind = null;
+            foreach (var item in uxMenuSecretKind.Items) // Auto detect 'last' secret kind based on the name
+            {
+                SecretKind sk = (SecretKind)item;
+                autoDetectSecretKind = sk.NameRegex.IsMatch(uxTextBoxName.Text) ? sk : autoDetectSecretKind;
+            }
+            autoDetectSecretKind?.PerformClick();
+        }
+
+        private void AutoDetectCertificate()
+        {
+            try
+            {
+                _certificateObj = CertificateValueObject.FromValue(uxTextBoxValue.Text);
+            }
+            catch { }
+        }
+
+        private void RefreshCertificate(CertificateValueObject cvo)
+        {
+            _certificateObj = cvo;
+            if (_certificateObj != null)
+            {
+                _certificateObj.FillTags(SecretObject.Tags);
+                uxTextBoxValue.Text = _certificateObj.ToValue(_currentSecretKind.CertificateFormat);
+                uxTextBoxValue.IsReadOnly = true;
+                uxTextBoxValue.Refresh();
+            }
         }
 
         private void uxTextBoxName_TextChanged(object sender, EventArgs e)
         {
             _changed = true;
             _nameValid = _currentSecretKind.NameRegex.IsMatch(uxTextBoxName.Text);
-            uxErrorProvider.SetError(uxTextBoxName, _nameValid ? null : $"Secret name must match the following regex {_currentSecretKind.NameRegex}");
+            uxErrorProvider.SetError(uxTextBoxName, _nameValid ? null : $"Secret name must match the following regex:\n{_currentSecretKind.NameRegex}");
             SecretObject.Name = uxTextBoxName.Text;
             InvalidateOkButton();
         }
@@ -130,9 +160,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 if ((SecretObject.ContentType == ContentType.Pkcs12Base64) && 
                     Consts.ValidBase64Regex.IsMatch(SecretObject.Value)) // Allow first conversion from none to Pkcs12Base64 content type
                 {
-                    var cvo = CertificateValueObject.FromJson(Encoding.UTF8.GetString(Convert.FromBase64String(SecretObject.Value)));
-                    cvo.FillTags(SecretObject.Tags);
-                    uxTextBoxValue.Text = cvo.ToString();
+                    AutoDetectCertificate();
+                    RefreshCertificate(_certificateObj);
                 }
                 uxTextBoxValue.IsReadOnly = false;
                 uxTextBoxValue_TextChanged(sender, null);
@@ -150,7 +179,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             uxTimerValueTypingCompleted.Stop();
             _valueValid = _currentSecretKind.ValueRegex.IsMatch(uxTextBoxValue.Text);
-            uxErrorProvider.SetError(uxSplitContainer, _valueValid ? null : $"Secret value must match the following regex {_currentSecretKind.ValueRegex}");
+            uxErrorProvider.SetError(uxSplitContainer, _valueValid ? null : $"Secret value must match the following regex:\n{_currentSecretKind.ValueRegex}");
 
             SecretObject.Value = uxTextBoxValue.Text;
             int rawValueLength = SecretObject.RawValue.Length;
@@ -176,6 +205,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             _currentSecretKind.Checked = true;
             uxLinkLabelSecretKind.Text = _currentSecretKind.Text + " secret name \u25BC"; // Add black down triangle char
             uxToolTip.SetToolTip(uxLinkLabelSecretKind, _currentSecretKind.Description);
+            RefreshCertificate(_certificateObj);
             uxTextBoxName_TextChanged(sender, null);
             uxTextBoxValue_TextChanged(sender, null);
         }

@@ -24,13 +24,17 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [JsonProperty]
         public readonly Regex ValueRegex;
 
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public readonly string CertificateFormat;
+
         [JsonConstructor]
-        public SecretKind(string alias, string description, string nameRegex, string valueRegex) : base(alias)
+        public SecretKind(string alias, string description, string nameRegex, string valueRegex, string certificateFormat) : base(alias)
         {
             Alias = alias;
             Description = description;
             NameRegex = new Regex(nameRegex, RegexOptions.Singleline | RegexOptions.Compiled);
             ValueRegex = new Regex(valueRegex, RegexOptions.Singleline | RegexOptions.Compiled);
+            CertificateFormat = certificateFormat;
         }
     }
 

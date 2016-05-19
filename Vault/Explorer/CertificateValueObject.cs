@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Microsoft.PS.Common.Vault.Explorer
@@ -51,6 +52,41 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public override string ToString() => JsonConvert.SerializeObject(this, Formatting.Indented);
 
-        public static CertificateValueObject FromJson(string json) => JsonConvert.DeserializeObject<CertificateValueObject>(json);
+        public string ToValue(string secretKind)
+        {
+            switch (secretKind)
+            {
+                case "WCD.PfxCertificate":
+                    return $"{_cert.Thumbprint.ToLowerInvariant()};{Password};{Data}";
+                case "WCD.CerCertificate":
+                    return $"{_cert.Thumbprint.ToLowerInvariant()};{Data}";
+                case "WD.Certificate":
+                default:
+                    return ToString();
+            }
+        }
+
+        private static Regex s_wcdPfxCertificate = new Regex(@"^(?<Thumbprint>[0-9a-fA-F]{40}|[0-9a-fA-F]{64});(?<CertificatePassword>.{0,128});(?<CertificateBase64>(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?)$", RegexOptions.Singleline | RegexOptions.Compiled);
+
+        private static Regex s_wcdCerCertificate = new Regex(@"^(?<Thumbprint>[0-9a-fA-F]{40}|[0-9a-fA-F]{64});(?<CertificateBase64>(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?)$", RegexOptions.Singleline | RegexOptions.Compiled);
+
+        public static CertificateValueObject FromValue(string value)
+        {
+            Match m = s_wcdPfxCertificate.Match(value);
+            if (m.Success)
+            {
+                return new CertificateValueObject(m.Groups["CertificateBase64"].Value, m.Groups["CertificatePassword"].Value);
+            }
+            m = s_wcdCerCertificate.Match(value);
+            if (m.Success)
+            {
+                return new CertificateValueObject(m.Groups["CertificateBase64"].Value, null);
+            }
+            if (Consts.ValidBase64Regex.IsMatch(value)) // WD cert in JSON base64 format
+            {
+                return JsonConvert.DeserializeObject<CertificateValueObject>(Encoding.UTF8.GetString(Convert.FromBase64String(value)));
+            }
+            return JsonConvert.DeserializeObject<CertificateValueObject>(value);
+        }
     }
 }
