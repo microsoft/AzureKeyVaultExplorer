@@ -27,6 +27,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public readonly string CertificateFormat;
 
+        [JsonIgnore]
+        public bool IsCertificate => !string.IsNullOrEmpty(CertificateFormat);
+
         [JsonConstructor]
         public SecretKind(string alias, string description, string nameRegex, string valueRegex, string certificateFormat) : base(alias)
         {

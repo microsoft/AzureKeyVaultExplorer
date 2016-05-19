@@ -1,4 +1,5 @@
 ﻿using Microsoft.Azure.KeyVault;
+using Microsoft.PS.Common.Types;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void NotifyPropertyChanged(string info) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
+
+        [Browsable(false)]
+        public string Id { get; }
 
         [DisplayName("Name")]
         [Browsable(false)]
@@ -127,8 +131,15 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [Browsable(false)]
         public string RawValue => ContentType.ToRawValue(_value);
 
+        /// <summary>
+        /// Md5 of the raw value
+        /// </summary>
+        [Browsable(false)]
+        public string Md5 => Utils.CalculateMd5(RawValue);
+
         public SecretObject(Secret secret, PropertyChangedEventHandler propertyChanged)
         {
+            Id = secret.Id;
             Name = secret.SecretIdentifier?.Name;
             // get and set
             _tags = new ObservableTagItemsCollection();
@@ -156,6 +167,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 result.Add(tagItem.Name, tagItem.Value);
             }
+            result[Consts.Md5Key] = Md5;
             return Utils.AddChangedBy(result);
         }
 

@@ -112,9 +112,31 @@ namespace Microsoft.PS.Common.Vault.Explorer
             (sender as ToolStripDropDownItem)?.ShowDropDown();
         }
 
+        private bool VerifyDuplication(SecretObject soNew)
+        {
+            string newMd5 = soNew.Md5;
+            List<string> sameSecretsList = new List<string>();
+            foreach (var item in uxListViewSecrets.Items)
+            {
+                SecretListViewItem slvi = item as SecretListViewItem;
+                if ((slvi.Md5 == newMd5) && (slvi.Id != soNew.Id))
+                {
+                    sameSecretsList.Add(slvi.Name);
+                }
+            }
+            if (sameSecretsList.Count > 0)
+            {
+                string sameSecrets = string.Join(", ", sameSecretsList);
+                return MessageBox.Show($"There are {sameSecretsList.Count} other secret(s) in the vault which has the same Md5: {newMd5}.\nHere the name(s) of the other secrets:\n{sameSecrets}\nAre you sure you want to add or update secret {soNew.Name} and have a duplication of secrets?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
+            }
+            return true;
+        }
+
         private async Task AddOrUpdateSecret(Secret sOld, SecretObject soNew)
         {
             Secret s = null;
+            // Check for duplication by Md5
+            if (false == VerifyDuplication(soNew)) return;
             // New secret, secret rename or new value
             if ((sOld == null) || (sOld.SecretIdentifier.Name != soNew.Name) || (sOld.Value != soNew.RawValue))
             {
@@ -125,7 +147,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 s = await _vault.UpdateSecretAsync(soNew.Name, soNew.TagsToDictionary(), ContentTypeEnumConverter.GetDescription(soNew.ContentType), soNew.ToSecretAttributes());
             }
             string oldSecretName = sOld?.SecretIdentifier.Name;
-            if ((oldSecretName != null) && (oldSecretName != soNew.Name)) // Delete old key
+            if ((oldSecretName != null) && (oldSecretName != soNew.Name)) // Delete old secret
             {
                 await _vault.DeleteSecretAsync(oldSecretName);
                 uxListViewSecrets.Items.RemoveByKey(oldSecretName);
