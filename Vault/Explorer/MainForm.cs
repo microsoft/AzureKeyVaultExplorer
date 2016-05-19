@@ -17,15 +17,16 @@ namespace Microsoft.PS.Common.Vault.Explorer
     {
         private VaultAlias _currentVaultAlias;
         private Vault _vault;
-        private SortOrder _sortOder = SortOrder.Ascending;
-        private int _sortColumn = 0;
+        private ListViewItemSorter _listViewItemSorter;
         private Rectangle _dragRect;
+        private int _strikedoutSecrets;
 
         public MainForm()
         {
             InitializeComponent();
             uxComboBoxVaultAlias.Items.AddRange(Utils.LoadFromJsonFile<VaultAliases>("VaultAliases.json").ToArray());
             uxComboBoxVaultAlias.SelectedIndex = 0;
+            uxListViewSecrets.ListViewItemSorter = _listViewItemSorter = new ListViewItemSorter();
         }
 
         private UxOperation NewUxOperationWithProgress(ToolStripItem controlToToggle) => new UxOperation(controlToToggle, uxStatusLabel, uxStatusProgressBar);
@@ -34,7 +35,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void RefreshSecertsCount()
         {
-            uxStatusLabelSecertsCount.Text = $"{uxListViewSecrets.Items.Count} secret(s)";
+            uxStatusLabelSecertsCount.Text = (_strikedoutSecrets == 0) ? $"{uxListViewSecrets.Items.Count} secret(s)" : $"{uxListViewSecrets.Items.Count - _strikedoutSecrets} out of {uxListViewSecrets.Items.Count} secret(s)";
         }
 
         private void uxComboBoxVaultAlias_SelectedIndexChanged(object sender, EventArgs e)
@@ -252,6 +253,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             uxTimerSearchTextTypingCompleted.Stop();
 
+            _strikedoutSecrets = 0;
             SecretListViewItem selectItem = null;
             uxListViewSecrets.BeginUpdate();
             foreach (var item in uxListViewSecrets.Items)
@@ -259,13 +261,16 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 SecretListViewItem slvi = item as SecretListViewItem;
                 bool contains = slvi.Contains(uxTextBoxSearch.Text);
                 slvi.Strikeout = !contains;
+                _strikedoutSecrets += !contains ? 1 : 0;
                 if ((selectItem == null) && contains)
                 {
                     selectItem = slvi;
                 }
             }
+            uxListViewSecrets.Sort();
             selectItem?.RefreshAndSelect();
             uxListViewSecrets.EndUpdate();
+            RefreshSecertsCount();
         }
 
 
@@ -318,12 +323,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void uxListViewSecrets_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            if (_sortColumn == e.Column)
+            if (_listViewItemSorter.Column == e.Column)
             {
-                _sortOder = (_sortOder == SortOrder.Ascending) ? SortOrder.Descending : SortOrder.Ascending;
+                _listViewItemSorter.SwapSortOder();
             }
-            _sortColumn = e.Column;
-            uxListViewSecrets.ListViewItemSorter = new ListViewItemComparer(e.Column, _sortOder);
+            uxListViewSecrets.Sort();
         }
 
         #region Drag & Drop
