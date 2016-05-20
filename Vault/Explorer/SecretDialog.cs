@@ -13,11 +13,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
 {
     public partial class SecretDialog : Form
     {
-        private bool _nameValid;
-        private bool _valueValid;
         private bool _changed;
         private CertificateValueObject _certificateObj;
-        private SecretKind _currentSecretKind;
         private readonly TextEditorControl uxTextBoxValue;
         public readonly SecretObject SecretObject;      
 
@@ -45,8 +42,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 uxMenuSecretKind.Items.Add(sk[name]);
             }
             uxMenuSecretKind.Items[0].PerformClick();
-            uxTextBoxName.Text = "";
-            uxTextBoxValue.Text = "";
+            uxTextBoxName.Text = s.SecretIdentifier?.Name;
+            uxTextBoxValue.Text = s.Value;
         }
 
         /// <summary>
@@ -95,8 +92,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// </summary>
         public SecretDialog(string[] secretKinds, Secret s) : this(secretKinds, s, "Edit secret")
         {
-            uxTextBoxName.Text = s.SecretIdentifier.Name;
-            uxTextBoxValue.Text = SecretObject.Value;
             uxTextBoxValue.IsReadOnly = SecretObject.ContentType.IsCertificate();
             AutoDetectSecretKind();
             AutoDetectCertificate();
@@ -135,7 +130,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             if (_certificateObj != null)
             {
                 _certificateObj.FillTags(SecretObject.Tags);
-                uxTextBoxValue.Text = _certificateObj.ToValue(_currentSecretKind.CertificateFormat);
+                uxTextBoxValue.Text = _certificateObj.ToValue(SecretObject.SecretKind.CertificateFormat);
                 uxTextBoxValue.IsReadOnly = true;
                 uxTextBoxValue.Refresh();
             }
@@ -144,15 +139,15 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private void uxTextBoxName_TextChanged(object sender, EventArgs e)
         {
             _changed = true;
-            _nameValid = _currentSecretKind.NameRegex.IsMatch(uxTextBoxName.Text);
-            uxErrorProvider.SetError(uxTextBoxName, _nameValid ? null : $"Secret name must match the following regex:\n{_currentSecretKind.NameRegex}");
             SecretObject.Name = uxTextBoxName.Text;
+            uxErrorProvider.SetError(uxTextBoxName, SecretObject.IsNameValid ? null : $"Secret name must match the following regex:\n{SecretObject.SecretKind.NameRegex}");
             InvalidateOkButton();
         }
 
         private void uxTextBoxValue_TextChanged(object sender, EventArgs e)
         {
             _changed = true;
+            SecretObject.Value = uxTextBoxValue.Text;
             uxTimerValueTypingCompleted.Stop(); // Wait for user to finish the typing in a text box
             uxTimerValueTypingCompleted.Start();
         }
@@ -177,23 +172,22 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void InvalidateOkButton()
         {
-            uxButtonOK.Enabled = _changed && _nameValid && _valueValid;
+            uxButtonOK.Enabled = _changed && SecretObject.IsNameValid && SecretObject.IsValueValid;
         }
 
         private void uxTimerValueTypingCompleted_Tick(object sender, EventArgs e)
         {
             uxTimerValueTypingCompleted.Stop();
-            _valueValid = _currentSecretKind.ValueRegex.IsMatch(uxTextBoxValue.Text);
-            uxErrorProvider.SetError(uxSplitContainer, _valueValid ? null : $"Secret value must match the following regex:\n{_currentSecretKind.ValueRegex}");
 
-            SecretObject.Value = uxTextBoxValue.Text;
+            bool valueValid = SecretObject.IsValueValid;
+            uxErrorProvider.SetError(uxSplitContainer, valueValid ? null : $"Secret value must match the following regex:\n{SecretObject.SecretKind.ValueRegex}");
+
             int rawValueLength = SecretObject.RawValue.Length;
-
             uxLabelBytesLeft.Text = $"{rawValueLength:N0} bytes / {Consts.MaxSecretValueLength - rawValueLength:N0} bytes left";
-            if (_valueValid) // Make sure that we are in the 25KB limit
+            if (valueValid) // Make sure that we are in the 25KB limit
             {
-                _valueValid = (rawValueLength >= 1) && (rawValueLength <= Consts.MaxSecretValueLength);
-                uxErrorProvider.SetError(uxSplitContainer, _valueValid ? null : $"Secret value length must be in the following range [1..{Consts.MaxSecretValueLength}]");
+                valueValid = (rawValueLength >= 1) && (rawValueLength <= Consts.MaxSecretValueLength);
+                uxErrorProvider.SetError(uxSplitContainer, valueValid ? null : $"Secret value length must be in the following range [1..{Consts.MaxSecretValueLength}]");
             }
             InvalidateOkButton();
         }
@@ -206,10 +200,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private void uxMenuSecretKind_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             foreach (var item in uxMenuSecretKind.Items) ((SecretKind)item).Checked = false;
-            _currentSecretKind = (SecretKind)e.ClickedItem;
-            _currentSecretKind.Checked = true;
-            uxLinkLabelSecretKind.Text = _currentSecretKind.Text + " secret name \u25BC"; // Add black down triangle char
-            uxToolTip.SetToolTip(uxLinkLabelSecretKind, _currentSecretKind.Description);
+            var sk = (SecretKind)e.ClickedItem;
+            SecretObject.SecretKind = sk;
+            sk.Checked = true;
+            uxLinkLabelSecretKind.Text = sk.Text + " secret name \u25BC"; // Add black down triangle char
+            uxToolTip.SetToolTip(uxLinkLabelSecretKind, sk.Description);
             RefreshCertificate(_certificateObj);
             uxTextBoxName_TextChanged(sender, null);
             uxTextBoxValue_TextChanged(sender, null);
