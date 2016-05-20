@@ -16,15 +16,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 {
     public static class Utils
     {
-        public static readonly StringDictionary GeoRegions = new StringDictionary()
-        {
-            { "us", "west,east" },
-            { "eu", "north,west" },
-            { "as", "east,southeast" },
-            { "jp", "east,west" },
-            { "au", "east,southeast" },
-            { "in", "south,west" },
-        };
+        public const string DataFormatSecret = "VaultExplorerSecret";
 
         public static string NullableDateTimeToString(DateTime? dt)
         {

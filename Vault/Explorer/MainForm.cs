@@ -205,6 +205,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds, fi);
                 if (nsDlg.DialogResult == DialogResult.Cancel) return; // User clicked cancel during password prompt
             }
+            // Copy secret (drag & drop)
+            if ((sender == null) && (e is AddSecretEventArgs))
+            {
+                nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds, (e as AddSecretEventArgs).Secret, false);
+                if (nsDlg.DialogResult == DialogResult.Cancel) return; // User clicked cancel during password prompt
+            }
             if ((nsDlg != null) &&
                 (nsDlg.ShowDialog() == DialogResult.OK) &&
                 (!uxListViewSecrets.Items.ContainsKey(nsDlg.SecretObject.Name) ||
@@ -230,7 +236,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     {
                         s = await _vault.GetSecretAsync(slvi.Name);
                     }
-                    SecretDialog nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds, s);
+                    SecretDialog nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds, s, true);
                     if (nsDlg.ShowDialog() == DialogResult.OK)
                     {
                         using (NewUxOperationWithProgress(uxButtonEdit))
@@ -377,15 +383,24 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void uxListViewSecrets_DragEnter(object sender, DragEventArgs e)
         {
-            e.Effect = (_vault != null) && e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+            e.Effect = (_vault != null) && (e.Data.GetDataPresent(DataFormats.FileDrop) || e.Data.GetDataPresent(Utils.DataFormatSecret)) ? DragDropEffects.Copy : DragDropEffects.None;
         }
 
         private void uxListViewSecrets_DragDrop(object sender, DragEventArgs e)
         {
-            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            foreach (string file in files)
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                uxButtonAddItem_Click(uxAddFile, new AddFileEventArgs(file));
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                foreach (string file in files)
+                {
+                    uxButtonAddItem_Click(uxAddFile, new AddFileEventArgs(file));
+                }
+            }
+            if (e.Data.GetDataPresent(Utils.DataFormatSecret))
+            {
+                string secret = (string)e.Data.GetData(Utils.DataFormatSecret);
+                var sf = JsonConvert.DeserializeObject<SecretFile>(secret);
+                uxButtonAddItem_Click(null, new AddSecretEventArgs(sf.Deserialize()));
             }
         }
 
@@ -403,8 +418,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 string secretName = uxListViewSecrets.SelectedItems[0].Text;
                 using (NewUxOperation(uxButtonSave))
                 {
-                    var so = new SecretObject(await _vault.GetSecretAsync(secretName), null);
+                    var s = await _vault.GetSecretAsync(secretName);
+                    var so = new SecretObject(s, null);
                     var dataObject = new DataObjectEx(new DataObjectEx.SelectedItem[1] { so.GetSaveToFileDataObject() });
+                    dataObject.SetData(Utils.DataFormatSecret, new SecretFile(s).Serialize());
                     uxListViewSecrets.DoDragDrop(dataObject, DragDropEffects.Copy);
                 }
             }
