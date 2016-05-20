@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Drawing.Design;
+using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -21,8 +23,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void NotifyPropertyChanged(string info) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
 
+        /// <summary>
+        /// Original secret
+        /// </summary>
+        private readonly Secret _secret;
+
         [Browsable(false)]
-        public string Id { get; }
+        public string Id => _secret.Id;
 
         [DisplayName("Name")]
         [Browsable(false)]
@@ -156,7 +163,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public SecretObject(Secret secret, PropertyChangedEventHandler propertyChanged)
         {
-            Id = secret.Id;
+            _secret = secret;
             Name = secret.SecretIdentifier?.Name;
             // get and set
             _tags = new ObservableTagItemsCollection();
@@ -216,14 +223,28 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return ContentType.IsCertificate() ? CertificateValueObject.FromValue(Value).Password : Value;
         }
 
-        public byte[] GetSaveToFileValue()
+        public byte[] GetValueAsByteArray()
         {
             return ContentType.IsCertificate() ? Convert.FromBase64String(CertificateValueObject.FromValue(Value).Data) : Encoding.UTF8.GetBytes(Value);
         }
 
+        public void SaveToFile(string filename)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(filename));
+            switch (ContentTypeUtils.FromExtension(Path.GetExtension(filename)))
+            {
+                case ContentType.Secret: // Serialize the entire secret as encrypted JSON for current user
+                    File.WriteAllText(filename, new SecretFile(_secret).Serialize());
+                    break;
+                default:
+                    File.WriteAllBytes(filename, GetValueAsByteArray());
+                    break;
+            }
+        }
+
         public DataObjectEx.SelectedItem GetSaveToFileDataObject()
         {
-            byte[] contents = GetSaveToFileValue();
+            byte[] contents = GetValueAsByteArray();
             return new DataObjectEx.SelectedItem()
             {
                 FileName = GetFileName(),

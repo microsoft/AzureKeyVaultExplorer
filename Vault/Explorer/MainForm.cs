@@ -20,13 +20,17 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private ListViewItemSorter _listViewItemSorter;
         private Rectangle _dragRect;
         private int _strikedoutSecrets;
+        private string _clipboardValue;
 
         public MainForm()
         {
             InitializeComponent();
             uxComboBoxVaultAlias.Items.AddRange(Utils.LoadFromJsonFile<VaultAliases>("VaultAliases.json").ToArray());
-            uxComboBoxVaultAlias.SelectedIndex = 0;
+            uxComboBoxVaultAlias.SelectedIndex = -1;
             uxListViewSecrets.ListViewItemSorter = _listViewItemSorter = new ListViewItemSorter();
+
+            uxButtonCopy.ToolTipText = uxMenuItemCopy.ToolTipText = $"Copy secret value to clipboard for {Settings.Default.CopyToClipboardTimeToLive.TotalSeconds} seconds";
+            uxTimerClearClipboard.Interval = (int)Settings.Default.CopyToClipboardTimeToLive.TotalMilliseconds;
         }
 
         private UxOperation NewUxOperationWithProgress(ToolStripItem controlToToggle) => new UxOperation(controlToToggle, uxStatusLabel, uxStatusProgressBar);
@@ -41,6 +45,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private void uxComboBoxVaultAlias_SelectedIndexChanged(object sender, EventArgs e)
         {
             _currentVaultAlias = (VaultAlias)uxComboBoxVaultAlias.SelectedItem;
+            uxComboBoxVaultAlias.ToolTipText = "Vault names: "+ string.Join(", ", _currentVaultAlias.VaultNames);
+            uxButtonRefresh.Enabled = uxMenuItemRefresh.Enabled = true;
+            uxButtonRefresh.PerformClick();
         }
 
         private async void uxButtonRefresh_Click(object sender, EventArgs e)
@@ -50,6 +57,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 _vault = new Vault(VaultAccessTypeEnum.ReadWrite, _currentVaultAlias.VaultNames);
                 //uxListViewSecrets.BeginUpdate();
                 uxListViewSecrets.Items.Clear();
+                RefreshSecertsCount();
                 foreach (var s in await _vault.ListSecretsAsync())
                 {
                     uxListViewSecrets.Items.Add(new SecretListViewItem(s));
@@ -169,7 +177,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
             else
             {
-                uxOpenFileDialog.FilterIndex = (sender == uxAddCertificate) || (sender == uxMenuItemAddCertificate) ? 1 : 3;
+                uxOpenFileDialog.FilterIndex = (sender == uxAddCertificate) || (sender == uxMenuItemAddCertificate) ? ContentType.Pkcs12.ToFilterIndex() : ContentType.None.ToFilterIndex();
                 if (uxOpenFileDialog.ShowDialog() != DialogResult.OK) return null;
                 fi = new FileInfo(uxOpenFileDialog.FileName);
             }
@@ -310,8 +318,19 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 using (NewUxOperationWithProgress(uxButtonCopy))
                 {
                     var so = new SecretObject(await _vault.GetSecretAsync(secretName), null);
-                    Clipboard.SetText(so.GetClipboardValue());
+                    _clipboardValue = so.GetClipboardValue();
+                    Clipboard.SetText(_clipboardValue);
+                    uxTimerClearClipboard.Start();
                 }
+            }
+        }
+
+        private void uxTimerClearClipboard_Tick(object sender, EventArgs e)
+        {
+            uxTimerClearClipboard.Stop();
+            if (_clipboardValue == Clipboard.GetText()) // We don't want to override other clipboard value
+            {
+                Clipboard.Clear();
             }
         }
 
@@ -326,9 +345,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     so = new SecretObject(await _vault.GetSecretAsync(secretName), null);
                 }
                 uxSaveFileDialog.FileName = so.GetFileName();
+                uxSaveFileDialog.DefaultExt = so.ContentType.ToExtension();
+                uxSaveFileDialog.FilterIndex = so.ContentType.ToFilterIndex();
                 if (uxSaveFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    File.WriteAllBytes(uxSaveFileDialog.FileName, so.GetSaveToFileValue());
+                    so.SaveToFile(uxSaveFileDialog.FileName);
                 }
             }
         }
