@@ -39,7 +39,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [Description("application/x-base64")]
         Base64,
         [Description("application/x-json-gzb64")]
-        JsonGZipBase64
+        JsonGZipBase64,
+        [Description("application/x-secret")]
+        Secret
     }
 
     public class ContentTypeEnumConverter : CustomEnumTypeConverter<ContentType> { }
@@ -130,6 +132,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 case ContentType.Json:
                 case ContentType.Certificate:
                 case ContentType.Pkcs12:
+                case ContentType.Secret:
                     return rawValue;
                 case ContentType.Pkcs12Base64:
                 case ContentType.Base64:
@@ -167,6 +170,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 case ContentType.Json:
                 case ContentType.Certificate:
                 case ContentType.Pkcs12:
+                case ContentType.Secret:
                     return value;
                 case ContentType.Pkcs12Base64:
                 case ContentType.Base64:
@@ -191,7 +195,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public static ContentType FromExtension(string extension)
         {
-            switch (extension)
+            switch (extension?.ToLowerInvariant())
             {
                 case ".txt":
                     return ContentType.Text;
@@ -218,6 +222,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     return ContentType.Base64;
                 case ".gzb64":
                     return ContentType.JsonGZipBase64;
+                case ".secret":
+                    return ContentType.Secret;
                 default:
                     return ContentType.None;
             }
@@ -246,6 +252,41 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 case ContentType.Pkcs12:
                 case ContentType.Pkcs12Base64:
                     return ".pfx";
+                case ContentType.Secret:
+                    return ".secret";
+                default:
+                    throw new ArgumentException($"Invalid ContentType {contentType}");
+            }
+        }
+
+        /// <summary>
+        /// Use to set right FilterIndex as part of SaveFileDialog flow
+        /// Text files|*.txt|Csv (Comma delimited)|*.csv|Tsv (Tab delimited)|*.tsv|Configuration files|*.json;*.xml;*.config|X509 Certificate|*.cer;*.crt|Personal Information Exchange|*.pfx;*.p12|Secret files|*.secret|All files|*.*
+        /// </summary>
+        public static int ToFilterIndex(this ContentType contentType)
+        {
+            switch (contentType)
+            {
+                case ContentType.None:
+                case ContentType.Base64:
+                    return 8;
+                case ContentType.Text:
+                    return 1;
+                case ContentType.Csv:
+                    return 2;
+                case ContentType.Tsv:
+                    return 3;
+                case ContentType.Xml:
+                case ContentType.Json:
+                case ContentType.JsonGZipBase64:
+                    return 4;
+                case ContentType.Certificate:
+                    return 5;
+                case ContentType.Pkcs12:
+                case ContentType.Pkcs12Base64:
+                    return 6;
+                case ContentType.Secret:
+                    return 7;
                 default:
                     throw new ArgumentException($"Invalid ContentType {contentType}");
             }
@@ -267,6 +308,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 case ContentType.Pkcs12:
                 case ContentType.Pkcs12Base64:
                 case ContentType.JsonGZipBase64:
+                case ContentType.Secret:
                     return "JavaScript";
                 case ContentType.Base64:
                     return "HTML";

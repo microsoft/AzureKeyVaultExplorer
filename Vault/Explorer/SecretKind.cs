@@ -33,7 +33,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public SecretKind() : base("Custom")
         {
             Alias = "Custom";
-            Description = "The name must be a string 1-127 characters in length containing only 0-9, a-z, A-Z, and -.";
+            ToolTipText = Description = "The name must be a string 1-127 characters in length containing only 0-9, a-z, A-Z, and -.";
             NameRegex = Consts.ValidSecretNameRegex;
             ValueRegex = new Regex("^.{0,1048576}$", RegexOptions.Singleline | RegexOptions.Compiled);
             CertificateFormat = null;
@@ -43,7 +43,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public SecretKind(string alias, string description, string nameRegex, string valueRegex, string certificateFormat) : base(alias)
         {
             Alias = alias;
-            Description = description;
+            ToolTipText = Description = description;
             NameRegex = new Regex(nameRegex, RegexOptions.Singleline | RegexOptions.Compiled);
             ValueRegex = new Regex(valueRegex, RegexOptions.Singleline | RegexOptions.Compiled);
             CertificateFormat = certificateFormat;

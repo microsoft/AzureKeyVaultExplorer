@@ -61,8 +61,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             uxTextBoxName.Text = Path.GetFileNameWithoutExtension(fi.Name);
 
-            string extension = fi.Extension?.ToLowerInvariant();
-            SecretObject.ContentType = ContentTypeUtils.FromExtension(extension);
+            SecretObject.ContentType = ContentTypeUtils.FromExtension(fi.Extension);
             string password = null;
             switch (SecretObject.ContentType)
             {
@@ -78,6 +77,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     }
                     password = pwdDlg.Password;
                     break;
+                case ContentType.Secret:
+                    SecretFile sf = Utils.LoadFromJsonFile<SecretFile>(fi.FullName);
+                    Secret s = sf.Deserialize();
+                    uxPropertyGridSecret.SelectedObject = SecretObject = new SecretObject(s, SecretObject_PropertyChanged);
+                    uxTextBoxName.Text = s.SecretIdentifier?.Name;
+                    uxTextBoxValue.Text = s.Value;
+                    return;
                 default:
                     uxTextBoxValue.Text = File.ReadAllText(fi.FullName);
                     return;
