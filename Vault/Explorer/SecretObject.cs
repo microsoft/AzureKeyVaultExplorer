@@ -7,9 +7,13 @@ using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Drawing.Design;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
+    /// <summary>
+    /// Secret Object to add / edit secret via PropertyGrid
+    /// </summary>
     [DefaultProperty("Name")]
     public class SecretObject : INotifyPropertyChanged
     {
@@ -137,6 +141,19 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [Browsable(false)]
         public string Md5 => Utils.CalculateMd5(RawValue);
 
+        /// <summary>
+        /// Current SecretKind for this secret object
+        /// Note: NotifyPropertyChanged is NOT called upon set
+        /// </summary>
+        [Browsable(false)]
+        public SecretKind SecretKind { get; set; }
+
+        [Browsable(false)]
+        public bool IsNameValid => SecretKind.NameRegex.IsMatch(Name);
+
+        [Browsable(false)]
+        public bool IsValueValid => SecretKind.ValueRegex.IsMatch(Value);
+
         public SecretObject(Secret secret, PropertyChangedEventHandler propertyChanged)
         {
             Id = secret.Id;
@@ -156,6 +173,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             _notBefore = secret.Attributes.NotBefore;
             _contentType = ContentTypeEnumConverter.GetValue(secret.ContentType);
             _value = _contentType.FromRawValue(secret.Value);
+            SecretKind = new SecretKind(); // Default - Custom secret kind
 
             PropertyChanged += propertyChanged;
         }
@@ -163,10 +181,23 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public Dictionary<string, string> TagsToDictionary()
         {
             var result = new Dictionary<string, string>();
+            // Add all user tags
             foreach (var tagItem in _tags)
             {
-                result.Add(tagItem.Name, tagItem.Value);
+                result[tagItem.Name] = tagItem.Value;
             }
+            // Add tags based on all named groups in the value regex
+            Match m = SecretKind.ValueRegex.Match(Value);
+            if (m.Success)
+            {
+                for (int i = 0; i < m.Groups.Count; i++)
+                {
+                    string groupName = SecretKind.ValueRegex.GroupNameFromNumber(i);
+                    if (groupName == i.ToString()) continue; // Skip unnamed groups
+                    result[groupName] = m.Groups[i].Value;
+                }
+            }
+            // Add Md5 and ChangedBy tags
             result[Consts.Md5Key] = Md5;
             return Utils.AddChangedBy(result);
         }

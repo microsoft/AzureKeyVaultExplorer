@@ -30,6 +30,15 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [JsonIgnore]
         public bool IsCertificate => !string.IsNullOrEmpty(CertificateFormat);
 
+        public SecretKind() : base("Custom")
+        {
+            Alias = "Custom";
+            Description = "The name must be a string 1-127 characters in length containing only 0-9, a-z, A-Z, and -.";
+            NameRegex = Consts.ValidSecretNameRegex;
+            ValueRegex = new Regex("^.{0,1048576}$", RegexOptions.Singleline | RegexOptions.Compiled);
+            CertificateFormat = null;
+        }
+
         [JsonConstructor]
         public SecretKind(string alias, string description, string nameRegex, string valueRegex, string certificateFormat) : base(alias)
         {
