@@ -228,30 +228,18 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return ContentType.IsCertificate() ? Convert.FromBase64String(CertificateValueObject.FromValue(Value).Data) : Encoding.UTF8.GetBytes(Value);
         }
 
-        public void SaveToFile(string filename)
+        public void SaveToFile(string fullName)
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(filename));
-            switch (ContentTypeUtils.FromExtension(Path.GetExtension(filename)))
+            Directory.CreateDirectory(Path.GetDirectoryName(fullName));
+            switch (ContentTypeUtils.FromExtension(Path.GetExtension(fullName)))
             {
                 case ContentType.Secret: // Serialize the entire secret as encrypted JSON for current user
-                    File.WriteAllText(filename, new SecretFile(_secret).Serialize());
+                    File.WriteAllText(fullName, new SecretFile(_secret).Serialize());
                     break;
                 default:
-                    File.WriteAllBytes(filename, GetValueAsByteArray());
+                    File.WriteAllBytes(fullName, GetValueAsByteArray());
                     break;
             }
-        }
-
-        public DataObjectEx.SelectedItem GetSaveToFileDataObject()
-        {
-            byte[] contents = GetValueAsByteArray();
-            return new DataObjectEx.SelectedItem()
-            {
-                FileName = GetFileName(),
-                FileContents = contents,
-                FileSize = contents.Length,
-                WriteTime = DateTime.Now,
-            };
         }
     }
 }

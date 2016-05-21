@@ -96,12 +96,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <summary>
         /// Edit or Copy secret
         /// </summary>
-        public SecretDialog(string[] secretKinds, Secret s, bool edit) : this(secretKinds, s, edit ? "Edit secret" : "Copy secret")
+        public SecretDialog(string[] secretKinds, Secret s) : this(secretKinds, s, "Edit secret")
         {
             uxTextBoxValue.IsReadOnly = SecretObject.ContentType.IsCertificate();
             AutoDetectSecretKind();
             AutoDetectCertificate();
-            _changed = edit ? false : true;
+            _changed = false;
             InvalidateOkButton();
         }
 

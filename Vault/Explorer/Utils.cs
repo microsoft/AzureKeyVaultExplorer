@@ -16,8 +16,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
 {
     public static class Utils
     {
-        public const string DataFormatSecret = "VaultExplorerSecret";
-
         public static string NullableDateTimeToString(DateTime? dt)
         {
             if (dt == null) return "Unknown";

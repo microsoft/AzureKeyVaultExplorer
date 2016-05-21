@@ -70,9 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddFileEventArgs.cs" />
-    <Compile Include="AddSecretEventArgs.cs" />
     <Compile Include="ContentType.cs" />
-    <Compile Include="DataObjectEx.cs" />
     <Compile Include="ExceptionDialog.cs">
       <SubType>Form</SubType>
     </Compile>
