@@ -179,6 +179,8 @@
     <None Include="Resources\disk.png" />
     <Content Include="Resources\empty.png" />
     <None Include="Resources\error.png" />
+    <None Include="Resources\move_secret.cur" />
+    <None Include="Resources\move_value.cur" />
     <Content Include="VaultExplorer.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
