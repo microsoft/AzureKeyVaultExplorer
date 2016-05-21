@@ -31,7 +31,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 ShowMatchingBracket = true,
                 ConvertTabsToSpaces = true,
                 VRulerRow = 120,
-                TabIndex = 4
+                TabIndex = 4,
+                AllowDrop = false
             };
             uxTextBoxValue.TextChanged += uxTextBoxValue_TextChanged;
             uxTextBoxValue.SetHighlighting(SecretObject.ContentType.ToSyntaxHighlightingMode());

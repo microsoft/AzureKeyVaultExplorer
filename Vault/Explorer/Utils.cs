@@ -65,5 +65,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
             var jsonFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
             return JsonConvert.DeserializeObject<T>(File.ReadAllText(jsonFile));
         }
+
+        public static Cursor LoadCursorFromResource(byte[] buffer)
+        {
+            using (var ms = new MemoryStream(buffer))
+            {
+                return new Cursor(ms);
+            }
+        }
     }
 }

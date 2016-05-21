@@ -199,5 +199,25 @@ namespace Microsoft.PS.Common.Vault.Explorer.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] move_secret {
+            get {
+                object obj = ResourceManager.GetObject("move_secret", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] move_value {
+            get {
+                object obj = ResourceManager.GetObject("move_value", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }
