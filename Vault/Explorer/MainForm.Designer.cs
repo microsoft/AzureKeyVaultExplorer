@@ -108,7 +108,7 @@
             // 
             splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             splitContainer1.Location = new System.Drawing.Point(0, 0);
-            splitContainer1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            splitContainer1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             splitContainer1.Name = "splitContainer1";
             splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -119,9 +119,9 @@
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(this.uxPropertyGridSecret);
-            splitContainer1.Size = new System.Drawing.Size(1372, 562);
-            splitContainer1.SplitterDistance = 286;
-            splitContainer1.SplitterWidth = 6;
+            splitContainer1.Size = new System.Drawing.Size(1029, 451);
+            splitContainer1.SplitterDistance = 229;
+            splitContainer1.SplitterWidth = 5;
             splitContainer1.TabIndex = 8;
             // 
             // uxListViewSecrets
@@ -137,25 +137,23 @@
             this.uxListViewSecrets.FullRowSelect = true;
             this.uxListViewSecrets.HideSelection = false;
             this.uxListViewSecrets.Location = new System.Drawing.Point(0, 0);
-            this.uxListViewSecrets.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.uxListViewSecrets.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.uxListViewSecrets.MultiSelect = false;
             this.uxListViewSecrets.Name = "uxListViewSecrets";
             this.uxListViewSecrets.ShowItemToolTips = true;
-            this.uxListViewSecrets.Size = new System.Drawing.Size(1372, 286);
+            this.uxListViewSecrets.Size = new System.Drawing.Size(1029, 229);
             this.uxListViewSecrets.SmallImageList = this.uxSmallImageList;
             this.uxListViewSecrets.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.uxListViewSecrets.TabIndex = 0;
             this.uxListViewSecrets.UseCompatibleStateImageBehavior = false;
             this.uxListViewSecrets.View = System.Windows.Forms.View.Details;
             this.uxListViewSecrets.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.uxListViewSecrets_ColumnClick);
+            this.uxListViewSecrets.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.uxListViewSecrets_ItemDrag);
             this.uxListViewSecrets.SelectedIndexChanged += new System.EventHandler(this.uxListViewSecrets_SelectedIndexChanged);
             this.uxListViewSecrets.DragDrop += new System.Windows.Forms.DragEventHandler(this.uxListViewSecrets_DragDrop);
             this.uxListViewSecrets.DragEnter += new System.Windows.Forms.DragEventHandler(this.uxListViewSecrets_DragEnter);
             this.uxListViewSecrets.DoubleClick += new System.EventHandler(this.uxButtonEdit_Click);
             this.uxListViewSecrets.KeyUp += new System.Windows.Forms.KeyEventHandler(this.uxListViewSecrets_KeyUp);
-            this.uxListViewSecrets.MouseDown += new System.Windows.Forms.MouseEventHandler(this.uxListViewSecrets_MouseDown);
-            this.uxListViewSecrets.MouseMove += new System.Windows.Forms.MouseEventHandler(this.uxListViewSecrets_MouseMove);
-            this.uxListViewSecrets.MouseUp += new System.Windows.Forms.MouseEventHandler(this.uxListViewSecrets_MouseUp);
             // 
             // columnHeader1
             // 
@@ -186,7 +184,7 @@
             toolStripSeparator4,
             this.uxMenuItemRefresh});
             this.uxContextMenuStrip.Name = "uxContextMenuStrip";
-            this.uxContextMenuStrip.Size = new System.Drawing.Size(144, 198);
+            this.uxContextMenuStrip.Size = new System.Drawing.Size(126, 198);
             // 
             // uxMenuItemAdd
             // 
@@ -197,7 +195,7 @@
             this.uxMenuItemAdd.Enabled = false;
             this.uxMenuItemAdd.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_add;
             this.uxMenuItemAdd.Name = "uxMenuItemAdd";
-            this.uxMenuItemAdd.Size = new System.Drawing.Size(143, 26);
+            this.uxMenuItemAdd.Size = new System.Drawing.Size(125, 26);
             this.uxMenuItemAdd.Text = "&Add";
             this.uxMenuItemAdd.ToolTipText = "Add secret";
             this.uxMenuItemAdd.Click += new System.EventHandler(this.uxButtonAdd_Click);
@@ -206,7 +204,7 @@
             // 
             this.uxMenuItemAddSecret.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.key;
             this.uxMenuItemAddSecret.Name = "uxMenuItemAddSecret";
-            this.uxMenuItemAddSecret.Size = new System.Drawing.Size(209, 26);
+            this.uxMenuItemAddSecret.Size = new System.Drawing.Size(137, 22);
             this.uxMenuItemAddSecret.Text = "&Secret...";
             this.uxMenuItemAddSecret.Click += new System.EventHandler(this.uxButtonAddItem_Click);
             // 
@@ -214,7 +212,7 @@
             // 
             this.uxMenuItemAddCertificate.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.certificate;
             this.uxMenuItemAddCertificate.Name = "uxMenuItemAddCertificate";
-            this.uxMenuItemAddCertificate.Size = new System.Drawing.Size(209, 26);
+            this.uxMenuItemAddCertificate.Size = new System.Drawing.Size(137, 22);
             this.uxMenuItemAddCertificate.Text = "Certificate...";
             this.uxMenuItemAddCertificate.Click += new System.EventHandler(this.uxButtonAddItem_Click);
             // 
@@ -222,7 +220,7 @@
             // 
             this.uxMenuItemAddFile.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.folder_key;
             this.uxMenuItemAddFile.Name = "uxMenuItemAddFile";
-            this.uxMenuItemAddFile.Size = new System.Drawing.Size(181, 26);
+            this.uxMenuItemAddFile.Size = new System.Drawing.Size(137, 22);
             this.uxMenuItemAddFile.Text = "&File...";
             this.uxMenuItemAddFile.Click += new System.EventHandler(this.uxButtonAddItem_Click);
             // 
@@ -231,7 +229,7 @@
             this.uxMenuItemEdit.Enabled = false;
             this.uxMenuItemEdit.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_edit;
             this.uxMenuItemEdit.Name = "uxMenuItemEdit";
-            this.uxMenuItemEdit.Size = new System.Drawing.Size(143, 26);
+            this.uxMenuItemEdit.Size = new System.Drawing.Size(125, 26);
             this.uxMenuItemEdit.Text = "&Edit...";
             this.uxMenuItemEdit.ToolTipText = "Edit secret";
             this.uxMenuItemEdit.Click += new System.EventHandler(this.uxButtonEdit_Click);
@@ -241,7 +239,7 @@
             this.uxMenuItemToggle.Enabled = false;
             this.uxMenuItemToggle.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_break;
             this.uxMenuItemToggle.Name = "uxMenuItemToggle";
-            this.uxMenuItemToggle.Size = new System.Drawing.Size(143, 26);
+            this.uxMenuItemToggle.Size = new System.Drawing.Size(125, 26);
             this.uxMenuItemToggle.Text = "Disabl&e...";
             this.uxMenuItemToggle.ToolTipText = "Disable secret";
             this.uxMenuItemToggle.Click += new System.EventHandler(this.uxButtonToggle_Click);
@@ -251,7 +249,7 @@
             this.uxMenuItemDelete.Enabled = false;
             this.uxMenuItemDelete.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_delete;
             this.uxMenuItemDelete.Name = "uxMenuItemDelete";
-            this.uxMenuItemDelete.Size = new System.Drawing.Size(143, 26);
+            this.uxMenuItemDelete.Size = new System.Drawing.Size(125, 26);
             this.uxMenuItemDelete.Text = "&Delete...";
             this.uxMenuItemDelete.ToolTipText = "Delete secret";
             this.uxMenuItemDelete.Click += new System.EventHandler(this.uxButtonDelete_Click);
@@ -259,14 +257,14 @@
             // toolStripSeparator5
             // 
             toolStripSeparator5.Name = "toolStripSeparator5";
-            toolStripSeparator5.Size = new System.Drawing.Size(140, 6);
+            toolStripSeparator5.Size = new System.Drawing.Size(122, 6);
             // 
             // uxMenuItemCopy
             // 
             this.uxMenuItemCopy.Enabled = false;
             this.uxMenuItemCopy.Image = ((System.Drawing.Image)(resources.GetObject("uxMenuItemCopy.Image")));
             this.uxMenuItemCopy.Name = "uxMenuItemCopy";
-            this.uxMenuItemCopy.Size = new System.Drawing.Size(143, 26);
+            this.uxMenuItemCopy.Size = new System.Drawing.Size(125, 26);
             this.uxMenuItemCopy.Text = "&Copy";
             this.uxMenuItemCopy.ToolTipText = "Copy secret value to clipboard for 30 seconds";
             this.uxMenuItemCopy.Click += new System.EventHandler(this.uxButtonCopy_Click);
@@ -276,7 +274,7 @@
             this.uxMenuItemSave.Enabled = false;
             this.uxMenuItemSave.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.disk;
             this.uxMenuItemSave.Name = "uxMenuItemSave";
-            this.uxMenuItemSave.Size = new System.Drawing.Size(143, 26);
+            this.uxMenuItemSave.Size = new System.Drawing.Size(125, 26);
             this.uxMenuItemSave.Text = "&Save...";
             this.uxMenuItemSave.ToolTipText = "Save secret to file";
             this.uxMenuItemSave.Click += new System.EventHandler(this.uxButtonSave_Click);
@@ -284,14 +282,14 @@
             // toolStripSeparator4
             // 
             toolStripSeparator4.Name = "toolStripSeparator4";
-            toolStripSeparator4.Size = new System.Drawing.Size(140, 6);
+            toolStripSeparator4.Size = new System.Drawing.Size(122, 6);
             // 
             // uxMenuItemRefresh
             // 
             this.uxMenuItemRefresh.Enabled = false;
             this.uxMenuItemRefresh.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_go;
             this.uxMenuItemRefresh.Name = "uxMenuItemRefresh";
-            this.uxMenuItemRefresh.Size = new System.Drawing.Size(143, 26);
+            this.uxMenuItemRefresh.Size = new System.Drawing.Size(125, 26);
             this.uxMenuItemRefresh.Text = "&Refresh";
             this.uxMenuItemRefresh.ToolTipText = "Refresh all secrets";
             this.uxMenuItemRefresh.Click += new System.EventHandler(this.uxButtonRefresh_Click);
@@ -312,38 +310,38 @@
             this.uxPropertyGridSecret.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uxPropertyGridSecret.HelpVisible = false;
             this.uxPropertyGridSecret.Location = new System.Drawing.Point(0, 0);
-            this.uxPropertyGridSecret.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.uxPropertyGridSecret.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.uxPropertyGridSecret.Name = "uxPropertyGridSecret";
             this.uxPropertyGridSecret.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.uxPropertyGridSecret.Size = new System.Drawing.Size(1372, 270);
+            this.uxPropertyGridSecret.Size = new System.Drawing.Size(1029, 217);
             this.uxPropertyGridSecret.TabIndex = 0;
             this.uxPropertyGridSecret.ToolbarVisible = false;
             // 
             // toolStripLabel1
             // 
             toolStripLabel1.Name = "toolStripLabel1";
-            toolStripLabel1.Size = new System.Drawing.Size(42, 25);
+            toolStripLabel1.Size = new System.Drawing.Size(34, 24);
             toolStripLabel1.Text = "Vault";
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new System.Drawing.Size(6, 28);
+            toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
             // 
             // toolStripSeparator2
             // 
             toolStripSeparator2.Name = "toolStripSeparator2";
-            toolStripSeparator2.Size = new System.Drawing.Size(6, 28);
+            toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
             // 
             // toolStripSeparator3
             // 
             toolStripSeparator3.Name = "toolStripSeparator3";
-            toolStripSeparator3.Size = new System.Drawing.Size(6, 28);
+            toolStripSeparator3.Size = new System.Drawing.Size(6, 27);
             // 
             // usStatusLabelSpring
             // 
             usStatusLabelSpring.Name = "usStatusLabelSpring";
-            usStatusLabelSpring.Size = new System.Drawing.Size(1231, 20);
+            usStatusLabelSpring.Size = new System.Drawing.Size(915, 17);
             usStatusLabelSpring.Spring = true;
             // 
             // uxToolStrip
@@ -369,7 +367,7 @@
             this.uxButtonExit});
             this.uxToolStrip.Location = new System.Drawing.Point(3, 0);
             this.uxToolStrip.Name = "uxToolStrip";
-            this.uxToolStrip.Size = new System.Drawing.Size(1096, 28);
+            this.uxToolStrip.Size = new System.Drawing.Size(996, 27);
             this.uxToolStrip.TabIndex = 0;
             // 
             // uxComboBoxVaultAlias
@@ -378,7 +376,7 @@
             this.uxComboBoxVaultAlias.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.uxComboBoxVaultAlias.IntegralHeight = false;
             this.uxComboBoxVaultAlias.Name = "uxComboBoxVaultAlias";
-            this.uxComboBoxVaultAlias.Size = new System.Drawing.Size(250, 28);
+            this.uxComboBoxVaultAlias.Size = new System.Drawing.Size(250, 27);
             this.uxComboBoxVaultAlias.SelectedIndexChanged += new System.EventHandler(this.uxComboBoxVaultAlias_SelectedIndexChanged);
             // 
             // uxButtonRefresh
@@ -387,7 +385,7 @@
             this.uxButtonRefresh.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_go;
             this.uxButtonRefresh.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonRefresh.Name = "uxButtonRefresh";
-            this.uxButtonRefresh.Size = new System.Drawing.Size(82, 25);
+            this.uxButtonRefresh.Size = new System.Drawing.Size(70, 24);
             this.uxButtonRefresh.Text = "&Refresh";
             this.uxButtonRefresh.ToolTipText = "Refresh all secrets";
             this.uxButtonRefresh.Click += new System.EventHandler(this.uxButtonRefresh_Click);
@@ -402,7 +400,7 @@
             this.uxButtonAdd.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_add;
             this.uxButtonAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonAdd.Name = "uxButtonAdd";
-            this.uxButtonAdd.Size = new System.Drawing.Size(76, 25);
+            this.uxButtonAdd.Size = new System.Drawing.Size(65, 24);
             this.uxButtonAdd.Text = "&Add";
             this.uxButtonAdd.ToolTipText = "Add secret";
             this.uxButtonAdd.Click += new System.EventHandler(this.uxButtonAdd_Click);
@@ -411,7 +409,7 @@
             // 
             this.uxAddSecret.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.key;
             this.uxAddSecret.Name = "uxAddSecret";
-            this.uxAddSecret.Size = new System.Drawing.Size(209, 26);
+            this.uxAddSecret.Size = new System.Drawing.Size(137, 22);
             this.uxAddSecret.Text = "&Secret...";
             this.uxAddSecret.Click += new System.EventHandler(this.uxButtonAddItem_Click);
             // 
@@ -419,7 +417,7 @@
             // 
             this.uxAddCertificate.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.certificate;
             this.uxAddCertificate.Name = "uxAddCertificate";
-            this.uxAddCertificate.Size = new System.Drawing.Size(209, 26);
+            this.uxAddCertificate.Size = new System.Drawing.Size(137, 22);
             this.uxAddCertificate.Text = "Ce&rtificate...";
             this.uxAddCertificate.Click += new System.EventHandler(this.uxButtonAddItem_Click);
             // 
@@ -427,7 +425,7 @@
             // 
             this.uxAddFile.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.folder_key;
             this.uxAddFile.Name = "uxAddFile";
-            this.uxAddFile.Size = new System.Drawing.Size(181, 26);
+            this.uxAddFile.Size = new System.Drawing.Size(137, 22);
             this.uxAddFile.Text = "&File...";
             this.uxAddFile.Click += new System.EventHandler(this.uxButtonAddItem_Click);
             // 
@@ -437,7 +435,7 @@
             this.uxButtonEdit.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_edit;
             this.uxButtonEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonEdit.Name = "uxButtonEdit";
-            this.uxButtonEdit.Size = new System.Drawing.Size(59, 25);
+            this.uxButtonEdit.Size = new System.Drawing.Size(51, 24);
             this.uxButtonEdit.Text = "&Edit";
             this.uxButtonEdit.ToolTipText = "Edit secret";
             this.uxButtonEdit.Click += new System.EventHandler(this.uxButtonEdit_Click);
@@ -448,7 +446,7 @@
             this.uxButtonToggle.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_break;
             this.uxButtonToggle.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonToggle.Name = "uxButtonToggle";
-            this.uxButtonToggle.Size = new System.Drawing.Size(83, 25);
+            this.uxButtonToggle.Size = new System.Drawing.Size(69, 24);
             this.uxButtonToggle.Text = "Disabl&e";
             this.uxButtonToggle.ToolTipText = "Disable secret";
             this.uxButtonToggle.Click += new System.EventHandler(this.uxButtonToggle_Click);
@@ -459,7 +457,7 @@
             this.uxButtonDelete.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_delete;
             this.uxButtonDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonDelete.Name = "uxButtonDelete";
-            this.uxButtonDelete.Size = new System.Drawing.Size(77, 25);
+            this.uxButtonDelete.Size = new System.Drawing.Size(64, 24);
             this.uxButtonDelete.Text = "&Delete";
             this.uxButtonDelete.ToolTipText = "Delete secret";
             this.uxButtonDelete.Click += new System.EventHandler(this.uxButtonDelete_Click);
@@ -469,14 +467,14 @@
             this.uxImageSearch.Enabled = false;
             this.uxImageSearch.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.magnifier;
             this.uxImageSearch.Name = "uxImageSearch";
-            this.uxImageSearch.Size = new System.Drawing.Size(20, 25);
+            this.uxImageSearch.Size = new System.Drawing.Size(20, 24);
             this.uxImageSearch.ToolTipText = "Search";
             // 
             // uxTextBoxSearch
             // 
             this.uxTextBoxSearch.Enabled = false;
             this.uxTextBoxSearch.Name = "uxTextBoxSearch";
-            this.uxTextBoxSearch.Size = new System.Drawing.Size(120, 28);
+            this.uxTextBoxSearch.Size = new System.Drawing.Size(120, 27);
             this.uxTextBoxSearch.ToolTipText = "Search";
             this.uxTextBoxSearch.TextChanged += new System.EventHandler(this.uxTextBoxSearch_TextChanged);
             // 
@@ -486,7 +484,7 @@
             this.uxButtonCopy.Image = ((System.Drawing.Image)(resources.GetObject("uxButtonCopy.Image")));
             this.uxButtonCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonCopy.Name = "uxButtonCopy";
-            this.uxButtonCopy.Size = new System.Drawing.Size(67, 25);
+            this.uxButtonCopy.Size = new System.Drawing.Size(59, 24);
             this.uxButtonCopy.Text = "&Copy";
             this.uxButtonCopy.ToolTipText = "Copy secret value to clipboard for 30 seconds";
             this.uxButtonCopy.Click += new System.EventHandler(this.uxButtonCopy_Click);
@@ -497,7 +495,7 @@
             this.uxButtonSave.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.disk;
             this.uxButtonSave.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonSave.Name = "uxButtonSave";
-            this.uxButtonSave.Size = new System.Drawing.Size(64, 25);
+            this.uxButtonSave.Size = new System.Drawing.Size(55, 24);
             this.uxButtonSave.Text = "&Save";
             this.uxButtonSave.ToolTipText = "Save secret to file";
             this.uxButtonSave.Click += new System.EventHandler(this.uxButtonSave_Click);
@@ -507,7 +505,7 @@
             this.uxButtonHelp.Image = ((System.Drawing.Image)(resources.GetObject("uxButtonHelp.Image")));
             this.uxButtonHelp.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonHelp.Name = "uxButtonHelp";
-            this.uxButtonHelp.Size = new System.Drawing.Size(65, 25);
+            this.uxButtonHelp.Size = new System.Drawing.Size(56, 24);
             this.uxButtonHelp.Text = "&Help";
             this.uxButtonHelp.ToolTipText = "Tip: You can just drag & drop secret as file to and from Windows Explorer";
             this.uxButtonHelp.Click += new System.EventHandler(this.uxButtonHelp_Click);
@@ -517,7 +515,7 @@
             this.uxButtonExit.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.door_out;
             this.uxButtonExit.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonExit.Name = "uxButtonExit";
-            this.uxButtonExit.Size = new System.Drawing.Size(57, 25);
+            this.uxButtonExit.Size = new System.Drawing.Size(49, 24);
             this.uxButtonExit.Text = "E&xit";
             this.uxButtonExit.Click += new System.EventHandler(this.uxButtonExit_Click);
             // 
@@ -531,13 +529,13 @@
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(splitContainer1);
-            this.toolStripContainer1.ContentPanel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1372, 562);
+            this.toolStripContainer1.ContentPanel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1029, 451);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
-            this.toolStripContainer1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.toolStripContainer1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.toolStripContainer1.Name = "toolStripContainer1";
-            this.toolStripContainer1.Size = new System.Drawing.Size(1372, 615);
+            this.toolStripContainer1.Size = new System.Drawing.Size(1029, 500);
             this.toolStripContainer1.TabIndex = 8;
             this.toolStripContainer1.Text = "toolStripContainer1";
             // 
@@ -556,13 +554,13 @@
             this.uxStatusLabelSecertsCount});
             this.uxStatusStrip.Location = new System.Drawing.Point(0, 0);
             this.uxStatusStrip.Name = "uxStatusStrip";
-            this.uxStatusStrip.Size = new System.Drawing.Size(1372, 25);
+            this.uxStatusStrip.Size = new System.Drawing.Size(1029, 22);
             this.uxStatusStrip.TabIndex = 0;
             // 
             // uxStatusLabel
             // 
             this.uxStatusLabel.Name = "uxStatusLabel";
-            this.uxStatusLabel.Size = new System.Drawing.Size(50, 20);
+            this.uxStatusLabel.Size = new System.Drawing.Size(39, 17);
             this.uxStatusLabel.Text = "Ready";
             this.uxStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -578,7 +576,7 @@
             // uxStatusLabelSecertsCount
             // 
             this.uxStatusLabelSecertsCount.Name = "uxStatusLabelSecertsCount";
-            this.uxStatusLabelSecertsCount.Size = new System.Drawing.Size(76, 20);
+            this.uxStatusLabelSecertsCount.Size = new System.Drawing.Size(60, 17);
             this.uxStatusLabelSecertsCount.Text = "0 secret(s)";
             this.uxStatusLabelSecertsCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -603,13 +601,13 @@
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1372, 615);
+            this.ClientSize = new System.Drawing.Size(1029, 500);
             this.Controls.Add(this.toolStripContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.MinimumSize = new System.Drawing.Size(797, 591);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.MinimumSize = new System.Drawing.Size(602, 487);
             this.Name = "MainForm";
             this.Text = "Azure Key Vault Explorer";
             splitContainer1.Panel1.ResumeLayout(false);
