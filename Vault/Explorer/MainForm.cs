@@ -106,6 +106,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
             _keyDownOccured = false;
             switch (e.KeyCode)
             {
+                case Keys.F1:
+                    uxButtonHelp.PerformClick();
+                    return;
+                case Keys.F5:
+                    uxButtonRefresh.PerformClick();
+                    return;
                 case Keys.Insert:
                     uxButtonAdd.PerformClick();
                     return;
@@ -207,27 +213,30 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             SecretDialog nsDlg = null;
             // Add secret
-            if ((sender == uxAddSecret) || (sender == uxMenuItemAddSecret))
+            using (var dtf = new DeleteTempFileInfo())
             {
-                nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds);
-            }
-            // Add certificate or configuration file
-            if ((sender == uxAddCertificate) || (sender == uxMenuItemAddCertificate) || (sender == uxAddFile) || (sender == uxMenuItemAddFile))
-            {
-                FileInfo fi = GetFileInfo(sender, e);
-                if (fi == null) return;
-                nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds, fi);
-                if (nsDlg.DialogResult == DialogResult.Cancel) return; // User clicked cancel during password prompt
-            }
-            if ((nsDlg != null) &&
-                (nsDlg.ShowDialog() == DialogResult.OK) &&
-                (!uxListViewSecrets.Items.ContainsKey(nsDlg.SecretObject.Name) ||
-                (uxListViewSecrets.Items.ContainsKey(nsDlg.SecretObject.Name) && 
-                (MessageBox.Show($"Are you sure you want to replace secret '{nsDlg.SecretObject.Name}' with new value?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes))))
-            {
-                using (NewUxOperationWithProgress(uxButtonAdd))
+                if ((sender == uxAddSecret) || (sender == uxMenuItemAddSecret))
                 {
-                    await AddOrUpdateSecret(null, nsDlg.SecretObject);
+                    nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds);
+                }
+                // Add certificate or configuration file
+                if ((sender == uxAddCertificate) || (sender == uxMenuItemAddCertificate) || (sender == uxAddFile) || (sender == uxMenuItemAddFile))
+                {
+                    dtf.FileInfoObject = GetFileInfo(sender, e);
+                    if (dtf.FileInfoObject == null) return;
+                    nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds, dtf.FileInfoObject);
+                    if (nsDlg.DialogResult == DialogResult.Cancel) return; // User clicked cancel during password prompt
+                }
+                if ((nsDlg != null) &&
+                    (nsDlg.ShowDialog() == DialogResult.OK) &&
+                    (!uxListViewSecrets.Items.ContainsKey(nsDlg.SecretObject.Name) ||
+                    (uxListViewSecrets.Items.ContainsKey(nsDlg.SecretObject.Name) &&
+                    (MessageBox.Show($"Are you sure you want to replace secret '{nsDlg.SecretObject.Name}' with new value?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes))))
+                {
+                    using (NewUxOperationWithProgress(uxButtonAdd))
+                    {
+                        await AddOrUpdateSecret(null, nsDlg.SecretObject);
+                    }
                 }
             }
         }
@@ -331,7 +340,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             if (uxListViewSecrets.SelectedItems.Count == 1)
             {
-                string secretName = uxListViewSecrets.SelectedItems[0].Text;
+                string secretName = uxListViewSecrets.SelectedItems[0].Name;
                 using (NewUxOperationWithProgress(uxButtonCopy))
                 {
                     var so = new SecretObject(await _vault.GetSecretAsync(secretName), null);
@@ -355,7 +364,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             if (uxListViewSecrets.SelectedItems.Count == 1)
             {
-                string secretName = uxListViewSecrets.SelectedItems[0].Text;
+                string secretName = uxListViewSecrets.SelectedItems[0].Name;
                 SecretObject so;
                 using (NewUxOperationWithProgress(uxButtonSave))
                 {
@@ -392,20 +401,25 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         #region Drag & Drop
 
+        private bool _ctrlKeyPressed = false; // Flag to indicate if CTRL key was down during start of the drag
+
         private async void uxListViewSecrets_ItemDrag(object sender, ItemDragEventArgs e)
         {
             using (NewUxOperation(uxButtonSave))
             {
-                bool ctrlKeyPressed = (ModifierKeys & Keys.Control) != 0;
-
-                var slvi = (SecretListViewItem)e.Item;
-                var s = await _vault.GetSecretAsync(slvi.Name);
-                var so = new SecretObject(s, null);
-
-                var filename = so.Name + (ctrlKeyPressed ? ContentType.Secret.ToExtension() : so.ContentType.ToExtension()); // Replace extension to .secret if CTRL is pressed
-                var fullName = Path.Combine(Path.GetTempPath(), filename);
-                so.SaveToFile(fullName);
-                var dataObject = new DataObject(DataFormats.FileDrop, new string[] { fullName });
+                _ctrlKeyPressed = (ModifierKeys & Keys.Control) != 0;
+                List<string> filesList = new List<string>();
+                foreach (var slvi in uxListViewSecrets.SelectedItems.Cast<SecretListViewItem>())
+                {
+                    var s = await _vault.GetSecretAsync(slvi.Name);
+                    var so = new SecretObject(s, null);
+                    // Replace extension to .secret if CTRL is pressed
+                    var filename = so.Name + (_ctrlKeyPressed ? ContentType.Secret.ToExtension() : so.ContentType.ToExtension());
+                    var fullName = Path.Combine(Path.GetTempPath(), filename);
+                    so.SaveToFile(fullName);
+                    filesList.Add(fullName);
+                }
+                var dataObject = new DataObject(DataFormats.FileDrop, filesList.ToArray());
                 uxListViewSecrets.DoDragDrop(dataObject, DragDropEffects.Move);
             }
         }
@@ -413,9 +427,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private void uxListViewSecrets_GiveFeedback(object sender, GiveFeedbackEventArgs e)
         {
             e.UseDefaultCursors = false;  
-            Cursor.Current = ModifierKeys.HasFlag(Keys.Control) ? _moveSecretCursor : _moveValueCursor;
+            Cursor.Current = _ctrlKeyPressed ? _moveSecretCursor : _moveValueCursor;
         }
-
 
         private void uxListViewSecrets_DragEnter(object sender, DragEventArgs e)
         {
@@ -432,7 +445,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
         }
 
-        delegate void ProcessDropedFilesDelegate(string files);
+        private delegate void ProcessDropedFilesDelegate(string files);
 
         private void ProcessDropedFiles(string files)
         {
