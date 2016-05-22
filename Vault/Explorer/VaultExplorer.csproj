@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="AddFileEventArgs.cs" />
     <Compile Include="ContentType.cs" />
+    <Compile Include="DeleteTempFileInfo.cs" />
     <Compile Include="ExceptionDialog.cs">
       <SubType>Form</SubType>
     </Compile>
