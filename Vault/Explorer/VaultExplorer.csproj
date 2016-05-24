@@ -178,6 +178,7 @@
     <None Include="Resources\key_delete.png" />
     <None Include="Resources\magnifier.png" />
     <None Include="Resources\disk.png" />
+    <None Include="Resources\cancel.png" />
     <Content Include="Resources\empty.png" />
     <None Include="Resources\error.png" />
     <None Include="Resources\move_secret.cur" />

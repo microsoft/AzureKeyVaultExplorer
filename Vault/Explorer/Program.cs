@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
-    static class Program
+    public static class Program
     {
         /// <summary>
         /// The main entry point for the application.
@@ -24,6 +26,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private static void ShowError(Exception e)
         {
+            if (e is OperationCanceledException)
+            {
+                object o = CallContext.GetData($"{nameof(UxOperation) + nameof(CancellationToken)}");
+                if (o != null) return; // Do not show any dialog to user
+            }
             var ed = new ExceptionDialog(e);
             ed.ShowDialog();
         }
