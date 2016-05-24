@@ -318,6 +318,7 @@
             // 
             this.uxStatusStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.uxStatusStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.uxStatusStrip.ShowItemToolTips = true;
             this.uxStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.uxStatusLabel,
             usStatusLabelSpring,
@@ -339,7 +340,7 @@
             // uxStatusProgressBar
             // 
             this.uxStatusProgressBar.AutoSize = false;
-            this.uxStatusProgressBar.Margin = new System.Windows.Forms.Padding(1, 3, 20, 3);
+            this.uxStatusProgressBar.Margin = new System.Windows.Forms.Padding(1, 3, 0, 3);
             this.uxStatusProgressBar.Name = "uxStatusProgressBar";
             this.uxStatusProgressBar.Size = new System.Drawing.Size(200, 19);
             this.uxStatusProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;

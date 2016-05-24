@@ -52,9 +52,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public void RefreshAndSelect()
         {
+            ListView.MultiSelect = false;
             EnsureVisible();
             Focused = Selected = false;
             Focused = Selected = true;
+            ListView.MultiSelect = true;
         }
 
         public bool Strikeout
