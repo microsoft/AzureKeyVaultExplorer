@@ -93,6 +93,7 @@
       <DependentUpon>PasswordDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="CertificateValueObject.cs" />
+    <Compile Include="SecretComboBoxItem.cs" />
     <Compile Include="SecretDialog.cs">
       <SubType>Form</SubType>
     </Compile>

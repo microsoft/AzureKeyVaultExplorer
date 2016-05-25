@@ -1,13 +1,14 @@
-﻿using Microsoft.Azure.KeyVault;
+﻿using ICSharpCode.TextEditor;
+using Microsoft.Azure.KeyVault;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using System.Windows.Forms;
-using ICSharpCode.TextEditor;
 using System.Text;
-using Newtonsoft.Json;
-using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
@@ -16,13 +17,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private bool _changed;
         private CertificateValueObject _certificateObj;
         private readonly TextEditorControl uxTextBoxValue;
-        public readonly SecretObject SecretObject;      
+        private readonly Vault _vault;
+        public SecretObject SecretObject { private set; get; }
 
-        private SecretDialog(string[] secretKinds, Secret s, string title)
+        private SecretDialog(string[] secretKinds, string title)
         {
             InitializeComponent();
             Text = title;
-            uxPropertyGridSecret.SelectedObject = SecretObject = new SecretObject(s, SecretObject_PropertyChanged);
             uxTextBoxValue = new TextEditorControl()
             {
                 Parent = uxSplitContainer.Panel1,
@@ -35,24 +36,29 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 AllowDrop = false
             };
             uxTextBoxValue.TextChanged += uxTextBoxValue_TextChanged;
-            uxTextBoxValue.SetHighlighting(SecretObject.ContentType.ToSyntaxHighlightingMode());
-
             var sk = Utils.LoadFromJsonFile<SecretKinds>("SecretKinds.json");
-            foreach (var name in secretKinds)
-            {
-                uxMenuSecretKind.Items.Add(sk[name]);
-            }
-            uxMenuSecretKind.Items[0].PerformClick();
+            uxMenuSecretKind.Items.AddRange((from name in secretKinds select sk[name]).ToArray());
+        }
+
+        private void RefreshSecretObject(Secret s)
+        {
+            SecretObject = new SecretObject(s, SecretObject_PropertyChanged);
+            uxPropertyGridSecret.SelectedObject = SecretObject;
+            uxTextBoxValue.SetHighlighting(SecretObject.ContentType.ToSyntaxHighlightingMode());
             uxTextBoxName.Text = s.SecretIdentifier?.Name;
+            uxTextBoxValue.IsReadOnly = SecretObject.ContentType.IsCertificate();
             uxTextBoxValue.Text = s.Value;
         }
 
         /// <summary>
         /// New empty secret
         /// </summary>
-        public SecretDialog(string[] secretKinds) : this(secretKinds, new Secret() { Attributes = new SecretAttributes(), ContentType = ContentTypeEnumConverter.GetDescription(ContentType.Text) }, "New Secret")
+        public SecretDialog(string[] secretKinds) : this(secretKinds, "New secret")
         {
             _changed = true;
+            var s = new Secret() { Attributes = new SecretAttributes(), ContentType = ContentTypeEnumConverter.GetDescription(ContentType.Text) };
+            RefreshSecretObject(s);
+            uxMenuSecretKind.Items[0].PerformClick();
         }
 
         /// <summary>
@@ -97,13 +103,16 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <summary>
         /// Edit or Copy secret
         /// </summary>
-        public SecretDialog(string[] secretKinds, Secret s) : this(secretKinds, s, "Edit secret")
+        public SecretDialog(Vault vault, string[] secretKinds, Secret s, IEnumerable<SecretItem> versions) : this(secretKinds, "Edit secret")
         {
-            uxTextBoxValue.IsReadOnly = SecretObject.ContentType.IsCertificate();
-            AutoDetectSecretKind();
-            AutoDetectCertificate();
+            Text += $" {s.SecretIdentifier.Name}";
+            _vault = vault;
+            uxComboBoxSecretVersions.Items.AddRange((from v in versions orderby v.Attributes.Created select new SecretComboBoxItem(v)).Cast<object>().ToArray());
+            uxLabelValue.Text = "Value from:";
+            uxComboBoxSecretVersions.Left = uxLabelValue.Left + uxLabelValue.Width + 8;
+            uxComboBoxSecretVersions.Visible = true;
+            uxComboBoxSecretVersions.SelectedIndex = uxComboBoxSecretVersions.Items.Count - 1;
             _changed = false;
-            InvalidateOkButton();
         }
 
         private void AutoDetectSecretKind()
@@ -215,6 +224,20 @@ namespace Microsoft.PS.Common.Vault.Explorer
             RefreshCertificate(_certificateObj);
             uxTextBoxName_TextChanged(sender, null);
             uxTextBoxValue_TextChanged(sender, null);
+        }
+
+        private async void uxComboBoxSecretVersions_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var scbi = uxComboBoxSecretVersions.SelectedItem as SecretComboBoxItem;
+            if (scbi != null)
+            {
+                var s = await _vault.GetSecretAsync(scbi.SecretItem.Identifier.Name, scbi.SecretItem.Identifier.Version);
+                RefreshSecretObject(s);
+                AutoDetectSecretKind();
+                AutoDetectCertificate();
+                _changed = true;
+                InvalidateOkButton();
+            }
         }
     }
 }

@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.Label uxLabelValue;
             System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+            this.uxLabelValue = new System.Windows.Forms.Label();
             this.uxLinkLabelSecretKind = new System.Windows.Forms.LinkLabel();
             this.uxTextBoxName = new System.Windows.Forms.TextBox();
             this.uxButtonOK = new System.Windows.Forms.Button();
@@ -42,7 +42,7 @@
             this.uxToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.uxTimerValueTypingCompleted = new System.Windows.Forms.Timer(this.components);
             this.uxMenuSecretKind = new System.Windows.Forms.ContextMenuStrip(this.components);
-            uxLabelValue = new System.Windows.Forms.Label();
+            this.uxComboBoxSecretVersions = new System.Windows.Forms.ComboBox();
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.uxErrorProvider)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uxSplitContainer)).BeginInit();
@@ -52,13 +52,13 @@
             // 
             // uxLabelValue
             // 
-            uxLabelValue.AutoSize = true;
-            uxLabelValue.Location = new System.Drawing.Point(16, 71);
-            uxLabelValue.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            uxLabelValue.Name = "uxLabelValue";
-            uxLabelValue.Size = new System.Drawing.Size(48, 17);
-            uxLabelValue.TabIndex = 2;
-            uxLabelValue.Text = "Value:";
+            this.uxLabelValue.AutoSize = true;
+            this.uxLabelValue.Location = new System.Drawing.Point(16, 68);
+            this.uxLabelValue.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.uxLabelValue.Name = "uxLabelValue";
+            this.uxLabelValue.Size = new System.Drawing.Size(48, 17);
+            this.uxLabelValue.TabIndex = 4;
+            this.uxLabelValue.Text = "Value:";
             // 
             // tableLayoutPanel1
             // 
@@ -70,7 +70,7 @@
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             tableLayoutPanel1.Location = new System.Drawing.Point(17, 9);
-            tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 1;
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -87,7 +87,7 @@
             this.uxLinkLabelSecretKind.Margin = new System.Windows.Forms.Padding(0);
             this.uxLinkLabelSecretKind.Name = "uxLinkLabelSecretKind";
             this.uxLinkLabelSecretKind.Size = new System.Drawing.Size(1237, 18);
-            this.uxLinkLabelSecretKind.TabIndex = 2;
+            this.uxLinkLabelSecretKind.TabIndex = 0;
             this.uxLinkLabelSecretKind.TabStop = true;
             this.uxLinkLabelSecretKind.Text = "Custom secret name";
             this.uxLinkLabelSecretKind.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.uxLinkLabelSecretKind_LinkClicked);
@@ -99,11 +99,11 @@
             this.uxTextBoxName.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.uxErrorProvider.SetIconAlignment(this.uxTextBoxName, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
             this.uxTextBoxName.Location = new System.Drawing.Point(20, 31);
-            this.uxTextBoxName.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.uxTextBoxName.Margin = new System.Windows.Forms.Padding(4);
             this.uxTextBoxName.MaxLength = 256;
             this.uxTextBoxName.Name = "uxTextBoxName";
             this.uxTextBoxName.Size = new System.Drawing.Size(1232, 26);
-            this.uxTextBoxName.TabIndex = 0;
+            this.uxTextBoxName.TabIndex = 1;
             this.uxTextBoxName.TextChanged += new System.EventHandler(this.uxTextBoxName_TextChanged);
             // 
             // uxButtonOK
@@ -112,7 +112,7 @@
             this.uxButtonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.uxButtonOK.Enabled = false;
             this.uxButtonOK.Location = new System.Drawing.Point(1045, 570);
-            this.uxButtonOK.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.uxButtonOK.Margin = new System.Windows.Forms.Padding(4);
             this.uxButtonOK.Name = "uxButtonOK";
             this.uxButtonOK.Size = new System.Drawing.Size(100, 28);
             this.uxButtonOK.TabIndex = 5;
@@ -124,7 +124,7 @@
             this.uxButtonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.uxButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.uxButtonCancel.Location = new System.Drawing.Point(1153, 570);
-            this.uxButtonCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.uxButtonCancel.Margin = new System.Windows.Forms.Padding(4);
             this.uxButtonCancel.Name = "uxButtonCancel";
             this.uxButtonCancel.Size = new System.Drawing.Size(100, 28);
             this.uxButtonCancel.TabIndex = 6;
@@ -157,7 +157,7 @@
             this.uxSplitContainer.Size = new System.Drawing.Size(1232, 471);
             this.uxSplitContainer.SplitterDistance = 354;
             this.uxSplitContainer.SplitterWidth = 6;
-            this.uxSplitContainer.TabIndex = 1;
+            this.uxSplitContainer.TabIndex = 5;
             // 
             // uxPropertyGridSecret
             // 
@@ -175,7 +175,7 @@
             // uxLabelBytesLeft
             // 
             this.uxLabelBytesLeft.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.uxLabelBytesLeft.Location = new System.Drawing.Point(999, 71);
+            this.uxLabelBytesLeft.Location = new System.Drawing.Point(999, 68);
             this.uxLabelBytesLeft.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.uxLabelBytesLeft.Name = "uxLabelBytesLeft";
             this.uxLabelBytesLeft.Size = new System.Drawing.Size(253, 17);
@@ -201,21 +201,33 @@
             this.uxMenuSecretKind.Size = new System.Drawing.Size(67, 4);
             this.uxMenuSecretKind.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.uxMenuSecretKind_ItemClicked);
             // 
+            // uxComboBoxSecretVersions
+            // 
+            this.uxComboBoxSecretVersions.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.uxComboBoxSecretVersions.FormattingEnabled = true;
+            this.uxComboBoxSecretVersions.Location = new System.Drawing.Point(213, 63);
+            this.uxComboBoxSecretVersions.Name = "uxComboBoxSecretVersions";
+            this.uxComboBoxSecretVersions.Size = new System.Drawing.Size(278, 24);
+            this.uxComboBoxSecretVersions.TabIndex = 2;
+            this.uxComboBoxSecretVersions.Visible = false;
+            this.uxComboBoxSecretVersions.SelectedIndexChanged += new System.EventHandler(this.uxComboBoxSecretVersions_SelectedIndexChanged);
+            // 
             // SecretDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.uxButtonCancel;
             this.ClientSize = new System.Drawing.Size(1269, 610);
+            this.Controls.Add(this.uxComboBoxSecretVersions);
             this.Controls.Add(this.uxLinkLabelSecretKind);
             this.Controls.Add(this.uxSplitContainer);
             this.Controls.Add(this.uxButtonCancel);
             this.Controls.Add(this.uxButtonOK);
             this.Controls.Add(this.uxLabelBytesLeft);
-            this.Controls.Add(uxLabelValue);
+            this.Controls.Add(this.uxLabelValue);
             this.Controls.Add(this.uxTextBoxName);
             this.Controls.Add(tableLayoutPanel1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(498, 495);
             this.Name = "SecretDialog";
@@ -246,5 +258,7 @@
         private System.Windows.Forms.Timer uxTimerValueTypingCompleted;
         private System.Windows.Forms.LinkLabel uxLinkLabelSecretKind;
         private System.Windows.Forms.ContextMenuStrip uxMenuSecretKind;
+        private System.Windows.Forms.ComboBox uxComboBoxSecretVersions;
+        private System.Windows.Forms.Label uxLabelValue;
     }
 }

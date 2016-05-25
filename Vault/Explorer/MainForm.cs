@@ -161,7 +161,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private bool VerifyDuplication(SecretObject soNew)
         {
             string newMd5 = soNew.Md5;
-            var sameSecretsList = from slvi in uxListViewSecrets.Items.Cast<SecretListViewItem>() where (slvi.Md5 == newMd5) && (slvi.Id != soNew.Id) select slvi.Name;
+            var sameSecretsList = from slvi in uxListViewSecrets.Items.Cast<SecretListViewItem>() where (slvi.Md5 == newMd5) && (slvi.Name != soNew.Name) select slvi.Name;
             if (sameSecretsList.Count() > 0)
             {
                 string sameSecrets = string.Join(", ", sameSecretsList);
@@ -259,11 +259,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 if (slvi.Attributes.Enabled ?? true)
                 {
                     Secret s;
+                    IEnumerable<SecretItem> versions;
                     using (var op = NewUxOperationWithProgress(uxButtonEdit))
                     {
-                        s = await _vault.GetSecretAsync(slvi.Name, op.CancellationToken);
+                        s = await _vault.GetSecretAsync(slvi.Name, null, op.CancellationToken);
+                        versions = await _vault.GetSecretVersionsAsync(slvi.Name, 0, op.CancellationToken);
                     }
-                    SecretDialog nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds, s);
+                    SecretDialog nsDlg = new SecretDialog(_vault, _currentVaultAlias.SecretKinds, s, versions);
                     if (nsDlg.ShowDialog() == DialogResult.OK)
                     {
                         using (var op = NewUxOperationWithProgress(uxButtonEdit))
@@ -353,7 +355,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 string secretName = uxListViewSecrets.SelectedItems[0].Name;
                 using (var op = NewUxOperationWithProgress(uxButtonCopy))
                 {
-                    var so = new SecretObject(await _vault.GetSecretAsync(secretName, op.CancellationToken), null);
+                    var so = new SecretObject(await _vault.GetSecretAsync(secretName, null, op.CancellationToken), null);
                     _clipboardValue = so.GetClipboardValue();
                     Clipboard.SetText(_clipboardValue);
                     uxTimerClearClipboard.Start();
@@ -378,7 +380,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 SecretObject so;
                 using (var op = NewUxOperationWithProgress(uxButtonSave))
                 {
-                    so = new SecretObject(await _vault.GetSecretAsync(secretName, op.CancellationToken), null);
+                    so = new SecretObject(await _vault.GetSecretAsync(secretName, null, op.CancellationToken), null);
                 }
                 uxSaveFileDialog.FileName = so.GetFileName();
                 uxSaveFileDialog.DefaultExt = so.ContentType.ToExtension();
@@ -421,8 +423,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 List<string> filesList = new List<string>();
                 foreach (var slvi in uxListViewSecrets.SelectedItems.Cast<SecretListViewItem>())
                 {
-                    var s = await _vault.GetSecretAsync(slvi.Name);
-                    var so = new SecretObject(s, null);
+                    var so = new SecretObject(await _vault.GetSecretAsync(slvi.Name), null);
                     // Replace extension to .secret if CTRL is pressed
                     var filename = so.Name + (_ctrlKeyPressed ? ContentType.Secret.ToExtension() : so.ContentType.ToExtension());
                     var fullName = Path.Combine(Path.GetTempPath(), filename);
