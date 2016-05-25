@@ -156,10 +156,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public SecretKind SecretKind { get; set; }
 
         [Browsable(false)]
-        public bool IsNameValid => SecretKind.NameRegex.IsMatch(Name);
+        public bool IsNameValid => (Name == null) ? false : SecretKind.NameRegex.IsMatch(Name);
 
         [Browsable(false)]
-        public bool IsValueValid => SecretKind.ValueRegex.IsMatch(Value);
+        public bool IsValueValid => (Value == null) ? false : SecretKind.ValueRegex.IsMatch(Value);
 
         public SecretObject(Secret secret, PropertyChangedEventHandler propertyChanged)
         {

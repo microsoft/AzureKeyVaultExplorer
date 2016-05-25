@@ -16,6 +16,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
 {
     public static class Utils
     {
+        /// <summary>
+        /// Converts DateTime? to LocalTime string
+        /// </summary>
+        /// <param name="dt">DateTime?</param>
+        /// <returns>string</returns>
         public static string NullableDateTimeToString(DateTime? dt)
         {
             if (dt == null) return "Unknown";
