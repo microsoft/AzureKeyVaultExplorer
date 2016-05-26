@@ -45,9 +45,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
             SecretObject = new SecretObject(s, SecretObject_PropertyChanged);
             uxPropertyGridSecret.SelectedObject = SecretObject;
             uxTextBoxValue.SetHighlighting(SecretObject.ContentType.ToSyntaxHighlightingMode());
-            uxTextBoxName.Text = s.SecretIdentifier?.Name;
+            uxTextBoxName.Text = SecretObject.Name;
             uxTextBoxValue.IsReadOnly = SecretObject.ContentType.IsCertificate();
-            uxTextBoxValue.Text = s.Value;
+            uxTextBoxValue.Text = SecretObject.Value;
         }
 
         /// <summary>
