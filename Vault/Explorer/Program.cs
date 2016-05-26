@@ -28,7 +28,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             if (e is OperationCanceledException)
             {
-                object o = CallContext.GetData($"{nameof(UxOperation) + nameof(CancellationToken)}");
+                object o = CallContext.LogicalGetData($"{nameof(UxOperation) + nameof(CancellationToken)}");
                 if (o != null) return; // Do not show any dialog to user
             }
             var ed = new ExceptionDialog(e);

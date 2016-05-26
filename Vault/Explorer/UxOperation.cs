@@ -64,7 +64,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void uxButtonCancel_Click(object sender, EventArgs e)
         {
-            CallContext.SetData($"{nameof(UxOperation) + nameof(CancellationToken)}", CancellationToken);
+            CallContext.LogicalSetData($"{nameof(UxOperation) + nameof(CancellationToken)}", CancellationToken);
             _cancellationTokenSource.Cancel();
         }
     }
