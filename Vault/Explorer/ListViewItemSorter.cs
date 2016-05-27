@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Windows.Forms;
+using static System.Windows.Forms.ListViewItem;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
@@ -30,10 +32,24 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public int Compare(object x, object y)
         {
-            SecretListViewItem a = (SecretListViewItem)x;
-            SecretListViewItem b = (SecretListViewItem)y;
-            if (a.Strikeout != b.Strikeout) return a.Strikeout ? 1 : -1;
-            int c = string.Compare(a.SubItems[Column].Text, b.SubItems[Column].Text);
+            SecretListViewItem sx = (SecretListViewItem)x;
+            SecretListViewItem sy = (SecretListViewItem)y;
+
+            ListViewSubItem a = sx.SubItems[Column];
+            ListViewSubItem b = sy.SubItems[Column];
+            if (sx.Strikeout != sy.Strikeout) return sx.Strikeout ? 1 : -1;
+
+            int c = 0;
+            if ((a.Tag != null) && (b.Tag != null) && (a.Tag is DateTime?) && (b.Tag is DateTime?) && (a.Tag as DateTime?).HasValue && (b.Tag as DateTime?).HasValue)
+            {
+                var adt = (a.Tag as DateTime?).Value;
+                var bdt = (b.Tag as DateTime?).Value;
+                c = DateTime.Compare(adt, bdt);
+            }
+            else
+            {
+                c = string.Compare(a.Text, b.Text);
+            }
             return (SortOrder == SortOrder.Descending) ? -c : c;
         }
     }

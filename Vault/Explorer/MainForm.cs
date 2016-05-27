@@ -408,6 +408,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 _listViewItemSorter.SwapSortOder();
             }
+            else
+            {
+                _listViewItemSorter.Column = e.Column;
+                _listViewItemSorter.SortOrder = SortOrder.Ascending;
+            }
             uxListViewSecrets.Sort();
         }
 

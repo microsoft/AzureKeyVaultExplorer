@@ -34,7 +34,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             ForeColor = (Attributes.Enabled ?? true) ? SystemColors.WindowText : SystemColors.GrayText;
 
             Name = name;
-            SubItems.Add(Utils.NullableDateTimeToString(attributes.Updated));
+            SubItems.Add(new ListViewSubItem(this, Utils.NullableDateTimeToString(attributes.Updated)) { Tag = attributes.Updated }); // Add Tag so ListViewItemSorter will sort datetime correctly
             SubItems.Add(ChangedBy);
 
             ToolTipText = string.Format("Creation time:\t\t{0}\nLast updated time:\t{1}",
