@@ -107,11 +107,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             Text += $" {s.SecretIdentifier.Name}";
             _vault = vault;
-            uxComboBoxSecretVersions.Items.AddRange((from v in versions orderby v.Attributes.Created select new SecretComboBoxItem(v)).Cast<object>().ToArray());
-            uxLabelValue.Text = "Value from:";
-            uxComboBoxSecretVersions.Left = uxLabelValue.Left + uxLabelValue.Width + 8;
-            uxComboBoxSecretVersions.Visible = true;
-            uxComboBoxSecretVersions.SelectedIndex = uxComboBoxSecretVersions.Items.Count - 1;
+            uxLinkLabelValue.Enabled = true;
+            int i = 0;
+            uxMenuVersions.Items.AddRange((from v in versions orderby v.Attributes.Created descending select new SecretVersion(i++, v)).ToArray());
+            uxMenuVersions.Items[0].PerformClick();
             _changed = false;
         }
 
@@ -219,25 +218,31 @@ namespace Microsoft.PS.Common.Vault.Explorer
             var sk = (SecretKind)e.ClickedItem;
             SecretObject.SecretKind = sk;
             sk.Checked = true;
-            uxLinkLabelSecretKind.Text = sk.Text + " secret name \u25BC"; // Add black down triangle char
+            uxLinkLabelSecretKind.Text = sk.Text + " secret name" + Utils.DropDownSuffix;
             uxToolTip.SetToolTip(uxLinkLabelSecretKind, sk.Description);
             RefreshCertificate(_certificateObj);
             uxTextBoxName_TextChanged(sender, null);
             uxTextBoxValue_TextChanged(sender, null);
         }
 
-        private async void uxComboBoxSecretVersions_SelectedIndexChanged(object sender, EventArgs e)
+        private void uxLinkLabelValue_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            var scbi = uxComboBoxSecretVersions.SelectedItem as SecretComboBoxItem;
-            if (scbi != null)
-            {
-                var s = await _vault.GetSecretAsync(scbi.SecretItem.Identifier.Name, scbi.SecretItem.Identifier.Version);
-                RefreshSecretObject(s);
-                AutoDetectSecretKind();
-                AutoDetectCertificate();
-                _changed = true;
-                InvalidateOkButton();
-            }
+            uxMenuVersions.Show(uxLinkLabelValue, 0, uxLinkLabelValue.Height);
+        }
+
+        private async void uxMenuVersions_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            foreach (var item in uxMenuVersions.Items) ((SecretVersion)item).Checked = false;
+            var sv = (SecretVersion)e.ClickedItem;
+            var s = await _vault.GetSecretAsync(sv.SecretItem.Identifier.Name, sv.SecretItem.Identifier.Version);
+            sv.Checked = true;
+            uxLinkLabelValue.Text = sv.ToString();
+            uxToolTip.SetToolTip(uxLinkLabelValue, sv.ToolTipText);
+            RefreshSecretObject(s);
+            AutoDetectSecretKind();
+            AutoDetectCertificate();
+            _changed = true;
+            InvalidateOkButton();
         }
     }
 }

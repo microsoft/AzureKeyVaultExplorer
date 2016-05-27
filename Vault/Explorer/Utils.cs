@@ -17,6 +17,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
     public static class Utils
     {
         /// <summary>
+        /// Space with black down triangle char
+        /// </summary>
+        public const string DropDownSuffix = " \u25BC"; 
+
+        /// <summary>
         /// Converts DateTime? to LocalTime string
         /// </summary>
         /// <param name="dt">DateTime?</param>
