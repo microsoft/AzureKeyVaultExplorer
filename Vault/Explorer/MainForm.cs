@@ -56,24 +56,24 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private void uxComboBoxVaultAlias_DropDown(object sender, EventArgs e)
         {
             int prevSelectedIndex = uxComboBoxVaultAlias.SelectedIndex;
-            int count = uxComboBoxVaultAlias.Items.Count;
+            uxComboBoxVaultAlias.Items.Clear();
             uxComboBoxVaultAlias.Items.AddRange(Utils.LoadFromJsonFile<VaultAliases>(Settings.Default.VaultAliasesJsonFileLocation).ToArray());
-            for (int i = 0; i < count; i++)
-            {
-                uxComboBoxVaultAlias.Items.RemoveAt(0);
-            }
             if (prevSelectedIndex < uxComboBoxVaultAlias.Items.Count)
             {
                 uxComboBoxVaultAlias.SelectedIndex = prevSelectedIndex;
             }
         }
 
-        private void uxComboBoxVaultAlias_SelectedIndexChanged(object sender, EventArgs e)
+        private void uxComboBoxVaultAlias_DropDownClosed(object sender, EventArgs e)
         {
             _currentVaultAlias = (VaultAlias)uxComboBoxVaultAlias.SelectedItem;
-            uxComboBoxVaultAlias.ToolTipText = "Vault names: "+ string.Join(", ", _currentVaultAlias.VaultNames);
-            uxButtonRefresh.Enabled = uxMenuItemRefresh.Enabled = true;
-            uxButtonRefresh.PerformClick();
+            bool itemSelected = (null != _currentVaultAlias);
+            uxComboBoxVaultAlias.ToolTipText = itemSelected ? "Vault names: " + string.Join(", ", _currentVaultAlias.VaultNames) : "";
+            uxMenuItemRefresh.Enabled = itemSelected;
+            if (itemSelected)
+            {
+                uxMenuItemRefresh.PerformClick();
+            }
         }
 
         private void RefreshSecertsCount()
@@ -82,12 +82,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxStatusLabelSecretsSelected.Text = $"{uxListViewSecrets.SelectedItems.Count} selected";
         }
 
-        private async void uxButtonRefresh_Click(object sender, EventArgs e)
+        private async void uxMenuItemRefresh_Click(object sender, EventArgs e)
         {
-            using (var op = NewUxOperationWithProgress(uxButtonRefresh))
+            using (var op = NewUxOperationWithProgress(uxMenuItemRefresh))
             {
-                _vault = new Vault(VaultAccessTypeEnum.ReadWrite, _currentVaultAlias.VaultNames);
-                //uxListViewSecrets.BeginUpdate();
+                _vault = new Vault(Settings.Default.VaultsJsonFileLocation, VaultAccessTypeEnum.ReadWrite, _currentVaultAlias.VaultNames);
                 uxListViewSecrets.Items.Clear();
                 _strikedoutSecrets = 0;
                 RefreshSecertsCount();
@@ -95,7 +94,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 {
                     uxListViewSecrets.Items.Add(new SecretListViewItem(s));
                 }
-                //uxListViewSecrets.EndUpdate();
                 uxButtonAdd.Enabled = uxMenuItemAdd.Enabled = uxMenuItemAddCertificate.Enabled = true;
                 uxImageSearch.Enabled = uxTextBoxSearch.Enabled = true;
                 uxListViewSecrets.AllowDrop = true;
@@ -133,7 +131,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     uxButtonHelp.PerformClick();
                     return;
                 case Keys.F5:
-                    uxButtonRefresh.PerformClick();
+                    uxMenuItemRefresh.PerformClick();
                     return;
                 case Keys.Insert:
                     uxButtonAdd.PerformClick();
@@ -158,7 +156,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     uxButtonEdit.PerformClick();
                     return;
                 case Keys.R:
-                    uxButtonRefresh.PerformClick();
+                    uxMenuItemRefresh.PerformClick();
                     return;
                 case Keys.S:
                     uxButtonSave.PerformClick();
