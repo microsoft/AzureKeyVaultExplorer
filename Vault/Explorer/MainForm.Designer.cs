@@ -79,7 +79,7 @@
             this.uxButtonCopy = new System.Windows.Forms.ToolStripButton();
             this.uxButtonSave = new System.Windows.Forms.ToolStripButton();
             this.uxButtonHelp = new System.Windows.Forms.ToolStripButton();
-            this.uxButtonExit = new System.Windows.Forms.ToolStripButton();
+            this.uxButtonSettings = new System.Windows.Forms.ToolStripButton();
             this.uxStatusLabelSecretsSelected = new System.Windows.Forms.ToolStripStatusLabel();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -267,7 +267,7 @@
             this.uxButtonSave,
             toolStripSeparator3,
             this.uxButtonHelp,
-            this.uxButtonExit});
+            this.uxButtonSettings});
             this.uxToolStrip.Location = new System.Drawing.Point(3, 0);
             this.uxToolStrip.Name = "uxToolStrip";
             this.uxToolStrip.Size = new System.Drawing.Size(1096, 28);
@@ -280,6 +280,7 @@
             this.uxComboBoxVaultAlias.IntegralHeight = false;
             this.uxComboBoxVaultAlias.Name = "uxComboBoxVaultAlias";
             this.uxComboBoxVaultAlias.Size = new System.Drawing.Size(250, 28);
+            this.uxComboBoxVaultAlias.DropDown += new System.EventHandler(this.uxComboBoxVaultAlias_DropDown);
             this.uxComboBoxVaultAlias.SelectedIndexChanged += new System.EventHandler(this.uxComboBoxVaultAlias_SelectedIndexChanged);
             // 
             // uxTextBoxSearch
@@ -594,14 +595,14 @@
     "instance of Vault Explorer.\r\nHold CTRL key to copy all secret information.";
             this.uxButtonHelp.Click += new System.EventHandler(this.uxButtonHelp_Click);
             // 
-            // uxButtonExit
+            // uxButtonSettings
             // 
-            this.uxButtonExit.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.door_out;
-            this.uxButtonExit.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.uxButtonExit.Name = "uxButtonExit";
-            this.uxButtonExit.Size = new System.Drawing.Size(57, 25);
-            this.uxButtonExit.Text = "E&xit";
-            this.uxButtonExit.Click += new System.EventHandler(this.uxButtonExit_Click);
+            this.uxButtonSettings.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.wrench;
+            this.uxButtonSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.uxButtonSettings.Name = "uxButtonSettings";
+            this.uxButtonSettings.Size = new System.Drawing.Size(86, 25);
+            this.uxButtonSettings.Text = "&Settings";
+            this.uxButtonSettings.Click += new System.EventHandler(this.uxButtonSettings_Click);
             // 
             // uxStatusLabelSecretsSelected
             // 
@@ -655,7 +656,7 @@
         private System.Windows.Forms.ToolStripSplitButton uxButtonAdd;
         private System.Windows.Forms.ToolStripMenuItem uxAddSecret;
         private System.Windows.Forms.ToolStripMenuItem uxAddCertificate;
-        private System.Windows.Forms.ToolStripButton uxButtonExit;
+        private System.Windows.Forms.ToolStripButton uxButtonSettings;
         private System.Windows.Forms.ContextMenuStrip uxContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemAdd;
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemEdit;

@@ -31,8 +31,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             InitializeComponent();
             Text += $" ({Environment.UserDomainName}\\{Environment.UserName})";
-            uxComboBoxVaultAlias.Items.AddRange(Utils.LoadFromJsonFile<VaultAliases>("VaultAliases.json").ToArray());
-            uxComboBoxVaultAlias.SelectedIndex = -1;
             uxListViewSecrets.ListViewItemSorter = _listViewItemSorter = new ListViewItemSorter();
 
             uxButtonCopy.ToolTipText = uxMenuItemCopy.ToolTipText = $"Copy secret value to clipboard for {Settings.Default.CopyToClipboardTimeToLive.TotalSeconds} seconds";
@@ -55,10 +53,19 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private UxOperation NewUxOperation(ToolStripItem controlToToggle) => new UxOperation(controlToToggle, uxStatusLabel, null, null);
 
-        private void RefreshSecertsCount()
+        private void uxComboBoxVaultAlias_DropDown(object sender, EventArgs e)
         {
-            uxStatusLabelSecertsCount.Text = (_strikedoutSecrets == 0) ? $"{uxListViewSecrets.Items.Count} secrets" : $"{uxListViewSecrets.Items.Count - _strikedoutSecrets} out of {uxListViewSecrets.Items.Count} secrets";
-            uxStatusLabelSecretsSelected.Text = $"{uxListViewSecrets.SelectedItems.Count} selected";
+            int prevSelectedIndex = uxComboBoxVaultAlias.SelectedIndex;
+            int count = uxComboBoxVaultAlias.Items.Count;
+            uxComboBoxVaultAlias.Items.AddRange(Utils.LoadFromJsonFile<VaultAliases>(Settings.Default.VaultAliasesJsonFileLocation).ToArray());
+            for (int i = 0; i < count; i++)
+            {
+                uxComboBoxVaultAlias.Items.RemoveAt(0);
+            }
+            if (prevSelectedIndex < uxComboBoxVaultAlias.Items.Count)
+            {
+                uxComboBoxVaultAlias.SelectedIndex = prevSelectedIndex;
+            }
         }
 
         private void uxComboBoxVaultAlias_SelectedIndexChanged(object sender, EventArgs e)
@@ -67,6 +74,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxComboBoxVaultAlias.ToolTipText = "Vault names: "+ string.Join(", ", _currentVaultAlias.VaultNames);
             uxButtonRefresh.Enabled = uxMenuItemRefresh.Enabled = true;
             uxButtonRefresh.PerformClick();
+        }
+
+        private void RefreshSecertsCount()
+        {
+            uxStatusLabelSecertsCount.Text = (_strikedoutSecrets == 0) ? $"{uxListViewSecrets.Items.Count} secrets" : $"{uxListViewSecrets.Items.Count - _strikedoutSecrets} out of {uxListViewSecrets.Items.Count} secrets";
+            uxStatusLabelSecretsSelected.Text = $"{uxListViewSecrets.SelectedItems.Count} selected";
         }
 
         private async void uxButtonRefresh_Click(object sender, EventArgs e)
@@ -397,11 +410,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             Process.Start("http://aka.ms/vaultexplorer");
         }
 
-        private void uxButtonExit_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
         private void uxListViewSecrets_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             if (_listViewItemSorter.Column == e.Column)
@@ -472,5 +480,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         #endregion
+
+        private void uxButtonSettings_Click(object sender, EventArgs e)
+        {
+            var dlg = new SettingsDialog();
+            dlg.ShowDialog();
+        }
     }
 }
