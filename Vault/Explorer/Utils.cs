@@ -72,7 +72,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public static T LoadFromJsonFile<T>(string filename)
         {
-            var jsonFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
+            filename = Environment.ExpandEnvironmentVariables(filename);
+            var jsonFile = Path.IsPathRooted(filename) ? filename : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
             return JsonConvert.DeserializeObject<T>(File.ReadAllText(jsonFile));
         }
 
@@ -82,6 +83,20 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 return new Cursor(ms);
             }
+        }
+        public static string GetRtfUnicodeEscapedString(string s)
+        {
+            var sb = new StringBuilder();
+            foreach (var c in s)
+            {
+                if (c == '\\' || c == '{' || c == '}')
+                    sb.Append(@"\" + c);
+                else if (c <= 0x7f)
+                    sb.Append(c);
+                else
+                    sb.Append("\\u" + Convert.ToUInt32(c) + "?");
+            }
+            return sb.ToString();
         }
     }
 }

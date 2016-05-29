@@ -112,6 +112,13 @@
     </Compile>
     <Compile Include="SecretListViewItem.cs" />
     <Compile Include="SecretObject.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="SettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SettingsDialog.Designer.cs">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="TagItem.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="UxOperation.cs" />
@@ -138,15 +145,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
+    <EmbeddedResource Include="SettingsDialog.resx">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="VaultAliases.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -186,6 +187,7 @@
     <None Include="Resources\error.png" />
     <None Include="Resources\move_secret.cur" />
     <None Include="Resources\move_value.cur" />
+    <None Include="Resources\wrench.png" />
     <Content Include="VaultExplorer.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
