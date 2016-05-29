@@ -24,19 +24,23 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             InitializeComponent();
             Text = title;
+            uxTextBoxName.Font = Settings.Default.SecretFont;
             uxTextBoxValue = new TextEditorControl()
             {
                 Parent = uxSplitContainer.Panel1,
                 BorderStyle = BorderStyle.FixedSingle,
                 Dock = DockStyle.Fill,
                 ShowMatchingBracket = true,
-                ConvertTabsToSpaces = true,
+                ConvertTabsToSpaces = Settings.Default.ConvertTabsToSpaces,
+                TabIndent = Settings.Default.TabIndent,
                 VRulerRow = 120,
                 TabIndex = 4,
-                AllowDrop = false
+                AllowDrop = false,
+                Font = Settings.Default.SecretFont,
+                ShowLineNumbers = Settings.Default.ShowLineNumbers
             };
             uxTextBoxValue.TextChanged += uxTextBoxValue_TextChanged;
-            var sk = Utils.LoadFromJsonFile<SecretKinds>("SecretKinds.json");
+            var sk = Utils.LoadFromJsonFile<SecretKinds>(Settings.Default.SecretKindsJsonFileLocation);
             uxMenuSecretKind.Items.AddRange((from name in secretKinds select sk[name]).ToArray());
         }
 
@@ -110,24 +114,24 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxLinkLabelValue.Enabled = true;
             int i = 0;
             uxMenuVersions.Items.AddRange((from v in versions orderby v.Attributes.Created descending select new SecretVersion(i++, v)).ToArray());
-            uxMenuVersions.Items[0].PerformClick();
-            _changed = false;
+            uxMenuVersions_ItemClicked(null, new ToolStripItemClickedEventArgs(uxMenuVersions.Items[0])); // Pass sender as NULL so _changed will be set to false
         }
 
         private void AutoDetectSecretKind()
         {
             SecretKind autoDetectSecretKind = null;
-            foreach (var item in uxMenuSecretKind.Items) // Auto detect 'last' secret kind based on the name
+            foreach (var item in uxMenuSecretKind.Items) // Auto detect 'last' secret kind based on the name only
             {
                 SecretKind sk = (SecretKind)item;
                 autoDetectSecretKind = sk.NameRegex.IsMatch(uxTextBoxName.Text) ? sk : autoDetectSecretKind;
             }
-            // Apply secret kind, only when both Content Type and SecretKind are certificate or both not
-            if ((SecretObject.ContentType.IsCertificate() && autoDetectSecretKind.IsCertificate) ||
-                (!SecretObject.ContentType.IsCertificate() && !autoDetectSecretKind.IsCertificate))
+            // Apply last found secret kind, only when both Content Type and SecretKind are certificate or both not, otherwise fallback to Custom (the first one)
+            if ((!SecretObject.ContentType.IsCertificate() || !autoDetectSecretKind.IsCertificate) &&
+                (SecretObject.ContentType.IsCertificate() || autoDetectSecretKind.IsCertificate))
             {
-                autoDetectSecretKind?.PerformClick();
+                autoDetectSecretKind = (SecretKind)uxMenuSecretKind.Items[0];
             }
+            autoDetectSecretKind?.PerformClick();
         }
 
         private void AutoDetectCertificate()
@@ -214,8 +218,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void uxMenuSecretKind_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            foreach (var item in uxMenuSecretKind.Items) ((SecretKind)item).Checked = false;
             var sk = (SecretKind)e.ClickedItem;
+            if (sk.Checked) return; // Same item was clicked
+            foreach (var item in uxMenuSecretKind.Items) ((SecretKind)item).Checked = false;
             SecretObject.SecretKind = sk;
             sk.Checked = true;
             uxLinkLabelSecretKind.Text = sk.Text + " secret name" + Utils.DropDownSuffix;
@@ -232,8 +237,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private async void uxMenuVersions_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            foreach (var item in uxMenuVersions.Items) ((SecretVersion)item).Checked = false;
             var sv = (SecretVersion)e.ClickedItem;
+            if (sv.Checked) return; // Same item was clicked
+            foreach (var item in uxMenuVersions.Items) ((SecretVersion)item).Checked = false;
             var s = await _vault.GetSecretAsync(sv.SecretItem.Identifier.Name, sv.SecretItem.Identifier.Version);
             sv.Checked = true;
             uxLinkLabelValue.Text = sv.ToString();
@@ -241,7 +247,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             RefreshSecretObject(s);
             AutoDetectSecretKind();
             AutoDetectCertificate();
-            _changed = true;
+            _changed = (sender != null); // Sender will be NULL for the first time during Edit Dialog ctor
             InvalidateOkButton();
         }
     }

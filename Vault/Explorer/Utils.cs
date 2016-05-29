@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -16,6 +17,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
 {
     public static class Utils
     {
+        public const string AppName = "Azure Key Vault Explorer";
+
         /// <summary>
         /// Space with black down triangle char
         /// </summary>
@@ -97,6 +100,19 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     sb.Append("\\u" + Convert.ToUInt32(c) + "?");
             }
             return sb.ToString();
+        }
+
+        public static string GetFileVersionString(string title, string peFilename, string optionalPrefix = "")
+        {
+            var filepath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), peFilename);
+            string version = "Unknown";
+            try
+            {
+                var verInfo = FileVersionInfo.GetVersionInfo(filepath);
+                version = string.Format("{0}.{1}.{2}.{3}", verInfo.FileMajorPart, verInfo.FileMinorPart, verInfo.FileBuildPart, verInfo.FilePrivatePart);
+            }
+            catch { }
+            return string.Format(string.Format("{0}: {1}{2}", title, version, optionalPrefix));
         }
     }
 }

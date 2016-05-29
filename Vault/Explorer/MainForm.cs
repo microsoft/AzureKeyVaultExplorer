@@ -30,7 +30,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public MainForm()
         {
             InitializeComponent();
-            Text += $" ({Environment.UserDomainName}\\{Environment.UserName})";
+            Text = $"{Utils.AppName} ({Environment.UserDomainName}\\{Environment.UserName})";
             uxListViewSecrets.ListViewItemSorter = _listViewItemSorter = new ListViewItemSorter();
 
             ApplySettings();
@@ -181,7 +181,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             if (sameSecretsList.Count() > 0)
             {
                 string sameSecrets = string.Join(", ", sameSecretsList);
-                return MessageBox.Show($"There are {sameSecretsList.Count()} other secret(s) in the vault which has the same Md5: {newMd5}.\nHere the name(s) of the other secrets:\n{sameSecrets}\nAre you sure you want to add or update secret {soNew.Name} and have a duplication of secrets?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.Yes;
+                return MessageBox.Show($"There are {sameSecretsList.Count()} other secret(s) in the vault which has the same Md5: {newMd5}.\nHere the name(s) of the other secrets:\n{sameSecrets}\nAre you sure you want to add or update secret {soNew.Name} and have a duplication of secrets?", Utils.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.Yes;
             }
             return true;
         }
@@ -229,7 +229,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
             if (fi.Length > CommonConsts.MB)
             {
-                MessageBox.Show($"File {fi.FullName} size is {fi.Length:N0} bytes. Maximum file size allowed for secret value (before compression) is 1 MB.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"File {fi.FullName} size is {fi.Length:N0} bytes. Maximum file size allowed for secret value (before compression) is 1 MB.", Utils.AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
             }
             return fi;
@@ -257,7 +257,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     (nsDlg.ShowDialog() == DialogResult.OK) &&
                     (!uxListViewSecrets.Items.ContainsKey(nsDlg.SecretObject.Name) ||
                     (uxListViewSecrets.Items.ContainsKey(nsDlg.SecretObject.Name) &&
-                    (MessageBox.Show($"Are you sure you want to replace secret '{nsDlg.SecretObject.Name}' with new value?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes))))
+                    (MessageBox.Show($"Are you sure you want to replace secret '{nsDlg.SecretObject.Name}' with new value?", Utils.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes))))
                 {
                     using (var op = NewUxOperationWithProgress(uxButtonAdd))
                     {
@@ -299,7 +299,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 var slvi = uxListViewSecrets.SelectedItems[0] as SecretListViewItem;
                 string action = (slvi.Attributes.Enabled ?? true) ? "disable" : "enable";
-                if (MessageBox.Show($"Are you sure you want to {action} secret '{slvi.Name}'?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (MessageBox.Show($"Are you sure you want to {action} secret '{slvi.Name}'?", Utils.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     using (var op = NewUxOperationWithProgress(uxButtonToggle))
                     {
@@ -318,7 +318,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             if (uxListViewSecrets.SelectedItems.Count > 0)
             {
                 string secretNames = string.Join(", ", from item in uxListViewSecrets.SelectedItems.Cast<ListViewItem>() select item.Name);
-                if (MessageBox.Show($"Are you sure you want to delete {uxListViewSecrets.SelectedItems.Count} secret(s) with the following names?\n{secretNames}\n\nWarning: This operation can not be undone!", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+                if (MessageBox.Show($"Are you sure you want to delete {uxListViewSecrets.SelectedItems.Count} secret(s) with the following names?\n{secretNames}\n\nWarning: This operation can not be undone!", Utils.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
                 {
                     using (var op = NewUxOperationWithProgress(uxButtonDelete))
                     {
