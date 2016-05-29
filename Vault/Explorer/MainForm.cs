@@ -33,8 +33,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             Text += $" ({Environment.UserDomainName}\\{Environment.UserName})";
             uxListViewSecrets.ListViewItemSorter = _listViewItemSorter = new ListViewItemSorter();
 
-            uxButtonCopy.ToolTipText = uxMenuItemCopy.ToolTipText = $"Copy secret value to clipboard for {Settings.Default.CopyToClipboardTimeToLive.TotalSeconds} seconds";
-            uxTimerClearClipboard.Interval = (int)Settings.Default.CopyToClipboardTimeToLive.TotalMilliseconds;
+            ApplySettings();
 
             _moveSecretCursor = Utils.LoadCursorFromResource(Resources.move_secret);
             _moveValueCursor = Utils.LoadCursorFromResource(Resources.move_value);
@@ -47,6 +46,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 Visible = false
             };
             uxStatusStrip.Items.Insert(3, uxButtonCancel);
+        }
+
+        private void ApplySettings()
+        {
+            uxButtonCopy.ToolTipText = uxMenuItemCopy.ToolTipText = $"Copy secret value to clipboard for {Settings.Default.CopyToClipboardTimeToLive.TotalSeconds} seconds";
+            uxTimerClearClipboard.Interval = (int)Settings.Default.CopyToClipboardTimeToLive.TotalMilliseconds;
         }
 
         private UxOperation NewUxOperationWithProgress(ToolStripItem controlToToggle) => new UxOperation(controlToToggle, uxStatusLabel, uxStatusProgressBar, uxButtonCancel);
@@ -482,7 +487,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private void uxButtonSettings_Click(object sender, EventArgs e)
         {
             var dlg = new SettingsDialog();
-            dlg.ShowDialog();
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                ApplySettings();
+            }
         }
     }
 }

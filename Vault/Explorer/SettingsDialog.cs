@@ -12,11 +12,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
 {
     public partial class SettingsDialog : Form
     {
+        private readonly Settings _currentSettings;
+
         public SettingsDialog()
         {
             InitializeComponent();
-            Settings.Default.PropertyChanged += CurrentSettings_PropertyChanged;
-            uxPropertyGrid.SelectedObject = Settings.Default;
+            _currentSettings = new Settings();
+            _currentSettings.PropertyChanged += CurrentSettings_PropertyChanged;
+            uxPropertyGrid.SelectedObject = _currentSettings;
         }
 
         private void CurrentSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -24,14 +27,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxButtonOK.Enabled = true;
         }
 
-        private void SettingsDialog_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            Settings.Default.PropertyChanged -= CurrentSettings_PropertyChanged;
-        }
-
         private void uxButtonOK_Click(object sender, EventArgs e)
         {
-            Settings.Default.Save();
+            _currentSettings.Save();
+            Settings.Default.Reload();
         }
     }
 }

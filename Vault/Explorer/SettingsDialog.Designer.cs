@@ -41,7 +41,7 @@
             this.uxButtonCancel.Margin = new System.Windows.Forms.Padding(4);
             this.uxButtonCancel.Name = "uxButtonCancel";
             this.uxButtonCancel.Size = new System.Drawing.Size(100, 28);
-            this.uxButtonCancel.TabIndex = 8;
+            this.uxButtonCancel.TabIndex = 3;
             this.uxButtonCancel.Text = "Cancel";
             this.uxButtonCancel.UseVisualStyleBackColor = true;
             // 
@@ -54,7 +54,7 @@
             this.uxButtonOK.Margin = new System.Windows.Forms.Padding(4);
             this.uxButtonOK.Name = "uxButtonOK";
             this.uxButtonOK.Size = new System.Drawing.Size(100, 28);
-            this.uxButtonOK.TabIndex = 7;
+            this.uxButtonOK.TabIndex = 2;
             this.uxButtonOK.Text = "OK";
             this.uxButtonOK.UseVisualStyleBackColor = true;
             this.uxButtonOK.Click += new System.EventHandler(this.uxButtonOK_Click);
@@ -65,7 +65,7 @@
             this.uxPropertyGrid.Name = "uxPropertyGrid";
             this.uxPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.Categorized;
             this.uxPropertyGrid.Size = new System.Drawing.Size(557, 455);
-            this.uxPropertyGrid.TabIndex = 9;
+            this.uxPropertyGrid.TabIndex = 0;
             this.uxPropertyGrid.ToolbarVisible = false;
             // 
             // SettingsDialog
@@ -84,7 +84,6 @@
             this.Name = "SettingsDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Settings";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SettingsDialog_FormClosed);
             this.ResumeLayout(false);
 
         }
