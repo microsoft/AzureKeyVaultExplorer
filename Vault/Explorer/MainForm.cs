@@ -91,7 +91,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             using (var op = NewUxOperationWithProgress(uxMenuItemRefresh))
             {
-                _vault = new Vault(Settings.Default.VaultsJsonFileLocation, VaultAccessTypeEnum.ReadWrite, _currentVaultAlias.VaultNames);
+                _vault = new Vault(Utils.FullPathToJsonFile(Settings.Default.VaultsJsonFileLocation), VaultAccessTypeEnum.ReadWrite, _currentVaultAlias.VaultNames);
                 uxListViewSecrets.Items.Clear();
                 _strikedoutSecrets = 0;
                 RefreshSecertsCount();

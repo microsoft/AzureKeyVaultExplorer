@@ -73,11 +73,18 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return tags[Consts.Md5Key];
         }
 
-        public static T LoadFromJsonFile<T>(string filename)
+        public static string FullPathToJsonFile(string filename)
         {
             filename = Environment.ExpandEnvironmentVariables(filename);
-            var jsonFile = Path.IsPathRooted(filename) ? filename : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
-            return JsonConvert.DeserializeObject<T>(File.ReadAllText(jsonFile));
+            if (Path.IsPathRooted(filename)) return filename;
+            filename = Path.Combine(Settings.Default.JsonConfigurationFilesRoot, filename);
+            if (Path.IsPathRooted(filename)) return filename;
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
+        }
+
+        public static T LoadFromJsonFile<T>(string filename)
+        {
+            return JsonConvert.DeserializeObject<T>(File.ReadAllText(FullPathToJsonFile(filename)));
         }
 
         public static Cursor LoadCursorFromResource(byte[] buffer)
