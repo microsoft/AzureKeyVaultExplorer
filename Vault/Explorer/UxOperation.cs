@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.ApplicationInsights.DataContracts;
+using System;
+using System.Diagnostics;
 using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using System.Windows.Forms;
@@ -12,14 +14,18 @@ namespace Microsoft.PS.Common.Vault.Explorer
     {
         public CancellationToken CancellationToken => _cancellationTokenSource.Token;
 
+        private readonly DateTimeOffset _startTime;
         private readonly ToolStripItem _controlToToggle;
         private readonly ToolStripItem _statusLabel;
         private readonly ToolStripProgressBar _statusProgress;
         private readonly ToolStripItem _cancelButton;
         private readonly CancellationTokenSource _cancellationTokenSource;
 
+        private bool _disposedValue = false; // To detect redundant calls
+
         public UxOperation(ToolStripItem controlToToggle, ToolStripItem statusLabel, ToolStripProgressBar statusProgress, ToolStripItem cancelButton)
         {
+            _startTime = DateTimeOffset.UtcNow;
             _controlToToggle = controlToToggle;
             _statusLabel = statusLabel;
             _statusProgress = statusProgress;
@@ -34,20 +40,33 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 _cancelButton.Click += uxButtonCancel_Click;
             }
+
             Cursor.Current = Cursors.WaitCursor;
         }
 
         public void Dispose()
         {
+            if (_disposedValue) return;
             if (_cancelButton != null)
             {
                 _cancelButton.Click -= uxButtonCancel_Click;
             }
+
+            var eventTelemetry = new EventTelemetry(_controlToToggle.Name) 
+            {
+                Timestamp = _startTime,
+            };
+            eventTelemetry.Metrics.Add($"{_controlToToggle.Name}_Duration", (DateTimeOffset.UtcNow - _startTime).TotalMilliseconds);
+            eventTelemetry.Metrics.Add($"{_controlToToggle.Name}_Cancelled", _cancellationTokenSource.IsCancellationRequested ? 1 : 0);
+            VaultExplorerTelemetryClient.Default.TrackEvent(eventTelemetry);
+
             _cancellationTokenSource.Dispose();
             _controlToToggle.Enabled = true;
             _statusLabel.Text = "Ready";
             ProgressBarVisibility(false);
+
             Cursor.Current = Cursors.Default;
+            _disposedValue = true;
         }
 
         private void ProgressBarVisibility(bool visible)

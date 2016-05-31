@@ -1,10 +1,9 @@
-﻿using Microsoft.Azure.KeyVault;
-using Microsoft.PS.Common.Types;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -119,7 +118,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 version = string.Format("{0}.{1}.{2}.{3}", verInfo.FileMajorPart, verInfo.FileMinorPart, verInfo.FileBuildPart, verInfo.FilePrivatePart);
             }
             catch { }
-            return string.Format(string.Format("{0}: {1}{2}", title, version, optionalPrefix));
+            return string.Format(string.Format("{0}{1}{2}", title, version, optionalPrefix));
         }
     }
 }

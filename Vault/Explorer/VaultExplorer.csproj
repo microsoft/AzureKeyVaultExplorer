@@ -31,8 +31,11 @@
     <ApplicationIcon>VaultExplorer.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.ApplicationInsights">
+      <HintPath>$(PkgMicrosoft_ApplicationInsights)\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.TextEditor">
-      <HintPath>..\..\.packages\ICSharpCode.TextEditor.3.2.1.6466\lib\Net20\ICSharpCode.TextEditor.dll</HintPath>
+      <HintPath>$(PkgICSharpCode_TextEditor)\lib\Net20\ICSharpCode.TextEditor.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Azure.KeyVault.dll">
       <HintPath>$(PkgMicrosoft_Azure_KeyVault)\lib\net45\Microsoft.Azure.KeyVault.dll</HintPath>
@@ -120,6 +123,7 @@
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="TagItem.cs" />
+    <Compile Include="VaultExplorerTelemetryClient.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="UxOperation.cs" />
     <Compile Include="VaultAlias..cs" />
