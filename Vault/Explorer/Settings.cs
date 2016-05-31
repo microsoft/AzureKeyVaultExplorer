@@ -119,12 +119,31 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         [UserScopedSetting()]
-        [DefaultSettingValue(@".\Vaults.json")]
-        [DisplayName("Vaults file location")]
-        [Description("Relative or absolute path to .json file with the vaults.\nEnvironment variables are supported and expanded accordingly.")]
+        [DefaultSettingValue(@".\")]
+        [DisplayName("Root location")]
+        [Description("Relative or absolute path to root folder where .json files are located.\nEnvironment variables are supported and expanded accordingly.")]
         [Browsable(true)]
-        [Category("Vaults")]
+        [Category("Vaults configuration")]
         [Editor(typeof(FolderNameEditor), typeof(UITypeEditor))]
+        public string JsonConfigurationFilesRoot
+        {
+            get
+            {
+                return ((string)(this[nameof(JsonConfigurationFilesRoot)]));
+            }
+            set
+            {
+                this[nameof(JsonConfigurationFilesRoot)] = value;
+            }
+        }
+
+        [UserScopedSetting()]
+        [DefaultSettingValue(@"Vaults.json")]
+        [DisplayName("Vaults file name")]
+        [Description("Relative or absolute path to .json file with vaults definitions and access.\nEnvironment variables are supported and expanded accordingly.")]
+        [Browsable(true)]
+        [Category("Vaults configuration")]
+        [Editor(typeof(FileNameEditor), typeof(UITypeEditor))]
         public string VaultsJsonFileLocation
         {
             get
@@ -138,12 +157,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         [UserScopedSetting()]
-        [DefaultSettingValue(@".\VaultAliases.json")]
-        [DisplayName("Vault aliases file location")]
-        [Description("Relative or absolute path to .json file with the vault aliases.\nEnvironment variables are supported and expanded accordingly.")]
+        [DefaultSettingValue(@"VaultAliases.json")]
+        [DisplayName("Vault aliases file name")]
+        [Description("Relative or absolute path to .json file with vault aliases.\nEnvironment variables are supported and expanded accordingly.")]
         [Browsable(true)]
-        [Category("Vaults")]
-        [Editor(typeof(FolderNameEditor), typeof(UITypeEditor))]
+        [Category("Vaults configuration")]
+        [Editor(typeof(FileNameEditor), typeof(UITypeEditor))]
         public string VaultAliasesJsonFileLocation
         {
             get
@@ -157,12 +176,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         [UserScopedSetting()]
-        [DefaultSettingValue(@".\SecretKinds.json")]
-        [DisplayName("Secret kinds file location")]
-        [Description("Relative or absolute path to .json file with the secret kinds.\nEnvironment variables are supported and expanded accordingly.")]
+        [DefaultSettingValue(@"SecretKinds.json")]
+        [DisplayName("Secret kinds file name")]
+        [Description("Relative or absolute path to .json file with secret kinds definitions.\nEnvironment variables are supported and expanded accordingly.")]
         [Browsable(true)]
-        [Category("Vaults")]
-        [Editor(typeof(FolderNameEditor), typeof(UITypeEditor))]
+        [Category("Vaults configuration")]
+        [Editor(typeof(FileNameEditor), typeof(UITypeEditor))]
         public string SecretKindsJsonFileLocation
         {
             get

@@ -48,6 +48,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
             ValueRegex = new Regex(valueRegex, RegexOptions.Singleline | RegexOptions.Compiled);
             CertificateFormat = certificateFormat;
         }
+
+        public override string ToString() => Text + " secret name" + Utils.DropDownSuffix;
     }
 
     [JsonDictionary]

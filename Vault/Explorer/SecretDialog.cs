@@ -223,7 +223,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             foreach (var item in uxMenuSecretKind.Items) ((SecretKind)item).Checked = false;
             SecretObject.SecretKind = sk;
             sk.Checked = true;
-            uxLinkLabelSecretKind.Text = sk.Text + " secret name" + Utils.DropDownSuffix;
+            uxLinkLabelSecretKind.Text = sk.ToString();
             uxToolTip.SetToolTip(uxLinkLabelSecretKind, sk.Description);
             RefreshCertificate(_certificateObj);
             uxTextBoxName_TextChanged(sender, null);

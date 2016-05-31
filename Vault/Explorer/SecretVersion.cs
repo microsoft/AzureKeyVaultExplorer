@@ -18,9 +18,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 SecretItem.Identifier.Version);
         }
 
-        public override string ToString()
-        {
-            return ((0 == Index) ? "Current version" : $"Version from {Text}") + Utils.DropDownSuffix;
-        }
+        public override string ToString() => ((0 == Index) ? "Current value" : $"Value from {Text}") + Utils.DropDownSuffix;
     }
 }
