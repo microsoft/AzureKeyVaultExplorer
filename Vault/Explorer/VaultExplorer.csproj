@@ -123,7 +123,7 @@
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="TagItem.cs" />
-    <Compile Include="VaultExplorerTelemetryClient.cs" />
+    <Compile Include="Telemetry.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="UxOperation.cs" />
     <Compile Include="VaultAlias..cs" />
