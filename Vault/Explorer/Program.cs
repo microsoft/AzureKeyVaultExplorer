@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.ApplicationInsights.DataContracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
@@ -18,31 +19,30 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            VaultExplorerTelemetryClient.Init();
+            Application.ApplicationExit += (s, e) => VaultExplorerTelemetryClient.Default.Flush();
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
-            Application.ThreadException += Application_ThreadException;
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            Application.ThreadException += (s, e) => TrackExceptionAndShowError(e.Exception);
+            AppDomain.CurrentDomain.UnhandledException += (s, e) => TrackExceptionAndShowError(e.ExceptionObject as Exception);
             Application.Run(new MainForm());
         }
 
-        private static void ShowError(Exception e)
+        private static void TrackExceptionAndShowError(Exception e)
         {
             if (e is OperationCanceledException)
             {
                 object o = CallContext.LogicalGetData($"{nameof(UxOperation) + nameof(CancellationToken)}");
                 if (o != null) return; // Do not show any dialog to user
             }
+            // TrackException
+            VaultExplorerTelemetryClient.Default.TrackException(new ExceptionTelemetry(e)
+            {
+                HandledAt = ExceptionHandledAt.Unhandled,
+                SeverityLevel = SeverityLevel.Critical,
+            });
+            // Show error
             var ed = new ExceptionDialog(e);
             ed.ShowDialog();
-        }
-
-        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            ShowError(e.ExceptionObject as Exception);
-        }
-
-        private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
-        {
-            ShowError(e.Exception);
         }
     }
 }
