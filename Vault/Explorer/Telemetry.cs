@@ -14,11 +14,13 @@ using System.Diagnostics;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
-    public static class VaultExplorerTelemetryClient
+    public static class Telemetry
     {
         /// <summary>
-        /// Application Insights
+        /// Application Insights portal:
         /// https://ms.portal.azure.com/#resource/subscriptions/34f2c5cf-b95b-4922-aad3-cc4c8ad13afb/resourcegroups/Default-ApplicationInsights-CentralUS/providers/microsoft.insights/components/vaultexplorer
+        /// Application Insights analytics:
+        /// https://analytics.applicationinsights.io/subscriptions/34f2c5cf-b95b-4922-aad3-cc4c8ad13afb/resourcegroups/Default-ApplicationInsights-CentralUS/components/vaultexplorer
         /// </summary>
         public const string TelemetryClientName = "vaultexplorer";
 
@@ -35,25 +37,35 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
     internal class TelemetryInitializer : ITelemetryInitializer
     {
+        private static readonly Guid SessionId = Guid.NewGuid();
+        private static readonly string UserDomainName = Environment.UserDomainName;
+        private static readonly string UserName = Environment.UserName;
+        private static readonly string AppVersion = Utils.GetFileVersionString("", Path.GetFileName(Application.ExecutablePath));
+        private static readonly string CurrentUILanguageTag = CultureInfo.CurrentUICulture.IetfLanguageTag;
+        private static readonly string OSVersion = Environment.OSVersion.ToString();
+        private static readonly string Is64BitOperatingSystem = Environment.Is64BitOperatingSystem ? "true" : "false";
+        private static readonly string Is64BitProcess = Environment.Is64BitProcess ? "true" : "false";
+        private static readonly string MachineName = Environment.MachineName;
+        private static readonly string ProcessorCount = Environment.ProcessorCount.ToString();
+        private static readonly string ClrVersion = Environment.Version.ToString();
+
         public void Initialize(ITelemetry telemetry)
         {
-            telemetry.Context.User.AccountId = Environment.UserDomainName;
-            telemetry.Context.User.Id = Environment.UserName;
+            telemetry.Context.Session.Id = SessionId.ToString();
 
-            telemetry.Context.Session.Id = Guid.NewGuid().ToString();
+            telemetry.Context.User.AccountId = UserDomainName;
+            telemetry.Context.User.Id = UserName;
 
-            telemetry.Context.Component.Version = Utils.GetFileVersionString("", Path.GetFileName(Application.ExecutablePath));
+            telemetry.Context.Component.Version = AppVersion;
 
-            telemetry.Context.Device.Language = CultureInfo.CurrentUICulture.IetfLanguageTag;
-            telemetry.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
+            telemetry.Context.Device.Language = CurrentUILanguageTag;
+            telemetry.Context.Device.OperatingSystem = OSVersion;
 
-            telemetry.Context.Properties.Add("64BitOS", Environment.Is64BitOperatingSystem.ToString());
-            telemetry.Context.Properties.Add("64BitProcess", Environment.Is64BitProcess.ToString());
-            telemetry.Context.Properties.Add("Machine name", Environment.MachineName);
-            telemetry.Context.Properties.Add("ProcessorCount", Environment.ProcessorCount.ToString());
-            telemetry.Context.Properties.Add("ClrVersion", Environment.Version.ToString());
-
-            telemetry.Context.Session.IsFirst = true;
+            telemetry.Context.Properties.Add("64BitOS", Is64BitOperatingSystem);
+            telemetry.Context.Properties.Add("64BitProcess", Is64BitProcess);
+            telemetry.Context.Properties.Add("MachineName", MachineName);
+            telemetry.Context.Properties.Add("ProcessorCount", ProcessorCount);
+            telemetry.Context.Properties.Add("ClrVersion", ClrVersion);
         }
     }
 
@@ -66,7 +78,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private readonly PageViewTelemetry _telemetryData;
 
         private bool _viewLogged = false;
-        private Stopwatch _stopwatch = null;
+        private DateTimeOffset _startTime;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TelemetryForm"/> class.
@@ -82,7 +94,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         protected override void OnLoad(EventArgs e)
         {
-            _stopwatch = Stopwatch.StartNew();
+            _startTime = DateTimeOffset.UtcNow;
             base.OnLoad(e);
         }
 
@@ -100,8 +112,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             if (!this.DesignMode && !_viewLogged)
             {
-                _telemetryData.Duration = _stopwatch.Elapsed;
-                VaultExplorerTelemetryClient.Default.TrackPageView(_telemetryData);
+                _telemetryData.Timestamp = _startTime;
+                _telemetryData.Duration = DateTimeOffset.UtcNow - _startTime;
+                Telemetry.Default.TrackPageView(_telemetryData);
                 _viewLogged = true;
             }
         }

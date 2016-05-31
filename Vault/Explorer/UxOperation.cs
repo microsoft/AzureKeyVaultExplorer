@@ -56,9 +56,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 Timestamp = _startTime,
             };
-            eventTelemetry.Metrics.Add($"{_controlToToggle.Name}_Duration", (DateTimeOffset.UtcNow - _startTime).TotalMilliseconds);
-            eventTelemetry.Metrics.Add($"{_controlToToggle.Name}_Cancelled", _cancellationTokenSource.IsCancellationRequested ? 1 : 0);
-            VaultExplorerTelemetryClient.Default.TrackEvent(eventTelemetry);
+            eventTelemetry.Metrics.Add("Duration", (DateTimeOffset.UtcNow - _startTime).TotalMilliseconds);
+            eventTelemetry.Metrics.Add("Cancelled", _cancellationTokenSource.IsCancellationRequested ? 1 : 0);
+            Telemetry.Default.TrackEvent(eventTelemetry);
 
             _cancellationTokenSource.Dispose();
             _controlToToggle.Enabled = true;

@@ -19,8 +19,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            VaultExplorerTelemetryClient.Init();
-            Application.ApplicationExit += (s, e) => VaultExplorerTelemetryClient.Default.Flush();
+            Telemetry.Init();
+            Application.ApplicationExit += (s, e) => Telemetry.Default.Flush();
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             Application.ThreadException += (s, e) => TrackExceptionAndShowError(e.Exception);
             AppDomain.CurrentDomain.UnhandledException += (s, e) => TrackExceptionAndShowError(e.ExceptionObject as Exception);
@@ -35,7 +35,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 if (o != null) return; // Do not show any dialog to user
             }
             // TrackException
-            VaultExplorerTelemetryClient.Default.TrackException(new ExceptionTelemetry(e)
+            Telemetry.Default.TrackException(new ExceptionTelemetry(e)
             {
                 HandledAt = ExceptionHandledAt.Unhandled,
                 SeverityLevel = SeverityLevel.Critical,
