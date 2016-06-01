@@ -25,6 +25,24 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         [UserScopedSetting()]
+        [DefaultSettingValue("false")]
+        [DisplayName("Disable telemetry")]
+        [Description("Value indicating whether sending of telemetry to Application Insights is disabled.")]
+        [Browsable(false)]
+        [Category("General")]
+        public bool DisableTelemetry
+        {
+            get
+            {
+                return ((bool)(this[nameof(DisableTelemetry)]));
+            }
+            set
+            {
+                this[nameof(DisableTelemetry)] = value;
+            }
+        }
+
+        [UserScopedSetting()]
         [DefaultSettingValue("00:00:30")]
         [DisplayName("Clear secret from clipboard after")]
         [Description("Interval for secret to stay in the clipboard once copied to the clipboard.")]

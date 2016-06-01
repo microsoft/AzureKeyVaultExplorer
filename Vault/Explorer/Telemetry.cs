@@ -30,6 +30,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             TelemetryConfiguration config = TelemetryConfiguration.CreateDefault();
             config.InstrumentationKey = "ebe1f199-8317-4c4f-913c-5b569f1cba9f";
+            config.DisableTelemetry = Settings.Default.DisableTelemetry;
             Default = new TelemetryClient(config) { InstrumentationKey = config.InstrumentationKey };
             config.TelemetryInitializers.Add(new TelemetryInitializer());
         }
