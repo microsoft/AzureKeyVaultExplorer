@@ -73,7 +73,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
     /// Base class for forms to track Telemetry data as a PageView event.
     /// Also applies duration to the logged entry
     /// </summary>
-    public class TelemetryForm : Form
+    public class FormTelemetry : Form
     {
         private readonly PageViewTelemetry _telemetryData;
 
@@ -81,9 +81,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private DateTimeOffset _startTime;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TelemetryForm"/> class.
+        /// Initializes a new instance of the <see cref="FormTelemetry"/> class.
         /// </summary>
-        public TelemetryForm()
+        public FormTelemetry()
         {
             _telemetryData = new PageViewTelemetry(!string.IsNullOrWhiteSpace(this.Name) ? this.Name : this.GetType().Name);
         }

@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
-    public partial class ExceptionDialog : Form
+    public partial class ExceptionDialog : FormTelemetry
     {
         public ExceptionDialog(Exception e)
         {

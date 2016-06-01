@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
-    public partial class SecretDialog : Form
+    public partial class SecretDialog : FormTelemetry
     {
         private bool _changed;
         private CertificateValueObject _certificateObj;

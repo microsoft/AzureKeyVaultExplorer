@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
-    public partial class SettingsDialog : Form
+    public partial class SettingsDialog : FormTelemetry
     {
         private readonly Settings _currentSettings;
 

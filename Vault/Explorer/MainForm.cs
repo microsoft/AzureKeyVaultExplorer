@@ -15,7 +15,7 @@ using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
-    public partial class MainForm : TelemetryForm
+    public partial class MainForm : FormTelemetry
     {
         private VaultAlias _currentVaultAlias;
         private Vault _vault;
