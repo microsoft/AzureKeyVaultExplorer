@@ -10,6 +10,7 @@
     <RootNamespace>Microsoft.PS.Common.Vault.Explorer</RootNamespace>
     <AssemblyName>VaultExplorer</AssemblyName>
     <FileAlignment>512</FileAlignment>
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch Condition="'$(BuildingInsideVisualStudio)' != ''">None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -17,7 +18,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget Condition="'$(BuildingInsideVisualStudio)' != ''">AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\Release\</OutputPath>
@@ -25,7 +28,9 @@
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget Condition="'$(BuildingInsideVisualStudio)' != ''">AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>VaultExplorer.ico</ApplicationIcon>

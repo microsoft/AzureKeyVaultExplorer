@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
-    public partial class PasswordDialog : Form
+    public partial class PasswordDialog : FormTelemetry
     {
         public PasswordDialog()
         {
