@@ -14,15 +14,23 @@ namespace Microsoft.PS.Common.Vault.Explorer
 {
     public partial class SecretDialog : FormTelemetry
     {
+        private enum Mode
+        {
+            NewSecret,
+            EditSecret
+        };
+
+        private readonly Mode _mode;
         private bool _changed;
         private CertificateValueObject _certificateObj;
         private readonly TextEditorControl uxTextBoxValue;
         private readonly Vault _vault;
         public SecretObject SecretObject { private set; get; }
 
-        private SecretDialog(string[] secretKinds, string title)
+        private SecretDialog(string[] secretKinds, string title, Mode mode)
         {
             InitializeComponent();
+            _mode = mode;
             Text = title;
             uxTextBoxName.Font = Settings.Default.SecretFont;
             uxTextBoxValue = new TextEditorControl()
@@ -52,12 +60,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxTextBoxName.Text = SecretObject.Name;
             uxTextBoxValue.IsReadOnly = SecretObject.ContentType.IsCertificate();
             uxTextBoxValue.Text = SecretObject.Value;
+            uxTextBoxValue.Refresh();
         }
 
         /// <summary>
         /// New empty secret
         /// </summary>
-        public SecretDialog(string[] secretKinds) : this(secretKinds, "New secret")
+        public SecretDialog(string[] secretKinds) : this(secretKinds, "New secret", Mode.NewSecret)
         {
             _changed = true;
             var s = new Secret() { Attributes = new SecretAttributes(), ContentType = ContentTypeEnumConverter.GetDescription(ContentType.Text) };
@@ -107,7 +116,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <summary>
         /// Edit or Copy secret
         /// </summary>
-        public SecretDialog(Vault vault, string[] secretKinds, Secret s, IEnumerable<SecretItem> versions) : this(secretKinds, "Edit secret")
+        public SecretDialog(Vault vault, string[] secretKinds, Secret s, IEnumerable<SecretItem> versions) : this(secretKinds, "Edit secret", Mode.EditSecret)
         {
             Text += $" {s.SecretIdentifier.Name}";
             _vault = vault;
@@ -232,7 +241,15 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void uxLinkLabelValue_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            uxMenuVersions.Show(uxLinkLabelValue, 0, uxLinkLabelValue.Height);
+            switch (_mode)
+            {
+                case Mode.NewSecret:
+                    uxMenuNewValue.Show(uxLinkLabelValue, 0, uxLinkLabelValue.Height);
+                    return;
+                case Mode.EditSecret:
+                    uxMenuVersions.Show(uxLinkLabelValue, 0, uxLinkLabelValue.Height);
+                    return;
+            }
         }
 
         private async void uxMenuVersions_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -249,6 +266,18 @@ namespace Microsoft.PS.Common.Vault.Explorer
             AutoDetectCertificate();
             _changed = (sender != null); // Sender will be NULL for the first time during Edit Dialog ctor
             InvalidateOkButton();
+        }
+
+        private void uxMenuItemNewPassword_Click(object sender, EventArgs e)
+        {
+            uxTextBoxValue.Text = Utils.NewSecurePassword();
+            uxTextBoxValue.Refresh();
+        }
+
+        private void uxMenuItemNewGuid_Click(object sender, EventArgs e)
+        {
+            uxTextBoxValue.Text = Guid.NewGuid().ToString("D");
+            uxTextBoxValue.Refresh();
         }
     }
 }
