@@ -1,11 +1,14 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Win32;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Deployment.Application;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -16,6 +19,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
 {
     public static class Utils
     {
+        public const string ProductName = "VaultExplorer";
+
         public const string AppName = "Azure Key Vault Explorer";
 
         /// <summary>
@@ -139,6 +144,32 @@ namespace Microsoft.PS.Common.Vault.Explorer
             var a = Enumerable.Range(0, length - 11).Select(i => All[r.Next(0, All.Length)]);
 
             return Encoding.ASCII.GetString(u.Concat(l).Concat(n).Concat(s).Concat(a).Shuffle().ToArray());
+        }
+
+        public static void ClickOnce_SetAddRemoveProgramsIcon()
+        {
+            if (ApplicationDeployment.IsNetworkDeployed && ApplicationDeployment.CurrentDeployment.IsFirstRun)
+            {
+                try
+                {
+                    string pathToIcon = Path.Combine(Application.StartupPath, Utils.ProductName + ".ico");
+                    if (!File.Exists(pathToIcon))
+                        return;
+
+                    RegistryKey myUninstallKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall");
+                    foreach (var subKeyName in myUninstallKey.GetSubKeyNames())
+                    {
+                        RegistryKey myKey = myUninstallKey.OpenSubKey(subKeyName, true);
+                        object myValue = myKey.GetValue("DisplayName");
+                        if (myValue != null && myValue.ToString() == Utils.ProductName)
+                        {
+                            myKey.SetValue("DisplayIcon", pathToIcon);
+                            break;
+                        }
+                    }
+                }
+                catch { }
+            }
         }
     }
 }
