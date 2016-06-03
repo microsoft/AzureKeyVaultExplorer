@@ -45,7 +45,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 TabIndex = 4,
                 AllowDrop = false,
                 Font = Settings.Default.SecretFont,
-                ShowLineNumbers = Settings.Default.ShowLineNumbers
+                ShowLineNumbers = Settings.Default.ShowLineNumbers,
+                ContextMenuStrip = uxMenuNewValue
             };
             uxTextBoxValue.TextChanged += uxTextBoxValue_TextChanged;
             var sk = Utils.LoadFromJsonFile<SecretKinds>(Settings.Default.SecretKindsJsonFileLocation);
