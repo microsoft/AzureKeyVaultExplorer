@@ -3,6 +3,7 @@
   <!-- Environment -->
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Environment.props))\Environment.props" Condition=" '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Environment.props))' != '' " />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="ClickOnce.props" />
   <PropertyGroup>
     <ProjectGuid>{0720CA4C-5D06-47FC-8DF9-2A42C40119A3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -10,6 +11,7 @@
     <RootNamespace>Microsoft.PS.Common.Vault.Explorer</RootNamespace>
     <AssemblyName>VaultExplorer</AssemblyName>
     <ErrorReport>prompt</ErrorReport>
+    <ApplicationIcon>VaultExplorer.ico</ApplicationIcon>
     <FileAlignment>512</FileAlignment>
     <Prefer32Bit>false</Prefer32Bit>
     <PlatformTarget>x64</PlatformTarget>
@@ -31,9 +33,6 @@
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <WebProjectOutputDir Condition="'$(WebProjectOutputDir)' == ''">$(OutputPath)</WebProjectOutputDir>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>VaultExplorer.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.ApplicationInsights">
@@ -65,6 +64,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.Design" />
     <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
@@ -131,7 +131,7 @@
     <Compile Include="Telemetry.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="UxOperation.cs" />
-    <Compile Include="VaultAlias..cs" />
+    <Compile Include="VaultAlias.cs" />
     <EmbeddedResource Include="ExceptionDialog.resx">
       <DependentUpon>ExceptionDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -157,12 +157,16 @@
     <EmbeddedResource Include="SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="VaultAliases.json">
+    <Content Include="VaultAliases.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="SecretKinds.json">
+    </Content>
+    <Content Include="SecretKinds.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
+    <Content Include="..\Library\Vaults.json">
+      <Link>Vaults.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -193,7 +197,7 @@
     <None Include="Resources\disk.png" />
     <None Include="Resources\cancel.png" />
     <None Include="Resources\BigKey.png" />
-    <Content Include="Resources\empty.png" />
+    <None Include="Resources\empty.png" />
     <None Include="Resources\error.png" />
     <None Include="Resources\move_secret.cur" />
     <None Include="Resources\move_value.cur" />

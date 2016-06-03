@@ -20,6 +20,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Telemetry.Init();
+            Utils.ClickOnce_SetAddRemoveProgramsIcon();
             Application.ApplicationExit += (s, e) => Telemetry.Default.Flush();
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             Application.ThreadException += (s, e) => TrackExceptionAndShowError(e.Exception);
