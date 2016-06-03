@@ -3,7 +3,7 @@
   <!-- Environment -->
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Environment.props))\Environment.props" Condition=" '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Environment.props))' != '' " />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <Import Project="ClickOnce.props" />
+  <Import Project="ClickOnce.props" Condition="$(ClickOnceInstallUpdateUrl) != ''" />
   <PropertyGroup>
     <ProjectGuid>{0720CA4C-5D06-47FC-8DF9-2A42C40119A3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -11,7 +11,7 @@
     <RootNamespace>Microsoft.PS.Common.Vault.Explorer</RootNamespace>
     <AssemblyName>VaultExplorer</AssemblyName>
     <ErrorReport>prompt</ErrorReport>
-    <ApplicationIcon>VaultExplorer.ico</ApplicationIcon>
+    <ApplicationIcon>$(AssemblyName).ico</ApplicationIcon>
     <FileAlignment>512</FileAlignment>
     <Prefer32Bit>false</Prefer32Bit>
     <PlatformTarget>x64</PlatformTarget>
@@ -208,7 +208,7 @@
     <None Include="Resources\move_secret.cur" />
     <None Include="Resources\move_value.cur" />
     <None Include="Resources\wrench.png" />
-    <Content Include="VaultExplorer.ico" />
+    <Content Include="$(AssemblyName).ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterCompile">

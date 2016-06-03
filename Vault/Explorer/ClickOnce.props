@@ -15,12 +15,11 @@
     <SupportUrl>http://aka.ms/vaultexplorer</SupportUrl>
     <ErrorReportUrl>http://aka.ms/vaultexplorer</ErrorReportUrl>
     <ProductName>VaultExplorer</ProductName>
-    <PublisherName>Microsoft %28Eli Zeitlin%29</PublisherName>
+    <PublisherName>Microsoft</PublisherName>
     <TrustUrlParameters>true</TrustUrlParameters>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <ManifestCertificateThumbprint>6D2A9F520677D87C953A1692AE30F949BB461880</ManifestCertificateThumbprint>
     <ManifestKeyFile></ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
     <SignManifests>true</SignManifests>
