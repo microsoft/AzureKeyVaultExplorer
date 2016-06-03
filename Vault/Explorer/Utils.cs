@@ -152,10 +152,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 try
                 {
-                    string pathToIcon = Path.Combine(Application.StartupPath, Utils.ProductName + ".ico");
-                    if (!File.Exists(pathToIcon))
-                        return;
-
                     RegistryKey myUninstallKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall");
                     foreach (var subKeyName in myUninstallKey.GetSubKeyNames())
                     {
@@ -163,7 +159,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                         object myValue = myKey.GetValue("DisplayName");
                         if (myValue != null && myValue.ToString() == Utils.ProductName)
                         {
-                            myKey.SetValue("DisplayIcon", pathToIcon);
+                            myKey.SetValue("DisplayIcon", Application.ExecutablePath);
                             break;
                         }
                     }
