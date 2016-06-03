@@ -2,6 +2,8 @@
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <PublishUrl>C:\Temp\VaultExplorer\</PublishUrl>
+    <InstallUrl>\\ELIZE-HP8540\C%24\Temp\VaultExplorer\</InstallUrl>
+    <UpdateUrl>\\ELIZE-HP8540\C%24\Temp\VaultExplorer\</UpdateUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -11,20 +13,16 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>false</MapFileExtensions>
-    <InstallUrl>\\ELIZE-HP8540\C%24\Temp\VaultExplorer\</InstallUrl>
     <SupportUrl>http://aka.ms/vaultexplorer</SupportUrl>
     <ErrorReportUrl>http://aka.ms/vaultexplorer</ErrorReportUrl>
     <ProductName>VaultExplorer</ProductName>
     <PublisherName>Microsoft %28Eli Zeitlin%29</PublisherName>
     <TrustUrlParameters>true</TrustUrlParameters>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.9.5997.41738</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <ManifestCertificateThumbprint>6D2A9F520677D87C953A1692AE30F949BB461880</ManifestCertificateThumbprint>
-    <ManifestKeyFile>
-    </ManifestKeyFile>
+    <ManifestKeyFile></ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
     <SignManifests>true</SignManifests>
     <SignAssembly>true</SignAssembly>
@@ -42,12 +40,4 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <Target Name="AfterCompile">
-    <GetAssemblyIdentity AssemblyFiles="$(IntermediateOutputPath)$(TargetFileName)">
-      <Output TaskParameter="Assemblies" ItemName="TargetAssemblyIdentity" />
-    </GetAssemblyIdentity>
-    <PropertyGroup>
-      <ApplicationVersion>%(TargetAssemblyIdentity.Version)</ApplicationVersion>
-    </PropertyGroup>
-  </Target>
 </Project>
