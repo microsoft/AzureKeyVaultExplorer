@@ -167,6 +167,9 @@
       <Link>Vaults.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="$(OutputPath)\VaultExplorer.BuildInfo.config">
+      <Link>VaultExplorer.BuildInfo.config</Link>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -182,6 +185,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClickOnce.props" />
+    <None Include="ClickOncePublish.cmd" />
     <None Include="Resources\lock_go.png" />
     <None Include="Resources\lock_add.png" />
     <None Include="Resources\lock_edit.png" />
@@ -205,4 +210,12 @@
     <Content Include="VaultExplorer.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="AfterCompile">
+    <GetAssemblyIdentity AssemblyFiles="$(IntermediateOutputPath)$(TargetFileName)">
+      <Output TaskParameter="Assemblies" ItemName="TargetAssemblyIdentity" />
+    </GetAssemblyIdentity>
+    <PropertyGroup>
+      <ApplicationVersion>%(TargetAssemblyIdentity.Version)</ApplicationVersion>
+    </PropertyGroup>
+  </Target>
 </Project>
