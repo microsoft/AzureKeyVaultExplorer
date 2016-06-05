@@ -91,19 +91,27 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             using (var op = NewUxOperationWithProgress(uxMenuItemRefresh))
             {
-                _vault = new Vault(Utils.FullPathToJsonFile(Settings.Default.VaultsJsonFileLocation), VaultAccessTypeEnum.ReadWrite, _currentVaultAlias.VaultNames);
-                uxListViewSecrets.Items.Clear();
-                _strikedoutSecrets = 0;
-                RefreshSecertsCount();
-                foreach (var s in await _vault.ListSecretsAsync(cancellationToken: op.CancellationToken))
+                try
                 {
-                    uxListViewSecrets.Items.Add(new SecretListViewItem(s));
+                    _vault = new Vault(Utils.FullPathToJsonFile(Settings.Default.VaultsJsonFileLocation), VaultAccessTypeEnum.ReadWrite, _currentVaultAlias.VaultNames);
+                    uxListViewSecrets.Items.Clear();
+                    _strikedoutSecrets = 0;
+                    RefreshSecertsCount();
+                    foreach (var s in await _vault.ListSecretsAsync(0, (c) => { uxStatusLabelSecertsCount.Text = $"{c} secrets"; }, cancellationToken: op.CancellationToken))
+                    {
+                        uxListViewSecrets.Items.Add(new SecretListViewItem(s));
+                    }
+                    uxButtonAdd.Enabled = uxMenuItemAdd.Enabled = uxMenuItemAddCertificate.Enabled = true;
+                    uxImageSearch.Enabled = uxTextBoxSearch.Enabled = true;
+                    uxListViewSecrets.AllowDrop = true;
+                    RefreshSecertsCount();
+                    uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search
                 }
-                uxButtonAdd.Enabled = uxMenuItemAdd.Enabled = uxMenuItemAddCertificate.Enabled = true;
-                uxImageSearch.Enabled = uxTextBoxSearch.Enabled = true;
-                uxListViewSecrets.AllowDrop = true;
-                RefreshSecertsCount();
-                uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search
+                catch (KeyVaultClientException kvce) when (kvce.Status == System.Net.HttpStatusCode.Forbidden)
+                {
+                    MessageBox.Show($"Access to {_currentVaultAlias.Alias} ({string.Join(", ", _currentVaultAlias.VaultNames)}) denied for {Environment.UserDomainName}\\{Environment.UserName}.\n\nYou are probably missing a certificate in CurrentUser\\My or LocalMachine\\My stores, or you are not part of the appropriate security group.",
+                        Utils.AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
