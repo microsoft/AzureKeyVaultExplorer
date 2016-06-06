@@ -98,6 +98,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 return new Cursor(ms);
             }
         }
+
+        public static string ConvertToValidSecretName(string name)
+        {
+            return new Regex("[^0-9a-zA-Z-]", RegexOptions.Singleline).Replace(name, "-");
+        }
+
         public static string GetRtfUnicodeEscapedString(string s)
         {
             var sb = new StringBuilder();
