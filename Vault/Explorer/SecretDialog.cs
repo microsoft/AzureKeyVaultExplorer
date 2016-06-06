@@ -80,7 +80,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// </summary>
         public SecretDialog(string[] secretKinds, FileInfo fi) : this(secretKinds)
         {
-            uxTextBoxName.Text = Path.GetFileNameWithoutExtension(fi.Name);
+            uxTextBoxName.Text = Utils.ConvertToValidSecretName(Path.GetFileNameWithoutExtension(fi.Name));
 
             SecretObject.ContentType = ContentTypeUtils.FromExtension(fi.Extension);
             string password = null;
