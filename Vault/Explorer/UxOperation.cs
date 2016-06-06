@@ -1,8 +1,10 @@
 ﻿using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.Azure.KeyVault;
 using System;
 using System.Diagnostics;
 using System.Runtime.Remoting.Messaging;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
@@ -15,6 +17,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public CancellationToken CancellationToken => _cancellationTokenSource.Token;
 
         private readonly DateTimeOffset _startTime;
+        private readonly VaultAlias _currentVaultAlias;
         private readonly ToolStripItem _controlToToggle;
         private readonly ToolStripItem _statusLabel;
         private readonly ToolStripProgressBar _statusProgress;
@@ -23,9 +26,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private bool _disposedValue = false; // To detect redundant calls
 
-        public UxOperation(ToolStripItem controlToToggle, ToolStripItem statusLabel, ToolStripProgressBar statusProgress, ToolStripItem cancelButton)
+        public UxOperation(VaultAlias currentVaultAlias, ToolStripItem controlToToggle, ToolStripItem statusLabel, ToolStripProgressBar statusProgress, ToolStripItem cancelButton)
         {
             _startTime = DateTimeOffset.UtcNow;
+            _currentVaultAlias = currentVaultAlias;
             _controlToToggle = controlToToggle;
             _statusLabel = statusLabel;
             _statusProgress = statusProgress;
@@ -67,6 +71,20 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
             Cursor.Current = Cursors.Default;
             _disposedValue = true;
+        }
+
+        public async Task Invoke(string actionName, Func<Task> t)
+        {
+            try
+            {
+                await t();
+            }
+            catch (KeyVaultClientException kvce) when (kvce.Status == System.Net.HttpStatusCode.Forbidden)
+            {
+                ProgressBarVisibility(false);
+                MessageBox.Show($"Operation to {actionName} {_currentVaultAlias.Alias} ({string.Join(", ", _currentVaultAlias.VaultNames)}) denied for {Environment.UserDomainName}\\{Environment.UserName}.\n\nYou are probably missing a certificate in CurrentUser\\My or LocalMachine\\My stores, or you are not part of the appropriate security group.",
+                    Utils.AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void ProgressBarVisibility(bool visible)
