@@ -28,6 +28,21 @@
     "SecretKinds": [ "Custom", "WD.ServiceFabricService.Configuration.Secret" ]
   },
   {
+    "Alias": "WD.Services EU Prod",
+    "VaultNames": [ "wdvaulteu1northprod", "wdvaulteu1westprod" ],
+    "SecretKinds": [ "Custom", "WD.ServiceFabricService.Configuration.Secret" ]
+  },
+  {
+    "Alias": "WD.Services AS Prod",
+    "VaultNames": [ "wdvaultas1eastprod", "wdvaultas1southeastprod" ],
+    "SecretKinds": [ "Custom", "WD.ServiceFabricService.Configuration.Secret" ]
+  },
+  {
+    "Alias": "WD.Services BR Prod",
+    "VaultNames": [ "wdvaultbr1southprod" ],
+    "SecretKinds": [ "Custom", "WD.ServiceFabricService.Configuration.Secret" ]
+  },
+  {
     "Alias": "Defender Key Vault Ops",
     "VaultNames": [ "defenderkeyvault" ],
     "SecretKinds": [ "Custom" ]
