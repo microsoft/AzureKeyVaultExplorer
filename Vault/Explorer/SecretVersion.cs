@@ -12,9 +12,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             Index = index;
             SecretItem = secretItem;
-            ToolTipText = string.Format("Creation time:\t\t{0}\nLast updated time:\t{1}\nVersion:\t        {2}",
+            ToolTipText = string.Format("Creation time:\t\t{0}\nLast updated time:\t{1}\nChanged by:\t\t{2}\nVersion:\t        {3}",
                 Utils.NullableDateTimeToString(SecretItem.Attributes.Created),
                 Utils.NullableDateTimeToString(SecretItem.Attributes.Updated),
+                Utils.GetChangedBy(SecretItem.Tags),
                 SecretItem.Identifier.Version);
         }
 
