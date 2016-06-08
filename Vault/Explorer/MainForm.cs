@@ -174,14 +174,24 @@ namespace Microsoft.PS.Common.Vault.Explorer
             (sender as ToolStripDropDownItem)?.ShowDropDown();
         }
 
-        private bool VerifyDuplication(SecretObject soNew)
+        private bool VerifyDuplication(Secret sOld, SecretObject soNew)
         {
+            string oldName = sOld?.SecretIdentifier.Name ?? "";
             string newMd5 = soNew.Md5;
-            var sameSecretsList = from slvi in uxListViewSecrets.Items.Cast<SecretListViewItem>() where (slvi.Md5 == newMd5) && (slvi.Name != soNew.Name) select slvi.Name;
-            if (sameSecretsList.Count() > 0)
+
+            // Check if we already have *another* secret with the same name
+            if ((oldName != soNew.Name) && (uxListViewSecrets.Items.ContainsKey(soNew.Name) &&
+                (MessageBox.Show($"Are you sure you want to replace secret '{soNew.Name}' with new value?", Utils.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes)))
             {
-                string sameSecrets = string.Join(", ", sameSecretsList);
-                return MessageBox.Show($"There are {sameSecretsList.Count()} other secret(s) in the vault which has the same Md5: {newMd5}.\nHere the name(s) of the other secrets:\n{sameSecrets}\nAre you sure you want to add or update secret {soNew.Name} and have a duplication of secrets?", Utils.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.Yes;
+                return false;
+            }
+
+            // Detect dups by Md5
+            var sameSecretsList = from slvi in uxListViewSecrets.Items.Cast<SecretListViewItem>() where (slvi.Md5 == newMd5) && (slvi.Name != oldName) && (slvi.Name != soNew.Name) select slvi.Name;
+            if ((sameSecretsList.Count() > 0) &&
+                (MessageBox.Show($"There are {sameSecretsList.Count()} other secret(s) in the vault which has the same Md5: {newMd5}.\nHere the name(s) of the other secrets:\n{string.Join(", ", sameSecretsList)}\nAre you sure you want to add or update secret {soNew.Name} and have a duplication of secrets?", Utils.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) != DialogResult.Yes))
+            {
+                return false;
             }
             return true;
         }
@@ -189,8 +199,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private async Task AddOrUpdateSecret(UxOperation op, Secret sOld, SecretObject soNew)
         {
             Secret s = null;
-            // Check for duplication by Md5
-            if (false == VerifyDuplication(soNew)) return;
+            // Check for duplication by Name and Md5
+            if (false == VerifyDuplication(sOld, soNew)) return;
             // New secret, secret rename or new value
             if ((sOld == null) || (sOld.SecretIdentifier.Name != soNew.Name) || (sOld.Value != soNew.RawValue))
             {
@@ -253,11 +263,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds, dtf.FileInfoObject);
                     if (nsDlg.DialogResult == DialogResult.Cancel) return; // User clicked cancel during password prompt
                 }
-                if ((nsDlg != null) &&
-                    (nsDlg.ShowDialog() == DialogResult.OK) &&
-                    (!uxListViewSecrets.Items.ContainsKey(nsDlg.SecretObject.Name) ||
-                    (uxListViewSecrets.Items.ContainsKey(nsDlg.SecretObject.Name) &&
-                    (MessageBox.Show($"Are you sure you want to replace secret '{nsDlg.SecretObject.Name}' with new value?", Utils.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes))))
+                if ((nsDlg != null) && (nsDlg.ShowDialog() == DialogResult.OK))
                 {
                     using (var op = NewUxOperationWithProgress(uxButtonAdd)) await op.Invoke("add or update secret in", async () =>
                     {
