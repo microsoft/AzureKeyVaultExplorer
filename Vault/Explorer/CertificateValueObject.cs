@@ -16,7 +16,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
     [JsonObject]
     public class CertificateValueObject
     {
-        private X509Certificate2 _cert;
+        [JsonIgnore]
+        public readonly X509Certificate2 Certificate;
 
         [JsonProperty]
         public readonly string Data;
@@ -30,7 +31,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             Data = data;
             Password = password;
             byte[] rawData = Convert.FromBase64String(data);
-            _cert = (null == password) ? new X509Certificate2(rawData) : new X509Certificate2(rawData, password, X509KeyStorageFlags.DefaultKeySet);
+            Certificate = (null == password) ? new X509Certificate2(rawData) : new X509Certificate2(rawData, password, X509KeyStorageFlags.DefaultKeySet);
         }
 
         public CertificateValueObject(FileInfo file, string password) : 
@@ -40,11 +41,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public void FillTags(ObservableTagItemsCollection tags)
         {
-            tags.AddOrReplace(new TagItem("Thumbprint", _cert.Thumbprint.ToLowerInvariant()));
-            tags.AddOrReplace(new TagItem("Expiration", _cert.GetExpirationDateString()));
-            tags.AddOrReplace(new TagItem("Subject", _cert.Subject.Replace("CN=", "")));
+            tags.AddOrReplace(new TagItem("Thumbprint", Certificate.Thumbprint.ToLowerInvariant()));
+            tags.AddOrReplace(new TagItem("Expiration", Certificate.GetExpirationDateString()));
+            tags.AddOrReplace(new TagItem("Subject", Certificate.Subject.Replace("CN=", "")));
             var sans = 
-                from X509Extension ext in _cert.Extensions
+                from X509Extension ext in Certificate.Extensions
                 where ext.Oid.Value == "2.5.29.17" // Subject Alternative Name
                 select ext.Format(false).Replace("DNS Name=", "");
             tags.AddOrReplace(new TagItem("SAN", string.Join(";", sans)));           
@@ -57,9 +58,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
             switch (secretKind)
             {
                 case "WCD.PfxCertificate":
-                    return $"{_cert.Thumbprint.ToLowerInvariant()};{Password};{Data}";
+                    return $"{Certificate.Thumbprint.ToLowerInvariant()};{Password};{Data}";
                 case "WCD.CerCertificate":
-                    return $"{_cert.Thumbprint.ToLowerInvariant()};{Data}";
+                    return $"{Certificate.Thumbprint.ToLowerInvariant()};{Data}";
                 case "WD.Certificate":
                 default:
                     return ToString();
