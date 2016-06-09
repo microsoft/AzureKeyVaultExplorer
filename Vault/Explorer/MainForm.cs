@@ -87,6 +87,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxStatusLabelSecretsSelected.Text = $"{uxListViewSecrets.SelectedItems.Count} selected";
         }
 
+        private delegate void UpdateLabelSecertsCountDelegate(int count);
+
         private async void uxMenuItemRefresh_Click(object sender, EventArgs e)
         {
             using (var op = NewUxOperationWithProgress(uxMenuItemRefresh)) await op.Invoke("access", async () =>
@@ -95,7 +97,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 uxListViewSecrets.Items.Clear();
                 _strikedoutSecrets = 0;
                 RefreshSecertsCount();
-                foreach (var s in await _vault.ListSecretsAsync(0, (c) => { uxStatusLabelSecertsCount.Text = $"{c} secrets"; }, cancellationToken: op.CancellationToken))
+                UpdateLabelSecertsCountDelegate ulscd = (c) => uxStatusLabelSecertsCount.Text = $"{c} secrets"; // We use delegate and Invoke() below to execute on the thread that owns the control
+                foreach (var s in await _vault.ListSecretsAsync(0, (c) => { Invoke(ulscd, c); }, cancellationToken: op.CancellationToken))
                 {
                     uxListViewSecrets.Items.Add(new SecretListViewItem(s));
                 }
@@ -245,7 +248,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return fi;
         }
 
-        private async void uxButtonAddItem_Click(object sender, EventArgs e)
+        private async void uxAddMenuItem_Click(object sender, EventArgs e)
         {
             SecretDialog nsDlg = null;
             // Add secret
@@ -255,15 +258,21 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 {
                     nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds);
                 }
-                // Add certificate or configuration file
-                if ((sender == uxAddCertificate) || (sender == uxMenuItemAddCertificate) || (sender == uxAddFile) || (sender == uxMenuItemAddFile))
+                // Add certificate from file or configuration file
+                if ((sender == uxAddCertificateFromFile) || (sender == uxMenuItemAddCertificate) || (sender == uxAddFile) || (sender == uxMenuItemAddFile))
                 {
                     dtf.FileInfoObject = GetFileInfo(sender, e);
                     if (dtf.FileInfoObject == null) return;
                     nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds, dtf.FileInfoObject);
-                    if (nsDlg.DialogResult == DialogResult.Cancel) return; // User clicked cancel during password prompt
                 }
-                if ((nsDlg != null) && (nsDlg.ShowDialog() == DialogResult.OK))
+                // Add certificate from store
+                if (sender == uxAddCertificateFromStore)
+                {
+                    var cert = Utils.SelectCertFromStore(StoreName.My, StoreLocation.CurrentUser, _currentVaultAlias.Alias, Handle);
+                    if (cert == null) return;
+                    nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds, cert);
+                }
+                if ((nsDlg != null) && (nsDlg.DialogResult != DialogResult.Cancel) && (nsDlg.ShowDialog() == DialogResult.OK)) // DialogResult.Cancel is when user clicked cancel during password prompt
                 {
                     using (var op = NewUxOperationWithProgress(uxButtonAdd)) await op.Invoke("add or update secret in", async () =>
                     {
@@ -484,7 +493,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             foreach (string file in files.Split('|'))
             {
-                uxButtonAddItem_Click(uxAddFile, new AddFileEventArgs(file));
+                uxAddMenuItem_Click(uxAddFile, new AddFileEventArgs(file));
             }
         }
 

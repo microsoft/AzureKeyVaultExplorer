@@ -39,6 +39,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
         }
 
+        public CertificateValueObject(X509Certificate2 certificate, string password) :
+            this(Convert.ToBase64String(certificate.RawData), password)
+        {
+        }
+
         public void FillTags(ObservableTagItemsCollection tags)
         {
             tags.AddOrReplace(new TagItem("Thumbprint", Certificate.Thumbprint.ToLowerInvariant()));

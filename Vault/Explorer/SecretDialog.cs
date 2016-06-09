@@ -117,6 +117,17 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         /// <summary>
+        /// New secret from certificate
+        /// </summary>
+        public SecretDialog(string[] secretKinds, X509Certificate2 certificate) : this(secretKinds)
+        {
+            SecretObject.ContentType = ContentType.Pkcs12;
+            string password = "foo";
+            RefreshCertificate(new CertificateValueObject(certificate, password));
+            AutoDetectSecretKind();
+        }
+
+        /// <summary>
         /// Edit or Copy secret
         /// </summary>
         public SecretDialog(Vault vault, string[] secretKinds, Secret s, IEnumerable<SecretItem> versions) : this(secretKinds, "Edit secret", Mode.EditSecret)
@@ -131,7 +142,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void AutoDetectSecretKind()
         {
-            SecretKind autoDetectSecretKind = null;
+            SecretKind autoDetectSecretKind = (SecretKind)uxMenuSecretKind.Items[0]; // Default is the first one which is always Custom
             foreach (var item in uxMenuSecretKind.Items) // Auto detect 'last' secret kind based on the name only
             {
                 SecretKind sk = (SecretKind)item;

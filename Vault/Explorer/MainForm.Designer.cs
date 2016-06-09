@@ -60,6 +60,8 @@
             this.uxButtonAdd = new System.Windows.Forms.ToolStripSplitButton();
             this.uxAddSecret = new System.Windows.Forms.ToolStripMenuItem();
             this.uxAddCertificate = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxAddCertificateFromFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxAddCertificateFromStore = new System.Windows.Forms.ToolStripMenuItem();
             this.uxAddFile = new System.Windows.Forms.ToolStripMenuItem();
             this.uxButtonEdit = new System.Windows.Forms.ToolStripButton();
             this.uxButtonToggle = new System.Windows.Forms.ToolStripButton();
@@ -206,7 +208,7 @@
             this.uxMenuItemAddSecret.Name = "uxMenuItemAddSecret";
             this.uxMenuItemAddSecret.Size = new System.Drawing.Size(161, 26);
             this.uxMenuItemAddSecret.Text = "&Secret...";
-            this.uxMenuItemAddSecret.Click += new System.EventHandler(this.uxButtonAddItem_Click);
+            this.uxMenuItemAddSecret.Click += new System.EventHandler(this.uxAddMenuItem_Click);
             // 
             // uxMenuItemAddCertificate
             // 
@@ -214,7 +216,7 @@
             this.uxMenuItemAddCertificate.Name = "uxMenuItemAddCertificate";
             this.uxMenuItemAddCertificate.Size = new System.Drawing.Size(161, 26);
             this.uxMenuItemAddCertificate.Text = "Certificate...";
-            this.uxMenuItemAddCertificate.Click += new System.EventHandler(this.uxButtonAddItem_Click);
+            this.uxMenuItemAddCertificate.Click += new System.EventHandler(this.uxAddMenuItem_Click);
             // 
             // uxMenuItemAddFile
             // 
@@ -222,7 +224,7 @@
             this.uxMenuItemAddFile.Name = "uxMenuItemAddFile";
             this.uxMenuItemAddFile.Size = new System.Drawing.Size(161, 26);
             this.uxMenuItemAddFile.Text = "&File...";
-            this.uxMenuItemAddFile.Click += new System.EventHandler(this.uxButtonAddItem_Click);
+            this.uxMenuItemAddFile.Click += new System.EventHandler(this.uxAddMenuItem_Click);
             // 
             // uxMenuItemEdit
             // 
@@ -398,25 +400,41 @@
             // 
             this.uxAddSecret.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.key;
             this.uxAddSecret.Name = "uxAddSecret";
-            this.uxAddSecret.Size = new System.Drawing.Size(161, 26);
+            this.uxAddSecret.Size = new System.Drawing.Size(152, 26);
             this.uxAddSecret.Text = "&Secret...";
-            this.uxAddSecret.Click += new System.EventHandler(this.uxButtonAddItem_Click);
+            this.uxAddSecret.Click += new System.EventHandler(this.uxAddMenuItem_Click);
             // 
             // uxAddCertificate
             // 
+            this.uxAddCertificate.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.uxAddCertificateFromFile,
+            this.uxAddCertificateFromStore});
             this.uxAddCertificate.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.certificate;
             this.uxAddCertificate.Name = "uxAddCertificate";
-            this.uxAddCertificate.Size = new System.Drawing.Size(161, 26);
-            this.uxAddCertificate.Text = "Ce&rtificate...";
-            this.uxAddCertificate.Click += new System.EventHandler(this.uxButtonAddItem_Click);
+            this.uxAddCertificate.Size = new System.Drawing.Size(152, 26);
+            this.uxAddCertificate.Text = "Ce&rtificate";
+            // 
+            // uxAddCertificateFromFile
+            // 
+            this.uxAddCertificateFromFile.Name = "uxAddCertificateFromFile";
+            this.uxAddCertificateFromFile.Size = new System.Drawing.Size(200, 26);
+            this.uxAddCertificateFromFile.Text = "From &file...";
+            this.uxAddCertificateFromFile.Click += new System.EventHandler(this.uxAddMenuItem_Click);
+            // 
+            // uxAddCertificateFromStore
+            // 
+            this.uxAddCertificateFromStore.Name = "uxAddCertificateFromStore";
+            this.uxAddCertificateFromStore.Size = new System.Drawing.Size(200, 26);
+            this.uxAddCertificateFromStore.Text = "From local &store...";
+            this.uxAddCertificateFromStore.Click += new System.EventHandler(this.uxAddMenuItem_Click);
             // 
             // uxAddFile
             // 
             this.uxAddFile.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.folder_key;
             this.uxAddFile.Name = "uxAddFile";
-            this.uxAddFile.Size = new System.Drawing.Size(161, 26);
+            this.uxAddFile.Size = new System.Drawing.Size(152, 26);
             this.uxAddFile.Text = "&File...";
-            this.uxAddFile.Click += new System.EventHandler(this.uxButtonAddItem_Click);
+            this.uxAddFile.Click += new System.EventHandler(this.uxAddMenuItem_Click);
             // 
             // uxButtonEdit
             // 
@@ -668,6 +686,8 @@
         private System.Windows.Forms.ToolStripProgressBar uxStatusProgressBar;
         private System.Windows.Forms.Timer uxTimerClearClipboard;
         private System.Windows.Forms.ToolStripStatusLabel uxStatusLabelSecretsSelected;
+        private System.Windows.Forms.ToolStripMenuItem uxAddCertificateFromFile;
+        private System.Windows.Forms.ToolStripMenuItem uxAddCertificateFromStore;
     }
 }
 

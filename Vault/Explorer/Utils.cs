@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -172,6 +173,19 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 }
                 catch { }
             }
+        }
+
+        public static X509Certificate2 SelectCertFromStore(StoreName name, StoreLocation location, string vaultAlias, IntPtr hwndParent)
+        {
+            X509Store store = new X509Store(name, location);
+            store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
+            X509Certificate2Collection notExpiredAndSortedCerts = new X509Certificate2Collection(
+                (from cert in store.Certificates.Find(X509FindType.FindByTimeValid, DateTime.Now, false).Cast<X509Certificate2>()
+                 orderby string.IsNullOrEmpty(cert.FriendlyName) ? cert.GetNameInfo(X509NameType.SimpleName, false) : cert.FriendlyName descending
+                 select cert).ToArray());
+            X509Certificate2Collection selected = X509Certificate2UI.SelectFromCollection(notExpiredAndSortedCerts, Utils.AppName,
+                $"Select a certificate from the {location}\\{name} store that you would like to add to {vaultAlias}", X509SelectionFlag.SingleSelection, hwndParent);
+            return (1 == selected.Count) ? selected[0] : null;
         }
     }
 }
