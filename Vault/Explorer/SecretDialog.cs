@@ -51,6 +51,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxTextBoxValue.TextChanged += uxTextBoxValue_TextChanged;
             var sk = Utils.LoadFromJsonFile<SecretKinds>(Settings.Default.SecretKindsJsonFileLocation);
             uxMenuSecretKind.Items.AddRange((from name in secretKinds select sk[name]).ToArray());
+            uxSplitContainer_Panel1_SizeChanged(null, EventArgs.Empty);
         }
 
         private void RefreshSecretObject(Secret s)
@@ -60,6 +61,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxTextBoxValue.SetHighlighting(SecretObject.ContentType.ToSyntaxHighlightingMode());
             uxTextBoxName.Text = SecretObject.Name;
             uxTextBoxValue.IsReadOnly = SecretObject.ContentType.IsCertificate();
+            uxLinkLabelViewCertificate.Visible = SecretObject.ContentType.IsCertificate();
             uxTextBoxValue.Text = SecretObject.Value;
             uxTextBoxValue.Refresh();
         }
@@ -161,6 +163,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 _certificateObj.FillTags(SecretObject.Tags);
                 uxTextBoxValue.Text = _certificateObj.ToValue(SecretObject.SecretKind.CertificateFormat);
                 uxTextBoxValue.IsReadOnly = true;
+                uxLinkLabelViewCertificate.Visible = true;
                 uxTextBoxValue.Refresh();
             }
         }
@@ -279,6 +282,17 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             uxTextBoxValue.Text = Guid.NewGuid().ToString("D");
             uxTextBoxValue.Refresh();
+        }
+
+        private void uxSplitContainer_Panel1_SizeChanged(object sender, EventArgs e)
+        {
+            uxLinkLabelViewCertificate.Left = (uxSplitContainer.Panel1.Width - uxLinkLabelViewCertificate.Width) / 2;
+            uxLinkLabelViewCertificate.Top = (uxSplitContainer.Panel1.Height - uxLinkLabelViewCertificate.Height) / 2;
+        }
+
+        private void uxLinkLabelViewCertificate_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            X509Certificate2UI.DisplayCertificate(_certificateObj.Certificate, Handle);
         }
     }
 }
