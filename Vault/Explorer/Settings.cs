@@ -245,7 +245,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public override void Save()
         {
-            this[nameof(FavoriteSecretsJson)] = JsonConvert.SerializeObject(_favoriteSecretsDictionary, Formatting.Indented);
+            // new lines and spaces so user.config will look pretty
+            this[nameof(FavoriteSecretsJson)] = "\n" + JsonConvert.SerializeObject(_favoriteSecretsDictionary, Formatting.Indented) + "\n                ";
             base.Save();
         }
     }
