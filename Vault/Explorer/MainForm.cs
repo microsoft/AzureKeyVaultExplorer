@@ -100,7 +100,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 UpdateLabelSecertsCountDelegate ulscd = (c) => uxStatusLabelSecertsCount.Text = $"{c} secrets"; // We use delegate and Invoke() below to execute on the thread that owns the control
                 foreach (var s in await _vault.ListSecretsAsync(0, (c) => { Invoke(ulscd, c); }, cancellationToken: op.CancellationToken))
                 {
-                    uxListViewSecrets.Items.Add(new SecretListViewItem(s));
+                    uxListViewSecrets.Items.Add(new SecretListViewItem(_currentVaultAlias, uxListViewSecrets.Groups, s));
                 }
                 uxButtonAdd.Enabled = uxMenuItemAdd.Enabled = true;
                 uxImageSearch.Enabled = uxTextBoxSearch.Enabled = true;
@@ -115,12 +115,16 @@ namespace Microsoft.PS.Common.Vault.Explorer
             bool singleItemSelected = (uxListViewSecrets.SelectedItems.Count == 1);
             bool manyItemsSelected = (uxListViewSecrets.SelectedItems.Count >= 1);
             bool secretEnabled = singleItemSelected ? (uxListViewSecrets.SelectedItems[0] as SecretListViewItem).Attributes.Enabled ?? true : false;
+            bool favorite = manyItemsSelected ? (uxListViewSecrets.SelectedItems[0] as SecretListViewItem).Favorite : false;
             uxButtonEdit.Enabled = uxButtonCopy.Enabled = uxButtonSave.Enabled = secretEnabled;
             uxMenuItemEdit.Enabled = uxMenuItemCopy.Enabled = uxMenuItemSave.Enabled = secretEnabled;
-            uxButtonDelete.Enabled = uxMenuItemDelete.Enabled = manyItemsSelected;
+            uxButtonDelete.Enabled = uxMenuItemDelete.Enabled = uxButtonFavorite.Enabled = uxMenuItemFavorite.Enabled = manyItemsSelected;
             uxButtonToggle.Enabled = uxMenuItemToggle.Enabled = singleItemSelected;
-            uxButtonToggle.Text = secretEnabled ? "Disabl&e" : "&Enable";
+            uxButtonToggle.Text = uxMenuItemToggle.Text = secretEnabled ? "Disabl&e" : "&Enable";
+            uxButtonToggle.ToolTipText = uxMenuItemToggle.ToolTipText = secretEnabled ? "Disable secret" : "Enable secret";
             uxMenuItemToggle.Text = uxButtonToggle.Text + "...";
+            uxButtonFavorite.Checked = uxMenuItemFavorite.Checked = favorite;
+            uxButtonFavorite.ToolTipText = uxMenuItemFavorite.ToolTipText = favorite ? "Remove secret(s) from favorites group" : "Add secret(s) to favorites group";
             uxPropertyGridSecret.SelectedObject = singleItemSelected ? uxListViewSecrets.SelectedItems[0] : null;
             RefreshSecertsCount();
         }
@@ -162,6 +166,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     return;
                 case Keys.E:
                     uxButtonEdit.PerformClick();
+                    return;
+                case Keys.F:
+                    uxButtonFavorite.PerformClick();
                     return;
                 case Keys.R:
                     uxMenuItemRefresh.PerformClick();
@@ -220,7 +227,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 uxListViewSecrets.Items.RemoveByKey(oldSecretName);
             }
             uxListViewSecrets.Items.RemoveByKey(soNew.Name);
-            var slvi = new SecretListViewItem(s);
+            var slvi = new SecretListViewItem(_currentVaultAlias, uxListViewSecrets.Groups, s);
             uxListViewSecrets.Items.Add(slvi);
             uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search
             slvi.RefreshAndSelect();
@@ -319,7 +326,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     using (var op = NewUxOperationWithProgress(uxButtonToggle)) await op.Invoke("update secret in", async () =>
                     {
                         Secret s = await _vault.UpdateSecretAsync(slvi.Name, Utils.AddChangedBy(slvi.Tags), null, new SecretAttributes() { Enabled = !slvi.Attributes.Enabled }, op.CancellationToken); // Toggle only Enabled attribute
-                        slvi = new SecretListViewItem(s);
+                        slvi = new SecretListViewItem(_currentVaultAlias, uxListViewSecrets.Groups, s);
                         uxListViewSecrets.Items.RemoveByKey(slvi.Name);
                         uxListViewSecrets.Items.Add(slvi);
                         slvi.RefreshAndSelect();
@@ -355,9 +362,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
             _strikedoutSecrets = 0;
             SecretListViewItem selectItem = null;
             uxListViewSecrets.BeginUpdate();
-            foreach (var item in uxListViewSecrets.Items)
+            foreach (SecretListViewItem slvi in uxListViewSecrets.Items)
             {
-                SecretListViewItem slvi = item as SecretListViewItem;
                 bool contains = slvi.Contains(uxTextBoxSearch.Text);
                 slvi.Strikeout = !contains;
                 _strikedoutSecrets += !contains ? 1 : 0;
@@ -371,7 +377,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxListViewSecrets.EndUpdate();
             RefreshSecertsCount();
         }
-
 
         private void uxTextBoxSearch_TextChanged(object sender, EventArgs e)
         {
@@ -420,6 +425,35 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 {
                     so.SaveToFile(uxSaveFileDialog.FileName);
                 }
+            }
+        }
+
+        private void uxButtonFavorite_Click(object sender, EventArgs e)
+        {
+            if (uxListViewSecrets.SelectedItems.Count > 0)
+            {
+                uxButtonFavorite.Checked = uxMenuItemFavorite.Checked = !uxButtonFavorite.Checked;
+                using (var op = NewUxOperationWithProgress(uxButtonFavorite))
+                {
+                    uxListViewSecrets.BeginUpdate();
+                    foreach (SecretListViewItem slvi in uxListViewSecrets.SelectedItems)
+                    {
+                        slvi.Favorite = !slvi.Favorite;
+                    }
+                    uxListViewSecrets.Sort();
+                    uxListViewSecrets.EndUpdate();
+                    Settings.Default.Save();
+                }
+                uxListViewSecrets_SelectedIndexChanged(null, EventArgs.Empty);
+            }
+        }
+
+        private void uxButtonSettings_Click(object sender, EventArgs e)
+        {
+            var dlg = new SettingsDialog();
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                ApplySettings();
             }
         }
 
@@ -498,14 +532,5 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         #endregion
-
-        private void uxButtonSettings_Click(object sender, EventArgs e)
-        {
-            var dlg = new SettingsDialog();
-            if (dlg.ShowDialog() == DialogResult.OK)
-            {
-                ApplySettings();
-            }
-        }
     }
 }
