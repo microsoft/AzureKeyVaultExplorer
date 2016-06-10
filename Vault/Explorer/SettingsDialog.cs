@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
@@ -53,6 +54,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
             ProcessStartInfo sInfo = new ProcessStartInfo() { FileName = Path.GetDirectoryName(Application.ExecutablePath), UseShellExecute = true };
             Process.Start(sInfo);
         }
+
+        private void uxLinkLabelUserSettingsLocation_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
+            ProcessStartInfo sInfo = new ProcessStartInfo() { FileName = Path.GetDirectoryName(config.FilePath), UseShellExecute = true };
+            Process.Start(sInfo);
+        }
+
 
         private string FetchVersions()
         {

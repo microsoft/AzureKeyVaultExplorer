@@ -9,12 +9,14 @@ using System.ComponentModel.Design;
 using System.Windows.Forms.Design;
 using System.Drawing.Design;
 using System.Drawing;
+using Newtonsoft.Json;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
     public class Settings : ApplicationSettingsBase
     {
         private static Settings defaultInstance = ((Settings)(ApplicationSettingsBase.Synchronized(new Settings())));
+        private readonly FavoriteSecretsDictionary _favoriteSecretsDictionary;
 
         public static Settings Default
         {
@@ -22,6 +24,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 return defaultInstance;
             }
+        }
+
+        public Settings() : base()
+        {
+            _favoriteSecretsDictionary = JsonConvert.DeserializeObject<FavoriteSecretsDictionary>(FavoriteSecretsJson);
         }
 
         [UserScopedSetting()]
@@ -210,6 +217,36 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 this[nameof(SecretKindsJsonFileLocation)] = value;
             }
+        }
+
+        [UserScopedSetting()]
+        [DefaultSettingValue(@"{}")]
+        [DisplayName("Favorite secrets")]
+        [Description("List of favorite secrets per vault alias.")]
+        [Browsable(true)]
+        [Category("General")]
+        [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
+        public string FavoriteSecretsJson
+        {
+            get
+            {
+                return ((string)(this[nameof(FavoriteSecretsJson)]));
+            }
+        }
+
+        [Browsable(false)]
+        public FavoriteSecretsDictionary FavoriteSecretsDictionary
+        {
+            get
+            {
+                return _favoriteSecretsDictionary;
+            }
+        }
+
+        public override void Save()
+        {
+            this[nameof(FavoriteSecretsJson)] = JsonConvert.SerializeObject(_favoriteSecretsDictionary, Formatting.Indented);
+            base.Save();
         }
     }
 }

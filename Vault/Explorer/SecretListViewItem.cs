@@ -12,6 +12,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
     /// </summary>
     public class SecretListViewItem : ListViewItem, ICustomTypeDescriptor
     {
+        private const int FavoritesGroup = 0;
+        private const int DefaultGroup = 1;
+
+        public readonly VaultAlias VaultAlias;
+        public readonly ListViewGroupCollection Groups;
+        public readonly SecretIdentifier Identifier;
         public readonly SecretAttributes Attributes;
         public readonly string ContentTypeStr;
         public readonly ContentType ContentType;
@@ -20,31 +26,37 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private readonly int BaseImageIndex;
 
-        private SecretListViewItem(string name, SecretAttributes attributes, string contentTypeStr, 
-            string id, Dictionary<string, string> tags) : base(name)
+        private SecretListViewItem(VaultAlias vaultAlias, ListViewGroupCollection groups, SecretIdentifier identifier, SecretAttributes attributes, string contentTypeStr, 
+            Dictionary<string, string> tags) : base(identifier.Name)
         {
+            VaultAlias = vaultAlias;
+            Groups = groups;
+            Identifier = identifier;
             Attributes = attributes;
             ContentTypeStr = contentTypeStr;
             ContentType = ContentTypeEnumConverter.GetValue(contentTypeStr);
-            Id = id;
+            Id = identifier.Identifier;
             Tags = tags;
 
             BaseImageIndex = ContentType.IsCertificate() ? 3 : 1;
             ImageIndex = (Attributes.Enabled ?? true) ? BaseImageIndex : BaseImageIndex + 1;
             ForeColor = (Attributes.Enabled ?? true) ? SystemColors.WindowText : SystemColors.GrayText;
 
-            Name = name;
+            Name = identifier.Name;
             SubItems.Add(new ListViewSubItem(this, Utils.NullableDateTimeToString(attributes.Updated)) { Tag = attributes.Updated }); // Add Tag so ListViewItemSorter will sort datetime correctly
             SubItems.Add(ChangedBy);
 
             ToolTipText = string.Format("Creation time:\t\t{0}\nLast updated time:\t{1}",
                 Utils.NullableDateTimeToString(Attributes.Created),
                 Utils.NullableDateTimeToString(Attributes.Updated));
+
+            Group = Settings.Default.FavoriteSecretsDictionary.ContainsKey(VaultAlias.Alias) ?
+                Settings.Default.FavoriteSecretsDictionary[VaultAlias.Alias].Contains(Name) ? Groups[FavoritesGroup] : Groups[DefaultGroup] : Groups[DefaultGroup];
         }
 
-        public SecretListViewItem(SecretItem si) : this(si.Identifier.Name, si.Attributes, si.ContentType, si.Id, si.Tags) { }
+        public SecretListViewItem(VaultAlias vaultAlias, ListViewGroupCollection groups, SecretItem si) : this(vaultAlias, groups, si.Identifier, si.Attributes, si.ContentType, si.Tags) { }
 
-        public SecretListViewItem(Secret s) : this(s.SecretIdentifier.Name, s.Attributes, s.ContentType, s.Id, s.Tags) { }
+        public SecretListViewItem(VaultAlias vaultAlias, ListViewGroupCollection groups, Secret s) : this(vaultAlias, groups, s.SecretIdentifier, s.Attributes, s.ContentType, s.Tags) { }
 
         public string ChangedBy => Utils.GetChangedBy(Tags);
 
@@ -69,6 +81,31 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 ForeColor = value ? SystemColors.GrayText : SystemColors.WindowText;
                 ImageIndex = value ? 0 : (Attributes.Enabled ?? true) ? BaseImageIndex : BaseImageIndex + 1;
+            }
+        }
+
+        public bool Favorite
+        {
+            get
+            {
+                return Group == Groups[FavoritesGroup];
+            }
+            set
+            {
+                Group = value ? Groups[FavoritesGroup] : Groups[DefaultGroup];
+                if (false == Settings.Default.FavoriteSecretsDictionary.ContainsKey(VaultAlias.Alias))
+                {
+                    Settings.Default.FavoriteSecretsDictionary.Add(VaultAlias.Alias, new FavoriteSecrets());
+                }
+                var favorites = Settings.Default.FavoriteSecretsDictionary[VaultAlias.Alias];
+                if (value)
+                {
+                    favorites.Add(Name);
+                }
+                else
+                {
+                    favorites.Remove(Name);
+                }
             }
         }
 

@@ -63,6 +63,7 @@
       <HintPath>$(PkgMicrosoft_Bcl_Async)\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Design" />
@@ -86,6 +87,7 @@
     <Compile Include="ExceptionDialog.Designer.cs">
       <DependentUpon>ExceptionDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="FavoriteSecrets.cs" />
     <Compile Include="ListViewItemSorter.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -157,6 +159,7 @@
     <EmbeddedResource Include="SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="Resources\star.png" />
     <Content Include="VaultAliases.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

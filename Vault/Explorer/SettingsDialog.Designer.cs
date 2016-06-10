@@ -29,60 +29,25 @@
         private void InitializeComponent()
         {
             System.Windows.Forms.TabControl uxTabControl;
-            this.uxButtonCancel = new System.Windows.Forms.Button();
-            this.uxButtonOK = new System.Windows.Forms.Button();
-            this.uxPropertyGrid = new System.Windows.Forms.PropertyGrid();
             this.uxTabPageOptions = new System.Windows.Forms.TabPage();
+            this.uxPropertyGrid = new System.Windows.Forms.PropertyGrid();
             this.uxTabPageAbout = new System.Windows.Forms.TabPage();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.uxLinkLabelTitle = new System.Windows.Forms.LinkLabel();
             this.uxTextBoxVersions = new System.Windows.Forms.TextBox();
             this.uxLinkLabelInstallLocation = new System.Windows.Forms.LinkLabel();
             this.uxLinkLabelKudos = new System.Windows.Forms.LinkLabel();
             this.uxLinkLabelSendFeedback = new System.Windows.Forms.LinkLabel();
             this.label2 = new System.Windows.Forms.Label();
+            this.uxLinkLabelTitle = new System.Windows.Forms.LinkLabel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.uxButtonCancel = new System.Windows.Forms.Button();
+            this.uxButtonOK = new System.Windows.Forms.Button();
+            this.uxLinkLabelUserSettingsLocation = new System.Windows.Forms.LinkLabel();
             uxTabControl = new System.Windows.Forms.TabControl();
             uxTabControl.SuspendLayout();
             this.uxTabPageOptions.SuspendLayout();
             this.uxTabPageAbout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
-            // 
-            // uxButtonCancel
-            // 
-            this.uxButtonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.uxButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.uxButtonCancel.Location = new System.Drawing.Point(432, 474);
-            this.uxButtonCancel.Margin = new System.Windows.Forms.Padding(4);
-            this.uxButtonCancel.Name = "uxButtonCancel";
-            this.uxButtonCancel.Size = new System.Drawing.Size(100, 28);
-            this.uxButtonCancel.TabIndex = 3;
-            this.uxButtonCancel.Text = "Cancel";
-            this.uxButtonCancel.UseVisualStyleBackColor = true;
-            // 
-            // uxButtonOK
-            // 
-            this.uxButtonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.uxButtonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.uxButtonOK.Enabled = false;
-            this.uxButtonOK.Location = new System.Drawing.Point(324, 474);
-            this.uxButtonOK.Margin = new System.Windows.Forms.Padding(4);
-            this.uxButtonOK.Name = "uxButtonOK";
-            this.uxButtonOK.Size = new System.Drawing.Size(100, 28);
-            this.uxButtonOK.TabIndex = 2;
-            this.uxButtonOK.Text = "OK";
-            this.uxButtonOK.UseVisualStyleBackColor = true;
-            this.uxButtonOK.Click += new System.EventHandler(this.uxButtonOK_Click);
-            // 
-            // uxPropertyGrid
-            // 
-            this.uxPropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.uxPropertyGrid.Location = new System.Drawing.Point(3, 3);
-            this.uxPropertyGrid.Name = "uxPropertyGrid";
-            this.uxPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.Categorized;
-            this.uxPropertyGrid.Size = new System.Drawing.Size(507, 420);
-            this.uxPropertyGrid.TabIndex = 0;
-            this.uxPropertyGrid.ToolbarVisible = false;
             // 
             // uxTabControl
             // 
@@ -108,9 +73,20 @@
             this.uxTabPageOptions.Text = "Options";
             this.uxTabPageOptions.UseVisualStyleBackColor = true;
             // 
+            // uxPropertyGrid
+            // 
+            this.uxPropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uxPropertyGrid.Location = new System.Drawing.Point(3, 3);
+            this.uxPropertyGrid.Name = "uxPropertyGrid";
+            this.uxPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.Categorized;
+            this.uxPropertyGrid.Size = new System.Drawing.Size(507, 420);
+            this.uxPropertyGrid.TabIndex = 0;
+            this.uxPropertyGrid.ToolbarVisible = false;
+            // 
             // uxTabPageAbout
             // 
             this.uxTabPageAbout.BackColor = System.Drawing.SystemColors.Window;
+            this.uxTabPageAbout.Controls.Add(this.uxLinkLabelUserSettingsLocation);
             this.uxTabPageAbout.Controls.Add(this.uxTextBoxVersions);
             this.uxTabPageAbout.Controls.Add(this.uxLinkLabelInstallLocation);
             this.uxTabPageAbout.Controls.Add(this.uxLinkLabelKudos);
@@ -121,33 +97,9 @@
             this.uxTabPageAbout.Location = new System.Drawing.Point(4, 25);
             this.uxTabPageAbout.Name = "uxTabPageAbout";
             this.uxTabPageAbout.Padding = new System.Windows.Forms.Padding(3);
-            this.uxTabPageAbout.Size = new System.Drawing.Size(462, 426);
+            this.uxTabPageAbout.Size = new System.Drawing.Size(513, 426);
             this.uxTabPageAbout.TabIndex = 1;
             this.uxTabPageAbout.Text = "About";
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.BigKey;
-            this.pictureBox1.Location = new System.Drawing.Point(6, 6);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(64, 64);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
-            // 
-            // uxLinkLabelTitle
-            // 
-            this.uxLinkLabelTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.uxLinkLabelTitle.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uxLinkLabelTitle.Location = new System.Drawing.Point(76, 6);
-            this.uxLinkLabelTitle.Name = "uxLinkLabelTitle";
-            this.uxLinkLabelTitle.Size = new System.Drawing.Size(380, 64);
-            this.uxLinkLabelTitle.TabIndex = 1;
-            this.uxLinkLabelTitle.TabStop = true;
-            this.uxLinkLabelTitle.Text = "Azure Key Vault Explorer";
-            this.uxLinkLabelTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.uxLinkLabelTitle.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.uxLinkLabelTitle_LinkClicked);
             // 
             // uxTextBoxVersions
             // 
@@ -167,7 +119,7 @@
             // uxLinkLabelInstallLocation
             // 
             this.uxLinkLabelInstallLocation.AutoSize = true;
-            this.uxLinkLabelInstallLocation.Location = new System.Drawing.Point(6, 264);
+            this.uxLinkLabelInstallLocation.Location = new System.Drawing.Point(6, 244);
             this.uxLinkLabelInstallLocation.Name = "uxLinkLabelInstallLocation";
             this.uxLinkLabelInstallLocation.Size = new System.Drawing.Size(109, 17);
             this.uxLinkLabelInstallLocation.TabIndex = 14;
@@ -206,6 +158,67 @@
             this.label2.TabIndex = 11;
             this.label2.Text = "Copyright (c) 2016 Microsoft Corporation\r\n\r\nFOR INTERNAL USE ONLY\r\n\r\nWritten by E" +
     "li Zeitlin (elize)";
+            // 
+            // uxLinkLabelTitle
+            // 
+            this.uxLinkLabelTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.uxLinkLabelTitle.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.uxLinkLabelTitle.Location = new System.Drawing.Point(76, 6);
+            this.uxLinkLabelTitle.Name = "uxLinkLabelTitle";
+            this.uxLinkLabelTitle.Size = new System.Drawing.Size(380, 64);
+            this.uxLinkLabelTitle.TabIndex = 1;
+            this.uxLinkLabelTitle.TabStop = true;
+            this.uxLinkLabelTitle.Text = "Azure Key Vault Explorer";
+            this.uxLinkLabelTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.uxLinkLabelTitle.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.uxLinkLabelTitle_LinkClicked);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.BigKey;
+            this.pictureBox1.Location = new System.Drawing.Point(6, 6);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(64, 64);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
+            // 
+            // uxButtonCancel
+            // 
+            this.uxButtonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.uxButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.uxButtonCancel.Location = new System.Drawing.Point(432, 474);
+            this.uxButtonCancel.Margin = new System.Windows.Forms.Padding(4);
+            this.uxButtonCancel.Name = "uxButtonCancel";
+            this.uxButtonCancel.Size = new System.Drawing.Size(100, 28);
+            this.uxButtonCancel.TabIndex = 3;
+            this.uxButtonCancel.Text = "Cancel";
+            this.uxButtonCancel.UseVisualStyleBackColor = true;
+            // 
+            // uxButtonOK
+            // 
+            this.uxButtonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.uxButtonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.uxButtonOK.Enabled = false;
+            this.uxButtonOK.Location = new System.Drawing.Point(324, 474);
+            this.uxButtonOK.Margin = new System.Windows.Forms.Padding(4);
+            this.uxButtonOK.Name = "uxButtonOK";
+            this.uxButtonOK.Size = new System.Drawing.Size(100, 28);
+            this.uxButtonOK.TabIndex = 2;
+            this.uxButtonOK.Text = "OK";
+            this.uxButtonOK.UseVisualStyleBackColor = true;
+            this.uxButtonOK.Click += new System.EventHandler(this.uxButtonOK_Click);
+            // 
+            // uxLinkLabelUserSettingsLocation
+            // 
+            this.uxLinkLabelUserSettingsLocation.AutoSize = true;
+            this.uxLinkLabelUserSettingsLocation.Location = new System.Drawing.Point(6, 275);
+            this.uxLinkLabelUserSettingsLocation.Name = "uxLinkLabelUserSettingsLocation";
+            this.uxLinkLabelUserSettingsLocation.Size = new System.Drawing.Size(156, 17);
+            this.uxLinkLabelUserSettingsLocation.TabIndex = 16;
+            this.uxLinkLabelUserSettingsLocation.TabStop = true;
+            this.uxLinkLabelUserSettingsLocation.Text = "User settings location...";
+            this.uxLinkLabelUserSettingsLocation.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.uxLinkLabelUserSettingsLocation_LinkClicked);
             // 
             // SettingsDialog
             // 
@@ -247,5 +260,6 @@
         private System.Windows.Forms.LinkLabel uxLinkLabelKudos;
         private System.Windows.Forms.LinkLabel uxLinkLabelSendFeedback;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.LinkLabel uxLinkLabelUserSettingsLocation;
     }
 }
