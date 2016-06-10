@@ -13,7 +13,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
     public class SecretListViewItem : ListViewItem, ICustomTypeDescriptor
     {
         private const int FavoritesGroup = 0;
-        private const int DefaultGroup = 1;
+        private const int OtherGroup = 1;
 
         public readonly VaultAlias VaultAlias;
         public readonly ListViewGroupCollection Groups;
@@ -50,8 +50,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 Utils.NullableDateTimeToString(Attributes.Created),
                 Utils.NullableDateTimeToString(Attributes.Updated));
 
-            Group = Settings.Default.FavoriteSecretsDictionary.ContainsKey(VaultAlias.Alias) ?
-                Settings.Default.FavoriteSecretsDictionary[VaultAlias.Alias].Contains(Name) ? Groups[FavoritesGroup] : Groups[DefaultGroup] : Groups[DefaultGroup];
+            Group = Groups[FavoriteSecretUtil.Contains(VaultAlias.Alias, Name) ? FavoritesGroup : OtherGroup];
         }
 
         public SecretListViewItem(VaultAlias vaultAlias, ListViewGroupCollection groups, SecretItem si) : this(vaultAlias, groups, si.Identifier, si.Attributes, si.ContentType, si.Tags) { }
@@ -92,19 +91,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
             set
             {
-                Group = value ? Groups[FavoritesGroup] : Groups[DefaultGroup];
-                if (false == Settings.Default.FavoriteSecretsDictionary.ContainsKey(VaultAlias.Alias))
-                {
-                    Settings.Default.FavoriteSecretsDictionary.Add(VaultAlias.Alias, new FavoriteSecrets());
-                }
-                var favorites = Settings.Default.FavoriteSecretsDictionary[VaultAlias.Alias];
+                Group = value ? Groups[FavoritesGroup] : Groups[OtherGroup];
                 if (value)
                 {
-                    favorites.Add(Name);
+                    FavoriteSecretUtil.Add(VaultAlias.Alias, Name);
                 }
                 else
                 {
-                    favorites.Remove(Name);
+                    FavoriteSecretUtil.Remove(VaultAlias.Alias, Name);
                 }
             }
         }
