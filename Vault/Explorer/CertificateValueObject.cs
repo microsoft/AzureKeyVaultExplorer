@@ -20,7 +20,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public readonly X509Certificate2 Certificate;
 
         [JsonProperty]
-        public readonly string Data;
+        public readonly string Data; // Base64 string of certificate raw data
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public readonly string Password;
@@ -31,7 +31,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             Data = data;
             Password = password;
             byte[] rawData = Convert.FromBase64String(data);
-            Certificate = (null == password) ? new X509Certificate2(rawData) : new X509Certificate2(rawData, password, X509KeyStorageFlags.DefaultKeySet);
+            Certificate = (null == password) ? new X509Certificate2(rawData) : new X509Certificate2(rawData, password, X509KeyStorageFlags.UserKeySet | X509KeyStorageFlags.Exportable);
         }
 
         public CertificateValueObject(FileInfo file, string password) : 
@@ -39,16 +39,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
         }
 
-        public CertificateValueObject(X509Certificate2 certificate, string password) :
-            this(Convert.ToBase64String(certificate.RawData), password)
-        {
-        }
-
         public void FillTags(ObservableTagItemsCollection tags)
         {
             tags.AddOrReplace(new TagItem("Thumbprint", Certificate.Thumbprint.ToLowerInvariant()));
             tags.AddOrReplace(new TagItem("Expiration", Certificate.GetExpirationDateString()));
-            tags.AddOrReplace(new TagItem("Subject", Certificate.Subject.Replace("CN=", "")));
+            tags.AddOrReplace(new TagItem("Subject", Certificate.GetNameInfo(X509NameType.SimpleName, false)));
             var sans = 
                 from X509Extension ext in Certificate.Extensions
                 where ext.Oid.Value == "2.5.29.17" // Subject Alternative Name
@@ -78,21 +73,28 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public static CertificateValueObject FromValue(string value)
         {
-            Match m = s_wcdPfxCertificate.Match(value);
-            if (m.Success)
+            try
             {
-                return new CertificateValueObject(m.Groups["CertificateBase64"].Value, m.Groups["CertificatePassword"].Value);
+                Match m = s_wcdPfxCertificate.Match(value); // WCD pfx
+                if (m.Success)
+                {
+                    return new CertificateValueObject(m.Groups["CertificateBase64"].Value, m.Groups["CertificatePassword"].Value);
+                }
+                m = s_wcdCerCertificate.Match(value); // WCD cert
+                if (m.Success)
+                {
+                    return new CertificateValueObject(m.Groups["CertificateBase64"].Value, null);
+                }
+                if (Consts.ValidBase64Regex.IsMatch(value)) // WD cert in JSON base64 format
+                {
+                    return JsonConvert.DeserializeObject<CertificateValueObject>(Encoding.UTF8.GetString(Convert.FromBase64String(value)));
+                }
+                return JsonConvert.DeserializeObject<CertificateValueObject>(value); // WD cert in JSON format
             }
-            m = s_wcdCerCertificate.Match(value);
-            if (m.Success)
+            catch
             {
-                return new CertificateValueObject(m.Groups["CertificateBase64"].Value, null);
+                return null;
             }
-            if (Consts.ValidBase64Regex.IsMatch(value)) // WD cert in JSON base64 format
-            {
-                return JsonConvert.DeserializeObject<CertificateValueObject>(Encoding.UTF8.GetString(Convert.FromBase64String(value)));
-            }
-            return JsonConvert.DeserializeObject<CertificateValueObject>(value);
         }
     }
 }
