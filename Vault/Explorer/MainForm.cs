@@ -102,7 +102,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 {
                     uxListViewSecrets.Items.Add(new SecretListViewItem(s));
                 }
-                uxButtonAdd.Enabled = uxMenuItemAdd.Enabled = uxMenuItemAddCertificate.Enabled = true;
+                uxButtonAdd.Enabled = uxMenuItemAdd.Enabled = true;
                 uxImageSearch.Enabled = uxTextBoxSearch.Enabled = true;
                 uxListViewSecrets.AllowDrop = true;
                 RefreshSecertsCount();
@@ -236,7 +236,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
             else
             {
-                uxOpenFileDialog.FilterIndex = (sender == uxAddCertificate) || (sender == uxMenuItemAddCertificate) ? ContentType.Pkcs12.ToFilterIndex() : ContentType.None.ToFilterIndex();
+                uxOpenFileDialog.FilterIndex = (sender == uxAddCertFromFile) || (sender == uxAddCertFromFile2) ? ContentType.Pkcs12.ToFilterIndex() : ContentType.None.ToFilterIndex();
                 if (uxOpenFileDialog.ShowDialog() != DialogResult.OK) return null;
                 fi = new FileInfo(uxOpenFileDialog.FileName);
             }
@@ -248,27 +248,27 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return fi;
         }
 
-        private async void uxAddMenuItem_Click(object sender, EventArgs e)
+        private async void uxMenuItemAdd_Click(object sender, EventArgs e)
         {
             SecretDialog nsDlg = null;
             // Add secret
             using (var dtf = new DeleteTempFileInfo())
             {
-                if ((sender == uxAddSecret) || (sender == uxMenuItemAddSecret))
+                if ((sender == uxAddSecret) || (sender == uxAddSecret2))
                 {
                     nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds);
                 }
                 // Add certificate from file or configuration file
-                if ((sender == uxAddCertificateFromFile) || (sender == uxMenuItemAddCertificate) || (sender == uxAddFile) || (sender == uxMenuItemAddFile))
+                if ((sender == uxAddCertFromFile) || (sender == uxAddCertFromFile2) || (sender == uxAddFile) || (sender == uxAddFile2))
                 {
                     dtf.FileInfoObject = GetFileInfo(sender, e);
                     if (dtf.FileInfoObject == null) return;
                     nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds, dtf.FileInfoObject);
                 }
                 // Add certificate from store
-                if (sender == uxAddCertificateFromStore)
+                if ((sender == uxAddCertFromUserStore) || (sender == uxAddCertFromUserStore2) || (sender == uxAddCertFromMachineStore) || (sender == uxAddCertFromMachineStore2))
                 {
-                    var cert = Utils.SelectCertFromStore(StoreName.My, StoreLocation.CurrentUser, _currentVaultAlias.Alias, Handle);
+                    var cert = Utils.SelectCertFromStore(StoreName.My, (sender == uxAddCertFromUserStore) || (sender == uxAddCertFromUserStore2) ? StoreLocation.CurrentUser : StoreLocation.LocalMachine, _currentVaultAlias.Alias, Handle);
                     if (cert == null) return;
                     nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds, cert);
                 }
@@ -493,7 +493,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             foreach (string file in files.Split('|'))
             {
-                uxAddMenuItem_Click(uxAddFile, new AddFileEventArgs(file));
+                uxMenuItemAdd_Click(uxAddFile, new AddFileEventArgs(file));
             }
         }
 
