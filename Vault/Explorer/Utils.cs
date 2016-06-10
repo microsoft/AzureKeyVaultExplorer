@@ -102,7 +102,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public static string ConvertToValidSecretName(string name)
         {
-            return new Regex("[^0-9a-zA-Z-]", RegexOptions.Singleline).Replace(name, "-");
+            var result = new Regex("[^0-9a-zA-Z-]", RegexOptions.Singleline).Replace(name, "-");
+            return string.IsNullOrEmpty(result) ? "unknown" : result;
         }
 
         public static string GetRtfUnicodeEscapedString(string s)

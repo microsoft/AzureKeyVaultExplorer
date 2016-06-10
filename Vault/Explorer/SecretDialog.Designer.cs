@@ -162,13 +162,14 @@
             // 
             this.uxLinkLabelViewCertificate.AutoSize = true;
             this.uxLinkLabelViewCertificate.BackColor = System.Drawing.SystemColors.Window;
+            this.uxLinkLabelViewCertificate.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.uxLinkLabelViewCertificate.Location = new System.Drawing.Point(543, 161);
             this.uxLinkLabelViewCertificate.Name = "uxLinkLabelViewCertificate";
             this.uxLinkLabelViewCertificate.Size = new System.Drawing.Size(104, 17);
             this.uxLinkLabelViewCertificate.TabIndex = 10;
             this.uxLinkLabelViewCertificate.TabStop = true;
             this.uxLinkLabelViewCertificate.Text = "View Certificate";
-            this.uxLinkLabelViewCertificate.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.uxLinkLabelViewCertificate.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.uxToolTip.SetToolTip(this.uxLinkLabelViewCertificate, resources.GetString("uxLinkLabelViewCertificate.ToolTip"));
             this.uxLinkLabelViewCertificate.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.uxLinkLabelViewCertificate_LinkClicked);
             // 
