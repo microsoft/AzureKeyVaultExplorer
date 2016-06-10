@@ -4,8 +4,10 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Windows.Forms;
@@ -121,9 +123,15 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// </summary>
         public SecretDialog(string[] secretKinds, X509Certificate2 certificate) : this(secretKinds)
         {
-            SecretObject.ContentType = ContentType.Pkcs12;
-            string password = "foo";
-            RefreshCertificate(new CertificateValueObject(certificate, password));
+            bool hasExportablePrivateKey = certificate.HasPrivateKey && (
+                ((certificate.PrivateKey as RSACryptoServiceProvider)?.CspKeyContainerInfo.Exportable ?? false) ||
+                ((certificate.PrivateKey as DSACryptoServiceProvider)?.CspKeyContainerInfo.Exportable ?? false));
+
+            SecretObject.ContentType = hasExportablePrivateKey ? ContentType.Pkcs12 : ContentType.Certificate;
+            uxTextBoxName.Text = Utils.ConvertToValidSecretName(certificate.GetNameInfo(X509NameType.SimpleName, false));
+            string password = hasExportablePrivateKey ? Utils.NewSecurePassword() : null;
+            byte[] data = hasExportablePrivateKey ? certificate.Export(X509ContentType.Pkcs12, password) : certificate.Export(X509ContentType.Cert);
+            RefreshCertificate(new CertificateValueObject(Convert.ToBase64String(data), password));
             AutoDetectSecretKind();
         }
 
@@ -154,16 +162,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 autoDetectSecretKind = (SecretKind)uxMenuSecretKind.Items[0];
             }
+            _certificateObj = (SecretObject.ContentType.IsCertificate() && autoDetectSecretKind.IsCertificate) ? CertificateValueObject.FromValue(uxTextBoxValue.Text) : null;
             autoDetectSecretKind?.PerformClick();
-        }
-
-        private void AutoDetectCertificate()
-        {
-            try
-            {
-                _certificateObj = CertificateValueObject.FromValue(uxTextBoxValue.Text);
-            }
-            catch { }
         }
 
         private void RefreshCertificate(CertificateValueObject cvo)
@@ -173,10 +173,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 _certificateObj.FillTags(SecretObject.Tags);
                 uxTextBoxValue.Text = _certificateObj.ToValue(SecretObject.SecretKind.CertificateFormat);
-                uxTextBoxValue.IsReadOnly = true;
-                uxLinkLabelViewCertificate.Visible = true;
                 uxTextBoxValue.Refresh();
             }
+            uxTextBoxValue.IsReadOnly = (_certificateObj != null);
+            uxLinkLabelViewCertificate.Visible = (_certificateObj != null);
         }
 
         private void uxTextBoxName_TextChanged(object sender, EventArgs e)
@@ -200,13 +200,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
             _changed = true;
             if (e.PropertyName == nameof(SecretObject.ContentType)) // ContentType changed, refresh
             {
-                if ((SecretObject.ContentType == ContentType.Pkcs12Base64) && 
-                    Consts.ValidBase64Regex.IsMatch(SecretObject.Value)) // Allow first conversion from none to Pkcs12Base64 content type
-                {
-                    AutoDetectCertificate();
-                    RefreshCertificate(_certificateObj);
-                }
-                uxTextBoxValue.IsReadOnly = false;
+                AutoDetectSecretKind();
+                RefreshCertificate(_certificateObj);
                 uxTextBoxValue_TextChanged(sender, null);
                 uxTextBoxValue.SetHighlighting(SecretObject.ContentType.ToSyntaxHighlightingMode());
             }
@@ -278,7 +273,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxToolTip.SetToolTip(uxLinkLabelValue, sv.ToolTipText);
             RefreshSecretObject(s);
             AutoDetectSecretKind();
-            AutoDetectCertificate();
             _changed = (sender != null); // Sender will be NULL for the first time during Edit Dialog ctor
             InvalidateOkButton();
         }
