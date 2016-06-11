@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -54,18 +55,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             var sk = Utils.LoadFromJsonFile<SecretKinds>(Settings.Default.SecretKindsJsonFileLocation);
             uxMenuSecretKind.Items.AddRange((from name in secretKinds select sk[name]).ToArray());
             uxSplitContainer_Panel1_SizeChanged(null, EventArgs.Empty);
-        }
-
-        private void RefreshSecretObject(Secret s)
-        {
-            SecretObject = new SecretObject(s, SecretObject_PropertyChanged);
-            uxPropertyGridSecret.SelectedObject = SecretObject;
-            uxTextBoxValue.SetHighlighting(SecretObject.ContentType.ToSyntaxHighlightingMode());
-            uxTextBoxName.Text = SecretObject.Name;
-            uxTextBoxValue.IsReadOnly = SecretObject.ContentType.IsCertificate();
-            uxLinkLabelViewCertificate.Visible = SecretObject.ContentType.IsCertificate();
-            uxTextBoxValue.Text = SecretObject.Value;
-            uxTextBoxValue.Refresh();
         }
 
         /// <summary>
@@ -148,6 +137,17 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxMenuVersions_ItemClicked(null, new ToolStripItemClickedEventArgs(uxMenuVersions.Items[0])); // Pass sender as NULL so _changed will be set to false
         }
 
+        private void RefreshSecretObject(Secret s)
+        {
+            SecretObject = new SecretObject(s, SecretObject_PropertyChanged);
+            uxPropertyGridSecret.SelectedObject = SecretObject;
+            uxTextBoxValue.SetHighlighting(SecretObject.ContentType.ToSyntaxHighlightingMode());
+            uxTextBoxName.Text = SecretObject.Name;
+            ToggleCertificateMode(SecretObject.ContentType.IsCertificate());
+            uxTextBoxValue.Text = SecretObject.Value;
+            uxTextBoxValue.Refresh();
+        }
+
         private void AutoDetectSecretKind()
         {
             SecretKind autoDetectSecretKind = (SecretKind)uxMenuSecretKind.Items[0]; // Default is the first one which is always Custom
@@ -166,6 +166,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
             autoDetectSecretKind?.PerformClick();
         }
 
+        private void ToggleCertificateMode(bool enable)
+        {
+            uxTextBoxValue.IsReadOnly = enable;
+            uxLinkLabelViewCertificate.Visible = enable;
+        }
+
         private void RefreshCertificate(CertificateValueObject cvo)
         {
             _certificateObj = cvo;
@@ -175,8 +181,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 uxTextBoxValue.Text = _certificateObj.ToValue(SecretObject.SecretKind.CertificateFormat);
                 uxTextBoxValue.Refresh();
             }
-            uxTextBoxValue.IsReadOnly = (_certificateObj != null);
-            uxLinkLabelViewCertificate.Visible = (_certificateObj != null);
+            ToggleCertificateMode(_certificateObj != null);
         }
 
         private void uxTextBoxName_TextChanged(object sender, EventArgs e)
@@ -279,12 +284,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void uxMenuItemNewPassword_Click(object sender, EventArgs e)
         {
+            if (uxTextBoxValue.IsReadOnly) return;
             uxTextBoxValue.Text = Utils.NewSecurePassword();
             uxTextBoxValue.Refresh();
         }
 
         private void uxMenuItemNewGuid_Click(object sender, EventArgs e)
         {
+            if (uxTextBoxValue.IsReadOnly) return;
             uxTextBoxValue.Text = Guid.NewGuid().ToString("D");
             uxTextBoxValue.Refresh();
         }
