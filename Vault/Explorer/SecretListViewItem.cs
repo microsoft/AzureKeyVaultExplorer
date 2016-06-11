@@ -13,7 +13,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
     public class SecretListViewItem : ListViewItem, ICustomTypeDescriptor
     {
         private const int FavoritesGroup = 0;
-        private const int OtherGroup = 1;
+        private const int CertificatesGroup = 1;
+        private const int SecretsGroup = 2;
 
         public readonly VaultAlias VaultAlias;
         public readonly ListViewGroupCollection Groups;
@@ -50,7 +51,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 Utils.NullableDateTimeToString(Attributes.Created),
                 Utils.NullableDateTimeToString(Attributes.Updated));
 
-            Group = Groups[FavoriteSecretUtil.Contains(VaultAlias.Alias, Name) ? FavoritesGroup : OtherGroup];
+            Group = Groups[FavoriteSecretUtil.Contains(VaultAlias.Alias, Name) ? FavoritesGroup : ContentType.IsCertificate() ? CertificatesGroup : SecretsGroup];
         }
 
         public SecretListViewItem(VaultAlias vaultAlias, ListViewGroupCollection groups, SecretItem si) : this(vaultAlias, groups, si.Identifier, si.Attributes, si.ContentType, si.Tags) { }
@@ -91,7 +92,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
             set
             {
-                Group = value ? Groups[FavoritesGroup] : Groups[OtherGroup];
+                Group = value ? Groups[FavoritesGroup] : Groups[SecretsGroup];
                 if (value)
                 {
                     FavoriteSecretUtil.Add(VaultAlias.Alias, Name);
