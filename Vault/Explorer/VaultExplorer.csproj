@@ -103,6 +103,11 @@
       <DependentUpon>PasswordDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="CertificateValueObject.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="SecretVersion.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -159,6 +164,10 @@
     <EmbeddedResource Include="SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Resources\star.png" />
     <Content Include="VaultAliases.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

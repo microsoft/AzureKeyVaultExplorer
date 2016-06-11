@@ -13,6 +13,8 @@ using Newtonsoft.Json;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
+    using UISettings = Properties.Settings;
+
     public class Settings : ApplicationSettingsBase
     {
         private static Settings defaultInstance = ((Settings)(ApplicationSettingsBase.Synchronized(new Settings())));

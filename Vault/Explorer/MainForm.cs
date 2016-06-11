@@ -15,6 +15,8 @@ using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
+    using UISettings = Properties.Settings;
+
     public partial class MainForm : FormTelemetry
     {
         private VaultAlias _currentVaultAlias;
@@ -50,8 +52,19 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void ApplySettings()
         {
+            Size = UISettings.Default.MainFormWindowSize;
+            _listViewItemSorter.SortOrder = UISettings.Default.MainFormSecretsSorting;
             uxButtonCopy.ToolTipText = uxMenuItemCopy.ToolTipText = $"Copy secret value to clipboard for {Settings.Default.CopyToClipboardTimeToLive.TotalSeconds} seconds";
             uxTimerClearClipboard.Interval = (int)Settings.Default.CopyToClipboardTimeToLive.TotalMilliseconds;
+        }
+
+        private void SaveSettings()
+        {
+            UISettings.Default.MainFormLocation = (WindowState == FormWindowState.Normal) ? Location : RestoreBounds.Location;
+            UISettings.Default.MainFormWindowSize = (WindowState == FormWindowState.Normal) ? Size : RestoreBounds.Size;
+            UISettings.Default.MainFormSecretsSorting = _listViewItemSorter.SortOrder;
+            UISettings.Default.Save();
+            Settings.Default.Save();
         }
 
         private UxOperation NewUxOperationWithProgress(ToolStripItem controlToToggle) => new UxOperation(_currentVaultAlias, controlToToggle, uxStatusLabel, uxStatusProgressBar, uxButtonCancel);
@@ -442,7 +455,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     }
                     uxListViewSecrets.Sort();
                     uxListViewSecrets.EndUpdate();
-                    Settings.Default.Save();
+                    SaveSettings();
                 }
                 uxListViewSecrets_SelectedIndexChanged(null, EventArgs.Empty);
             }
@@ -532,5 +545,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         #endregion
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveSettings();
+        }
     }
 }
