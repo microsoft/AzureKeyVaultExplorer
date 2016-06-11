@@ -31,7 +31,8 @@
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.SplitContainer splitContainer1;
             System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Favorites", System.Windows.Forms.HorizontalAlignment.Center);
-            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Other", System.Windows.Forms.HorizontalAlignment.Center);
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Certificates", System.Windows.Forms.HorizontalAlignment.Center);
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Secrets", System.Windows.Forms.HorizontalAlignment.Center);
             System.Windows.Forms.ColumnHeader columnHeader1;
             System.Windows.Forms.ColumnHeader columnHeader2;
             System.Windows.Forms.ColumnHeader columnHeader3;
@@ -148,12 +149,15 @@
             listViewGroup1.Header = "Favorites";
             listViewGroup1.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             listViewGroup1.Name = null;
-            listViewGroup2.Header = "Other";
+            listViewGroup2.Header = "Certificates";
             listViewGroup2.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
-            listViewGroup2.Name = null;
+            listViewGroup3.Header = "Secrets";
+            listViewGroup3.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
+            listViewGroup3.Name = null;
             this.uxListViewSecrets.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
             listViewGroup1,
-            listViewGroup2});
+            listViewGroup2,
+            listViewGroup3});
             this.uxListViewSecrets.HideSelection = false;
             this.uxListViewSecrets.Location = new System.Drawing.Point(0, 0);
             this.uxListViewSecrets.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
