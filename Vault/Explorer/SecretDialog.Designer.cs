@@ -48,6 +48,7 @@
             this.uxMenuNewValue = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.uxMenuItemNewPassword = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemNewGuid = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxMenuItemNewApiKey = new System.Windows.Forms.ToolStripMenuItem();
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.uxErrorProvider)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uxSplitContainer)).BeginInit();
@@ -239,9 +240,10 @@
             this.uxMenuNewValue.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.uxMenuNewValue.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.uxMenuItemNewPassword,
-            this.uxMenuItemNewGuid});
+            this.uxMenuItemNewGuid,
+            this.uxMenuItemNewApiKey});
             this.uxMenuNewValue.Name = "uxMenuNewValue";
-            this.uxMenuNewValue.Size = new System.Drawing.Size(182, 56);
+            this.uxMenuNewValue.Size = new System.Drawing.Size(182, 110);
             // 
             // uxMenuItemNewPassword
             // 
@@ -259,6 +261,14 @@
             this.uxMenuItemNewGuid.Text = "New guid";
             this.uxMenuItemNewGuid.ToolTipText = "Generates a random guid in D format (32 digits separated by hyphens)";
             this.uxMenuItemNewGuid.Click += new System.EventHandler(this.uxMenuItemNewGuid_Click);
+            // 
+            // uxMenuItemNewApiKey
+            // 
+            this.uxMenuItemNewApiKey.Name = "uxMenuItemNewApiKey";
+            this.uxMenuItemNewApiKey.Size = new System.Drawing.Size(181, 26);
+            this.uxMenuItemNewApiKey.Text = "New api key";
+            this.uxMenuItemNewApiKey.ToolTipText = "Generates a random api key of 64 bytes encoded as base64";
+            this.uxMenuItemNewApiKey.Click += new System.EventHandler(this.uxMenuItemNewApiKey_Click);
             // 
             // SecretDialog
             // 
@@ -314,5 +324,6 @@
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemNewPassword;
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemNewGuid;
         private System.Windows.Forms.LinkLabel uxLinkLabelViewCertificate;
+        private System.Windows.Forms.ToolStripMenuItem uxMenuItemNewApiKey;
     }
 }
