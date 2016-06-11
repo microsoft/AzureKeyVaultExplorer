@@ -296,6 +296,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxTextBoxValue.Refresh();
         }
 
+        private void uxMenuItemNewApiKey_Click(object sender, EventArgs e)
+        {
+            if (uxTextBoxValue.IsReadOnly) return;
+            uxTextBoxValue.Text = Utils.NewApiKey();
+            uxTextBoxValue.Refresh();
+        }
+
         private void uxSplitContainer_Panel1_SizeChanged(object sender, EventArgs e)
         {
             uxLinkLabelViewCertificate.Left = (uxSplitContainer.Panel1.Width - uxLinkLabelViewCertificate.Width) / 2;

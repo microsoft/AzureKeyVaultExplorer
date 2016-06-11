@@ -154,6 +154,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return Encoding.ASCII.GetString(u.Concat(l).Concat(n).Concat(s).Concat(a).Shuffle().ToArray());
         }
 
+        public static string NewApiKey(int length = 64)
+        {
+            var r = new Random();
+            byte[] buff = new byte[length];
+            r.NextBytes(buff);
+            return Convert.ToBase64String(buff);
+        }
+
         public static void ClickOnce_SetAddRemoveProgramsIcon()
         {
             if (ApplicationDeployment.IsNetworkDeployed && ApplicationDeployment.CurrentDeployment.IsFirstRun)
