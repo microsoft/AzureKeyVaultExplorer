@@ -15,52 +15,52 @@
   {
     "Alias": "WD.Services US PPE",
     "VaultNames": [ "wdvaultus1westppe", "wdvaultus1eastppe" ],
-    "SecretKinds": [ "Custom", "WD.ServiceFabricService.Configuration.Secret" ]
+    "SecretKinds": [ "Custom", "WD.Certificate", "WD.ServiceFabricService.Configuration.Secret" ]
   },
   {
     "Alias": "WD.Services US Prod",
     "VaultNames": [ "wdvaultus1westprod", "wdvaultus1eastprod" ],
-    "SecretKinds": [ "Custom", "WD.ServiceFabricService.Configuration.Secret" ]
+    "SecretKinds": [ "Custom", "WD.Certificate", "WD.ServiceFabricService.Configuration.Secret" ]
   },
   {
     "Alias": "WD.Services AU Prod",
     "VaultNames": [ "wdvaultau1eastprod", "wdvaultau1southeastprod" ],
-    "SecretKinds": [ "Custom", "WD.ServiceFabricService.Configuration.Secret" ]
+    "SecretKinds": [ "Custom", "WD.Certificate", "WD.ServiceFabricService.Configuration.Secret" ]
   },
   {
     "Alias": "WD.Services EU Prod",
     "VaultNames": [ "wdvaulteu1northprod", "wdvaulteu1westprod" ],
-    "SecretKinds": [ "Custom", "WD.ServiceFabricService.Configuration.Secret" ]
+    "SecretKinds": [ "Custom", "WD.Certificate", "WD.ServiceFabricService.Configuration.Secret" ]
   },
   {
     "Alias": "WD.Services AS Prod",
     "VaultNames": [ "wdvaultas1eastprod", "wdvaultas1southeastprod" ],
-    "SecretKinds": [ "Custom", "WD.ServiceFabricService.Configuration.Secret" ]
+    "SecretKinds": [ "Custom", "WD.Certificate", "WD.ServiceFabricService.Configuration.Secret" ]
   },
   {
     "Alias": "WD.Services BR Prod",
     "VaultNames": [ "wdvaultbr1southprod" ],
-    "SecretKinds": [ "Custom", "WD.ServiceFabricService.Configuration.Secret" ]
+    "SecretKinds": [ "Custom", "WD.Certificate", "WD.ServiceFabricService.Configuration.Secret" ]
   },
   {
     "Alias": "Defender Key Vault Ops",
     "VaultNames": [ "defenderkeyvault" ],
-    "SecretKinds": [ "Custom" ]
+    "SecretKinds": [ "Custom", "WD.Certificate" ]
   },
   {
     "Alias": "Defender Key Vault Dev",
     "VaultNames": [ "defenderkeyvaultdev" ],
-    "SecretKinds": [ "Custom" ]
+    "SecretKinds": [ "Custom", "WD.Certificate" ]
   },
   {
     "Alias": "Defender Key Vault Research",
     "VaultNames": [ "defenderkeyvaultresearch" ],
-    "SecretKinds": [ "Custom" ]
+    "SecretKinds": [ "Custom", "WD.Certificate" ]
   },
   {
     "Alias": "Defender Key Vault Build",
     "VaultNames": [ "defenderkeyvaultbuild" ],
-    "SecretKinds": [ "Custom" ]
+    "SecretKinds": [ "Custom", "WD.Certificate" ]
   },
   {
     "Alias": "WCD Production Vault",
