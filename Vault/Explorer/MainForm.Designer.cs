@@ -116,6 +116,7 @@
             // 
             // splitContainer1
             // 
+            splitContainer1.DataBindings.Add(new System.Windows.Forms.Binding("SplitterDistance", global::Microsoft.PS.Common.Vault.Explorer.Properties.Settings.Default, "MainFormSplitterDistance", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             splitContainer1.Location = new System.Drawing.Point(0, 0);
             splitContainer1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -130,7 +131,7 @@
             // 
             splitContainer1.Panel2.Controls.Add(this.uxPropertyGridSecret);
             splitContainer1.Size = new System.Drawing.Size(1372, 562);
-            splitContainer1.SplitterDistance = 285;
+            splitContainer1.SplitterDistance = global::Microsoft.PS.Common.Vault.Explorer.Properties.Settings.Default.MainFormSplitterDistance;
             splitContainer1.SplitterWidth = 6;
             splitContainer1.TabIndex = 8;
             // 
@@ -158,7 +159,7 @@
             this.uxListViewSecrets.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.uxListViewSecrets.Name = "uxListViewSecrets";
             this.uxListViewSecrets.ShowItemToolTips = true;
-            this.uxListViewSecrets.Size = new System.Drawing.Size(1372, 285);
+            this.uxListViewSecrets.Size = new System.Drawing.Size(1372, 260);
             this.uxListViewSecrets.SmallImageList = this.uxSmallImageList;
             this.uxListViewSecrets.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.uxListViewSecrets.TabIndex = 0;
@@ -368,7 +369,7 @@
             this.uxPropertyGridSecret.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.uxPropertyGridSecret.Name = "uxPropertyGridSecret";
             this.uxPropertyGridSecret.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.uxPropertyGridSecret.Size = new System.Drawing.Size(1372, 271);
+            this.uxPropertyGridSecret.Size = new System.Drawing.Size(1372, 296);
             this.uxPropertyGridSecret.TabIndex = 0;
             this.uxPropertyGridSecret.ToolbarVisible = false;
             // 
@@ -694,11 +695,14 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1372, 615);
             this.Controls.Add(this.toolStripContainer1);
+            this.DataBindings.Add(new System.Windows.Forms.Binding("Location", global::Microsoft.PS.Common.Vault.Explorer.Properties.Settings.Default, "MainFormLocation", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Location = global::Microsoft.PS.Common.Vault.Explorer.Properties.Settings.Default.MainFormLocation;
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.MinimumSize = new System.Drawing.Size(797, 589);
             this.Name = "MainForm";
             this.Text = "Azure Key Vault Explorer";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(splitContainer1)).EndInit();
