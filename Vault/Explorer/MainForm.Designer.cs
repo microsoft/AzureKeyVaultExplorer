@@ -228,7 +228,7 @@
             this.uxMenuItemAdd.Name = "uxMenuItemAdd";
             this.uxMenuItemAdd.Size = new System.Drawing.Size(143, 26);
             this.uxMenuItemAdd.Text = "&Add";
-            this.uxMenuItemAdd.ToolTipText = "Add secret";
+            this.uxMenuItemAdd.ToolTipText = "Add item";
             this.uxMenuItemAdd.Click += new System.EventHandler(this.uxButtonAdd_Click);
             // 
             // uxAddSecret2
@@ -287,7 +287,7 @@
             this.uxMenuItemEdit.Name = "uxMenuItemEdit";
             this.uxMenuItemEdit.Size = new System.Drawing.Size(143, 26);
             this.uxMenuItemEdit.Text = "&Edit...";
-            this.uxMenuItemEdit.ToolTipText = "Edit secret";
+            this.uxMenuItemEdit.ToolTipText = "Edit item";
             this.uxMenuItemEdit.Click += new System.EventHandler(this.uxButtonEdit_Click);
             // 
             // uxMenuItemToggle
@@ -297,7 +297,7 @@
             this.uxMenuItemToggle.Name = "uxMenuItemToggle";
             this.uxMenuItemToggle.Size = new System.Drawing.Size(143, 26);
             this.uxMenuItemToggle.Text = "Disabl&e...";
-            this.uxMenuItemToggle.ToolTipText = "Disable secret";
+            this.uxMenuItemToggle.ToolTipText = "Disable item";
             this.uxMenuItemToggle.Click += new System.EventHandler(this.uxButtonToggle_Click);
             // 
             // uxMenuItemDelete
@@ -307,7 +307,7 @@
             this.uxMenuItemDelete.Name = "uxMenuItemDelete";
             this.uxMenuItemDelete.Size = new System.Drawing.Size(143, 26);
             this.uxMenuItemDelete.Text = "&Delete...";
-            this.uxMenuItemDelete.ToolTipText = "Delete secret";
+            this.uxMenuItemDelete.ToolTipText = "Delete item";
             this.uxMenuItemDelete.Click += new System.EventHandler(this.uxButtonDelete_Click);
             // 
             // toolStripSeparator5
@@ -322,7 +322,6 @@
             this.uxMenuItemCopy.Name = "uxMenuItemCopy";
             this.uxMenuItemCopy.Size = new System.Drawing.Size(143, 26);
             this.uxMenuItemCopy.Text = "&Copy";
-            this.uxMenuItemCopy.ToolTipText = "Copy secret value to clipboard for 30 seconds";
             this.uxMenuItemCopy.Click += new System.EventHandler(this.uxButtonCopy_Click);
             // 
             // uxMenuItemSave
@@ -332,7 +331,7 @@
             this.uxMenuItemSave.Name = "uxMenuItemSave";
             this.uxMenuItemSave.Size = new System.Drawing.Size(143, 26);
             this.uxMenuItemSave.Text = "&Save...";
-            this.uxMenuItemSave.ToolTipText = "Save secret to file";
+            this.uxMenuItemSave.ToolTipText = "Save item to file";
             this.uxMenuItemSave.Click += new System.EventHandler(this.uxButtonSave_Click);
             // 
             // uxMenuItemFavorite
@@ -342,7 +341,7 @@
             this.uxMenuItemFavorite.Name = "uxMenuItemFavorite";
             this.uxMenuItemFavorite.Size = new System.Drawing.Size(143, 26);
             this.uxMenuItemFavorite.Text = "Favorite";
-            this.uxMenuItemFavorite.ToolTipText = "Add secret(s) to favorites group";
+            this.uxMenuItemFavorite.ToolTipText = "Add item(s) to favorites group";
             this.uxMenuItemFavorite.Click += new System.EventHandler(this.uxButtonFavorite_Click);
             // 
             // toolStripSeparator4
@@ -357,7 +356,7 @@
             this.uxMenuItemRefresh.Name = "uxMenuItemRefresh";
             this.uxMenuItemRefresh.Size = new System.Drawing.Size(143, 26);
             this.uxMenuItemRefresh.Text = "&Refresh";
-            this.uxMenuItemRefresh.ToolTipText = "Refresh all secrets";
+            this.uxMenuItemRefresh.ToolTipText = "Refresh all items";
             this.uxMenuItemRefresh.Click += new System.EventHandler(this.uxMenuItemRefresh_Click);
             // 
             // uxSmallImageList
@@ -460,7 +459,7 @@
             this.uxButtonAdd.Name = "uxButtonAdd";
             this.uxButtonAdd.Size = new System.Drawing.Size(76, 25);
             this.uxButtonAdd.Text = "&Add";
-            this.uxButtonAdd.ToolTipText = "Add secret";
+            this.uxButtonAdd.ToolTipText = "Add item";
             this.uxButtonAdd.Click += new System.EventHandler(this.uxButtonAdd_Click);
             // 
             // uxAddSecret
@@ -519,7 +518,7 @@
             this.uxButtonEdit.Name = "uxButtonEdit";
             this.uxButtonEdit.Size = new System.Drawing.Size(59, 25);
             this.uxButtonEdit.Text = "&Edit";
-            this.uxButtonEdit.ToolTipText = "Edit secret";
+            this.uxButtonEdit.ToolTipText = "Edit item";
             this.uxButtonEdit.Click += new System.EventHandler(this.uxButtonEdit_Click);
             // 
             // uxButtonToggle
@@ -530,7 +529,7 @@
             this.uxButtonToggle.Name = "uxButtonToggle";
             this.uxButtonToggle.Size = new System.Drawing.Size(83, 25);
             this.uxButtonToggle.Text = "Disabl&e";
-            this.uxButtonToggle.ToolTipText = "Disable secret";
+            this.uxButtonToggle.ToolTipText = "Disable item";
             this.uxButtonToggle.Click += new System.EventHandler(this.uxButtonToggle_Click);
             // 
             // uxButtonDelete
@@ -541,7 +540,7 @@
             this.uxButtonDelete.Name = "uxButtonDelete";
             this.uxButtonDelete.Size = new System.Drawing.Size(77, 25);
             this.uxButtonDelete.Text = "&Delete";
-            this.uxButtonDelete.ToolTipText = "Delete secret";
+            this.uxButtonDelete.ToolTipText = "Delete item";
             this.uxButtonDelete.Click += new System.EventHandler(this.uxButtonDelete_Click);
             // 
             // uxImageSearch
@@ -568,7 +567,6 @@
             this.uxButtonCopy.Name = "uxButtonCopy";
             this.uxButtonCopy.Size = new System.Drawing.Size(67, 25);
             this.uxButtonCopy.Text = "&Copy";
-            this.uxButtonCopy.ToolTipText = "Copy secret value to clipboard for 30 seconds";
             this.uxButtonCopy.Click += new System.EventHandler(this.uxButtonCopy_Click);
             // 
             // uxButtonSave
@@ -579,7 +577,7 @@
             this.uxButtonSave.Name = "uxButtonSave";
             this.uxButtonSave.Size = new System.Drawing.Size(64, 25);
             this.uxButtonSave.Text = "&Save";
-            this.uxButtonSave.ToolTipText = "Save secret to file";
+            this.uxButtonSave.ToolTipText = "Save item to file";
             this.uxButtonSave.Click += new System.EventHandler(this.uxButtonSave_Click);
             // 
             // uxButtonFavorite
@@ -590,7 +588,7 @@
             this.uxButtonFavorite.Name = "uxButtonFavorite";
             this.uxButtonFavorite.Size = new System.Drawing.Size(85, 25);
             this.uxButtonFavorite.Text = "&Favorite";
-            this.uxButtonFavorite.ToolTipText = "Add secret(s) to favorites group";
+            this.uxButtonFavorite.ToolTipText = "Add item(s) to favorites group";
             this.uxButtonFavorite.Click += new System.EventHandler(this.uxButtonFavorite_Click);
             // 
             // uxButtonSettings
