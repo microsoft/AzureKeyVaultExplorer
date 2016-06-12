@@ -1,0 +1,113 @@
+﻿namespace Microsoft.PS.Common.Vault.Explorer
+{
+    partial class ListViewSecrets
+    {
+        /// <summary> 
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary> 
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Component Designer generated code
+
+        /// <summary> 
+        /// Required method for Designer support - do not modify 
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ListViewSecrets));
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Favorites", System.Windows.Forms.HorizontalAlignment.Center);
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Certificates", System.Windows.Forms.HorizontalAlignment.Center);
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Key Vault Certificates", System.Windows.Forms.HorizontalAlignment.Center);
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Secrets", System.Windows.Forms.HorizontalAlignment.Center);
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.uxSmallImageList = new System.Windows.Forms.ImageList(this.components);
+            this.SuspendLayout();
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Name";
+            this.columnHeader1.Width = 450;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Updated";
+            this.columnHeader2.Width = 140;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Changed by";
+            this.columnHeader3.Width = 200;
+            // 
+            // uxSmallImageList
+            // 
+            this.uxSmallImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("uxSmallImageList.ImageStream")));
+            this.uxSmallImageList.TransparentColor = System.Drawing.Color.Transparent;
+            this.uxSmallImageList.Images.SetKeyName(0, "empty.png");
+            this.uxSmallImageList.Images.SetKeyName(1, "medal_bronze_1.png");
+            this.uxSmallImageList.Images.SetKeyName(2, "medal_bronze_delete.png");
+            this.uxSmallImageList.Images.SetKeyName(3, "certificate2.png");
+            this.uxSmallImageList.Images.SetKeyName(4, "certificate2_disabled.png");
+            this.uxSmallImageList.Images.SetKeyName(5, "key.png");
+            this.uxSmallImageList.Images.SetKeyName(6, "key_delete.png");
+            // 
+            // ListViewSecrets
+            // 
+            this.AllowColumnReorder = true;
+            this.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3});
+            this.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.FullRowSelect = true;
+            listViewGroup1.Header = "Favorites";
+            listViewGroup1.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
+            listViewGroup1.Name = null;
+            listViewGroup2.Header = "Certificates";
+            listViewGroup2.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
+            listViewGroup2.Name = null;
+            listViewGroup3.Header = "Key Vault Certificates";
+            listViewGroup3.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
+            listViewGroup3.Name = null;
+            listViewGroup4.Header = "Secrets";
+            listViewGroup4.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
+            listViewGroup4.Name = null;
+            this.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3,
+            listViewGroup4});
+            this.HideSelection = false;
+            this.ShowItemToolTips = true;
+            this.SmallImageList = this.uxSmallImageList;
+            this.Sorting = System.Windows.Forms.SortOrder.Ascending;
+            this.View = System.Windows.Forms.View.Details;
+            this.UseCompatibleStateImageBehavior = false;
+            this.ResumeLayout(false);
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.ImageList uxSmallImageList;
+    }
+}

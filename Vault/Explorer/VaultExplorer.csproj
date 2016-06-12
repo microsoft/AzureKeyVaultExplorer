@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddFileEventArgs.cs" />
+    <Compile Include="ISession.cs" />
     <Compile Include="ListViewItemCertificate.cs" />
     <Compile Include="ContentType.cs" />
     <Compile Include="DeleteTempFileInfo.cs" />
@@ -91,6 +92,12 @@
     <Compile Include="FavoriteSecrets.cs" />
     <Compile Include="ListViewItemBase.cs" />
     <Compile Include="ListViewItemSorter.cs" />
+    <Compile Include="ListViewSecrets.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ListViewSecrets.Designer.cs">
+      <DependentUpon>ListViewSecrets.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -143,6 +150,9 @@
     <Compile Include="VaultAlias.cs" />
     <EmbeddedResource Include="ExceptionDialog.resx">
       <DependentUpon>ExceptionDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ListViewSecrets.resx">
+      <DependentUpon>ListViewSecrets.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
