@@ -73,6 +73,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             var favorites = Settings.Default.FavoriteSecretsDictionary[vaultAlias];
             favorites.Add(secretName, new FavoriteSecret());
         }
+
         public static void Remove(string vaultAlias, string secretName)
         {
             if (Settings.Default.FavoriteSecretsDictionary.ContainsKey(vaultAlias))
