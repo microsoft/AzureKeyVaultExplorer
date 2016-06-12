@@ -32,7 +32,8 @@
             System.Windows.Forms.SplitContainer splitContainer1;
             System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Favorites", System.Windows.Forms.HorizontalAlignment.Center);
             System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Certificates", System.Windows.Forms.HorizontalAlignment.Center);
-            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Secrets", System.Windows.Forms.HorizontalAlignment.Center);
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Key Vault Certificates", System.Windows.Forms.HorizontalAlignment.Center);
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Secrets", System.Windows.Forms.HorizontalAlignment.Center);
             System.Windows.Forms.ColumnHeader columnHeader1;
             System.Windows.Forms.ColumnHeader columnHeader2;
             System.Windows.Forms.ColumnHeader columnHeader3;
@@ -151,13 +152,18 @@
             listViewGroup1.Name = null;
             listViewGroup2.Header = "Certificates";
             listViewGroup2.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
-            listViewGroup3.Header = "Secrets";
+            listViewGroup2.Name = null;
+            listViewGroup3.Header = "Key Vault Certificates";
             listViewGroup3.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             listViewGroup3.Name = null;
+            listViewGroup4.Header = "Secrets";
+            listViewGroup4.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
+            listViewGroup4.Name = null;
             this.uxListViewSecrets.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
             listViewGroup1,
             listViewGroup2,
-            listViewGroup3});
+            listViewGroup3,
+            listViewGroup4});
             this.uxListViewSecrets.HideSelection = false;
             this.uxListViewSecrets.Location = new System.Drawing.Point(0, 0);
             this.uxListViewSecrets.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -359,10 +365,12 @@
             this.uxSmallImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("uxSmallImageList.ImageStream")));
             this.uxSmallImageList.TransparentColor = System.Drawing.Color.Transparent;
             this.uxSmallImageList.Images.SetKeyName(0, "empty.png");
-            this.uxSmallImageList.Images.SetKeyName(1, "key.png");
-            this.uxSmallImageList.Images.SetKeyName(2, "key_delete.png");
-            this.uxSmallImageList.Images.SetKeyName(3, "medal_bronze_1.png");
-            this.uxSmallImageList.Images.SetKeyName(4, "medal_bronze_delete.png");
+            this.uxSmallImageList.Images.SetKeyName(1, "medal_bronze_1.png");
+            this.uxSmallImageList.Images.SetKeyName(2, "medal_bronze_delete.png");
+            this.uxSmallImageList.Images.SetKeyName(3, "certificate2.png");
+            this.uxSmallImageList.Images.SetKeyName(4, "certificate2_disabled.png");
+            this.uxSmallImageList.Images.SetKeyName(5, "key.png");
+            this.uxSmallImageList.Images.SetKeyName(6, "key_delete.png");
             // 
             // uxPropertyGridSecret
             // 

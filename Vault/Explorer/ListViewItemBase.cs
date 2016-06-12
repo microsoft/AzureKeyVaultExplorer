@@ -3,60 +3,61 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
-    /// <summary>
-    /// Secret list view item which also presents itself nicely to PropertyGrid
-    /// </summary>
-    public class SecretListViewItem : ListViewItem, ICustomTypeDescriptor
+    public abstract class ListViewItemBase : ListViewItem, ICustomTypeDescriptor
     {
-        private const int FavoritesGroup = 0;
-        private const int CertificatesGroup = 1;
-        private const int SecretsGroup = 2;
+        public const int FavoritesGroup = 0;
+        public const int CertificatesGroup = 1;
+        public const int KeyVaultCertificatesGroup = 2;
+        public const int SecretsGroup = 3;
 
         public readonly VaultAlias VaultAlias;
         public readonly ListViewGroupCollection Groups;
-        public readonly SecretIdentifier Identifier;
-        public readonly SecretAttributes Attributes;
-        public readonly string ContentTypeStr;
-        public readonly ContentType ContentType;
-        public readonly string Id;
-        public readonly Dictionary<string, string> Tags;
+        public readonly int GroupIndex;
+        public readonly ObjectIdentifier Identifier;
+        public readonly IDictionary<string, string> Tags;
+        public readonly bool Enabled;
+        public readonly DateTime? Created;
+        public readonly DateTime? Updated;
+        public readonly DateTime? NotBefore;
+        public readonly DateTime? Expires;
 
-        private readonly int BaseImageIndex;
-
-        private SecretListViewItem(VaultAlias vaultAlias, ListViewGroupCollection groups, SecretIdentifier identifier, SecretAttributes attributes, string contentTypeStr, 
-            Dictionary<string, string> tags) : base(identifier.Name)
+        protected ListViewItemBase(VaultAlias vaultAlias, ListViewGroupCollection groups, int groupIndex,
+            ObjectIdentifier identifier, IDictionary<string, string> tags, bool? enabled,
+            DateTime? created, DateTime? updated, DateTime? notBefore, DateTime? expires) : base(identifier.Name)
         {
             VaultAlias = vaultAlias;
             Groups = groups;
+            GroupIndex = groupIndex;
             Identifier = identifier;
-            Attributes = attributes;
-            ContentTypeStr = contentTypeStr;
-            ContentType = ContentTypeEnumConverter.GetValue(contentTypeStr);
-            Id = identifier.Identifier;
             Tags = tags;
+            Enabled = enabled ?? true;
+            Created = created;
+            Updated = updated;
+            NotBefore = notBefore;
+            Expires = expires;
 
-            BaseImageIndex = ContentType.IsCertificate() ? 3 : 1;
-            ImageIndex = (Attributes.Enabled ?? true) ? BaseImageIndex : BaseImageIndex + 1;
-            ForeColor = (Attributes.Enabled ?? true) ? SystemColors.WindowText : SystemColors.GrayText;
+            ImageIndex = Enabled ? 2 * GroupIndex - 1 : 2 * GroupIndex;
+            ForeColor = Enabled ? SystemColors.WindowText : SystemColors.GrayText;
 
             Name = identifier.Name;
-            SubItems.Add(new ListViewSubItem(this, Utils.NullableDateTimeToString(attributes.Updated)) { Tag = attributes.Updated }); // Add Tag so ListViewItemSorter will sort datetime correctly
+            SubItems.Add(new ListViewSubItem(this, Utils.NullableDateTimeToString(updated)) { Tag = updated }); // Add Tag so ListViewItemSorter will sort datetime correctly
             SubItems.Add(ChangedBy);
 
             ToolTipText = string.Format("Creation time:\t\t{0}\nLast updated time:\t{1}",
-                Utils.NullableDateTimeToString(Attributes.Created),
-                Utils.NullableDateTimeToString(Attributes.Updated));
+                Utils.NullableDateTimeToString(created),
+                Utils.NullableDateTimeToString(updated));
 
-            Group = Groups[FavoriteSecretUtil.Contains(VaultAlias.Alias, Name) ? FavoritesGroup : ContentType.IsCertificate() ? CertificatesGroup : SecretsGroup];
+            Group = Groups[FavoriteSecretUtil.Contains(VaultAlias.Alias, Name) ? FavoritesGroup : GroupIndex];
         }
 
-        public SecretListViewItem(VaultAlias vaultAlias, ListViewGroupCollection groups, SecretItem si) : this(vaultAlias, groups, si.Identifier, si.Attributes, si.ContentType, si.Tags) { }
-
-        public SecretListViewItem(VaultAlias vaultAlias, ListViewGroupCollection groups, Secret s) : this(vaultAlias, groups, s.SecretIdentifier, s.Attributes, s.ContentType, s.Tags) { }
+        public string Id => Identifier.Identifier;
 
         public string ChangedBy => Utils.GetChangedBy(Tags);
 
@@ -80,7 +81,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             set
             {
                 ForeColor = value ? SystemColors.GrayText : SystemColors.WindowText;
-                ImageIndex = value ? 0 : (Attributes.Enabled ?? true) ? BaseImageIndex : BaseImageIndex + 1;
+                ImageIndex = value ? 0 : Enabled ? 2 * GroupIndex - 1 : 2 * GroupIndex;
             }
         }
 
@@ -92,7 +93,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
             set
             {
-                Group = value ? Groups[FavoritesGroup] : Groups[SecretsGroup];
+                Group = value ? Groups[FavoritesGroup] : Groups[GroupIndex];
                 if (value)
                 {
                     FavoriteSecretUtil.Add(VaultAlias.Alias, Name);
@@ -117,6 +118,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
             return false;
         }
+
+        protected abstract IEnumerable<PropertyDescriptor> GetCustomProperties();
 
         #region ICustomTypeDescriptor interface to show properties in PropertyGrid
 
@@ -148,13 +151,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 new ReadOnlyPropertyDescriptor("Name", Name),
                 new ReadOnlyPropertyDescriptor("Identifier", Id),
-                new ReadOnlyPropertyDescriptor("Creation time", Utils.NullableDateTimeToString(Attributes.Created)),
-                new ReadOnlyPropertyDescriptor("Last updated time", Utils.NullableDateTimeToString(Attributes.Updated)),
-                new ReadOnlyPropertyDescriptor("Enabled", Attributes.Enabled),
-                new ReadOnlyPropertyDescriptor("Valid from time (UTC)", Attributes.NotBefore),
-                new ReadOnlyPropertyDescriptor("Valid until time (UTC)", Attributes.Expires),
-                new ReadOnlyPropertyDescriptor("Content Type", ContentTypeStr)
+                new ReadOnlyPropertyDescriptor("Creation time", Utils.NullableDateTimeToString(Created)),
+                new ReadOnlyPropertyDescriptor("Last updated time", Utils.NullableDateTimeToString(Updated)),
+                new ReadOnlyPropertyDescriptor("Enabled", Enabled),
+                new ReadOnlyPropertyDescriptor("Valid from time (UTC)", NotBefore),
+                new ReadOnlyPropertyDescriptor("Valid until time (UTC)", Expires),
             };
+            properties.AddRange(GetCustomProperties());
             if (Tags != null)
             {
                 foreach (var kvp in Tags)

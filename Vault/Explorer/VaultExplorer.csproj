@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddFileEventArgs.cs" />
+    <Compile Include="ListViewItemCertificate.cs" />
     <Compile Include="ContentType.cs" />
     <Compile Include="DeleteTempFileInfo.cs" />
     <Compile Include="ExceptionDialog.cs">
@@ -88,6 +89,7 @@
       <DependentUpon>ExceptionDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="FavoriteSecrets.cs" />
+    <Compile Include="ListViewItemBase.cs" />
     <Compile Include="ListViewItemSorter.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -125,7 +127,7 @@
     <Compile Include="SecretKind.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="SecretListViewItem.cs" />
+    <Compile Include="ListViewItemSecret.cs" />
     <Compile Include="SecretObject.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="SettingsDialog.cs">

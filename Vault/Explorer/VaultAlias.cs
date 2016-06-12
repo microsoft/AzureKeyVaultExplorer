@@ -21,6 +21,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [JsonProperty]
         public readonly string[] SecretKinds;
 
+        [JsonProperty]
+        public readonly bool KeyVaultCertificates;
+
         [JsonConstructor]
         public VaultAlias(string alias, string[] vaultNames, string[] secretKinds)
         {
