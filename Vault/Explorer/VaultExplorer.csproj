@@ -170,7 +170,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Resources\star.png" />
+    <Content Include="$(AssemblyName).ico" />
     <Content Include="VaultAliases.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -202,27 +202,8 @@
   <ItemGroup>
     <None Include="ClickOnce.props" />
     <None Include="ClickOncePublish.cmd" />
-    <None Include="Resources\lock_go.png" />
-    <None Include="Resources\lock_add.png" />
-    <None Include="Resources\lock_edit.png" />
-    <None Include="Resources\lock_break.png" />
-    <None Include="Resources\lock_delete.png" />
-    <None Include="Resources\door_out.png" />
-    <None Include="Resources\certificate.png" />
-    <None Include="Resources\key.png" />
-    <None Include="Resources\folder_key.png" />
-    <None Include="Resources\information.png" />
-    <None Include="Resources\key_delete.png" />
-    <None Include="Resources\magnifier.png" />
-    <None Include="Resources\disk.png" />
-    <None Include="Resources\cancel.png" />
-    <None Include="Resources\BigKey.png" />
-    <None Include="Resources\empty.png" />
-    <None Include="Resources\error.png" />
-    <None Include="Resources\move_secret.cur" />
-    <None Include="Resources\move_value.cur" />
-    <None Include="Resources\wrench.png" />
-    <Content Include="$(AssemblyName).ico" />
+    <None Include="CreateReleaseAnnotation.ps1" />
+    <None Include="Resources\*" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterCompile">
