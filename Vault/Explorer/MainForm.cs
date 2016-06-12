@@ -110,7 +110,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 uxListViewSecrets.Items.Clear();
                 _strikedoutSecrets = 0;
                 RefreshItemsCount();
-                UpdateLabelSecertsCountDelegate ulscd = (c) => uxStatusLabelSecertsCount.Text = $"{c} secrets"; // We use delegate and Invoke() below to execute on the thread that owns the control
+                UpdateLabelSecertsCountDelegate ulscd = (c) => uxStatusLabelSecertsCount.Text = $"{uxListViewSecrets.Items.Count + c} secrets"; // We use delegate and Invoke() below to execute on the thread that owns the control
                 foreach (var s in await _vault.ListSecretsAsync(0, (c) => { Invoke(ulscd, c); }, cancellationToken: op.CancellationToken))
                 {
                     uxListViewSecrets.Items.Add(new ListViewItemSecret(_currentVaultAlias, uxListViewSecrets.Groups, s));
@@ -141,8 +141,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             bool singleItemSelected = (uxListViewSecrets.SelectedItems.Count == 1);
             bool manyItemsSelected = (uxListViewSecrets.SelectedItems.Count >= 1);
-            bool secretEnabled = singleItemSelected ? (uxListViewSecrets.SelectedItems[0] as ListViewItemBase).Enabled : false;
-            bool favorite = manyItemsSelected ? (uxListViewSecrets.SelectedItems[0] as ListViewItemBase).Favorite : false;
+            ListViewItemBase selectedItem = singleItemSelected ? uxListViewSecrets.SelectedItems[0] as ListViewItemBase : null;
+            bool secretEnabled = selectedItem?.Enabled ?? false;
+            bool favorite = selectedItem?.Favorite ?? false;
             uxButtonEdit.Enabled = uxButtonCopy.Enabled = uxButtonSave.Enabled = secretEnabled;
             uxMenuItemEdit.Enabled = uxMenuItemCopy.Enabled = uxMenuItemSave.Enabled = secretEnabled;
             uxButtonDelete.Enabled = uxMenuItemDelete.Enabled = uxButtonFavorite.Enabled = uxMenuItemFavorite.Enabled = manyItemsSelected;
@@ -151,7 +152,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxButtonToggle.ToolTipText = uxMenuItemToggle.ToolTipText = secretEnabled ? "Disable secret" : "Enable secret";
             uxMenuItemToggle.Text = uxButtonToggle.Text + "...";
             uxButtonFavorite.Checked = uxMenuItemFavorite.Checked = favorite;
-            uxButtonFavorite.ToolTipText = uxMenuItemFavorite.ToolTipText = favorite ? "Remove secret(s) from favorites group" : "Add secret(s) to favorites group";
+            uxButtonFavorite.ToolTipText = uxMenuItemFavorite.ToolTipText = favorite ? "Remove item(s) from favorites group" : "Add item(s) to favorites group";
             uxPropertyGridSecret.SelectedObject = singleItemSelected ? uxListViewSecrets.SelectedItems[0] : null;
             RefreshItemsCount();
         }
@@ -316,28 +317,48 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
         }
 
+        // Edit secret
+        private async Task EditItemAsync(ListViewItemSecret item)
+        {
+            Secret s = null;
+            IEnumerable<SecretItem> versions = null;
+            using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke("get secret or secret versions from", async () =>
+            {
+                s = await _vault.GetSecretAsync(item.Name, null, op.CancellationToken);
+                versions = await _vault.GetSecretVersionsAsync(item.Name, 0, op.CancellationToken);
+            });
+            SecretDialog nsDlg = new SecretDialog(_vault, _currentVaultAlias.SecretKinds, s, versions);
+            if (nsDlg.ShowDialog() == DialogResult.OK)
+            {
+                using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke("add or update secret in", async () =>
+                {
+                    await AddOrUpdateSecret(op, s, nsDlg.SecretObject);
+                });
+            }
+        }
+
+        // Edit key vault certificate
+        private async Task EditItemAsync(ListViewItemCertificate item)
+        {
+            X509Certificate2 cert = null;
+            using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke("get certificate from", async () =>
+            {
+                cert = await _vault.GetCertificateWithPrivateKeyAsync(item.Name, null, op.CancellationToken);
+            });
+            if (null != cert)
+            {
+                X509Certificate2UI.DisplayCertificate(cert, Handle);
+            }
+        }
+
         private async void uxButtonEdit_Click(object sender, EventArgs e)
         {
             if (uxListViewSecrets.SelectedItems.Count == 1)
             {
-                var slvi = uxListViewSecrets.SelectedItems[0] as ListViewItemSecret;
-                if (slvi.Attributes.Enabled ?? true)
+                dynamic item = uxListViewSecrets.SelectedItems[0] as ListViewItemBase;
+                if (item.Enabled)
                 {
-                    Secret s = null;
-                    IEnumerable<SecretItem> versions = null;
-                    using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke("get secret or secret versions from", async () =>
-                    {
-                        s = await _vault.GetSecretAsync(slvi.Name, null, op.CancellationToken);
-                        versions = await _vault.GetSecretVersionsAsync(slvi.Name, 0, op.CancellationToken);
-                    });
-                    SecretDialog nsDlg = new SecretDialog(_vault, _currentVaultAlias.SecretKinds, s, versions);
-                    if (nsDlg.ShowDialog() == DialogResult.OK)
-                    {
-                        using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke("add or update secret in", async () =>
-                        {
-                            await AddOrUpdateSecret(op, s, nsDlg.SecretObject);
-                        });
-                    }
+                    await EditItemAsync(item); // Correct function will be resolved at runtime
                 }
             }
         }
