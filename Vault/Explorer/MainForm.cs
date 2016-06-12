@@ -473,6 +473,22 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private void uxButtonHelp_Click(object sender, EventArgs e)
         {
             Process.Start("http://aka.ms/vaultexplorer");
+            //var cert = new X509Certificate2Collection();
+            //cert.Import(@"C:\Work\VSO.Repos\WD\WD.Services.Common\Tools\DevCluster-Local\localhost.pfx", "1234", X509KeyStorageFlags.Exportable);
+            //var certBundle  = await _vault.ImportCertificateAsync("newlocalhost2", cert, new CertificatePolicy()
+            //{
+            //    KeyProperties = new KeyProperties()
+            //    {
+            //        Exportable = true,
+            //        KeySize = 2048,
+            //        Kty = "RSA",
+            //        ReuseKey = false
+            //    },
+            //    SecretProperties = new SecretProperties()
+            //    {
+            //        ContentType = CertificateContentType.Pfx
+            //    }
+            //});
         }
 
         private void uxListViewSecrets_ColumnClick(object sender, ColumnClickEventArgs e)
