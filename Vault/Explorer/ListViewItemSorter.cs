@@ -32,8 +32,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public int Compare(object x, object y)
         {
-            SecretListViewItem sx = (SecretListViewItem)x;
-            SecretListViewItem sy = (SecretListViewItem)y;
+            ListViewItemBase sx = (ListViewItemBase)x;
+            ListViewItemBase sy = (ListViewItemBase)y;
 
             ListViewSubItem a = sx.SubItems[Column];
             ListViewSubItem b = sy.SubItems[Column];
