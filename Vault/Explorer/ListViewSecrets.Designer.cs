@@ -97,8 +97,9 @@
             this.ShowItemToolTips = true;
             this.SmallImageList = this.uxSmallImageList;
             this.Sorting = System.Windows.Forms.SortOrder.Ascending;
-            this.View = System.Windows.Forms.View.Details;
             this.UseCompatibleStateImageBehavior = false;
+            this.View = System.Windows.Forms.View.Details;
+            this.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.ListViewSecrets_ColumnClick);
             this.ResumeLayout(false);
 
         }

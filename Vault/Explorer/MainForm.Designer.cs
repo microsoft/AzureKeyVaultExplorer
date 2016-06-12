@@ -135,7 +135,6 @@
             this.uxListViewSecrets.Name = "uxListViewSecrets";
             this.uxListViewSecrets.Size = new System.Drawing.Size(1372, 260);
             this.uxListViewSecrets.TabIndex = 0;
-            this.uxListViewSecrets.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.uxListViewSecrets_ColumnClick);
             this.uxListViewSecrets.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.uxListViewSecrets_ItemDrag);
             this.uxListViewSecrets.SelectedIndexChanged += new System.EventHandler(this.uxListViewSecrets_SelectedIndexChanged);
             this.uxListViewSecrets.DragDrop += new System.Windows.Forms.DragEventHandler(this.uxListViewSecrets_DragDrop);

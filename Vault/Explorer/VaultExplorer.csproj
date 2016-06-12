@@ -91,7 +91,6 @@
     </Compile>
     <Compile Include="FavoriteSecrets.cs" />
     <Compile Include="ListViewItemBase.cs" />
-    <Compile Include="ListViewItemSorter.cs" />
     <Compile Include="ListViewSecrets.cs">
       <SubType>Component</SubType>
     </Compile>

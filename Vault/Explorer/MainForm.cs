@@ -21,7 +21,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
     {
         private VaultAlias _currentVaultAlias;
         private Vault _vault;
-        private ListViewItemSorter _listViewItemSorter;
         private int _strikedoutSecrets;
         private string _clipboardValue;
         private Cursor _moveSecretCursor;
@@ -33,7 +32,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             InitializeComponent();
             Text = $"{Utils.AppName} ({Environment.UserDomainName}\\{Environment.UserName})";
-            uxListViewSecrets.ListViewItemSorter = _listViewItemSorter = new ListViewItemSorter();
 
             ApplySettings();
 
@@ -53,7 +51,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private void ApplySettings()
         {
             Size = UISettings.Default.MainFormWindowSize;
-            _listViewItemSorter.SortOrder = UISettings.Default.MainFormSecretsSorting;
+            uxListViewSecrets.Sorting = UISettings.Default.MainFormSecretsSorting;
             uxButtonCopy.ToolTipText = uxMenuItemCopy.ToolTipText = $"Copy secret value to clipboard for {Settings.Default.CopyToClipboardTimeToLive.TotalSeconds} seconds";
             uxTimerClearClipboard.Interval = (int)Settings.Default.CopyToClipboardTimeToLive.TotalMilliseconds;
         }
@@ -62,7 +60,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             UISettings.Default.MainFormLocation = (WindowState == FormWindowState.Normal) ? Location : RestoreBounds.Location;
             UISettings.Default.MainFormWindowSize = (WindowState == FormWindowState.Normal) ? Size : RestoreBounds.Size;
-            UISettings.Default.MainFormSecretsSorting = _listViewItemSorter.SortOrder;
+            UISettings.Default.MainFormSecretsSorting = uxListViewSecrets.Sorting;
             UISettings.Default.Save();
             Settings.Default.Save();
         }
@@ -524,20 +522,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             //        ContentType = CertificateContentType.Pfx
             //    }
             //});
-        }
-
-        private void uxListViewSecrets_ColumnClick(object sender, ColumnClickEventArgs e)
-        {
-            if (_listViewItemSorter.Column == e.Column)
-            {
-                _listViewItemSorter.SwapSortOder();
-            }
-            else
-            {
-                _listViewItemSorter.Column = e.Column;
-                _listViewItemSorter.SortOrder = SortOrder.Ascending;
-            }
-            uxListViewSecrets.Sort();
         }
 
         #region Drag & Drop
