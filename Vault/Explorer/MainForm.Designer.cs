@@ -30,13 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.SplitContainer splitContainer1;
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("Favorites", System.Windows.Forms.HorizontalAlignment.Center);
-            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("Certificates", System.Windows.Forms.HorizontalAlignment.Center);
-            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("Key Vault Certificates", System.Windows.Forms.HorizontalAlignment.Center);
-            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("Secrets", System.Windows.Forms.HorizontalAlignment.Center);
-            System.Windows.Forms.ColumnHeader columnHeader1;
-            System.Windows.Forms.ColumnHeader columnHeader2;
-            System.Windows.Forms.ColumnHeader columnHeader3;
             System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
@@ -45,7 +38,7 @@
             System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
             System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
             System.Windows.Forms.ToolStripStatusLabel usStatusLabelSpring;
-            this.uxListViewSecrets = new System.Windows.Forms.ListView();
+            this.uxListViewSecrets = new Microsoft.PS.Common.Vault.Explorer.ListViewSecrets();
             this.uxContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.uxMenuItemAdd = new System.Windows.Forms.ToolStripMenuItem();
             this.uxAddSecret2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -61,7 +54,6 @@
             this.uxMenuItemSave = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemFavorite = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemRefresh = new System.Windows.Forms.ToolStripMenuItem();
-            this.uxSmallImageList = new System.Windows.Forms.ImageList(this.components);
             this.uxPropertyGridSecret = new System.Windows.Forms.PropertyGrid();
             this.uxToolStrip = new System.Windows.Forms.ToolStrip();
             this.uxComboBoxVaultAlias = new System.Windows.Forms.ToolStripComboBox();
@@ -93,9 +85,6 @@
             this.uxSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.uxTimerClearClipboard = new System.Windows.Forms.Timer(this.components);
             splitContainer1 = new System.Windows.Forms.SplitContainer();
-            columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
@@ -139,42 +128,13 @@
             // 
             // uxListViewSecrets
             // 
-            this.uxListViewSecrets.AllowColumnReorder = true;
-            this.uxListViewSecrets.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            columnHeader1,
-            columnHeader2,
-            columnHeader3});
             this.uxListViewSecrets.ContextMenuStrip = this.uxContextMenuStrip;
             this.uxListViewSecrets.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.uxListViewSecrets.FullRowSelect = true;
-            listViewGroup1.Header = "Favorites";
-            listViewGroup1.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
-            listViewGroup1.Name = null;
-            listViewGroup2.Header = "Certificates";
-            listViewGroup2.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
-            listViewGroup2.Name = null;
-            listViewGroup3.Header = "Key Vault Certificates";
-            listViewGroup3.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
-            listViewGroup3.Name = null;
-            listViewGroup4.Header = "Secrets";
-            listViewGroup4.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
-            listViewGroup4.Name = null;
-            this.uxListViewSecrets.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1,
-            listViewGroup2,
-            listViewGroup3,
-            listViewGroup4});
-            this.uxListViewSecrets.HideSelection = false;
             this.uxListViewSecrets.Location = new System.Drawing.Point(0, 0);
             this.uxListViewSecrets.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.uxListViewSecrets.Name = "uxListViewSecrets";
-            this.uxListViewSecrets.ShowItemToolTips = true;
             this.uxListViewSecrets.Size = new System.Drawing.Size(1372, 260);
-            this.uxListViewSecrets.SmallImageList = this.uxSmallImageList;
-            this.uxListViewSecrets.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.uxListViewSecrets.TabIndex = 0;
-            this.uxListViewSecrets.UseCompatibleStateImageBehavior = false;
-            this.uxListViewSecrets.View = System.Windows.Forms.View.Details;
             this.uxListViewSecrets.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.uxListViewSecrets_ColumnClick);
             this.uxListViewSecrets.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.uxListViewSecrets_ItemDrag);
             this.uxListViewSecrets.SelectedIndexChanged += new System.EventHandler(this.uxListViewSecrets_SelectedIndexChanged);
@@ -184,21 +144,6 @@
             this.uxListViewSecrets.DoubleClick += new System.EventHandler(this.uxButtonEdit_Click);
             this.uxListViewSecrets.KeyDown += new System.Windows.Forms.KeyEventHandler(this.uxListViewSecrets_KeyDown);
             this.uxListViewSecrets.KeyUp += new System.Windows.Forms.KeyEventHandler(this.uxListViewSecrets_KeyUp);
-            // 
-            // columnHeader1
-            // 
-            columnHeader1.Text = "Name";
-            columnHeader1.Width = 450;
-            // 
-            // columnHeader2
-            // 
-            columnHeader2.Text = "Updated";
-            columnHeader2.Width = 140;
-            // 
-            // columnHeader3
-            // 
-            columnHeader3.Text = "Changed by";
-            columnHeader3.Width = 200;
             // 
             // uxContextMenuStrip
             // 
@@ -358,18 +303,6 @@
             this.uxMenuItemRefresh.Text = "&Refresh";
             this.uxMenuItemRefresh.ToolTipText = "Refresh all items";
             this.uxMenuItemRefresh.Click += new System.EventHandler(this.uxMenuItemRefresh_Click);
-            // 
-            // uxSmallImageList
-            // 
-            this.uxSmallImageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("uxSmallImageList.ImageStream")));
-            this.uxSmallImageList.TransparentColor = System.Drawing.Color.Transparent;
-            this.uxSmallImageList.Images.SetKeyName(0, "empty.png");
-            this.uxSmallImageList.Images.SetKeyName(1, "medal_bronze_1.png");
-            this.uxSmallImageList.Images.SetKeyName(2, "medal_bronze_delete.png");
-            this.uxSmallImageList.Images.SetKeyName(3, "certificate2.png");
-            this.uxSmallImageList.Images.SetKeyName(4, "certificate2_disabled.png");
-            this.uxSmallImageList.Images.SetKeyName(5, "key.png");
-            this.uxSmallImageList.Images.SetKeyName(6, "key_delete.png");
             // 
             // uxPropertyGridSecret
             // 
@@ -737,7 +670,7 @@
         private System.Windows.Forms.ToolStripContainer toolStripContainer1;
         private System.Windows.Forms.StatusStrip uxStatusStrip;
         private System.Windows.Forms.ToolStripStatusLabel uxStatusLabel;
-        private System.Windows.Forms.ListView uxListViewSecrets;
+        private ListViewSecrets uxListViewSecrets;
         private System.Windows.Forms.PropertyGrid uxPropertyGridSecret;
         private System.Windows.Forms.ToolStripComboBox uxComboBoxVaultAlias;
         private System.Windows.Forms.ToolStripButton uxButtonCopy;
@@ -761,7 +694,6 @@
         private System.Windows.Forms.ToolStripMenuItem uxAddFile2;
         private System.Windows.Forms.ToolStripMenuItem uxAddFile;
         private System.Windows.Forms.OpenFileDialog uxOpenFileDialog;
-        private System.Windows.Forms.ImageList uxSmallImageList;
         private System.Windows.Forms.ToolStripTextBox uxTextBoxSearch;
         private System.Windows.Forms.ToolStripLabel uxImageSearch;
         private System.Windows.Forms.Timer uxTimerSearchTextTypingCompleted;
