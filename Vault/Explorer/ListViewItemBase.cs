@@ -141,7 +141,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public EventDescriptorCollection GetEvents(Attribute[] attributes) => TypeDescriptor.GetEvents(this, attributes, true);
 
-        EventDescriptorCollection ICustomTypeDescriptor.GetEvents() => TypeDescriptor.GetEvents(this, true);
+        public EventDescriptorCollection GetEvents() => TypeDescriptor.GetEvents(this, true);
 
         public TypeConverter GetConverter() => TypeDescriptor.GetConverter(this, true);
 
@@ -153,7 +153,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public PropertyDescriptor GetDefaultProperty() => null;
 
-        PropertyDescriptorCollection ICustomTypeDescriptor.GetProperties() => ((ICustomTypeDescriptor)this).GetProperties(new Attribute[0]);
+        public PropertyDescriptorCollection GetProperties() => GetProperties(new Attribute[0]);
 
         public PropertyDescriptorCollection GetProperties(Attribute[] attributes)
         {
