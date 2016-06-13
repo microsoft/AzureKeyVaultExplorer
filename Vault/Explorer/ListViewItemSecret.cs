@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
@@ -32,6 +34,18 @@ namespace Microsoft.PS.Common.Vault.Explorer
         protected override IEnumerable<PropertyDescriptor> GetCustomProperties()
         {
             yield return new ReadOnlyPropertyDescriptor("Content Type", ContentTypeStr);
+        }
+
+        public override async Task<ListViewItemBase> ToggleAsync(CancellationToken cancellationToken)
+        {
+            Secret s = await Session.CurrentVault.UpdateSecretAsync(Name, Utils.AddChangedBy(Tags), null, new SecretAttributes() { Enabled = !Attributes.Enabled }, cancellationToken); // Toggle only Enabled attribute
+            return new ListViewItemSecret(Session, s);
+        }
+
+        public override async Task<ListViewItemBase> DeleteAsync(CancellationToken cancellationToken)
+        {
+            await Session.CurrentVault.DeleteSecretAsync(Name, cancellationToken);
+            return this;
         }
     }
 }

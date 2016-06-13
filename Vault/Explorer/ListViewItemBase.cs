@@ -5,11 +5,15 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
+    /// <summary>
+    /// Base list view item which also presents itself nicely to PropertyGrid
+    /// </summary>
     public abstract class ListViewItemBase : ListViewItem, ICustomTypeDescriptor
     {
         public const int FavoritesGroup = 0;
@@ -63,13 +67,16 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public string Md5 => Utils.GetMd5(Tags);
 
+        private static string[] GroupIndexToName = new string[] { "?", "certificate", "key vault certificate", "secret" };
+        public string Kind => GroupIndexToName[GroupIndex];
+
         public void RefreshAndSelect()
         {
-            ListView.MultiSelect = false;
+            Session.ListViewSecrets.MultiSelect = false;
             EnsureVisible();
             Focused = Selected = false;
             Focused = Selected = true;
-            ListView.MultiSelect = true;
+            Session.ListViewSecrets.MultiSelect = true;
         }
 
         public bool Strikeout
@@ -109,9 +116,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             if (string.IsNullOrWhiteSpace(text))
                 return true;
-            foreach (var pd in GetProperties(null))
+            foreach (ReadOnlyPropertyDescriptor ropd in GetProperties(null))
             {
-                ReadOnlyPropertyDescriptor ropd = pd as ReadOnlyPropertyDescriptor;
                 if ((ropd.Name.IndexOf(text, StringComparison.InvariantCultureIgnoreCase) >= 0) ||
                     (ropd.Value?.ToString().IndexOf(text, StringComparison.InvariantCultureIgnoreCase) >= 0))
                     return true;
@@ -120,6 +126,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         protected abstract IEnumerable<PropertyDescriptor> GetCustomProperties();
+
+        public abstract Task<ListViewItemBase> ToggleAsync(CancellationToken cancellationToken);
+
+        public abstract Task<ListViewItemBase> DeleteAsync(CancellationToken cancellationToken);
 
         #region ICustomTypeDescriptor interface to show properties in PropertyGrid
 

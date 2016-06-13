@@ -13,11 +13,49 @@ namespace Microsoft.PS.Common.Vault.Explorer
 {
     public partial class ListViewSecrets : ListView
     {
+        public int SortingColumn { get; set; }
+
+        public int StrikedoutSecrets { get; private set; }
+
         public ListViewSecrets()
         {
             InitializeComponent();
-            SortingColumn = 0;
             ListViewItemSorter = new ListViewSecretsSorter(this);
+        }
+
+        public ListViewItemBase FirstSelectedItem => SelectedItems.Count > 0 ? SelectedItems[0] as ListViewItemBase : null;
+
+        public void Replace(ListViewItemBase oldItem, ListViewItemBase newItem)
+        {
+            Items.Remove(oldItem);
+            Items.Add(newItem);
+            newItem.RefreshAndSelect();
+        }
+
+        public void RemoveAllItems()
+        {
+            Items.Clear();
+            StrikedoutSecrets = 0;
+        }
+
+        public void FindItemsWithText(string text)
+        {
+            StrikedoutSecrets = 0;
+            ListViewItemBase selectItem = null;
+            BeginUpdate();
+            foreach (ListViewItemBase lvib in Items)
+            {
+                bool contains = lvib.Contains(text);
+                lvib.Strikeout = !contains;
+                StrikedoutSecrets += contains ? 0 : 1;
+                if ((selectItem == null) && contains)
+                {
+                    selectItem = lvib;
+                }
+            }
+            Sort();
+            selectItem?.RefreshAndSelect();
+            EndUpdate();
         }
 
         private void ListViewSecrets_ColumnClick(object sender, ColumnClickEventArgs e)
@@ -34,8 +72,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
             EndUpdate();
         }
-
-        public int SortingColumn { get; set; }
     }
 
     /// <summary>
