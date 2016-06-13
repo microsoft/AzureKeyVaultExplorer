@@ -136,10 +136,20 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxMenuVersions_ItemClicked(null, new ToolStripItemClickedEventArgs(uxMenuVersions.Items[0])); // Pass sender as NULL so _changed will be set to false
         }
 
-        public SecretDialog(ISession session, CertificateBundle cb) : this(session, "Edit certificate", Mode.EditSecret)
+        /// <summary>
+        /// Edit Key Vault Certificate
+        /// </summary>
+        public SecretDialog(ISession session, CertificateBundle cb, X509Certificate2 certificate) : this(session, "Edit certificate", Mode.EditSecret)
         {
             Text += $" {cb.Id.Name}";
-            uxPropertyGridSecret.SelectedObject = SecretObject = new PropertyObjectCertificate(cb, SecretObject_PropertyChanged);
+            uxPropertyGridSecret.SelectedObject = SecretObject = new PropertyObjectCertificate(cb, certificate, SecretObject_PropertyChanged);
+            uxTextBoxName.Text = cb.Id.Name;
+            uxTextBoxName.ReadOnly = true;
+            uxTextBoxValue.Text = SecretObject.Value;
+            uxTextBoxValue.IsReadOnly = true;
+            uxMenuSecretKind.Items.Clear();
+            uxLinkLabelSecretKind.Text = "Certificate name";
+            uxLinkLabelSecretKind.Enabled = false;
         }
 
         private void RefreshSecretObject(Secret s)
@@ -316,7 +326,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void uxLinkLabelViewCertificate_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            X509Certificate2UI.DisplayCertificate(_certificateObj.Certificate, Handle);
+            X509Certificate2 cert = (SecretObject is PropertyObjectCertificate) ? (SecretObject as PropertyObjectCertificate).Certificate : _certificateObj.Certificate;
+            X509Certificate2UI.DisplayCertificate(cert, Handle);
         }
     }
 }

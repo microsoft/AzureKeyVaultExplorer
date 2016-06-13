@@ -113,33 +113,41 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             using (var op = NewUxOperationWithProgress(uxMenuItemRefresh)) await op.Invoke("access", async () =>
             {
-                CurrentVault = new Vault(Utils.FullPathToJsonFile(Settings.Default.VaultsJsonFileLocation), VaultAccessTypeEnum.ReadWrite, CurrentVaultAlias.VaultNames);
-                uxListViewSecrets.RemoveAllItems();
-                RefreshItemsCount();
-                UpdateLabelSecertsCountDelegate ulscd = (c) => uxStatusLabelSecertsCount.Text = $"{uxListViewSecrets.Items.Count + c} secrets"; // We use delegate and Invoke() below to execute on the thread that owns the control
-                foreach (var s in await CurrentVault.ListSecretsAsync(0, (c) => { Invoke(ulscd, c); }, cancellationToken: op.CancellationToken))
+                try
                 {
-                    uxListViewSecrets.Items.Add(new ListViewItemSecret(this, s));
-                }
-                // List Key Vault Certificates
-                if (CurrentVaultAlias.KeyVaultCertificates)
-                {
-                    foreach (var c in await CurrentVault.ListCertificatesAsync(0, (c) => { Invoke(ulscd, c); }, cancellationToken: op.CancellationToken))
+                    CurrentVault = new Vault(Utils.FullPathToJsonFile(Settings.Default.VaultsJsonFileLocation), VaultAccessTypeEnum.ReadWrite, CurrentVaultAlias.VaultNames);
+                    uxListViewSecrets.BeginUpdate();
+                    uxListViewSecrets.RemoveAllItems();
+                    RefreshItemsCount();
+                    UpdateLabelSecertsCountDelegate ulscd = (c) => uxStatusLabelSecertsCount.Text = $"{uxListViewSecrets.Items.Count + c} secrets"; // We use delegate and Invoke() below to execute on the thread that owns the control
+                    foreach (var s in await CurrentVault.ListSecretsAsync(0, (c) => { Invoke(ulscd, c); }, cancellationToken: op.CancellationToken))
                     {
-                        int secretAsKvCertIndex = uxListViewSecrets.Items.IndexOfKey(c.Identifier.Name); // Remove "secret" (in fact this is a certifiacte) which was returned as part of ListSecretsAsync
-                        if (secretAsKvCertIndex != -1)
-                        {
-                            uxListViewSecrets.Items.RemoveAt(secretAsKvCertIndex);
-                        }
-                        uxListViewSecrets.Items.Add(new ListViewItemCertificate(this, c));
+                        uxListViewSecrets.Items.Add(new ListViewItemSecret(this, s));
                     }
-                }
+                    // List Key Vault Certificates
+                    if (CurrentVaultAlias.KeyVaultCertificates)
+                    {
+                        foreach (var c in await CurrentVault.ListCertificatesAsync(0, (c) => { Invoke(ulscd, c); }, cancellationToken: op.CancellationToken))
+                        {
+                            int secretAsKvCertIndex = uxListViewSecrets.Items.IndexOfKey(c.Identifier.Name); // Remove "secret" (in fact this is a certifiacte) which was returned as part of ListSecretsAsync
+                            if (secretAsKvCertIndex != -1)
+                            {
+                                uxListViewSecrets.Items.RemoveAt(secretAsKvCertIndex);
+                            }
+                            uxListViewSecrets.Items.Add(new ListViewItemCertificate(this, c));
+                        }
+                    }
 
-                uxButtonAdd.Enabled = uxMenuItemAdd.Enabled = true;
-                uxImageSearch.Enabled = uxTextBoxSearch.Enabled = true;
-                uxListViewSecrets.AllowDrop = true;
-                RefreshItemsCount();
-                uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search
+                    uxButtonAdd.Enabled = uxMenuItemAdd.Enabled = true;
+                    uxImageSearch.Enabled = uxTextBoxSearch.Enabled = true;
+                    uxListViewSecrets.AllowDrop = true;
+                    RefreshItemsCount();
+                    uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search
+                }
+                finally
+                {
+                    uxListViewSecrets.EndUpdate();
+                }
             });
         }
 
@@ -347,21 +355,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
         // Edit key vault certificate
         private async Task EditItemAsync(ListViewItemCertificate item)
         {
-            //X509Certificate2 cert = null;
-            //using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke("get certificate from", async () =>
-            //{
-            //    cert = await CurrentVault.GetCertificateWithPrivateKeyAsync(item.Name, null, op.CancellationToken);
-            //});
-            //if (null != cert)
-            //{
-            //    X509Certificate2UI.DisplayCertificate(cert, Handle);
-            //}
             CertificateBundle cb = null;
+            X509Certificate2 cert = null;
             using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke("get certificate from", async () =>
             {
                 cb = await CurrentVault.GetCertificateAsync(item.Name, null, op.CancellationToken);
+                cert = await CurrentVault.GetCertificateWithPrivateKeyAsync(item.Name, null, op.CancellationToken);
             });
-            SecretDialog nsDlg = new SecretDialog(this, cb);
+            SecretDialog nsDlg = new SecretDialog(this, cb, cert);
             if (nsDlg.ShowDialog() == DialogResult.OK)
             {
             }
