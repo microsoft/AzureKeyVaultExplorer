@@ -55,19 +55,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public override string ToString() => $"{Name}";
 
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as TagItem);
-        }
+        public override bool Equals(object obj) => Equals(obj as TagItem);
 
-        public bool Equals(TagItem ti)
-        {
-            return (ti != null) && (0 == string.Compare(ti.Name, Name, true));
-        }
+        public bool Equals(TagItem ti) => (ti != null) && (0 == string.Compare(ti.Name, Name, true));
 
-        public override int GetHashCode()
-        {
-            return Name.GetHashCode();
-        }
+        public override int GetHashCode() => Name.GetHashCode();
     }
 }

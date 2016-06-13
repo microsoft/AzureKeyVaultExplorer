@@ -23,18 +23,19 @@ namespace Microsoft.PS.Common.Vault.Explorer
             EditSecret
         };
 
+        private readonly ISession _session;
         private readonly Mode _mode;
         private bool _changed;
         private CertificateValueObject _certificateObj;
         private readonly TextEditorControl uxTextBoxValue;
-        private readonly Vault _vault;
-        public SecretObject SecretObject { private set; get; }
+        public PropertyObject SecretObject { private set; get; }
 
-        private SecretDialog(string[] secretKinds, string title, Mode mode)
+        private SecretDialog(ISession session, string title, Mode mode)
         {
             InitializeComponent();
-            _mode = mode;
+            _session = session;
             Text = title;
+            _mode = mode;
             uxTextBoxName.Font = Settings.Default.SecretFont;
             uxTextBoxValue = new TextEditorControl()
             {
@@ -53,14 +54,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
             };
             uxTextBoxValue.TextChanged += uxTextBoxValue_TextChanged;
             var sk = Utils.LoadFromJsonFile<SecretKinds>(Settings.Default.SecretKindsJsonFileLocation);
-            uxMenuSecretKind.Items.AddRange((from name in secretKinds select sk[name]).ToArray());
+            uxMenuSecretKind.Items.AddRange((from name in _session.CurrentVaultAlias.SecretKinds select sk[name]).ToArray());
             uxSplitContainer_Panel1_SizeChanged(null, EventArgs.Empty);
         }
 
         /// <summary>
         /// New empty secret
         /// </summary>
-        public SecretDialog(string[] secretKinds) : this(secretKinds, "New secret", Mode.NewSecret)
+        public SecretDialog(ISession session) : this(session, "New secret", Mode.NewSecret)
         {
             _changed = true;
             var s = new Secret() { Attributes = new SecretAttributes(), ContentType = ContentTypeEnumConverter.GetDescription(ContentType.Text) };
@@ -71,7 +72,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <summary>
         /// New secret from file
         /// </summary>
-        public SecretDialog(string[] secretKinds, FileInfo fi) : this(secretKinds)
+        public SecretDialog(ISession session, FileInfo fi) : this(session)
         {
             uxTextBoxName.Text = Utils.ConvertToValidSecretName(Path.GetFileNameWithoutExtension(fi.Name));
 
@@ -94,7 +95,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 case ContentType.Secret:
                     SecretFile sf = Utils.LoadFromJsonFile<SecretFile>(fi.FullName);
                     Secret s = sf.Deserialize();
-                    uxPropertyGridSecret.SelectedObject = SecretObject = new SecretObject(s, SecretObject_PropertyChanged);
+                    uxPropertyGridSecret.SelectedObject = SecretObject = new PropertyObjectSecret(s, SecretObject_PropertyChanged);
                     uxTextBoxName.Text = s.SecretIdentifier?.Name;
                     uxTextBoxValue.Text = s.Value;
                     return;
@@ -110,7 +111,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <summary>
         /// New secret from certificate
         /// </summary>
-        public SecretDialog(string[] secretKinds, X509Certificate2 certificate) : this(secretKinds)
+        public SecretDialog(ISession session, X509Certificate2 certificate) : this(session)
         {
             bool hasExportablePrivateKey = certificate.HasPrivateKey && (
                 ((certificate.PrivateKey as RSACryptoServiceProvider)?.CspKeyContainerInfo.Exportable ?? false) ||
@@ -127,19 +128,23 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <summary>
         /// Edit or Copy secret
         /// </summary>
-        public SecretDialog(Vault vault, string[] secretKinds, Secret s, IEnumerable<SecretItem> versions) : this(secretKinds, "Edit secret", Mode.EditSecret)
+        public SecretDialog(ISession session, Secret s, IEnumerable<SecretItem> versions) : this(session, "Edit secret", Mode.EditSecret)
         {
             Text += $" {s.SecretIdentifier.Name}";
-            _vault = vault;
-            uxLinkLabelValue.Enabled = true;
             int i = 0;
             uxMenuVersions.Items.AddRange((from v in versions orderby v.Attributes.Created descending select new SecretVersion(i++, v)).ToArray());
             uxMenuVersions_ItemClicked(null, new ToolStripItemClickedEventArgs(uxMenuVersions.Items[0])); // Pass sender as NULL so _changed will be set to false
         }
 
+        public SecretDialog(ISession session, CertificateBundle cb) : this(session, "Edit certificate", Mode.EditSecret)
+        {
+            Text += $" {cb.Id.Name}";
+            uxPropertyGridSecret.SelectedObject = SecretObject = new PropertyObjectCertificate(cb, SecretObject_PropertyChanged);
+        }
+
         private void RefreshSecretObject(Secret s)
         {
-            SecretObject = new SecretObject(s, SecretObject_PropertyChanged);
+            SecretObject = new PropertyObjectSecret(s, SecretObject_PropertyChanged);
             uxPropertyGridSecret.SelectedObject = SecretObject;
             uxTextBoxValue.SetHighlighting(SecretObject.ContentType.ToSyntaxHighlightingMode());
             uxTextBoxName.Text = SecretObject.Name;
@@ -272,7 +277,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             var sv = (SecretVersion)e.ClickedItem;
             if (sv.Checked) return; // Same item was clicked
             foreach (var item in uxMenuVersions.Items) ((SecretVersion)item).Checked = false;
-            var s = await _vault.GetSecretAsync(sv.SecretItem.Identifier.Name, sv.SecretItem.Identifier.Version);
+            var s = await _session.CurrentVault.GetSecretAsync(sv.SecretItem.Identifier.Name, sv.SecretItem.Identifier.Version);
             sv.Checked = true;
             uxLinkLabelValue.Text = sv.ToString();
             uxToolTip.SetToolTip(uxLinkLabelValue, sv.ToolTipText);

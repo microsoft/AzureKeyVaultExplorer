@@ -116,6 +116,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="PropertyObject.cs" />
+    <Compile Include="PropertyObjectCertificate.cs" />
     <Compile Include="SecretVersion.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -134,7 +136,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ListViewItemSecret.cs" />
-    <Compile Include="SecretObject.cs" />
+    <Compile Include="PropertyObjectSecret.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="SettingsDialog.cs">
       <SubType>Form</SubType>

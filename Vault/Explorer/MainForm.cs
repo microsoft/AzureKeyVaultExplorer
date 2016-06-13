@@ -219,7 +219,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             (sender as ToolStripDropDownItem)?.ShowDropDown();
         }
 
-        private bool VerifyDuplication(Secret sOld, SecretObject soNew)
+        private bool VerifyDuplication(Secret sOld, PropertyObjectSecret soNew)
         {
             string oldName = sOld?.SecretIdentifier.Name ?? "";
             string newMd5 = soNew.Md5;
@@ -241,7 +241,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return true;
         }
 
-        private async Task AddOrUpdateSecret(UxOperation op, Secret sOld, SecretObject soNew)
+        private async Task AddOrUpdateSecret(UxOperation op, Secret sOld, PropertyObjectSecret soNew)
         {
             Secret s = null;
             // Check for duplication by Name and Md5
@@ -298,27 +298,27 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 if ((sender == uxAddSecret) || (sender == uxAddSecret2))
                 {
-                    nsDlg = new SecretDialog(CurrentVaultAlias.SecretKinds);
+                    nsDlg = new SecretDialog(this);
                 }
                 // Add certificate from file or configuration file
                 if ((sender == uxAddCertFromFile) || (sender == uxAddCertFromFile2) || (sender == uxAddFile) || (sender == uxAddFile2))
                 {
                     dtf.FileInfoObject = GetFileInfo(sender, e);
                     if (dtf.FileInfoObject == null) return;
-                    nsDlg = new SecretDialog(CurrentVaultAlias.SecretKinds, dtf.FileInfoObject);
+                    nsDlg = new SecretDialog(this, dtf.FileInfoObject);
                 }
                 // Add certificate from store
                 if ((sender == uxAddCertFromUserStore) || (sender == uxAddCertFromUserStore2) || (sender == uxAddCertFromMachineStore) || (sender == uxAddCertFromMachineStore2))
                 {
                     var cert = Utils.SelectCertFromStore(StoreName.My, (sender == uxAddCertFromUserStore) || (sender == uxAddCertFromUserStore2) ? StoreLocation.CurrentUser : StoreLocation.LocalMachine, CurrentVaultAlias.Alias, Handle);
                     if (cert == null) return;
-                    nsDlg = new SecretDialog(CurrentVaultAlias.SecretKinds, cert);
+                    nsDlg = new SecretDialog(this, cert);
                 }
                 if ((nsDlg != null) && (nsDlg.DialogResult != DialogResult.Cancel) && (nsDlg.ShowDialog() == DialogResult.OK)) // DialogResult.Cancel is when user clicked cancel during password prompt
                 {
                     using (var op = NewUxOperationWithProgress(uxButtonAdd)) await op.Invoke("add or update secret in", async () =>
                     {
-                        await AddOrUpdateSecret(op, null, nsDlg.SecretObject);
+                        await AddOrUpdateSecret(op, null, (PropertyObjectSecret)nsDlg.SecretObject);
                     });
                 }
             }
@@ -334,12 +334,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 s = await CurrentVault.GetSecretAsync(item.Name, null, op.CancellationToken);
                 versions = await CurrentVault.GetSecretVersionsAsync(item.Name, 0, op.CancellationToken);
             });
-            SecretDialog nsDlg = new SecretDialog(CurrentVault, CurrentVaultAlias.SecretKinds, s, versions);
+            SecretDialog nsDlg = new SecretDialog(this, s, versions);
             if (nsDlg.ShowDialog() == DialogResult.OK)
             {
                 using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke("add or update secret in", async () =>
                 {
-                    await AddOrUpdateSecret(op, s, nsDlg.SecretObject);
+                    await AddOrUpdateSecret(op, s, (PropertyObjectSecret)nsDlg.SecretObject);
                 });
             }
         }
@@ -347,14 +347,23 @@ namespace Microsoft.PS.Common.Vault.Explorer
         // Edit key vault certificate
         private async Task EditItemAsync(ListViewItemCertificate item)
         {
-            X509Certificate2 cert = null;
+            //X509Certificate2 cert = null;
+            //using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke("get certificate from", async () =>
+            //{
+            //    cert = await CurrentVault.GetCertificateWithPrivateKeyAsync(item.Name, null, op.CancellationToken);
+            //});
+            //if (null != cert)
+            //{
+            //    X509Certificate2UI.DisplayCertificate(cert, Handle);
+            //}
+            CertificateBundle cb = null;
             using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke("get certificate from", async () =>
             {
-                cert = await CurrentVault.GetCertificateWithPrivateKeyAsync(item.Name, null, op.CancellationToken);
+                cb = await CurrentVault.GetCertificateAsync(item.Name, null, op.CancellationToken);
             });
-            if (null != cert)
+            SecretDialog nsDlg = new SecretDialog(this, cb);
+            if (nsDlg.ShowDialog() == DialogResult.OK)
             {
-                X509Certificate2UI.DisplayCertificate(cert, Handle);
             }
         }
 
@@ -425,7 +434,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 string secretName = uxListViewSecrets.SelectedItems[0].Name;
                 using (var op = NewUxOperationWithProgress(uxButtonCopy)) await op.Invoke("get secret from", async () =>
                 {
-                    var so = new SecretObject(await CurrentVault.GetSecretAsync(secretName, null, op.CancellationToken), null);
+                    var so = new PropertyObjectSecret(await CurrentVault.GetSecretAsync(secretName, null, op.CancellationToken), null);
                     _clipboardValue = so.GetClipboardValue();
                     Clipboard.SetText(_clipboardValue);
                     uxTimerClearClipboard.Start();
@@ -447,10 +456,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
             if (uxListViewSecrets.SelectedItems.Count == 1)
             {
                 string secretName = uxListViewSecrets.SelectedItems[0].Name;
-                SecretObject so = null;
+                PropertyObjectSecret so = null;
                 using (var op = NewUxOperationWithProgress(uxButtonSave)) await op.Invoke("get secret from", async () =>
                 {
-                    so = new SecretObject(await CurrentVault.GetSecretAsync(secretName, null, op.CancellationToken), null);
+                    so = new PropertyObjectSecret(await CurrentVault.GetSecretAsync(secretName, null, op.CancellationToken), null);
                 });
                 uxSaveFileDialog.FileName = so.GetFileName();
                 uxSaveFileDialog.DefaultExt = so.ContentType.ToExtension();
@@ -517,7 +526,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 List<string> filesList = new List<string>();
                 foreach (var slvi in uxListViewSecrets.SelectedItems.Cast<ListViewItemSecret>())
                 {
-                    var so = new SecretObject(await CurrentVault.GetSecretAsync(slvi.Name), null);
+                    var so = new PropertyObjectSecret(await CurrentVault.GetSecretAsync(slvi.Name), null);
                     // Replace extension to .secret if CTRL is pressed
                     var filename = so.Name + (_ctrlKeyPressed ? ContentType.Secret.ToExtension() : so.ContentType.ToExtension());
                     var fullName = Path.Combine(Path.GetTempPath(), filename);

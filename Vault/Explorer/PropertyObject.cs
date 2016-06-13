@@ -1,35 +1,26 @@
 ﻿using Microsoft.Azure.KeyVault;
-using Microsoft.PS.Common.Types;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Drawing.Design;
-using System.IO;
-using System.Security.Cryptography;
+using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
     /// <summary>
-    /// Secret Object to add / edit secret via PropertyGrid
+    /// Base class to edit an object via PropertyGrid
     /// </summary>
     [DefaultProperty("Name")]
-    public class SecretObject : INotifyPropertyChanged
+    public abstract class PropertyObject : INotifyPropertyChanged
     {
+        protected void NotifyPropertyChanged(string info) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
+
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void NotifyPropertyChanged(string info) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
-
-        /// <summary>
-        /// Original secret
-        /// </summary>
-        private readonly Secret _secret;
-
-        [Browsable(false)]
-        public string Id => _secret.Id;
+        public readonly ObjectIdentifier Identifier;
 
         [DisplayName("Name")]
         [Browsable(false)]
@@ -97,7 +88,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
         }
 
-        private ContentType _contentType;
+        protected ContentType _contentType;
         [DisplayName("Content Type")]
         [TypeConverter(typeof(ContentTypeEnumConverter))]
         public ContentType ContentType
@@ -116,7 +107,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <summary>
         /// Human readable value of the secret
         /// </summary>
-        private string _value;
+        protected string _value;
         [DisplayName("Value")]
         [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
         [Browsable(false)]
@@ -161,85 +152,46 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [Browsable(false)]
         public bool IsValueValid => (Value == null) ? false : SecretKind.ValueRegex.IsMatch(Value);
 
-        public SecretObject(Secret secret, PropertyChangedEventHandler propertyChanged)
+        protected PropertyObject(ObjectIdentifier identifier, IDictionary<string, string> tags, 
+            bool? enabled, DateTime? expires, DateTime? notBefore,
+            PropertyChangedEventHandler propertyChanged)
         {
-            _secret = secret;
-            Name = secret.SecretIdentifier?.Name;
-            // get and set
+            Identifier = identifier;
+            Name = identifier.Name;
+
             _tags = new ObservableTagItemsCollection();
-            if (null != secret.Tags)
-            {
-                foreach (var kvp in secret.Tags)
-                {
-                    _tags.Add(new TagItem(kvp));
-                }
-            }
+            if (null != tags) foreach (var kvp in tags) _tags.Add(new TagItem(kvp));
             _tags.SetPropertyChangedEventHandler(propertyChanged);
-            _enabled = secret.Attributes.Enabled;
-            _expires = secret.Attributes.Expires;
-            _notBefore = secret.Attributes.NotBefore;
-            _contentType = ContentTypeEnumConverter.GetValue(secret.ContentType);
-            _value = _contentType.FromRawValue(secret.Value);
+
+            _enabled = enabled;
+            _expires = expires;
+            _notBefore = notBefore;
+
             SecretKind = new SecretKind(); // Default - Custom secret kind
 
             PropertyChanged += propertyChanged;
         }
 
+        protected abstract IEnumerable<KeyValuePair<string, string>> GetCustomTags();
+
         public Dictionary<string, string> TagsToDictionary()
         {
             var result = new Dictionary<string, string>();
             // Add all user tags
-            foreach (var tagItem in _tags)
+            foreach (var tagItem in Tags)
             {
                 result[tagItem.Name] = tagItem.Value;
             }
-            // Add tags based on all named groups in the value regex
-            Match m = SecretKind.ValueRegex.Match(Value);
-            if (m.Success)
+            // Add all custom tags
+            foreach (var kvp in GetCustomTags())
             {
-                for (int i = 0; i < m.Groups.Count; i++)
-                {
-                    string groupName = SecretKind.ValueRegex.GroupNameFromNumber(i);
-                    if (groupName == i.ToString()) continue; // Skip unnamed groups
-                    result[groupName] = m.Groups[i].Value;
-                }
+                result[kvp.Key] = kvp.Value;
             }
             // Add Md5 and ChangedBy tags
             result[Consts.Md5Key] = Md5;
             return Utils.AddChangedBy(result);
         }
 
-        public SecretAttributes ToSecretAttributes() => new SecretAttributes()
-        {
-            Enabled = _enabled,
-            Expires = _expires,
-            NotBefore = _notBefore
-        };
-
         public string GetFileName() => Name + ContentType.ToExtension();
-
-        public string GetClipboardValue()
-        {
-            return ContentType.IsCertificate() ? CertificateValueObject.FromValue(Value).Password : Value;
-        }
-
-        public byte[] GetValueAsByteArray()
-        {
-            return ContentType.IsCertificate() ? Convert.FromBase64String(CertificateValueObject.FromValue(Value).Data) : Encoding.UTF8.GetBytes(Value);
-        }
-
-        public void SaveToFile(string fullName)
-        {
-            Directory.CreateDirectory(Path.GetDirectoryName(fullName));
-            switch (ContentTypeUtils.FromExtension(Path.GetExtension(fullName)))
-            {
-                case ContentType.Secret: // Serialize the entire secret as encrypted JSON for current user
-                    File.WriteAllText(fullName, new SecretFile(_secret).Serialize());
-                    break;
-                default:
-                    File.WriteAllBytes(fullName, GetValueAsByteArray());
-                    break;
-            }
-        }
     }
 }
