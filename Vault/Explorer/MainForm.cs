@@ -466,16 +466,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             if (uxListViewSecrets.SelectedItems.Count > 0)
             {
-                uxButtonFavorite.Checked = uxMenuItemFavorite.Checked = !uxButtonFavorite.Checked;
                 using (var op = NewUxOperationWithProgress(uxButtonFavorite))
                 {
-                    uxListViewSecrets.BeginUpdate();
-                    foreach (ListViewItemBase lvib in uxListViewSecrets.SelectedItems)
-                    {
-                        lvib.Favorite = !lvib.Favorite;
-                    }
-                    uxListViewSecrets.Sort();
-                    uxListViewSecrets.EndUpdate();
+                    uxListViewSecrets.ToggleSelectedItemsToFromFavorites();
                     SaveSettings();
                 }
                 uxListViewSecrets_SelectedIndexChanged(null, EventArgs.Empty);

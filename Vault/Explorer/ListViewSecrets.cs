@@ -58,6 +58,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
             EndUpdate();
         }
 
+        public void ToggleSelectedItemsToFromFavorites()
+        {
+            BeginUpdate();
+            foreach (ListViewItemBase lvib in SelectedItems) lvib.Favorite = !lvib.Favorite;
+            Sort();
+            EndUpdate();
+        }
+
         private void ListViewSecrets_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             BeginUpdate();
