@@ -17,8 +17,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public const int KeyVaultCertificatesGroup = 2;
         public const int SecretsGroup = 3;
 
-        public readonly VaultAlias VaultAlias;
-        public readonly ListViewGroupCollection Groups;
+        public readonly ISession Session;
         public readonly int GroupIndex;
         public readonly ObjectIdentifier Identifier;
         public readonly IDictionary<string, string> Tags;
@@ -28,12 +27,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public readonly DateTime? NotBefore;
         public readonly DateTime? Expires;
 
-        protected ListViewItemBase(VaultAlias vaultAlias, ListViewGroupCollection groups, int groupIndex,
+        protected ListViewItemBase(ISession session, int groupIndex,
             ObjectIdentifier identifier, IDictionary<string, string> tags, bool? enabled,
             DateTime? created, DateTime? updated, DateTime? notBefore, DateTime? expires) : base(identifier.Name)
         {
-            VaultAlias = vaultAlias;
-            Groups = groups;
+            Session = session;
             GroupIndex = groupIndex;
             Identifier = identifier;
             Tags = tags;
@@ -54,8 +52,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 Utils.NullableDateTimeToString(created),
                 Utils.NullableDateTimeToString(updated));
 
-            Group = Groups[FavoriteSecretUtil.Contains(VaultAlias.Alias, Name) ? FavoritesGroup : GroupIndex];
+            Group = Groups[FavoriteSecretUtil.Contains(Session.CurrentVaultAlias.Alias, Name) ? FavoritesGroup : GroupIndex];
         }
+
+        public ListViewGroupCollection Groups => Session.ListViewSecrets.Groups;
 
         public string Id => Identifier.Identifier;
 
@@ -96,11 +96,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 Group = value ? Groups[FavoritesGroup] : Groups[GroupIndex];
                 if (value)
                 {
-                    FavoriteSecretUtil.Add(VaultAlias.Alias, Name);
+                    FavoriteSecretUtil.Add(Session.CurrentVaultAlias.Alias, Name);
                 }
                 else
                 {
-                    FavoriteSecretUtil.Remove(VaultAlias.Alias, Name);
+                    FavoriteSecretUtil.Remove(Session.CurrentVaultAlias.Alias, Name);
                 }
             }
         }
