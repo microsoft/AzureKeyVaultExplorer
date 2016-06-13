@@ -17,16 +17,24 @@ namespace Microsoft.PS.Common.Vault.Explorer
 {
     using UISettings = Properties.Settings;
 
-    public partial class MainForm : FormTelemetry
+    public partial class MainForm : FormTelemetry, ISession
     {
-        private VaultAlias _currentVaultAlias;
-        private Vault _vault;
         private int _strikedoutSecrets;
         private string _clipboardValue;
         private Cursor _moveSecretCursor;
         private Cursor _moveValueCursor;
         private bool _keyDownOccured;
         private ToolStripButton uxButtonCancel;
+
+        #region ISession
+
+        public VaultAlias CurrentVaultAlias { get; set; }
+
+        public Vault CurrentVault { get; set; }
+
+        public ListViewSecrets ListViewSecrets => uxListViewSecrets;
+
+        #endregion
 
         public MainForm()
         {
@@ -52,6 +60,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             Size = UISettings.Default.MainFormWindowSize;
             uxListViewSecrets.Sorting = UISettings.Default.MainFormSecretsSorting;
+            uxListViewSecrets.SortingColumn = UISettings.Default.MainFormSecretsSortingColumn;
             uxButtonCopy.ToolTipText = uxMenuItemCopy.ToolTipText = $"Copy secret value to clipboard for {Settings.Default.CopyToClipboardTimeToLive.TotalSeconds} seconds";
             uxTimerClearClipboard.Interval = (int)Settings.Default.CopyToClipboardTimeToLive.TotalMilliseconds;
         }
@@ -61,13 +70,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
             UISettings.Default.MainFormLocation = (WindowState == FormWindowState.Normal) ? Location : RestoreBounds.Location;
             UISettings.Default.MainFormWindowSize = (WindowState == FormWindowState.Normal) ? Size : RestoreBounds.Size;
             UISettings.Default.MainFormSecretsSorting = uxListViewSecrets.Sorting;
+            UISettings.Default.MainFormSecretsSortingColumn = uxListViewSecrets.SortingColumn;
             UISettings.Default.Save();
             Settings.Default.Save();
         }
 
-        private UxOperation NewUxOperationWithProgress(ToolStripItem controlToToggle) => new UxOperation(_currentVaultAlias, controlToToggle, uxStatusLabel, uxStatusProgressBar, uxButtonCancel);
+        private UxOperation NewUxOperationWithProgress(ToolStripItem controlToToggle) => new UxOperation(CurrentVaultAlias, controlToToggle, uxStatusLabel, uxStatusProgressBar, uxButtonCancel);
 
-        private UxOperation NewUxOperation(ToolStripItem controlToToggle) => new UxOperation(_currentVaultAlias, controlToToggle, uxStatusLabel, null, null);
+        private UxOperation NewUxOperation(ToolStripItem controlToToggle) => new UxOperation(CurrentVaultAlias, controlToToggle, uxStatusLabel, null, null);
 
         private void uxComboBoxVaultAlias_DropDown(object sender, EventArgs e)
         {
@@ -82,9 +92,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void uxComboBoxVaultAlias_DropDownClosed(object sender, EventArgs e)
         {
-            _currentVaultAlias = (VaultAlias)uxComboBoxVaultAlias.SelectedItem;
-            bool itemSelected = (null != _currentVaultAlias);
-            uxComboBoxVaultAlias.ToolTipText = itemSelected ? "Vault names: " + string.Join(", ", _currentVaultAlias.VaultNames) : "";
+            CurrentVaultAlias = (VaultAlias)uxComboBoxVaultAlias.SelectedItem;
+            bool itemSelected = (null != CurrentVaultAlias);
+            uxComboBoxVaultAlias.ToolTipText = itemSelected ? "Vault names: " + string.Join(", ", CurrentVaultAlias.VaultNames) : "";
             uxMenuItemRefresh.Enabled = itemSelected;
             if (itemSelected)
             {
@@ -104,26 +114,26 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             using (var op = NewUxOperationWithProgress(uxMenuItemRefresh)) await op.Invoke("access", async () =>
             {
-                _vault = new Vault(Utils.FullPathToJsonFile(Settings.Default.VaultsJsonFileLocation), VaultAccessTypeEnum.ReadWrite, _currentVaultAlias.VaultNames);
+                CurrentVault = new Vault(Utils.FullPathToJsonFile(Settings.Default.VaultsJsonFileLocation), VaultAccessTypeEnum.ReadWrite, CurrentVaultAlias.VaultNames);
                 uxListViewSecrets.Items.Clear();
                 _strikedoutSecrets = 0;
                 RefreshItemsCount();
                 UpdateLabelSecertsCountDelegate ulscd = (c) => uxStatusLabelSecertsCount.Text = $"{uxListViewSecrets.Items.Count + c} secrets"; // We use delegate and Invoke() below to execute on the thread that owns the control
-                foreach (var s in await _vault.ListSecretsAsync(0, (c) => { Invoke(ulscd, c); }, cancellationToken: op.CancellationToken))
+                foreach (var s in await CurrentVault.ListSecretsAsync(0, (c) => { Invoke(ulscd, c); }, cancellationToken: op.CancellationToken))
                 {
-                    uxListViewSecrets.Items.Add(new ListViewItemSecret(_currentVaultAlias, uxListViewSecrets.Groups, s));
+                    uxListViewSecrets.Items.Add(new ListViewItemSecret(this, s));
                 }
                 // List Key Vault Certificates
-                if (_currentVaultAlias.KeyVaultCertificates)
+                if (CurrentVaultAlias.KeyVaultCertificates)
                 {
-                    foreach (var c in await _vault.ListCertificatesAsync(0, (c) => { Invoke(ulscd, c); }, cancellationToken: op.CancellationToken))
+                    foreach (var c in await CurrentVault.ListCertificatesAsync(0, (c) => { Invoke(ulscd, c); }, cancellationToken: op.CancellationToken))
                     {
                         int secretAsKvCertIndex = uxListViewSecrets.Items.IndexOfKey(c.Identifier.Name); // Remove "secret" (in fact this is a certifiacte) which was returned as part of ListSecretsAsync
                         if (secretAsKvCertIndex != -1)
                         {
                             uxListViewSecrets.Items.RemoveAt(secretAsKvCertIndex);
                         }
-                        uxListViewSecrets.Items.Add(new ListViewItemCertificate(_currentVaultAlias, uxListViewSecrets.Groups, c));
+                        uxListViewSecrets.Items.Add(new ListViewItemCertificate(this, c));
                     }
                 }
 
@@ -154,6 +164,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxPropertyGridSecret.SelectedObject = singleItemSelected ? uxListViewSecrets.SelectedItems[0] : null;
             RefreshItemsCount();
         }
+
         private void uxListViewSecrets_KeyDown(object sender, KeyEventArgs e)
         {
             _keyDownOccured = true; // Prevents from 'global' KeyUp event, basically key down happened in the other app
@@ -240,20 +251,20 @@ namespace Microsoft.PS.Common.Vault.Explorer
             // New secret, secret rename or new value
             if ((sOld == null) || (sOld.SecretIdentifier.Name != soNew.Name) || (sOld.Value != soNew.RawValue))
             {
-                s = await _vault.SetSecretAsync(soNew.Name, soNew.RawValue, soNew.TagsToDictionary(), ContentTypeEnumConverter.GetDescription(soNew.ContentType), soNew.ToSecretAttributes(), op.CancellationToken);
+                s = await CurrentVault.SetSecretAsync(soNew.Name, soNew.RawValue, soNew.TagsToDictionary(), ContentTypeEnumConverter.GetDescription(soNew.ContentType), soNew.ToSecretAttributes(), op.CancellationToken);
             }
             else // Same secret name and value
             {
-                s = await _vault.UpdateSecretAsync(soNew.Name, soNew.TagsToDictionary(), ContentTypeEnumConverter.GetDescription(soNew.ContentType), soNew.ToSecretAttributes(), op.CancellationToken);
+                s = await CurrentVault.UpdateSecretAsync(soNew.Name, soNew.TagsToDictionary(), ContentTypeEnumConverter.GetDescription(soNew.ContentType), soNew.ToSecretAttributes(), op.CancellationToken);
             }
             string oldSecretName = sOld?.SecretIdentifier.Name;
             if ((oldSecretName != null) && (oldSecretName != soNew.Name)) // Delete old secret
             {
-                await _vault.DeleteSecretAsync(oldSecretName, op.CancellationToken);
+                await CurrentVault.DeleteSecretAsync(oldSecretName, op.CancellationToken);
                 uxListViewSecrets.Items.RemoveByKey(oldSecretName);
             }
             uxListViewSecrets.Items.RemoveByKey(soNew.Name);
-            var slvi = new ListViewItemSecret(_currentVaultAlias, uxListViewSecrets.Groups, s);
+            var slvi = new ListViewItemSecret(this, s);
             uxListViewSecrets.Items.Add(slvi);
             uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search
             slvi.RefreshAndSelect();
@@ -289,21 +300,21 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 if ((sender == uxAddSecret) || (sender == uxAddSecret2))
                 {
-                    nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds);
+                    nsDlg = new SecretDialog(CurrentVaultAlias.SecretKinds);
                 }
                 // Add certificate from file or configuration file
                 if ((sender == uxAddCertFromFile) || (sender == uxAddCertFromFile2) || (sender == uxAddFile) || (sender == uxAddFile2))
                 {
                     dtf.FileInfoObject = GetFileInfo(sender, e);
                     if (dtf.FileInfoObject == null) return;
-                    nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds, dtf.FileInfoObject);
+                    nsDlg = new SecretDialog(CurrentVaultAlias.SecretKinds, dtf.FileInfoObject);
                 }
                 // Add certificate from store
                 if ((sender == uxAddCertFromUserStore) || (sender == uxAddCertFromUserStore2) || (sender == uxAddCertFromMachineStore) || (sender == uxAddCertFromMachineStore2))
                 {
-                    var cert = Utils.SelectCertFromStore(StoreName.My, (sender == uxAddCertFromUserStore) || (sender == uxAddCertFromUserStore2) ? StoreLocation.CurrentUser : StoreLocation.LocalMachine, _currentVaultAlias.Alias, Handle);
+                    var cert = Utils.SelectCertFromStore(StoreName.My, (sender == uxAddCertFromUserStore) || (sender == uxAddCertFromUserStore2) ? StoreLocation.CurrentUser : StoreLocation.LocalMachine, CurrentVaultAlias.Alias, Handle);
                     if (cert == null) return;
-                    nsDlg = new SecretDialog(_currentVaultAlias.SecretKinds, cert);
+                    nsDlg = new SecretDialog(CurrentVaultAlias.SecretKinds, cert);
                 }
                 if ((nsDlg != null) && (nsDlg.DialogResult != DialogResult.Cancel) && (nsDlg.ShowDialog() == DialogResult.OK)) // DialogResult.Cancel is when user clicked cancel during password prompt
                 {
@@ -322,10 +333,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
             IEnumerable<SecretItem> versions = null;
             using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke("get secret or secret versions from", async () =>
             {
-                s = await _vault.GetSecretAsync(item.Name, null, op.CancellationToken);
-                versions = await _vault.GetSecretVersionsAsync(item.Name, 0, op.CancellationToken);
+                s = await CurrentVault.GetSecretAsync(item.Name, null, op.CancellationToken);
+                versions = await CurrentVault.GetSecretVersionsAsync(item.Name, 0, op.CancellationToken);
             });
-            SecretDialog nsDlg = new SecretDialog(_vault, _currentVaultAlias.SecretKinds, s, versions);
+            SecretDialog nsDlg = new SecretDialog(CurrentVault, CurrentVaultAlias.SecretKinds, s, versions);
             if (nsDlg.ShowDialog() == DialogResult.OK)
             {
                 using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke("add or update secret in", async () =>
@@ -341,7 +352,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             X509Certificate2 cert = null;
             using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke("get certificate from", async () =>
             {
-                cert = await _vault.GetCertificateWithPrivateKeyAsync(item.Name, null, op.CancellationToken);
+                cert = await CurrentVault.GetCertificateWithPrivateKeyAsync(item.Name, null, op.CancellationToken);
             });
             if (null != cert)
             {
@@ -371,8 +382,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 {
                     using (var op = NewUxOperationWithProgress(uxButtonToggle)) await op.Invoke("update secret in", async () =>
                     {
-                        Secret s = await _vault.UpdateSecretAsync(slvi.Name, Utils.AddChangedBy(slvi.Tags), null, new SecretAttributes() { Enabled = !slvi.Attributes.Enabled }, op.CancellationToken); // Toggle only Enabled attribute
-                        slvi = new ListViewItemSecret(_currentVaultAlias, uxListViewSecrets.Groups, s);
+                        Secret s = await CurrentVault.UpdateSecretAsync(slvi.Name, Utils.AddChangedBy(slvi.Tags), null, new SecretAttributes() { Enabled = !slvi.Attributes.Enabled }, op.CancellationToken); // Toggle only Enabled attribute
+                        slvi = new ListViewItemSecret(this, s);
                         uxListViewSecrets.Items.RemoveByKey(slvi.Name);
                         uxListViewSecrets.Items.Add(slvi);
                         slvi.RefreshAndSelect();
@@ -392,7 +403,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     {
                         foreach (ListViewItem lvi in uxListViewSecrets.SelectedItems)
                         {
-                            await _vault.DeleteSecretAsync(lvi.Name, op.CancellationToken);
+                            await CurrentVault.DeleteSecretAsync(lvi.Name, op.CancellationToken);
                             uxListViewSecrets.Items.RemoveByKey(lvi.Name);
                             RefreshItemsCount();
                         }
@@ -437,7 +448,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 string secretName = uxListViewSecrets.SelectedItems[0].Name;
                 using (var op = NewUxOperationWithProgress(uxButtonCopy)) await op.Invoke("get secret from", async () =>
                 {
-                    var so = new SecretObject(await _vault.GetSecretAsync(secretName, null, op.CancellationToken), null);
+                    var so = new SecretObject(await CurrentVault.GetSecretAsync(secretName, null, op.CancellationToken), null);
                     _clipboardValue = so.GetClipboardValue();
                     Clipboard.SetText(_clipboardValue);
                     uxTimerClearClipboard.Start();
@@ -462,7 +473,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 SecretObject so = null;
                 using (var op = NewUxOperationWithProgress(uxButtonSave)) await op.Invoke("get secret from", async () =>
                 {
-                    so = new SecretObject(await _vault.GetSecretAsync(secretName, null, op.CancellationToken), null);
+                    so = new SecretObject(await CurrentVault.GetSecretAsync(secretName, null, op.CancellationToken), null);
                 });
                 uxSaveFileDialog.FileName = so.GetFileName();
                 uxSaveFileDialog.DefaultExt = so.ContentType.ToExtension();
@@ -536,7 +547,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 List<string> filesList = new List<string>();
                 foreach (var slvi in uxListViewSecrets.SelectedItems.Cast<ListViewItemSecret>())
                 {
-                    var so = new SecretObject(await _vault.GetSecretAsync(slvi.Name), null);
+                    var so = new SecretObject(await CurrentVault.GetSecretAsync(slvi.Name), null);
                     // Replace extension to .secret if CTRL is pressed
                     var filename = so.Name + (_ctrlKeyPressed ? ContentType.Secret.ToExtension() : so.ContentType.ToExtension());
                     var fullName = Path.Combine(Path.GetTempPath(), filename);
@@ -556,7 +567,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void uxListViewSecrets_DragEnter(object sender, DragEventArgs e)
         {
-            e.Effect = (_vault != null) && e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Move : DragDropEffects.None;
+            e.Effect = (CurrentVault != null) && e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Move : DragDropEffects.None;
         }
 
         private void uxListViewSecrets_DragDrop(object sender, DragEventArgs e)

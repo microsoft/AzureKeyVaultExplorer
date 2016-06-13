@@ -8,6 +8,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
 {
     public interface ISession
     {
-
+        VaultAlias CurrentVaultAlias { get; }
+        Vault CurrentVault { get; }
+        ListViewSecrets ListViewSecrets { get; }
     }
 }

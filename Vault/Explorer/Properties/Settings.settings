@@ -14,5 +14,8 @@
     <Setting Name="MainFormSecretsSorting" Type="System.Windows.Forms.SortOrder" Scope="User">
       <Value Profile="(Default)">Ascending</Value>
     </Setting>
+    <Setting Name="MainFormSecretsSortingColumn" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

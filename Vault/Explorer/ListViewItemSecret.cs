@@ -16,8 +16,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public readonly string ContentTypeStr;
         public readonly ContentType ContentType;
 
-        private ListViewItemSecret(VaultAlias vaultAlias, ListViewGroupCollection groups, SecretIdentifier identifier, SecretAttributes attributes, string contentTypeStr, Dictionary<string, string> tags) : 
-            base(vaultAlias, groups, ContentTypeEnumConverter.GetValue(contentTypeStr).IsCertificate() ? CertificatesGroup : SecretsGroup, 
+        private ListViewItemSecret(ISession session, SecretIdentifier identifier, SecretAttributes attributes, string contentTypeStr, Dictionary<string, string> tags) : 
+            base(session, ContentTypeEnumConverter.GetValue(contentTypeStr).IsCertificate() ? CertificatesGroup : SecretsGroup, 
                 identifier, tags, attributes.Enabled, attributes.Created, attributes.Updated, attributes.NotBefore, attributes.Expires)
         {
             Attributes = attributes;
@@ -25,9 +25,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
             ContentType = ContentTypeEnumConverter.GetValue(contentTypeStr);
         }
 
-        public ListViewItemSecret(VaultAlias vaultAlias, ListViewGroupCollection groups, SecretItem si) : this(vaultAlias, groups, si.Identifier, si.Attributes, si.ContentType, si.Tags) { }
+        public ListViewItemSecret(ISession session, SecretItem si) : this(session, si.Identifier, si.Attributes, si.ContentType, si.Tags) { }
 
-        public ListViewItemSecret(VaultAlias vaultAlias, ListViewGroupCollection groups, Secret s) : this(vaultAlias, groups, s.SecretIdentifier, s.Attributes, s.ContentType, s.Tags) { }
+        public ListViewItemSecret(ISession session, Secret s) : this(session, s.SecretIdentifier, s.Attributes, s.ContentType, s.Tags) { }
 
         protected override IEnumerable<PropertyDescriptor> GetCustomProperties()
         {

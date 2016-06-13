@@ -70,5 +70,17 @@ namespace Microsoft.PS.Common.Vault.Explorer.Properties {
                 this["MainFormSecretsSorting"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int MainFormSecretsSortingColumn {
+            get {
+                return ((int)(this["MainFormSecretsSortingColumn"]));
+            }
+            set {
+                this["MainFormSecretsSortingColumn"] = value;
+            }
+        }
     }
 }
