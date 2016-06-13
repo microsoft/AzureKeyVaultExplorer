@@ -19,7 +19,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
     public partial class MainForm : FormTelemetry, ISession
     {
-        private int _strikedoutSecrets;
         private string _clipboardValue;
         private Cursor _moveSecretCursor;
         private Cursor _moveValueCursor;
@@ -104,7 +103,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void RefreshItemsCount()
         {
-            uxStatusLabelSecertsCount.Text = (_strikedoutSecrets == 0) ? $"{uxListViewSecrets.Items.Count} items" : $"{uxListViewSecrets.Items.Count - _strikedoutSecrets} out of {uxListViewSecrets.Items.Count} items";
+            uxStatusLabelSecertsCount.Text = (uxListViewSecrets.StrikedoutSecrets == 0) ? $"{uxListViewSecrets.Items.Count} items" : $"{uxListViewSecrets.Items.Count - uxListViewSecrets.StrikedoutSecrets} out of {uxListViewSecrets.Items.Count} items";
             uxStatusLabelSecretsSelected.Text = $"{uxListViewSecrets.SelectedItems.Count} selected";
         }
 
@@ -115,8 +114,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             using (var op = NewUxOperationWithProgress(uxMenuItemRefresh)) await op.Invoke("access", async () =>
             {
                 CurrentVault = new Vault(Utils.FullPathToJsonFile(Settings.Default.VaultsJsonFileLocation), VaultAccessTypeEnum.ReadWrite, CurrentVaultAlias.VaultNames);
-                uxListViewSecrets.Items.Clear();
-                _strikedoutSecrets = 0;
+                uxListViewSecrets.RemoveAllItems();
                 RefreshItemsCount();
                 UpdateLabelSecertsCountDelegate ulscd = (c) => uxStatusLabelSecertsCount.Text = $"{uxListViewSecrets.Items.Count + c} secrets"; // We use delegate and Invoke() below to execute on the thread that owns the control
                 foreach (var s in await CurrentVault.ListSecretsAsync(0, (c) => { Invoke(ulscd, c); }, cancellationToken: op.CancellationToken))
@@ -374,19 +372,15 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private async void uxButtonToggle_Click(object sender, EventArgs e)
         {
-            if (uxListViewSecrets.SelectedItems.Count == 1)
+            if (null != uxListViewSecrets.FirstSelectedItem)
             {
-                var slvi = uxListViewSecrets.SelectedItems[0] as ListViewItemSecret;
-                string action = (slvi.Attributes.Enabled ?? true) ? "disable" : "enable";
-                if (MessageBox.Show($"Are you sure you want to {action} secret '{slvi.Name}'?", Utils.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                var slvi = uxListViewSecrets.FirstSelectedItem;
+                string action = slvi.Enabled ? "disable" : "enable";
+                if (MessageBox.Show($"Are you sure you want to {action} {slvi.Kind} '{slvi.Name}'?", Utils.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    using (var op = NewUxOperationWithProgress(uxButtonToggle)) await op.Invoke("update secret in", async () =>
+                    using (var op = NewUxOperationWithProgress(uxButtonToggle)) await op.Invoke($"update {slvi.Kind} in", async () =>
                     {
-                        Secret s = await CurrentVault.UpdateSecretAsync(slvi.Name, Utils.AddChangedBy(slvi.Tags), null, new SecretAttributes() { Enabled = !slvi.Attributes.Enabled }, op.CancellationToken); // Toggle only Enabled attribute
-                        slvi = new ListViewItemSecret(this, s);
-                        uxListViewSecrets.Items.RemoveByKey(slvi.Name);
-                        uxListViewSecrets.Items.Add(slvi);
-                        slvi.RefreshAndSelect();
+                        uxListViewSecrets.Replace(slvi, await slvi.ToggleAsync(op.CancellationToken));
                     });
                 }
             }
@@ -396,15 +390,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             if (uxListViewSecrets.SelectedItems.Count > 0)
             {
-                string secretNames = string.Join(", ", from item in uxListViewSecrets.SelectedItems.Cast<ListViewItem>() select item.Name);
-                if (MessageBox.Show($"Are you sure you want to delete {uxListViewSecrets.SelectedItems.Count} secret(s) with the following names?\n{secretNames}\n\nWarning: This operation can not be undone!", Utils.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+                string itemNames = string.Join(", ", from item in uxListViewSecrets.SelectedItems.Cast<ListViewItem>() select item.Name);
+                if (MessageBox.Show($"Are you sure you want to delete {uxListViewSecrets.SelectedItems.Count} item(s) with the following name(s)?\n{itemNames}\n\nWarning: This operation can not be undone!", Utils.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
                 {
-                    using (var op = NewUxOperationWithProgress(uxButtonDelete)) await op.Invoke("delete secret(s) in", async () =>
+                    using (var op = NewUxOperationWithProgress(uxButtonDelete)) await op.Invoke("delete item(s) in", async () =>
                     {
-                        foreach (ListViewItem lvi in uxListViewSecrets.SelectedItems)
+                        foreach (ListViewItemBase lvi in uxListViewSecrets.SelectedItems)
                         {
-                            await CurrentVault.DeleteSecretAsync(lvi.Name, op.CancellationToken);
-                            uxListViewSecrets.Items.RemoveByKey(lvi.Name);
+                            uxListViewSecrets.Items.Remove(await lvi.DeleteAsync(op.CancellationToken));
                             RefreshItemsCount();
                         }
                     });
@@ -415,23 +408,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private void uxTimerSearchTextTypingCompleted_Tick(object sender, EventArgs e)
         {
             uxTimerSearchTextTypingCompleted.Stop();
-
-            _strikedoutSecrets = 0;
-            ListViewItemBase selectItem = null;
-            uxListViewSecrets.BeginUpdate();
-            foreach (ListViewItemBase lvib in uxListViewSecrets.Items)
-            {
-                bool contains = lvib.Contains(uxTextBoxSearch.Text);
-                lvib.Strikeout = !contains;
-                _strikedoutSecrets += !contains ? 1 : 0;
-                if ((selectItem == null) && contains)
-                {
-                    selectItem = lvib;
-                }
-            }
-            uxListViewSecrets.Sort();
-            selectItem?.RefreshAndSelect();
-            uxListViewSecrets.EndUpdate();
+            uxListViewSecrets.FindItemsWithText(uxTextBoxSearch.Text);
             RefreshItemsCount();
         }
 

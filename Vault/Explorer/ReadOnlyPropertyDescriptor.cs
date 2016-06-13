@@ -7,7 +7,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
     {
         public readonly object Value;
 
-        internal ReadOnlyPropertyDescriptor(string name, object value) : base(name, null)
+        public ReadOnlyPropertyDescriptor(string name, object value) : base(name, null)
         {
             Value = value;
         }
