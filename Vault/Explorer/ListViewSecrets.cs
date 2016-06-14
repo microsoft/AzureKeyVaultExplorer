@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Collections;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
@@ -38,14 +39,15 @@ namespace Microsoft.PS.Common.Vault.Explorer
             StrikedoutSecrets = 0;
         }
 
-        public void FindItemsWithText(string text)
+        public void FindItemsWithText(string regexPattern)
         {
             StrikedoutSecrets = 0;
             ListViewItemBase selectItem = null;
             BeginUpdate();
+            Regex regex = new Regex(regexPattern, RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
             foreach (ListViewItemBase lvib in Items)
             {
-                bool contains = lvib.Contains(text);
+                bool contains = lvib.Contains(regex);
                 lvib.Strikeout = !contains;
                 StrikedoutSecrets += contains ? 0 : 1;
                 if ((selectItem == null) && contains)

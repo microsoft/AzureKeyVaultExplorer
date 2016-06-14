@@ -481,14 +481,14 @@
             this.uxImageSearch.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.magnifier;
             this.uxImageSearch.Name = "uxImageSearch";
             this.uxImageSearch.Size = new System.Drawing.Size(20, 25);
-            this.uxImageSearch.ToolTipText = "Search";
+            this.uxImageSearch.ToolTipText = "Regular expression search\nExamples: elize, enabled=false";
             // 
             // uxTextBoxSearch
             // 
             this.uxTextBoxSearch.Enabled = false;
             this.uxTextBoxSearch.Name = "uxTextBoxSearch";
             this.uxTextBoxSearch.Size = new System.Drawing.Size(120, 28);
-            this.uxTextBoxSearch.ToolTipText = "Search";
+            this.uxTextBoxSearch.ToolTipText = "Regular expression search\nExamples: elize, enabled=false";
             this.uxTextBoxSearch.TextChanged += new System.EventHandler(this.uxTextBoxSearch_TextChanged);
             // 
             // uxButtonCopy
