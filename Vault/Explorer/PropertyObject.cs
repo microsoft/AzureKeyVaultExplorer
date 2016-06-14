@@ -37,7 +37,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             set
             {
                 _tags = value;
-                NotifyPropertyChanged(nameof(Tags));
             }
         }
 

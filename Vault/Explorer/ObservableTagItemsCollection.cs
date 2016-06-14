@@ -3,9 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.ComponentModel.Design;
+using System.Drawing.Design;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Windows.Forms.Design;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
@@ -15,9 +18,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [TypeConverter(typeof(ExpandableCollectionObjectConverter))]
+    [Editor(typeof(TagItemsCollectionEditor), typeof(UITypeEditor))]
     public class ObservableTagItemsCollection : ObservableCollection<TagItem>, ICustomTypeDescriptor
     {
         public ObservableTagItemsCollection() : base() { }
+
+        public ObservableTagItemsCollection(IEnumerable<TagItem> collection) : base(collection) { }
 
         public void SetPropertyChangedEventHandler(PropertyChangedEventHandler propertyChanged)
         {
@@ -85,6 +91,21 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return (destinationType == typeof(string) && value is ICollection) ?
                 $"{(value as ICollection).Count} item(s)" :
                 base.ConvertTo(context, culture, value, destinationType);
+        }
+    }
+
+    public class TagItemsCollectionEditor : CollectionEditor
+    {
+        public TagItemsCollectionEditor(Type type) : base(type) { }
+
+        public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
+        {
+            ObservableTagItemsCollection oc = value as ObservableTagItemsCollection;
+            bool changed = false;
+            oc.SetPropertyChangedEventHandler((s, e) => { changed = true; });
+            var collection = base.EditValue(context, provider, value);
+            // If something was changed in the collection we always return a new value (copy ctor), to force refresh the expandable read only properties
+            return (changed) ? new ObservableTagItemsCollection((IEnumerable<TagItem>)collection) : collection;
         }
     }
 }
