@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -112,14 +113,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
         }
 
-        public bool Contains(string text)
+        public bool Contains(Regex regexPattern)
         {
-            if (string.IsNullOrWhiteSpace(text))
+            if (string.IsNullOrWhiteSpace(regexPattern.ToString()))
                 return true;
             foreach (ReadOnlyPropertyDescriptor ropd in GetProperties(null))
             {
-                if ((ropd.Name.IndexOf(text, StringComparison.InvariantCultureIgnoreCase) >= 0) ||
-                    (ropd.Value?.ToString().IndexOf(text, StringComparison.InvariantCultureIgnoreCase) >= 0))
+                if (regexPattern.Match($"{ropd.Name}={ropd.Value}").Success)
                     return true;
             }
             return false;
