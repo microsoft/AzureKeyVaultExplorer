@@ -140,6 +140,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
                     uxButtonAdd.Enabled = uxMenuItemAdd.Enabled = true;
                     uxImageSearch.Enabled = uxTextBoxSearch.Enabled = true;
+                    uxAddKVCert.Visible = CurrentVaultAlias.KeyVaultCertificates;
                     uxListViewSecrets.AllowDrop = true;
                     RefreshItemsCount();
                     uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search
@@ -286,7 +287,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
             else
             {
-                uxOpenFileDialog.FilterIndex = (sender == uxAddCertFromFile) || (sender == uxAddCertFromFile2) ? ContentType.Pkcs12.ToFilterIndex() : ContentType.None.ToFilterIndex();
+                uxOpenFileDialog.FilterIndex = (sender == uxAddCertFromFile) || (sender == uxAddCertFromFile2) || (sender == uxAddKVCertFromFile) ? ContentType.Pkcs12.ToFilterIndex() : ContentType.None.ToFilterIndex();
                 if (uxOpenFileDialog.ShowDialog() != DialogResult.OK) return null;
                 fi = new FileInfo(uxOpenFileDialog.FileName);
             }
@@ -298,7 +299,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return fi;
         }
 
-        private async void uxMenuItemAdd_Click(object sender, EventArgs e)
+        private async void uxMenuItemAddSecret_Click(object sender, EventArgs e)
         {
             SecretDialog nsDlg = null;
             // Add secret
@@ -326,7 +327,49 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 {
                     using (var op = NewUxOperationWithProgress(uxButtonAdd)) await op.Invoke("add or update secret in", async () =>
                     {
-                        await AddOrUpdateSecret(op, null, (PropertyObjectSecret)nsDlg.SecretObject);
+                        await AddOrUpdateSecret(op, null, nsDlg.SecretObject);
+                    });
+                }
+            }
+        }
+
+        private async Task AddOrUpdateCertificate(UxOperation op, CertificateBundle certOld, PropertyObjectCertificate certNew)
+        {
+            var certCollection = new X509Certificate2Collection();
+            certCollection.Add(certNew.Certificate);
+            var cb = await CurrentVault.ImportCertificateAsync(certNew.Name, certCollection, certNew.CertificatePolicy, certNew.CertificateBundle.Attributes, certNew.TagsToDictionary(), op.CancellationToken);
+            var clvi = new ListViewItemCertificate(this, cb);
+            uxListViewSecrets.Items.Add(clvi);
+            uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search
+            clvi.RefreshAndSelect();
+            RefreshItemsCount();
+        }
+
+        private async void uxMenuItemAddKVCertificate_Click(object sender, EventArgs e)
+        {
+            CertificateDialog certDlg = null;
+            // Add certificate
+            using (var dtf = new DeleteTempFileInfo())
+            {
+                // Add certificate from file
+                if (sender == uxAddKVCertFromFile)
+                {
+                    dtf.FileInfoObject = GetFileInfo(sender, e);
+                    if (dtf.FileInfoObject == null) return;
+                    certDlg = new CertificateDialog(this, dtf.FileInfoObject);
+                }
+                // Add certificate from store
+                if ((sender == uxAddKVCertFromUserStore) || (sender == uxAddKVCertFromMachineStore))
+                {
+                    var cert = Utils.SelectCertFromStore(StoreName.My, (sender == uxAddKVCertFromUserStore) ? StoreLocation.CurrentUser : StoreLocation.LocalMachine, CurrentVaultAlias.Alias, Handle);
+                    if (cert == null) return;
+                    certDlg = new CertificateDialog(this, cert);
+                }
+                if ((certDlg != null) && (certDlg.DialogResult != DialogResult.Cancel) && (certDlg.ShowDialog() == DialogResult.OK)) // DialogResult.Cancel is when user clicked cancel during password prompt
+                {
+                    using (var op = NewUxOperationWithProgress(uxButtonAdd)) await op.Invoke("add or update certificate in", async () =>
+                    {
+                        await AddOrUpdateCertificate(op, null, certDlg.CertificateObject);
                     });
                 }
             }
@@ -497,22 +540,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private void uxButtonHelp_Click(object sender, EventArgs e)
         {
             Process.Start("http://aka.ms/vaultexplorer");
-            //var cert = new X509Certificate2Collection();
-            //cert.Import(@"C:\Work\VSO.Repos\WD\WD.Services.Common\Tools\DevCluster-Local\localhost.pfx", "1234", X509KeyStorageFlags.Exportable);
-            //var certBundle  = await _vault.ImportCertificateAsync("newlocalhost2", cert, new CertificatePolicy()
-            //{
-            //    KeyProperties = new KeyProperties()
-            //    {
-            //        Exportable = true,
-            //        KeySize = 2048,
-            //        Kty = "RSA",
-            //        ReuseKey = false
-            //    },
-            //    SecretProperties = new SecretProperties()
-            //    {
-            //        ContentType = CertificateContentType.Pfx
-            //    }
-            //});
         }
 
         #region Drag & Drop
@@ -566,7 +593,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             foreach (string file in files.Split('|'))
             {
-                uxMenuItemAdd_Click(uxAddFile, new AddFileEventArgs(file));
+                uxMenuItemAddSecret_Click(uxAddFile, new AddFileEventArgs(file));
             }
         }
 

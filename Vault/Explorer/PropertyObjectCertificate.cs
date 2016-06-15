@@ -18,6 +18,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
     public class PropertyObjectCertificate : PropertyObject
     {
         public readonly CertificateBundle CertificateBundle;
+        public readonly CertificatePolicy CertificatePolicy;
 
         [Category("General")]
         [DisplayName("Certificate")]
@@ -29,7 +30,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [Category("General")]
         [DisplayName("Thumbprint")]
         [Browsable(true)]
-        public string Thumbprint => CertificateBundle.X5T;
+        public string Thumbprint => Certificate.Thumbprint;
 
         [Category("Identifiers")]
         [DisplayName("Certificate")]
@@ -54,41 +55,41 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [Browsable(true)]
         [ReadOnly(true)]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        public CertificatePolicyAttributes PolicyAttributes => CertificateBundle.Policy.Attributes;
+        public CertificatePolicyAttributes PolicyAttributes => CertificatePolicy.Attributes;
 
         [Category("Policy")]
         [DisplayName("Certificate properties")]
         [Browsable(true)]
         [ReadOnly(true)]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        public X509CertificateProperties X509CertificateProperties => CertificateBundle.Policy.X509CertificateProperties;
+        public X509CertificateProperties X509CertificateProperties => CertificatePolicy.X509CertificateProperties;
 
         [Category("Policy")]
         [DisplayName("Key properties")]
         [Browsable(true)]
         [ReadOnly(true)]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        public KeyProperties KeyProperties => CertificateBundle.Policy.KeyProperties;
+        public KeyProperties KeyProperties => CertificatePolicy.KeyProperties;
 
         [Category("Policy")]
         [DisplayName("Secret properties")]
         [Browsable(true)]
         [ReadOnly(true)]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        public SecretProperties SecretProperties => CertificateBundle.Policy.SecretProperties;
+        public SecretProperties SecretProperties => CertificatePolicy.SecretProperties;
 
         [Category("Policy")]
         [DisplayName("Life time actions")]
         [Browsable(true)]
         [ReadOnly(true)]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        public LifetimeAction[] LifetimeActions => CertificateBundle.Policy.LifetimeActions.ToArray();
+        public LifetimeAction[] LifetimeActions => CertificatePolicy.LifetimeActions?.ToArray();
 
         [Category("Policy")]
         [DisplayName("Issuer reference")]
         [Browsable(true)]
         [ReadOnly(true)]
-        public string IssuerReference => CertificateBundle.Policy.IssuerReference?.Name;
+        public string IssuerReference => CertificatePolicy.IssuerReference?.Name;
 
         [Category("Other")]
         [DisplayName("Pending Reference")]
@@ -96,10 +97,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public PendingReference PendingReference => CertificateBundle.PendingReference;
 
-        public PropertyObjectCertificate(CertificateBundle certificateBundle, X509Certificate2 certificate, PropertyChangedEventHandler propertyChanged) :
+        public PropertyObjectCertificate(CertificateBundle certificateBundle, CertificatePolicy policy, X509Certificate2 certificate, PropertyChangedEventHandler propertyChanged) :
             base(certificateBundle.Id, certificateBundle.Tags, certificateBundle.Attributes.Enabled, certificateBundle.Attributes.Expires, certificateBundle.Attributes.NotBefore, propertyChanged)
         {
             CertificateBundle = certificateBundle;
+            CertificatePolicy = policy;
             Certificate = certificate;
             _contentType = ContentType.Pkcs12;
             _value = "Click on the link below to view or install the certificate";

@@ -42,7 +42,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// </summary>
         public CertificateDialog(ISession session, FileInfo fi) : this(session, "New certificate", Mode.NewCertificate)
         {
-            uxTextBoxName.Text = Utils.ConvertToValidSecretName(Path.GetFileNameWithoutExtension(fi.Name));
             string password = null;
             var pwdDlg = new PasswordDialog();
             if (pwdDlg.ShowDialog() != DialogResult.OK)
@@ -51,6 +50,16 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 return;
             }
             password = pwdDlg.Password;
+            var cert = new X509Certificate2(fi.FullName, password, X509KeyStorageFlags.UserKeySet | X509KeyStorageFlags.Exportable);
+            NewCertificate(cert);
+        }
+
+        /// <summary>
+        /// New certificate from X509Certificate2
+        /// </summary>
+        public CertificateDialog(ISession session, X509Certificate2 cert) : this(session, "New certificate", Mode.NewCertificate)
+        {
+            NewCertificate(cert);
         }
 
         /// <summary>
@@ -58,13 +67,34 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// </summary>
         public CertificateDialog(ISession session, CertificateBundle cb, X509Certificate2 certificate) : this(session, $"Edit certificate {cb.Id.Name}", Mode.EditCertificate)
         {
-            RefreshSecretObject(cb, certificate);
+            RefreshCertificateObject(cb, cb.Policy, certificate);
             uxTextBoxName.Text = cb.Id.Name;
+            uxTextBoxName.ReadOnly = true;
         }
 
-        private void RefreshSecretObject(CertificateBundle cb, X509Certificate2 certificate)
+        private void NewCertificate(X509Certificate2 cert)
         {
-            uxPropertyGridSecret.SelectedObject = CertificateObject = new PropertyObjectCertificate(cb, certificate, SecretObject_PropertyChanged);
+            var cp = new CertificatePolicy()
+            {
+                KeyProperties = new KeyProperties()
+                {
+                    Exportable = true,
+                    KeySize = 2048,
+                    Kty = "RSA",
+                    ReuseKey = false
+                },
+                SecretProperties = new SecretProperties()
+                {
+                    ContentType = CertificateContentType.Pfx
+                }
+            };
+            RefreshCertificateObject(new CertificateBundle(), cp, cert);
+            uxTextBoxName.Text = Utils.ConvertToValidSecretName(cert.GetNameInfo(X509NameType.SimpleName, false));
+        }
+
+        private void RefreshCertificateObject(CertificateBundle cb, CertificatePolicy cp, X509Certificate2 certificate)
+        {
+            uxPropertyGridSecret.SelectedObject = CertificateObject = new PropertyObjectCertificate(cb, cp, certificate, SecretObject_PropertyChanged);
         }
 
         private void uxTextBoxName_TextChanged(object sender, EventArgs e)
@@ -98,7 +128,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
         }
 
-        private async void uxMenuVersions_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        private void uxMenuVersions_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             /*
             var sv = (SecretVersion)e.ClickedItem;
