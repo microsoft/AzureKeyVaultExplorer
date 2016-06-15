@@ -23,6 +23,22 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// </summary>
         private readonly Secret _secret;
 
+        [Category("General")]
+        [DisplayName("Content Type")]
+        [TypeConverter(typeof(ContentTypeEnumConverter))]
+        public ContentType ContentType
+        {
+            get
+            {
+                return _contentType;
+            }
+            set
+            {
+                _contentType = value;
+                NotifyPropertyChanged(nameof(ContentType));
+            }
+        }
+
         public PropertyObjectSecret(Secret secret, PropertyChangedEventHandler propertyChanged) :
             base(secret.SecretIdentifier, secret.Tags, secret.Attributes.Enabled, secret.Attributes.Expires, secret.Attributes.NotBefore, propertyChanged)
         {

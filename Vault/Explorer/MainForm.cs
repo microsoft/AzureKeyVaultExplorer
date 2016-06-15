@@ -362,8 +362,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 cb = await CurrentVault.GetCertificateAsync(item.Name, null, op.CancellationToken);
                 cert = await CurrentVault.GetCertificateWithPrivateKeyAsync(item.Name, null, op.CancellationToken);
             });
-            SecretDialog nsDlg = new SecretDialog(this, cb, cert);
-            if (nsDlg.ShowDialog() == DialogResult.OK)
+            CertificateDialog certDlg = new CertificateDialog(this, cb, cert);
+            if (certDlg.ShowDialog() == DialogResult.OK)
             {
             }
         }
