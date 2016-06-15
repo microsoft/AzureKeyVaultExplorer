@@ -118,6 +118,12 @@
     </Compile>
     <Compile Include="PropertyObject.cs" />
     <Compile Include="PropertyObjectCertificate.cs" />
+    <Compile Include="CertificateDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CertificateDialog.Designer.cs">
+      <DependentUpon>CertificateDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="SecretVersion.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -160,6 +166,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PasswordDialog.resx">
       <DependentUpon>PasswordDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CertificateDialog.resx">
+      <DependentUpon>CertificateDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="SecretDialog.resx">
       <DependentUpon>SecretDialog.cs</DependentUpon>

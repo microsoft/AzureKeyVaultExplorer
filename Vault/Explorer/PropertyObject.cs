@@ -13,10 +13,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
     /// <summary>
     /// Base class to edit an object via PropertyGrid
     /// </summary>
-    [DefaultProperty("Name")]
+    [DefaultProperty("Tags")]
     public abstract class PropertyObject : INotifyPropertyChanged
     {
         protected void NotifyPropertyChanged(string info) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
+
+        protected ContentType _contentType;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -26,21 +28,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [Browsable(false)]
         public string Name { get; set; }
 
-        private ObservableTagItemsCollection _tags;
+        [Category("General")]
         [DisplayName("Custom Tags")]
-        public ObservableTagItemsCollection Tags
-        {
-            get
-            {
-                return _tags;
-            }
-            set
-            {
-                _tags = value;
-            }
-        }
+        public ObservableTagItemsCollection Tags { get; set; }
 
         private bool? _enabled;
+        [Category("General")]
         [DisplayName("Enabled")]
         public bool? Enabled
         {
@@ -56,6 +49,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         private DateTime? _expires;
+        [Category("General")]
         [DisplayName("Valid until time (UTC)")]
         [Editor(typeof(NullableDateTimePickerEditor), typeof(UITypeEditor))]
         public DateTime? Expires
@@ -72,6 +66,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         private DateTime? _notBefore;
+        [Category("General")]
         [DisplayName("Valid from time (UTC)")]
         [Editor(typeof(NullableDateTimePickerEditor), typeof(UITypeEditor))]
         public DateTime? NotBefore
@@ -84,22 +79,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 _notBefore = value;
                 NotifyPropertyChanged(nameof(NotBefore));
-            }
-        }
-
-        protected ContentType _contentType;
-        [DisplayName("Content Type")]
-        [TypeConverter(typeof(ContentTypeEnumConverter))]
-        public ContentType ContentType
-        {
-            get
-            {
-                return _contentType;
-            }
-            set
-            {
-                _contentType = value;
-                NotifyPropertyChanged(nameof(ContentType));
             }
         }
 
@@ -130,7 +109,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// Raw value to store in the vault
         /// </summary>
         [Browsable(false)]
-        public string RawValue => ContentType.ToRawValue(_value);
+        public string RawValue => _contentType.ToRawValue(_value);
 
         /// <summary>
         /// Md5 of the raw value
@@ -158,9 +137,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
             Identifier = identifier;
             Name = identifier.Name;
 
-            _tags = new ObservableTagItemsCollection();
-            if (null != tags) foreach (var kvp in tags) _tags.Add(new TagItem(kvp));
-            _tags.SetPropertyChangedEventHandler(propertyChanged);
+            Tags = new ObservableTagItemsCollection();
+            if (null != tags) foreach (var kvp in tags) Tags.Add(new TagItem(kvp));
+            Tags.SetPropertyChangedEventHandler(propertyChanged);
 
             _enabled = enabled;
             _expires = expires;
@@ -191,6 +170,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return Utils.AddChangedBy(result);
         }
 
-        public string GetFileName() => Name + ContentType.ToExtension();
+        public string GetFileName() => Name + _contentType.ToExtension();
     }
 }
