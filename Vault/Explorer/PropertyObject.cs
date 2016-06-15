@@ -135,7 +135,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             PropertyChangedEventHandler propertyChanged)
         {
             Identifier = identifier;
-            Name = identifier.Name;
+            Name = identifier?.Name;
 
             Tags = new ObservableTagItemsCollection();
             if (null != tags) foreach (var kvp in tags) Tags.Add(new TagItem(kvp));
