@@ -104,7 +104,6 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="NullableDateTimePickerEditor.cs" />
-    <Compile Include="ObservableLifetimeActionsCollection.cs" />
     <Compile Include="PasswordDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -134,7 +133,7 @@
     <Compile Include="SecretDialog.Designer.cs">
       <DependentUpon>SecretDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="ObservableTagItemsCollection.cs" />
+    <Compile Include="ObservableCollections.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadOnlyPropertyDescriptor.cs" />
@@ -151,7 +150,6 @@
     <Compile Include="SettingsDialog.Designer.cs">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="TagItem.cs" />
     <Compile Include="Telemetry.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="UxOperation.cs" />

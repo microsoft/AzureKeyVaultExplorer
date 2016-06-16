@@ -152,7 +152,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         protected abstract IEnumerable<KeyValuePair<string, string>> GetCustomTags();
 
-        public Dictionary<string, string> TagsToDictionary()
+        public Dictionary<string, string> ToTagsDictionary()
         {
             var result = new Dictionary<string, string>();
             // Add all user tags
