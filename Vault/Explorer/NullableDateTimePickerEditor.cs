@@ -16,10 +16,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             picker.Format = DateTimePickerFormat.Long;
         }
 
-        public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
-        {
-            return UITypeEditorEditStyle.DropDown;
-        }
+        public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context) => UITypeEditorEditStyle.DropDown;
 
         public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
         {
@@ -35,7 +32,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     picker.Value = Convert.ToDateTime(value);
                 }
                 this.editorService.DropDownControl(picker);
-                value = new Nullable<DateTime>(picker.Value);
+                value = new DateTime?(picker.Value);
             }
 
             return value;

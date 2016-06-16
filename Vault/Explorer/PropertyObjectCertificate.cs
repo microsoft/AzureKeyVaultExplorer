@@ -25,7 +25,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [Description("Displays a system dialog that contains the properties of an X.509 certificate and its associated certificate chain. One can also install the cetificate locally by clicking on Install Certificate button in the dialog.")]
         [Browsable(true)]
         [Editor(typeof(CertificateUIEditor), typeof(UITypeEditor))]
-        public X509Certificate2 Certificate { get; private set; }
+        public X509Certificate2 Certificate { get; }
 
         [Category("General")]
         [DisplayName("Thumbprint")]
@@ -115,6 +115,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             yield break;
         }
+
+        public CertificateAttributes ToCertificateAttributes() => new CertificateAttributes() { Enabled = Enabled, Expires = Expires, NotBefore = NotBefore };
 
         public IEnumerable<LifetimeAction> LifetimeActionsToEnumerable()
         {

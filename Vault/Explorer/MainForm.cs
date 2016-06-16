@@ -258,11 +258,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
             // New secret, secret rename or new value
             if ((sOld == null) || (sOld.SecretIdentifier.Name != soNew.Name) || (sOld.Value != soNew.RawValue))
             {
-                s = await CurrentVault.SetSecretAsync(soNew.Name, soNew.RawValue, soNew.TagsToDictionary(), ContentTypeEnumConverter.GetDescription(soNew.ContentType), soNew.ToSecretAttributes(), op.CancellationToken);
+                s = await CurrentVault.SetSecretAsync(soNew.Name, soNew.RawValue, soNew.ToTagsDictionary(), ContentTypeEnumConverter.GetDescription(soNew.ContentType), soNew.ToSecretAttributes(), op.CancellationToken);
             }
             else // Same secret name and value
             {
-                s = await CurrentVault.UpdateSecretAsync(soNew.Name, soNew.TagsToDictionary(), ContentTypeEnumConverter.GetDescription(soNew.ContentType), soNew.ToSecretAttributes(), op.CancellationToken);
+                s = await CurrentVault.UpdateSecretAsync(soNew.Name, soNew.ToTagsDictionary(), ContentTypeEnumConverter.GetDescription(soNew.ContentType), soNew.ToSecretAttributes(), op.CancellationToken);
             }
             string oldSecretName = sOld?.SecretIdentifier.Name;
             if ((oldSecretName != null) && (oldSecretName != soNew.Name)) // Delete old secret
@@ -325,7 +325,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 }
                 if ((nsDlg != null) && (nsDlg.DialogResult != DialogResult.Cancel) && (nsDlg.ShowDialog() == DialogResult.OK)) // DialogResult.Cancel is when user clicked cancel during password prompt
                 {
-                    using (var op = NewUxOperationWithProgress(uxButtonAdd)) await op.Invoke("add or update secret in", async () =>
+                    using (var op = NewUxOperationWithProgress(uxButtonAdd)) await op.Invoke("add secret to", async () =>
                     {
                         await AddOrUpdateSecret(op, null, nsDlg.SecretObject);
                     });
@@ -335,9 +335,18 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private async Task AddOrUpdateCertificate(UxOperation op, CertificateBundle certOld, PropertyObjectCertificate certNew)
         {
-            var certCollection = new X509Certificate2Collection();
-            certCollection.Add(certNew.Certificate);
-            var cb = await CurrentVault.ImportCertificateAsync(certNew.Name, certCollection, certNew.CertificatePolicy, certNew.CertificateBundle.Attributes, certNew.TagsToDictionary(), op.CancellationToken);
+            CertificateBundle cb = null;
+            if (certOld == null) // New certificate
+            {
+                var certCollection = new X509Certificate2Collection();
+                certCollection.Add(certNew.Certificate);
+                cb = await CurrentVault.ImportCertificateAsync(certNew.Name, certCollection, certNew.CertificatePolicy, certNew.CertificateBundle.Attributes, certNew.ToTagsDictionary(), op.CancellationToken);
+            }
+            else
+            {
+                cb = await CurrentVault.UpdateCertificateAsync(certNew.Name, certNew.ToCertificateAttributes(), certNew.ToTagsDictionary(), op.CancellationToken);
+            }
+            uxListViewSecrets.Items.RemoveByKey(certNew.Name);
             var clvi = new ListViewItemCertificate(this, cb);
             uxListViewSecrets.Items.Add(clvi);
             uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search
@@ -367,7 +376,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 }
                 if ((certDlg != null) && (certDlg.DialogResult != DialogResult.Cancel) && (certDlg.ShowDialog() == DialogResult.OK)) // DialogResult.Cancel is when user clicked cancel during password prompt
                 {
-                    using (var op = NewUxOperationWithProgress(uxButtonAdd)) await op.Invoke("add or update certificate in", async () =>
+                    using (var op = NewUxOperationWithProgress(uxButtonAdd)) await op.Invoke("add certificate to", async () =>
                     {
                         await AddOrUpdateCertificate(op, null, certDlg.CertificateObject);
                     });
@@ -388,9 +397,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
             SecretDialog nsDlg = new SecretDialog(this, s, versions);
             if (nsDlg.ShowDialog() == DialogResult.OK)
             {
-                using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke("add or update secret in", async () =>
+                using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke("update secret in", async () =>
                 {
-                    await AddOrUpdateSecret(op, s, (PropertyObjectSecret)nsDlg.SecretObject);
+                    await AddOrUpdateSecret(op, s, nsDlg.SecretObject);
                 });
             }
         }
@@ -408,6 +417,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
             CertificateDialog certDlg = new CertificateDialog(this, cb, cert);
             if (certDlg.ShowDialog() == DialogResult.OK)
             {
+                using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke("update certificate in", async () =>
+                {
+                    await AddOrUpdateCertificate(op, cb, certDlg.CertificateObject);
+                });
             }
         }
 
