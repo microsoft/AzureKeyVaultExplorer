@@ -34,11 +34,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// </summary>
         /// <param name="dt">DateTime?</param>
         /// <returns>string</returns>
-        public static string NullableDateTimeToString(DateTime? dt)
-        {
-            if (dt == null) return "Unknown";
-            return dt.Value.ToLocalTime().ToString();
-        }
+        public static string NullableDateTimeToString(DateTime? dt) => (dt == null) ? "(none)" : dt.Value.ToLocalTime().ToString();
+
+        public static string NullableIntToString(int? x) => (x == null) ? "(none)" : x.ToString();
 
         public static string CalculateMd5(string value)
         {

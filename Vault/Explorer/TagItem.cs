@@ -9,6 +9,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private string _name;
         private string _value;
 
+        [Category("Tag")]
         public string Name
         {
             get
@@ -26,6 +27,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
         }
 
+        [Category("Tag")]
         public string Value
         {
             get
