@@ -80,10 +80,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         [Category("Policy")]
         [DisplayName("Life time actions")]
+        [Description("Actions that will be performed by Key Vault over the lifetime of a certificate.")]
         [Browsable(true)]
         [ReadOnly(true)]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        public LifetimeAction[] LifetimeActions => CertificatePolicy.LifetimeActions?.ToArray();
+        [TypeConverter(typeof(ExpandableCollectionObjectConverter))]
+        public ObservableLifetimeActionsCollection LifetimeActions { get; set; }
 
         [Category("Policy")]
         [DisplayName("Issuer reference")]
@@ -104,12 +105,23 @@ namespace Microsoft.PS.Common.Vault.Explorer
             CertificatePolicy = policy;
             Certificate = certificate;
             _contentType = ContentType.Pkcs12;
-            _value = "Click on the link below to view or install the certificate";
+            _value = "";
+            LifetimeActions = new ObservableLifetimeActionsCollection();
+            if (null != CertificatePolicy.LifetimeActions) foreach (var la in CertificatePolicy.LifetimeActions) LifetimeActions.Add(new LifetimeActionItem() { Type = la.Action.Type, DaysBeforeExpiry = la.Trigger.DaysBeforeExpiry, LifetimePercentage = la.Trigger.LifetimePercentage });
+            LifetimeActions.SetPropertyChangedEventHandler(propertyChanged);
         }
 
         protected override IEnumerable<KeyValuePair<string, string>> GetCustomTags()
         {
             yield break;
+        }
+
+        public IEnumerable<LifetimeAction> LifetimeActionsToEnumerable()
+        {
+            foreach (var lai in LifetimeActions)
+            {
+                yield return new LifetimeAction() { Action = new Azure.KeyVault.Action() { Type = lai.Type }, Trigger = new Trigger() { DaysBeforeExpiry = lai.DaysBeforeExpiry, LifetimePercentage = lai.DaysBeforeExpiry } };
+            }
         }
     }
 

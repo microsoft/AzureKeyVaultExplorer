@@ -104,6 +104,7 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="NullableDateTimePickerEditor.cs" />
+    <Compile Include="ObservableLifetimeActionsCollection.cs" />
     <Compile Include="PasswordDialog.cs">
       <SubType>Form</SubType>
     </Compile>
