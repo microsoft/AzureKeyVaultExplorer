@@ -55,7 +55,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [DefaultSettingValue("00:00:30")]
         [DisplayName("Clear secret from clipboard after")]
         [Description("Interval for secret to stay in the clipboard once copied to the clipboard.")]
-        [Browsable(true)]
         [Category("General")]
         public TimeSpan CopyToClipboardTimeToLive
         {
@@ -77,7 +76,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [DefaultSettingValue("Courier New, 9.75pt")]
         [DisplayName("Secret font")]
         [Description("Font to use for secret value and name in the secret dialog.")]
-        [Browsable(true)]
         [Category("Secret dialog")]
         public Font SecretFont
         {
@@ -95,7 +93,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [DefaultSettingValue("true")]
         [DisplayName("Show line numbers")]
         [Description("Display or hide line numbering in the secret dialog.")]
-        [Browsable(true)]
         [Category("Secret dialog")]
         public bool ShowLineNumbers
         {
@@ -113,7 +110,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [DefaultSettingValue("true")]
         [DisplayName("Convert tabs to spaces")]
         [Description("Convert tabs to spaces in the secret dialog.")]
-        [Browsable(true)]
         [Category("Secret dialog")]
         public bool ConvertTabsToSpaces
         {
@@ -131,7 +127,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [DefaultSettingValue("4")]
         [DisplayName("Tab indent size")]
         [Description("Tab indent size in the secret dialog.")]
-        [Browsable(true)]
         [Category("Secret dialog")]
         public int TabIndent
         {
@@ -149,7 +144,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [DefaultSettingValue(@".\")]
         [DisplayName("Root location")]
         [Description("Relative or absolute path to root folder where .json files are located.\nEnvironment variables are supported and expanded accordingly.")]
-        [Browsable(true)]
         [Category("Vaults configuration")]
         [Editor(typeof(FolderNameEditor), typeof(UITypeEditor))]
         public string JsonConfigurationFilesRoot
@@ -168,7 +162,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [DefaultSettingValue(@"Vaults.json")]
         [DisplayName("Vaults file name")]
         [Description("Relative or absolute path to .json file with vaults definitions and access.\nEnvironment variables are supported and expanded accordingly.")]
-        [Browsable(true)]
         [Category("Vaults configuration")]
         [Editor(typeof(FileNameEditor), typeof(UITypeEditor))]
         public string VaultsJsonFileLocation
@@ -187,7 +180,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [DefaultSettingValue(@"VaultAliases.json")]
         [DisplayName("Vault aliases file name")]
         [Description("Relative or absolute path to .json file with vault aliases.\nEnvironment variables are supported and expanded accordingly.")]
-        [Browsable(true)]
         [Category("Vaults configuration")]
         [Editor(typeof(FileNameEditor), typeof(UITypeEditor))]
         public string VaultAliasesJsonFileLocation
@@ -206,7 +198,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [DefaultSettingValue(@"SecretKinds.json")]
         [DisplayName("Secret kinds file name")]
         [Description("Relative or absolute path to .json file with secret kinds definitions.\nEnvironment variables are supported and expanded accordingly.")]
-        [Browsable(true)]
         [Category("Vaults configuration")]
         [Editor(typeof(FileNameEditor), typeof(UITypeEditor))]
         public string SecretKindsJsonFileLocation
@@ -225,7 +216,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [DefaultSettingValue(@"{}")]
         [DisplayName("Favorite secrets")]
         [Description("List of favorite secrets per vault alias.")]
-        [Browsable(true)]
         [Category("General")]
         [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
         public string FavoriteSecretsJson
