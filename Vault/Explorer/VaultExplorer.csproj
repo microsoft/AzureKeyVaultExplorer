@@ -124,7 +124,7 @@
     <Compile Include="CertificateDialog.Designer.cs">
       <DependentUpon>CertificateDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="SecretVersion.cs">
+    <Compile Include="SecretVersions.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SecretDialog.cs">

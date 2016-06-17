@@ -65,11 +65,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <summary>
         /// Edit certificate
         /// </summary>
-        public CertificateDialog(ISession session, CertificateBundle cb, X509Certificate2 certificate) : this(session, $"Edit certificate {cb.Id.Name}", Mode.EditCertificate)
+        public CertificateDialog(ISession session, CertificateBundle cb, X509Certificate2 certificate, IEnumerable<ListCertificateResponseMessage> versions) : this(session, $"Edit certificate {cb.Id.Name}", Mode.EditCertificate)
         {
-            RefreshCertificateObject(cb, cb.Policy, certificate);
-            uxTextBoxName.Text = cb.Id.Name;
             uxTextBoxName.ReadOnly = true;
+            int i = 0;
+            uxMenuVersions.Items.AddRange((from v in versions orderby v.Attributes.Created descending select new CertificateVersion(i++, v)).ToArray());
+            uxMenuVersions_ItemClicked(null, new ToolStripItemClickedEventArgs(uxMenuVersions.Items[0])); // Pass sender as NULL so _changed will be set to false
         }
 
         private void NewCertificate(X509Certificate2 cert)
@@ -95,6 +96,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private void RefreshCertificateObject(CertificateBundle cb, CertificatePolicy cp, X509Certificate2 certificate)
         {
             uxPropertyGridSecret.SelectedObject = CertificateObject = new PropertyObjectCertificate(cb, cp, certificate, SecretObject_PropertyChanged);
+            uxTextBoxName.Text = CertificateObject.Name;
         }
 
         private void uxTextBoxName_TextChanged(object sender, EventArgs e)
@@ -128,21 +130,21 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
         }
 
-        private void uxMenuVersions_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        private async void uxMenuVersions_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            /*
-            var sv = (SecretVersion)e.ClickedItem;
-            if (sv.Checked) return; // Same item was clicked
-            foreach (var item in uxMenuVersions.Items) ((SecretVersion)item).Checked = false;
-            var s = await _session.CurrentVault.GetSecretAsync(sv.SecretItem.Identifier.Name, sv.SecretItem.Identifier.Version);
-            sv.Checked = true;
-            uxLinkLabelValue.Text = sv.ToString();
-            uxToolTip.SetToolTip(uxLinkLabelValue, sv.ToolTipText);
-            RefreshSecretObject(s);
-            AutoDetectSecretKind();
+            var cv = (CertificateVersion)e.ClickedItem;
+            if (cv.Checked) return; // Same item was clicked
+            foreach (var item in uxMenuVersions.Items) ((CertificateVersion)item).Checked = false;
+
+            var cb = await _session.CurrentVault.GetCertificateAsync(cv.Id.Name, (cv.Index == 0) ? null : cv.Id.Version);
+            var cert = await _session.CurrentVault.GetCertificateWithPrivateKeyAsync(cv.Id.Name, cv.Id.Version);
+
+            cv.Checked = true;
+            uxLinkLabelValue.Text = cv.ToString();
+            uxToolTip.SetToolTip(uxLinkLabelValue, cv.ToolTipText);
+            RefreshCertificateObject(cb, cb.Policy ?? new CertificatePolicy(), cert); // CertificatePolicy in some cases NULL ??? WHY!!!
             _changed = (sender != null); // Sender will be NULL for the first time during Edit Dialog ctor
             InvalidateOkButton();
-            */
         }
     }
 }

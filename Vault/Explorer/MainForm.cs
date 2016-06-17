@@ -410,12 +410,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             CertificateBundle cb = null;
             X509Certificate2 cert = null;
+            IEnumerable<ListCertificateResponseMessage> versions = null;
             using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke("get certificate from", async () =>
             {
                 cb = await CurrentVault.GetCertificateAsync(item.Name, null, op.CancellationToken);
                 cert = await CurrentVault.GetCertificateWithPrivateKeyAsync(item.Name, null, op.CancellationToken);
+                versions = await CurrentVault.GetCertificateVersionsAsync(item.Name, 0, op.CancellationToken);
             });
-            CertificateDialog certDlg = new CertificateDialog(this, cb, cert);
+            CertificateDialog certDlg = new CertificateDialog(this, cb, cert, versions);
             if (certDlg.ShowDialog() == DialogResult.OK)
             {
                 using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke("update certificate in", async () =>

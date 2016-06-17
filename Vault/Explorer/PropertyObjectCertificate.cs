@@ -105,9 +105,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
             CertificatePolicy = policy;
             Certificate = certificate;
             _contentType = ContentType.Pkcs12;
-            _value = certificateBundle.X5T;
+            _value = certificate.Thumbprint;
             var olac = new ObservableLifetimeActionsCollection();
-            if (null != CertificatePolicy.LifetimeActions)
+            if (null != CertificatePolicy?.LifetimeActions)
             {
                 foreach (var la in CertificatePolicy.LifetimeActions)
                 {
