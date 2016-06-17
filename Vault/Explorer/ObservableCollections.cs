@@ -192,15 +192,26 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public ObservableLifetimeActionsCollection(IEnumerable<LifetimeActionItem> collection) : base(collection) { }
 
         protected override PropertyDescriptor GetPropertyDescriptor(LifetimeActionItem item) =>
-            new ReadOnlyPropertyDescriptor(item.Type, $"DaysBeforeExpiry={Utils.NullableIntToString(item.DaysBeforeExpiry)}, LifetimePercentage={Utils.NullableIntToString(item.LifetimePercentage)}");
+            new ReadOnlyPropertyDescriptor(item.ToString(), $"DaysBeforeExpiry={Utils.NullableIntToString(item.DaysBeforeExpiry)}, LifetimePercentage={Utils.NullableIntToString(item.LifetimePercentage)}");
     }
+
+    public enum LifetimeActionType
+    {
+        [Description("EmailContacts")]
+        EmailContacts,
+
+        [Description("AutoRenew")]
+        AutoRenew
+    }
+
+    public class LifetimeActionTypeEnumConverter : CustomEnumTypeConverter<LifetimeActionType> { }
 
     [DefaultProperty("Type")]
     [Description("Action and its trigger that will be performed by Key Vault over the lifetime of a certificate.")]
     public class LifetimeActionItem
     {
         [Category("Action")]
-        public string Type { get; set; }
+        public LifetimeActionType Type { get; set; }
 
         [Category("Trigger")]
         public int? DaysBeforeExpiry { get; set; }
@@ -208,7 +219,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [Category("Trigger")]
         public int? LifetimePercentage { get; set; }
 
-        public override string ToString() => Type;
+        public override string ToString() => Type.ToString();
     }
 
     #endregion

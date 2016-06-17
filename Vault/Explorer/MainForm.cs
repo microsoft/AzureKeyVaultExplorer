@@ -344,6 +344,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
             else
             {
+                await CurrentVault.UpdateCertificatePolicyAsync(certNew.Name, certNew.CertificatePolicy, op.CancellationToken);
                 cb = await CurrentVault.UpdateCertificateAsync(certNew.Name, certNew.ToCertificateAttributes(), certNew.ToTagsDictionary(), op.CancellationToken);
             }
             uxListViewSecrets.Items.RemoveByKey(certNew.Name);
