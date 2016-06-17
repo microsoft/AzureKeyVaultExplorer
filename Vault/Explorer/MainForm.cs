@@ -333,19 +333,20 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
         }
 
-        private async Task AddOrUpdateCertificate(UxOperation op, CertificateBundle certOld, PropertyObjectCertificate certNew)
+        private async Task AddOrUpdateCertificate(UxOperation op, ItemDialogBase.Mode mode, PropertyObjectCertificate certNew)
         {
             CertificateBundle cb = null;
-            if (certOld == null) // New certificate
+            switch (mode)
             {
-                var certCollection = new X509Certificate2Collection();
-                certCollection.Add(certNew.Certificate);
-                cb = await CurrentVault.ImportCertificateAsync(certNew.Name, certCollection, certNew.CertificatePolicy, certNew.CertificateBundle.Attributes, certNew.ToTagsDictionary(), op.CancellationToken);
-            }
-            else
-            {
-                await CurrentVault.UpdateCertificatePolicyAsync(certNew.Name, certNew.CertificatePolicy, op.CancellationToken);
-                cb = await CurrentVault.UpdateCertificateAsync(certNew.Name, certNew.ToCertificateAttributes(), certNew.ToTagsDictionary(), op.CancellationToken);
+                case ItemDialogBase.Mode.New:
+                    var certCollection = new X509Certificate2Collection();
+                    certCollection.Add(certNew.Certificate);
+                    cb = await CurrentVault.ImportCertificateAsync(certNew.Name, certCollection, certNew.CertificatePolicy, certNew.CertificateBundle.Attributes, certNew.ToTagsDictionary(), op.CancellationToken);
+                    break;
+                case ItemDialogBase.Mode.Edit:
+                    await CurrentVault.UpdateCertificatePolicyAsync(certNew.Name, certNew.CertificatePolicy, op.CancellationToken);
+                    cb = await CurrentVault.UpdateCertificateAsync(certNew.Name, certNew.ToCertificateAttributes(), certNew.ToTagsDictionary(), op.CancellationToken);
+                    break;
             }
             uxListViewSecrets.Items.RemoveByKey(certNew.Name);
             var clvi = new ListViewItemCertificate(this, cb);
@@ -379,7 +380,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 {
                     using (var op = NewUxOperationWithProgress(uxButtonAdd)) await op.Invoke("add certificate to", async () =>
                     {
-                        await AddOrUpdateCertificate(op, null, certDlg.CertificateObject);
+                        await AddOrUpdateCertificate(op, ItemDialogBase.Mode.New, certDlg.CertificateObject);
                     });
                 }
             }
@@ -408,21 +409,17 @@ namespace Microsoft.PS.Common.Vault.Explorer
         // Edit key vault certificate
         private async Task EditItemAsync(ListViewItemCertificate item)
         {
-            CertificateBundle cb = null;
-            X509Certificate2 cert = null;
             IEnumerable<ListCertificateResponseMessage> versions = null;
             using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke("get certificate from", async () =>
             {
-                cb = await CurrentVault.GetCertificateAsync(item.Name, null, op.CancellationToken);
-                cert = await CurrentVault.GetCertificateWithPrivateKeyAsync(item.Name, null, op.CancellationToken);
                 versions = await CurrentVault.GetCertificateVersionsAsync(item.Name, 0, op.CancellationToken);
             });
-            CertificateDialog certDlg = new CertificateDialog(this, cb, cert, versions);
+            CertificateDialog certDlg = new CertificateDialog(this, item.Name, versions);
             if (certDlg.ShowDialog() == DialogResult.OK)
             {
                 using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke("update certificate in", async () =>
                 {
-                    await AddOrUpdateCertificate(op, cb, certDlg.CertificateObject);
+                    await AddOrUpdateCertificate(op, ItemDialogBase.Mode.Edit, certDlg.CertificateObject);
                 });
             }
         }

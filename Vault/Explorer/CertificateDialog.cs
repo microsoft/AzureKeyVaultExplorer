@@ -15,17 +15,12 @@ using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
-    public partial class CertificateDialog : FormTelemetry
+    public partial class CertificateDialog : ItemDialogBase
     {
-        private enum Mode
-        {
-            NewCertificate,
-            EditCertificate
-        };
-
         private readonly ISession _session;
         private readonly Mode _mode;
         private bool _changed;
+        private CertificatePolicy _certificatePolicy; // There is one policy and multiple versions of kv certificate. A policy is a recipe to create a next version of the kv certificate.
         public PropertyObjectCertificate CertificateObject { private set; get; }
 
         private CertificateDialog(ISession session, string title, Mode mode)
@@ -40,7 +35,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <summary>
         /// New certificate from file
         /// </summary>
-        public CertificateDialog(ISession session, FileInfo fi) : this(session, "New certificate", Mode.NewCertificate)
+        public CertificateDialog(ISession session, FileInfo fi) : this(session, "New certificate", Mode.New)
         {
             string password = null;
             var pwdDlg = new PasswordDialog();
@@ -57,7 +52,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <summary>
         /// New certificate from X509Certificate2
         /// </summary>
-        public CertificateDialog(ISession session, X509Certificate2 cert) : this(session, "New certificate", Mode.NewCertificate)
+        public CertificateDialog(ISession session, X509Certificate2 cert) : this(session, "New certificate", Mode.New)
         {
             NewCertificate(cert);
         }
@@ -65,7 +60,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <summary>
         /// Edit certificate
         /// </summary>
-        public CertificateDialog(ISession session, CertificateBundle cb, X509Certificate2 certificate, IEnumerable<ListCertificateResponseMessage> versions) : this(session, $"Edit certificate {cb.Id.Name}", Mode.EditCertificate)
+        public CertificateDialog(ISession session, string name, IEnumerable<ListCertificateResponseMessage> versions) : this(session, $"Edit certificate {name}", Mode.Edit)
         {
             uxTextBoxName.ReadOnly = true;
             int i = 0;
@@ -75,7 +70,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void NewCertificate(X509Certificate2 cert)
         {
-            var cp = new CertificatePolicy()
+            _certificatePolicy = new CertificatePolicy()
             {
                 KeyProperties = new KeyProperties()
                 {
@@ -89,7 +84,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     ContentType = CertificateContentType.Pfx
                 }
             };
-            RefreshCertificateObject(new CertificateBundle(), cp, cert);
+            RefreshCertificateObject(new CertificateBundle(), _certificatePolicy, cert);
             uxTextBoxName.Text = Utils.ConvertToValidSecretName(cert.GetNameInfo(X509NameType.SimpleName, false));
         }
 
@@ -122,9 +117,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             switch (_mode)
             {
-                case Mode.NewCertificate:
+                case Mode.New:
                     return;
-                case Mode.EditCertificate:
+                case Mode.Edit:
                     uxMenuVersions.Show(uxLinkLabelValue, 0, uxLinkLabelValue.Height);
                     return;
             }
@@ -136,13 +131,17 @@ namespace Microsoft.PS.Common.Vault.Explorer
             if (cv.Checked) return; // Same item was clicked
             foreach (var item in uxMenuVersions.Items) ((CertificateVersion)item).Checked = false;
 
-            var cb = await _session.CurrentVault.GetCertificateAsync(cv.Id.Name, (cv.Index == 0) ? null : cv.Id.Version);
+            var cb = await _session.CurrentVault.GetCertificateAsync(cv.Id.Name, (cv.Index == 0) ? null : cv.Id.Version); // Pass NULL as a version to fetch current CertificatePolicy
             var cert = await _session.CurrentVault.GetCertificateWithPrivateKeyAsync(cv.Id.Name, cv.Id.Version);
+            if ((_certificatePolicy == null) && (cb.Policy != null)) // cb.Policy will be NULL when version is not current
+            {
+                _certificatePolicy = cb.Policy;
+            }
 
             cv.Checked = true;
             uxLinkLabelValue.Text = cv.ToString();
             uxToolTip.SetToolTip(uxLinkLabelValue, cv.ToolTipText);
-            RefreshCertificateObject(cb, cb.Policy ?? new CertificatePolicy(), cert); // CertificatePolicy in some cases NULL ??? WHY!!!
+            RefreshCertificateObject(cb, _certificatePolicy, cert);
             _changed = (sender != null); // Sender will be NULL for the first time during Edit Dialog ctor
             InvalidateOkButton();
         }
