@@ -15,14 +15,8 @@ using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
-    public partial class SecretDialog : FormTelemetry
+    public partial class SecretDialog : ItemDialogBase
     {
-        private enum Mode
-        {
-            NewSecret,
-            EditSecret
-        };
-
         private readonly ISession _session;
         private readonly Mode _mode;
         private bool _changed;
@@ -61,7 +55,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <summary>
         /// New empty secret
         /// </summary>
-        public SecretDialog(ISession session) : this(session, "New secret", Mode.NewSecret)
+        public SecretDialog(ISession session) : this(session, "New secret", Mode.New)
         {
             _changed = true;
             var s = new Secret() { Attributes = new SecretAttributes(), ContentType = ContentTypeEnumConverter.GetDescription(ContentType.Text) };
@@ -128,7 +122,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <summary>
         /// Edit or Copy secret
         /// </summary>
-        public SecretDialog(ISession session, Secret s, IEnumerable<SecretItem> versions) : this(session, "Edit secret", Mode.EditSecret)
+        public SecretDialog(ISession session, Secret s, IEnumerable<SecretItem> versions) : this(session, "Edit secret", Mode.Edit)
         {
             Text += $" {s.SecretIdentifier.Name}";
             int i = 0;
@@ -257,10 +251,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             switch (_mode)
             {
-                case Mode.NewSecret:
+                case Mode.New:
                     uxMenuNewValue.Show(uxLinkLabelValue, 0, uxLinkLabelValue.Height);
                     return;
-                case Mode.EditSecret:
+                case Mode.Edit:
                     uxMenuVersions.Show(uxLinkLabelValue, 0, uxLinkLabelValue.Height);
                     return;
             }
