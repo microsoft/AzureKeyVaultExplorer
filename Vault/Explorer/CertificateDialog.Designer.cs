@@ -128,7 +128,7 @@
             this.uxPropertyGridSecret.Location = new System.Drawing.Point(20, 90);
             this.uxPropertyGridSecret.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.uxPropertyGridSecret.Name = "uxPropertyGridSecret";
-            this.uxPropertyGridSecret.Size = new System.Drawing.Size(791, 477);
+            this.uxPropertyGridSecret.Size = new System.Drawing.Size(791, 474);
             this.uxPropertyGridSecret.TabIndex = 0;
             this.uxPropertyGridSecret.ToolbarVisible = false;
             // 
