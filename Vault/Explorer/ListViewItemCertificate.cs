@@ -59,22 +59,21 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return new CertificateDialog(session, name, versions.Cast<ListCertificateResponseMessage>());
         }
 
-        public override async Task<ListViewItemBase> AddOrUpdate(ISession session, ItemDialogBaseMode mode, object originalObject, PropertyObject newObject, CancellationToken cancellationToken)
+        public override async Task<ListViewItemBase> UpdateAsync(ISession session, object originalObject, PropertyObject newObject, CancellationToken cancellationToken)
         {
             CertificateBundle cb = (CertificateBundle)originalObject;
             PropertyObjectCertificate certNew = (PropertyObjectCertificate)newObject;
-            switch (mode)
-            {
-                case ItemDialogBaseMode.New:
-                    var certCollection = new X509Certificate2Collection();
-                    certCollection.Add(certNew.Certificate);
-                    cb = await session.CurrentVault.ImportCertificateAsync(certNew.Name, certCollection, certNew.CertificatePolicy, certNew.CertificateBundle.Attributes, certNew.ToTagsDictionary(), cancellationToken);
-                    break;
-                case ItemDialogBaseMode.Edit:
-                    await session.CurrentVault.UpdateCertificatePolicyAsync(certNew.Name, certNew.CertificatePolicy, cancellationToken);
-                    cb = await session.CurrentVault.UpdateCertificateAsync(certNew.Name, certNew.ToCertificateAttributes(), certNew.ToTagsDictionary(), cancellationToken);
-                    break;
-            }
+            await session.CurrentVault.UpdateCertificatePolicyAsync(certNew.Name, certNew.CertificatePolicy, cancellationToken);
+            cb = await session.CurrentVault.UpdateCertificateAsync(certNew.Name, certNew.ToCertificateAttributes(), certNew.ToTagsDictionary(), cancellationToken);
+            return new ListViewItemCertificate(session, cb);
+        }
+
+        public static async Task<ListViewItemCertificate> NewAsync(ISession session, PropertyObject newObject, CancellationToken cancellationToken)
+        {
+            PropertyObjectCertificate certNew = (PropertyObjectCertificate)newObject;
+            var certCollection = new X509Certificate2Collection();
+            certCollection.Add(certNew.Certificate);
+            CertificateBundle cb = await session.CurrentVault.ImportCertificateAsync(certNew.Name, certCollection, certNew.CertificatePolicy, certNew.CertificateBundle.Attributes, certNew.ToTagsDictionary(), cancellationToken);
             return new ListViewItemCertificate(session, cb);
         }
     }

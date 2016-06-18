@@ -228,36 +228,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             (sender as ToolStripDropDownItem)?.ShowDropDown();
         }
 
-
-
-        private async Task AddOrUpdateSecret(UxOperation op, Secret sOld, PropertyObjectSecret soNew)
-        {
-            Secret s = null;
-            // Check for duplication by Name and Md5
-            //if (false == VerifyDuplication(sOld, soNew)) return;
-            // New secret, secret rename or new value
-            if ((sOld == null) || (sOld.SecretIdentifier.Name != soNew.Name) || (sOld.Value != soNew.RawValue))
-            {
-                s = await CurrentVault.SetSecretAsync(soNew.Name, soNew.RawValue, soNew.ToTagsDictionary(), ContentTypeEnumConverter.GetDescription(soNew.ContentType), soNew.ToSecretAttributes(), op.CancellationToken);
-            }
-            else // Same secret name and value
-            {
-                s = await CurrentVault.UpdateSecretAsync(soNew.Name, soNew.ToTagsDictionary(), ContentTypeEnumConverter.GetDescription(soNew.ContentType), soNew.ToSecretAttributes(), op.CancellationToken);
-            }
-            string oldSecretName = sOld?.SecretIdentifier.Name;
-            if ((oldSecretName != null) && (oldSecretName != soNew.Name)) // Delete old secret
-            {
-                await CurrentVault.DeleteSecretAsync(oldSecretName, op.CancellationToken);
-                uxListViewSecrets.Items.RemoveByKey(oldSecretName);
-            }
-            uxListViewSecrets.Items.RemoveByKey(soNew.Name);
-            var slvi = new ListViewItemSecret(this, s);
-            uxListViewSecrets.Items.Add(slvi);
-            uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search
-            slvi.RefreshAndSelect();
-            RefreshItemsCount();
-        }
-
         private FileInfo GetFileInfo(object sender, EventArgs e)
         {
             FileInfo fi = null;
@@ -303,36 +273,22 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     if (cert == null) return;
                     nsDlg = new SecretDialog(this, cert);
                 }
-                if ((nsDlg != null) && (nsDlg.DialogResult != DialogResult.Cancel) && (nsDlg.ShowDialog() == DialogResult.OK)) // DialogResult.Cancel is when user clicked cancel during password prompt
+                // DialogResult.Cancel is when user clicked cancel during password prompt from the ctor(), if OK was clicked, check for duplication by Name and Md5
+                if ((nsDlg != null) && (nsDlg.DialogResult != DialogResult.Cancel) && (nsDlg.ShowDialog() == DialogResult.OK) && ListViewItemBase.VerifyDuplication(this, null, nsDlg.PropertyObject))
                 {
                     using (var op = NewUxOperationWithProgress(uxButtonAdd)) await op.Invoke("add secret to", async () =>
                     {
-                        await AddOrUpdateSecret(op, null, nsDlg.PropertyObject);
+                        AddNewItemToListView(await ListViewItemSecret.NewAsync(this, nsDlg.PropertyObject, op.CancellationToken));
                     });
                 }
             }
         }
 
-        private async Task AddOrUpdateCertificate(UxOperation op, ItemDialogBaseMode mode, PropertyObjectCertificate certNew)
+        private void AddNewItemToListView(ListViewItemBase lvi)
         {
-            CertificateBundle cb = null;
-            switch (mode)
-            {
-                case ItemDialogBaseMode.New:
-                    var certCollection = new X509Certificate2Collection();
-                    certCollection.Add(certNew.Certificate);
-                    cb = await CurrentVault.ImportCertificateAsync(certNew.Name, certCollection, certNew.CertificatePolicy, certNew.CertificateBundle.Attributes, certNew.ToTagsDictionary(), op.CancellationToken);
-                    break;
-                case ItemDialogBaseMode.Edit:
-                    await CurrentVault.UpdateCertificatePolicyAsync(certNew.Name, certNew.CertificatePolicy, op.CancellationToken);
-                    cb = await CurrentVault.UpdateCertificateAsync(certNew.Name, certNew.ToCertificateAttributes(), certNew.ToTagsDictionary(), op.CancellationToken);
-                    break;
-            }
-            uxListViewSecrets.Items.RemoveByKey(certNew.Name);
-            var clvi = new ListViewItemCertificate(this, cb);
-            uxListViewSecrets.Items.Add(clvi);
+            uxListViewSecrets.Items.Add(lvi);
             uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search
-            clvi.RefreshAndSelect();
+            lvi.RefreshAndSelect();
             RefreshItemsCount();
         }
 
@@ -356,11 +312,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     if (cert == null) return;
                     certDlg = new CertificateDialog(this, cert);
                 }
-                if ((certDlg != null) && (certDlg.DialogResult != DialogResult.Cancel) && (certDlg.ShowDialog() == DialogResult.OK)) // DialogResult.Cancel is when user clicked cancel during password prompt
+                // DialogResult.Cancel is when user clicked cancel during password prompt from the ctor(), if OK was clicked, check for duplication by Name and Md5
+                if ((certDlg != null) && (certDlg.DialogResult != DialogResult.Cancel) && (certDlg.ShowDialog() == DialogResult.OK) && ListViewItemBase.VerifyDuplication(this, null, certDlg.PropertyObject))
                 {
                     using (var op = NewUxOperationWithProgress(uxButtonAdd)) await op.Invoke("add certificate to", async () =>
                     {
-                        await AddOrUpdateCertificate(op, ItemDialogBaseMode.New, certDlg.PropertyObject);
+                        AddNewItemToListView(await ListViewItemCertificate.NewAsync(this, certDlg.PropertyObject, op.CancellationToken));
                     });
                 }
             }
@@ -379,17 +336,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
                         versions = await item.GetVersionsAsync(op.CancellationToken);
                     });
                     dynamic editDlg = item.GetEditDialog(this, item.Name, versions);
-                    if (editDlg.ShowDialog() == DialogResult.OK)
+                    // If OK was clicked, check for duplication by Name and Md5
+                    if ((editDlg.ShowDialog() == DialogResult.OK) && ListViewItemBase.VerifyDuplication(this, item.Name, editDlg.PropertyObject))
                     {
                         using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke($"update {item.Kind} in", async () =>
                         {
-                            var lvi = await item.AddOrUpdate(this, ItemDialogBaseMode.Edit, editDlg.OriginalObject, editDlg.PropertyObject, op.CancellationToken);
-                            if (null == lvi) return; // Operation was cancelled
+                            var lvi = await item.UpdateAsync(this, editDlg.OriginalObject, editDlg.PropertyObject, op.CancellationToken);
                             uxListViewSecrets.Items.Remove(item);
-                            uxListViewSecrets.Items.Add(lvi);
-                            uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search
-                            lvi.RefreshAndSelect();
-                            RefreshItemsCount();
+                            AddNewItemToListView(lvi);
                         });
                     }
                 }
