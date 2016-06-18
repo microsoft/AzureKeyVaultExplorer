@@ -16,11 +16,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
         Edit
     };
 
-    public partial class ItemDialogBase<T> : FormTelemetry where T : PropertyObject
+    public partial class ItemDialogBase<T, U> : FormTelemetry where T : PropertyObject where U : class
     {
         protected readonly ISession _session;
         protected readonly ItemDialogBaseMode _mode;
         protected bool _changed;
+        public U OriginalObject; //  Will be NULL in New mode and current value in case of Edit mode
         public T PropertyObject { get; protected set; }
 
         public ItemDialogBase() { }
@@ -51,15 +52,16 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         protected virtual void uxMenuSecretKind_ItemClicked(object sender, ToolStripItemClickedEventArgs e) { }
 
-        protected virtual void OnVersionChange(CustomVersion cv) { }
+        protected virtual Task<U> OnVersionChangeAsync(CustomVersion cv) => null;
 
-        protected void uxMenuVersions_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        protected async void uxMenuVersions_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             var cv = (CustomVersion)e.ClickedItem;
             if (cv.Checked) return; // Same item was clicked
             foreach (var item in uxMenuVersions.Items) ((CustomVersion)item).Checked = false;
 
-            OnVersionChange(cv);
+            var u = await OnVersionChangeAsync(cv);
+            OriginalObject = (null == OriginalObject) ? u : OriginalObject;
 
             cv.Checked = true;
             uxLinkLabelValue.Text = cv.ToString();

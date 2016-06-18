@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
@@ -46,6 +47,35 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             await Session.CurrentVault.DeleteCertificateAsync(Name, cancellationToken);
             return this;
+        }
+
+        public override async Task<IEnumerable<object>> GetVersionsAsync(CancellationToken cancellationToken)
+        {
+            return await Session.CurrentVault.GetCertificateVersionsAsync(Name, 0, cancellationToken);
+        }
+
+        public override Form GetEditDialog(ISession session, string name, IEnumerable<object> versions)
+        {
+            return new CertificateDialog(session, name, versions.Cast<ListCertificateResponseMessage>());
+        }
+
+        public override async Task<ListViewItemBase> AddOrUpdate(ISession session, ItemDialogBaseMode mode, object originalObject, PropertyObject newObject, CancellationToken cancellationToken)
+        {
+            CertificateBundle cb = (CertificateBundle)originalObject;
+            PropertyObjectCertificate certNew = (PropertyObjectCertificate)newObject;
+            switch (mode)
+            {
+                case ItemDialogBaseMode.New:
+                    var certCollection = new X509Certificate2Collection();
+                    certCollection.Add(certNew.Certificate);
+                    cb = await session.CurrentVault.ImportCertificateAsync(certNew.Name, certCollection, certNew.CertificatePolicy, certNew.CertificateBundle.Attributes, certNew.ToTagsDictionary(), cancellationToken);
+                    break;
+                case ItemDialogBaseMode.Edit:
+                    await session.CurrentVault.UpdateCertificatePolicyAsync(certNew.Name, certNew.CertificatePolicy, cancellationToken);
+                    cb = await session.CurrentVault.UpdateCertificateAsync(certNew.Name, certNew.ToCertificateAttributes(), certNew.ToTagsDictionary(), cancellationToken);
+                    break;
+            }
+            return new ListViewItemCertificate(session, cb);
         }
     }
 }
