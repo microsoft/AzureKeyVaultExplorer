@@ -11,11 +11,12 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
-    public partial class CertificateDialog : ItemDialogBase<PropertyObjectCertificate>
+    public partial class CertificateDialog : ItemDialogBase<PropertyObjectCertificate, CertificateBundle>
     {
         private CertificatePolicy _certificatePolicy; // There is one policy and multiple versions of kv certificate. A policy is a recipe to create a next version of the kv certificate.
 
@@ -100,7 +101,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             InvalidateOkButton();
         }
 
-        protected override async void OnVersionChange(CustomVersion cv)
+        protected override async Task<CertificateBundle> OnVersionChangeAsync(CustomVersion cv)
         {
             var cb = await _session.CurrentVault.GetCertificateAsync(cv.Id.Name, (cv.Index == 0) ? null : cv.Id.Version); // Pass NULL as a version to fetch current CertificatePolicy
             var cert = await _session.CurrentVault.GetCertificateWithPrivateKeyAsync(cv.Id.Name, cv.Id.Version);
@@ -109,6 +110,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 _certificatePolicy = cb.Policy;
             }
             RefreshCertificateObject(cb, _certificatePolicy, cert);
+            return cb;
         }
     }
 }

@@ -131,6 +131,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public abstract Task<ListViewItemBase> DeleteAsync(CancellationToken cancellationToken);
 
+        public abstract Task<IEnumerable<object>> GetVersionsAsync(CancellationToken cancellationToken);
+
+        public abstract Form GetEditDialog(ISession session, string name, IEnumerable<object> versions);
+
+        public abstract Task<ListViewItemBase> AddOrUpdate(ISession session, ItemDialogBaseMode mode, object originalObject, PropertyObject newObject, CancellationToken cancellationToken);
+
         #region ICustomTypeDescriptor interface to show properties in PropertyGrid
 
         public string GetComponentName() => TypeDescriptor.GetComponentName(this, true);

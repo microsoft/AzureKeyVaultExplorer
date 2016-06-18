@@ -11,11 +11,12 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
-    public partial class SecretDialog : ItemDialogBase<PropertyObjectSecret>
+    public partial class SecretDialog : ItemDialogBase<PropertyObjectSecret, Secret>
     {
         private CertificateValueObject _certificateObj;
         private readonly TextEditorControl uxTextBoxValue;
@@ -115,9 +116,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <summary>
         /// Edit or Copy secret
         /// </summary>
-        public SecretDialog(ISession session, Secret s, IEnumerable<SecretItem> versions) : this(session, "Edit secret", ItemDialogBaseMode.Edit)
+        public SecretDialog(ISession session, string name, IEnumerable<SecretItem> versions) : this(session, "Edit secret", ItemDialogBaseMode.Edit)
         {
-            Text += $" {s.SecretIdentifier.Name}";
+            Text += $" {name}";
             int i = 0;
             uxMenuVersions.Items.AddRange((from v in versions orderby v.Attributes.Created descending select new SecretVersion(i++, v)).ToArray());
             uxMenuVersions_ItemClicked(null, new ToolStripItemClickedEventArgs(uxMenuVersions.Items[0])); // Pass sender as NULL so _changed will be set to false
@@ -230,12 +231,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxTextBoxValue_TextChanged(sender, null);
         }
 
-        protected override async void OnVersionChange(CustomVersion cv)
+        protected override async Task<Secret> OnVersionChangeAsync(CustomVersion cv)
         {
             SecretVersion sv = (SecretVersion)cv;
-            var s = await _session.CurrentVault.GetSecretAsync(sv.SecretItem.Identifier.Name, sv.SecretItem.Identifier.Version);
+            var s = await _session.CurrentVault.GetSecretAsync(sv.SecretItem.Identifier.Name, sv.SecretItem.Identifier.Version);            
             RefreshSecretObject(s);
             AutoDetectSecretKind();
+            return s;
         }
 
         protected override ContextMenuStrip GetNewValueMenu() => uxMenuNewValue;
