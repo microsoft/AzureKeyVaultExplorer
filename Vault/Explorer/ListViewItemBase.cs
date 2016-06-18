@@ -125,6 +125,27 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return false;
         }
 
+        public static bool VerifyDuplication(ISession session, string oldName, PropertyObject soNew)
+        {
+            string newMd5 = soNew.Md5;
+
+            // Check if we already have *another* secret with the same name
+            if ((oldName != soNew.Name) && (session.ListViewSecrets.Items.ContainsKey(soNew.Name) &&
+                (MessageBox.Show($"Are you sure you want to replace existing item '{soNew.Name}' with new value?", Utils.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes)))
+            {
+                return false;
+            }
+
+            // Detect dups by Md5
+            var sameSecretsList = from slvi in session.ListViewSecrets.Items.Cast<ListViewItemBase>() where (slvi.Md5 == newMd5) && (slvi.Name != oldName) && (slvi.Name != soNew.Name) select slvi.Name;
+            if ((sameSecretsList.Count() > 0) &&
+                (MessageBox.Show($"There are {sameSecretsList.Count()} other item(s) in the vault which has the same Md5: {newMd5}.\nHere the name(s) of the other items:\n{string.Join(", ", sameSecretsList)}\nAre you sure you want to add or update item {soNew.Name} and have a duplication of secrets?", Utils.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) != DialogResult.Yes))
+            {
+                return false;
+            }
+            return true;
+        }
+
         protected abstract IEnumerable<PropertyDescriptor> GetCustomProperties();
 
         public abstract Task<ListViewItemBase> ToggleAsync(CancellationToken cancellationToken);
@@ -135,7 +156,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public abstract Form GetEditDialog(ISession session, string name, IEnumerable<object> versions);
 
-        public abstract Task<ListViewItemBase> AddOrUpdate(ISession session, ItemDialogBaseMode mode, object originalObject, PropertyObject newObject, CancellationToken cancellationToken);
+        public abstract Task<ListViewItemBase> UpdateAsync(ISession session, object originalObject, PropertyObject newObject, CancellationToken cancellationToken);
 
         #region ICustomTypeDescriptor interface to show properties in PropertyGrid
 
