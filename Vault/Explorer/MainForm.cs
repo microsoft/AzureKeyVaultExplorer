@@ -327,23 +327,23 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 {
                     using (var op = NewUxOperationWithProgress(uxButtonAdd)) await op.Invoke("add secret to", async () =>
                     {
-                        await AddOrUpdateSecret(op, null, nsDlg.SecretObject);
+                        await AddOrUpdateSecret(op, null, nsDlg.PropertyObject);
                     });
                 }
             }
         }
 
-        private async Task AddOrUpdateCertificate(UxOperation op, ItemDialogBase.Mode mode, PropertyObjectCertificate certNew)
+        private async Task AddOrUpdateCertificate(UxOperation op, ItemDialogBaseMode mode, PropertyObjectCertificate certNew)
         {
             CertificateBundle cb = null;
             switch (mode)
             {
-                case ItemDialogBase.Mode.New:
+                case ItemDialogBaseMode.New:
                     var certCollection = new X509Certificate2Collection();
                     certCollection.Add(certNew.Certificate);
                     cb = await CurrentVault.ImportCertificateAsync(certNew.Name, certCollection, certNew.CertificatePolicy, certNew.CertificateBundle.Attributes, certNew.ToTagsDictionary(), op.CancellationToken);
                     break;
-                case ItemDialogBase.Mode.Edit:
+                case ItemDialogBaseMode.Edit:
                     await CurrentVault.UpdateCertificatePolicyAsync(certNew.Name, certNew.CertificatePolicy, op.CancellationToken);
                     cb = await CurrentVault.UpdateCertificateAsync(certNew.Name, certNew.ToCertificateAttributes(), certNew.ToTagsDictionary(), op.CancellationToken);
                     break;
@@ -380,7 +380,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 {
                     using (var op = NewUxOperationWithProgress(uxButtonAdd)) await op.Invoke("add certificate to", async () =>
                     {
-                        await AddOrUpdateCertificate(op, ItemDialogBase.Mode.New, certDlg.CertificateObject);
+                        await AddOrUpdateCertificate(op, ItemDialogBaseMode.New, certDlg.PropertyObject);
                     });
                 }
             }
@@ -401,7 +401,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke("update secret in", async () =>
                 {
-                    await AddOrUpdateSecret(op, s, nsDlg.SecretObject);
+                    await AddOrUpdateSecret(op, s, nsDlg.PropertyObject);
                 });
             }
         }
@@ -419,7 +419,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke("update certificate in", async () =>
                 {
-                    await AddOrUpdateCertificate(op, ItemDialogBase.Mode.Edit, certDlg.CertificateObject);
+                    await AddOrUpdateCertificate(op, ItemDialogBaseMode.Edit, certDlg.PropertyObject);
                 });
             }
         }

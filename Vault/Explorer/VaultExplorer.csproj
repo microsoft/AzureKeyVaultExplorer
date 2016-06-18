@@ -163,6 +163,9 @@
     <EmbeddedResource Include="ExceptionDialog.resx">
       <DependentUpon>ExceptionDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ItemDialogBase.resx">
+      <DependentUpon>ItemDialogBase.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ListViewSecrets.resx">
       <DependentUpon>ListViewSecrets.cs</DependentUpon>
     </EmbeddedResource>
