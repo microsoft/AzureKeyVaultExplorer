@@ -15,27 +15,19 @@ using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
-    public partial class CertificateDialog : ItemDialogBase
+    public partial class CertificateDialog : ItemDialogBase<PropertyObjectCertificate>
     {
-        private readonly ISession _session;
-        private readonly Mode _mode;
-        private bool _changed;
         private CertificatePolicy _certificatePolicy; // There is one policy and multiple versions of kv certificate. A policy is a recipe to create a next version of the kv certificate.
-        public PropertyObjectCertificate CertificateObject { private set; get; }
 
-        private CertificateDialog(ISession session, string title, Mode mode)
+        private CertificateDialog(ISession session, string title, ItemDialogBaseMode mode) : base(session, title, mode)
         {
             InitializeComponent();
-            _session = session;
-            Text = title;
-            _mode = mode;
-            uxTextBoxName.Font = Settings.Default.SecretFont;
         }
 
         /// <summary>
         /// New certificate from file
         /// </summary>
-        public CertificateDialog(ISession session, FileInfo fi) : this(session, "New certificate", Mode.New)
+        public CertificateDialog(ISession session, FileInfo fi) : this(session, "New certificate", ItemDialogBaseMode.New)
         {
             string password = null;
             var pwdDlg = new PasswordDialog();
@@ -52,7 +44,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <summary>
         /// New certificate from X509Certificate2
         /// </summary>
-        public CertificateDialog(ISession session, X509Certificate2 cert) : this(session, "New certificate", Mode.New)
+        public CertificateDialog(ISession session, X509Certificate2 cert) : this(session, "New certificate", ItemDialogBaseMode.New)
         {
             NewCertificate(cert);
         }
@@ -60,7 +52,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <summary>
         /// Edit certificate
         /// </summary>
-        public CertificateDialog(ISession session, string name, IEnumerable<ListCertificateResponseMessage> versions) : this(session, $"Edit certificate {name}", Mode.Edit)
+        public CertificateDialog(ISession session, string name, IEnumerable<ListCertificateResponseMessage> versions) : this(session, $"Edit certificate {name}", ItemDialogBaseMode.Edit)
         {
             uxTextBoxName.ReadOnly = true;
             int i = 0;
@@ -90,15 +82,15 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void RefreshCertificateObject(CertificateBundle cb, CertificatePolicy cp, X509Certificate2 certificate)
         {
-            uxPropertyGridSecret.SelectedObject = CertificateObject = new PropertyObjectCertificate(cb, cp, certificate, SecretObject_PropertyChanged);
-            uxTextBoxName.Text = CertificateObject.Name;
+            uxPropertyGridSecret.SelectedObject = PropertyObject = new PropertyObjectCertificate(cb, cp, certificate, SecretObject_PropertyChanged);
+            uxTextBoxName.Text = PropertyObject.Name;
         }
 
-        private void uxTextBoxName_TextChanged(object sender, EventArgs e)
+        protected override void uxTextBoxName_TextChanged(object sender, EventArgs e)
         {
-            _changed = true;
-            CertificateObject.Name = uxTextBoxName.Text;
-            uxErrorProvider.SetError(uxTextBoxName, CertificateObject.IsNameValid ? null : $"Certificate name must match the following regex:\n{Consts.ValidSecretNameRegex}");
+            PropertyObject.Name = uxTextBoxName.Text;
+            uxErrorProvider.SetError(uxTextBoxName, PropertyObject.IsNameValid ? null : $"Certificate name must match the following regex:\n{Consts.ValidSecretNameRegex}");
+            base.uxTextBoxName_TextChanged(sender, e);
             InvalidateOkButton();
         }
 
@@ -108,42 +100,15 @@ namespace Microsoft.PS.Common.Vault.Explorer
             InvalidateOkButton();
         }
 
-        private void InvalidateOkButton()
+        protected override async void OnVersionChange(CustomVersion cv)
         {
-            uxButtonOK.Enabled = _changed && CertificateObject.IsNameValid && CertificateObject.IsValueValid;
-        }
-
-        private void uxLinkLabelValue_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            switch (_mode)
-            {
-                case Mode.New:
-                    return;
-                case Mode.Edit:
-                    uxMenuVersions.Show(uxLinkLabelValue, 0, uxLinkLabelValue.Height);
-                    return;
-            }
-        }
-
-        private async void uxMenuVersions_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-            var cv = (CertificateVersion)e.ClickedItem;
-            if (cv.Checked) return; // Same item was clicked
-            foreach (var item in uxMenuVersions.Items) ((CertificateVersion)item).Checked = false;
-
             var cb = await _session.CurrentVault.GetCertificateAsync(cv.Id.Name, (cv.Index == 0) ? null : cv.Id.Version); // Pass NULL as a version to fetch current CertificatePolicy
             var cert = await _session.CurrentVault.GetCertificateWithPrivateKeyAsync(cv.Id.Name, cv.Id.Version);
             if ((_certificatePolicy == null) && (cb.Policy != null)) // cb.Policy will be NULL when version is not current
             {
                 _certificatePolicy = cb.Policy;
             }
-
-            cv.Checked = true;
-            uxLinkLabelValue.Text = cv.ToString();
-            uxToolTip.SetToolTip(uxLinkLabelValue, cv.ToolTipText);
             RefreshCertificateObject(cb, _certificatePolicy, cert);
-            _changed = (sender != null); // Sender will be NULL for the first time during Edit Dialog ctor
-            InvalidateOkButton();
         }
     }
 }

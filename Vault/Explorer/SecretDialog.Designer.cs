@@ -30,27 +30,16 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SecretDialog));
-            this.uxLinkLabelSecretKind = new System.Windows.Forms.LinkLabel();
-            this.uxTextBoxName = new System.Windows.Forms.TextBox();
-            this.uxButtonOK = new System.Windows.Forms.Button();
-            this.uxButtonCancel = new System.Windows.Forms.Button();
-            this.uxErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.uxSplitContainer = new System.Windows.Forms.SplitContainer();
             this.uxLinkLabelViewCertificate = new System.Windows.Forms.LinkLabel();
             this.uxPropertyGridSecret = new System.Windows.Forms.PropertyGrid();
             this.uxLabelBytesLeft = new System.Windows.Forms.Label();
-            this.uxToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.uxTimerValueTypingCompleted = new System.Windows.Forms.Timer(this.components);
-            this.uxMenuSecretKind = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.uxLinkLabelValue = new System.Windows.Forms.LinkLabel();
-            this.uxMenuVersions = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.uxMenuNewValue = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.uxMenuItemNewPassword = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemNewGuid = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemNewApiKey = new System.Windows.Forms.ToolStripMenuItem();
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            ((System.ComponentModel.ISupportInitialize)(this.uxErrorProvider)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uxSplitContainer)).BeginInit();
             this.uxSplitContainer.Panel1.SuspendLayout();
             this.uxSplitContainer.Panel2.SuspendLayout();
@@ -75,71 +64,11 @@
             tableLayoutPanel1.Size = new System.Drawing.Size(1235, 0);
             tableLayoutPanel1.TabIndex = 8;
             // 
-            // uxLinkLabelSecretKind
-            // 
-            this.uxLinkLabelSecretKind.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.uxLinkLabelSecretKind.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.information;
-            this.uxLinkLabelSecretKind.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.uxLinkLabelSecretKind.Location = new System.Drawing.Point(16, 9);
-            this.uxLinkLabelSecretKind.Margin = new System.Windows.Forms.Padding(0);
-            this.uxLinkLabelSecretKind.Name = "uxLinkLabelSecretKind";
-            this.uxLinkLabelSecretKind.Size = new System.Drawing.Size(1237, 18);
-            this.uxLinkLabelSecretKind.TabIndex = 1;
-            this.uxLinkLabelSecretKind.TabStop = true;
-            this.uxLinkLabelSecretKind.Text = "Custom secret name";
-            this.uxLinkLabelSecretKind.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.uxLinkLabelSecretKind_LinkClicked);
-            // 
-            // uxTextBoxName
-            // 
-            this.uxTextBoxName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.uxTextBoxName.Font = new System.Drawing.Font("Courier New", 9.75F);
-            this.uxErrorProvider.SetIconAlignment(this.uxTextBoxName, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-            this.uxTextBoxName.Location = new System.Drawing.Point(20, 31);
-            this.uxTextBoxName.Margin = new System.Windows.Forms.Padding(4);
-            this.uxTextBoxName.MaxLength = 256;
-            this.uxTextBoxName.Name = "uxTextBoxName";
-            this.uxTextBoxName.Size = new System.Drawing.Size(1232, 26);
-            this.uxTextBoxName.TabIndex = 0;
-            this.uxTextBoxName.TextChanged += new System.EventHandler(this.uxTextBoxName_TextChanged);
-            // 
-            // uxButtonOK
-            // 
-            this.uxButtonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.uxButtonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.uxButtonOK.Enabled = false;
-            this.uxButtonOK.Location = new System.Drawing.Point(1045, 570);
-            this.uxButtonOK.Margin = new System.Windows.Forms.Padding(4);
-            this.uxButtonOK.Name = "uxButtonOK";
-            this.uxButtonOK.Size = new System.Drawing.Size(100, 28);
-            this.uxButtonOK.TabIndex = 5;
-            this.uxButtonOK.Text = "OK";
-            this.uxButtonOK.UseVisualStyleBackColor = true;
-            // 
-            // uxButtonCancel
-            // 
-            this.uxButtonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.uxButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.uxButtonCancel.Location = new System.Drawing.Point(1153, 570);
-            this.uxButtonCancel.Margin = new System.Windows.Forms.Padding(4);
-            this.uxButtonCancel.Name = "uxButtonCancel";
-            this.uxButtonCancel.Size = new System.Drawing.Size(100, 28);
-            this.uxButtonCancel.TabIndex = 6;
-            this.uxButtonCancel.Text = "Cancel";
-            this.uxButtonCancel.UseVisualStyleBackColor = true;
-            // 
-            // uxErrorProvider
-            // 
-            this.uxErrorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
-            this.uxErrorProvider.ContainerControl = this;
-            // 
             // uxSplitContainer
             // 
             this.uxSplitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.uxErrorProvider.SetIconAlignment(this.uxSplitContainer, System.Windows.Forms.ErrorIconAlignment.TopLeft);
             this.uxSplitContainer.Location = new System.Drawing.Point(20, 92);
             this.uxSplitContainer.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.uxSplitContainer.Name = "uxSplitContainer";
@@ -148,7 +77,6 @@
             // uxSplitContainer.Panel1
             // 
             this.uxSplitContainer.Panel1.Controls.Add(this.uxLinkLabelViewCertificate);
-            this.uxErrorProvider.SetIconAlignment(this.uxSplitContainer.Panel1, System.Windows.Forms.ErrorIconAlignment.TopLeft);
             this.uxSplitContainer.Panel1.SizeChanged += new System.EventHandler(this.uxSplitContainer_Panel1_SizeChanged);
             // 
             // uxSplitContainer.Panel2
@@ -171,7 +99,6 @@
             this.uxLinkLabelViewCertificate.TabStop = true;
             this.uxLinkLabelViewCertificate.Text = "View Certificate";
             this.uxLinkLabelViewCertificate.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.uxToolTip.SetToolTip(this.uxLinkLabelViewCertificate, resources.GetString("uxLinkLabelViewCertificate.ToolTip"));
             this.uxLinkLabelViewCertificate.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.uxLinkLabelViewCertificate_LinkClicked);
             // 
             // uxPropertyGridSecret
@@ -198,42 +125,10 @@
             this.uxLabelBytesLeft.Text = "xxx bytes left";
             this.uxLabelBytesLeft.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
-            // uxToolTip
-            // 
-            this.uxToolTip.AutoPopDelay = 30000;
-            this.uxToolTip.InitialDelay = 500;
-            this.uxToolTip.ReshowDelay = 100;
-            // 
             // uxTimerValueTypingCompleted
             // 
             this.uxTimerValueTypingCompleted.Interval = 250;
             this.uxTimerValueTypingCompleted.Tick += new System.EventHandler(this.uxTimerValueTypingCompleted_Tick);
-            // 
-            // uxMenuSecretKind
-            // 
-            this.uxMenuSecretKind.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.uxMenuSecretKind.Name = "uxMenuSecretKind";
-            this.uxMenuSecretKind.Size = new System.Drawing.Size(67, 4);
-            this.uxMenuSecretKind.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.uxMenuSecretKind_ItemClicked);
-            // 
-            // uxLinkLabelValue
-            // 
-            this.uxLinkLabelValue.AutoSize = true;
-            this.uxLinkLabelValue.Location = new System.Drawing.Point(16, 68);
-            this.uxLinkLabelValue.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.uxLinkLabelValue.Name = "uxLinkLabelValue";
-            this.uxLinkLabelValue.Size = new System.Drawing.Size(58, 17);
-            this.uxLinkLabelValue.TabIndex = 3;
-            this.uxLinkLabelValue.TabStop = true;
-            this.uxLinkLabelValue.Text = "Value ▼";
-            this.uxLinkLabelValue.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.uxLinkLabelValue_LinkClicked);
-            // 
-            // uxMenuVersions
-            // 
-            this.uxMenuVersions.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.uxMenuVersions.Name = "uxMenuVersions";
-            this.uxMenuVersions.Size = new System.Drawing.Size(67, 4);
-            this.uxMenuVersions.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.uxMenuVersions_ItemClicked);
             // 
             // uxMenuNewValue
             // 
@@ -243,7 +138,7 @@
             this.uxMenuItemNewGuid,
             this.uxMenuItemNewApiKey});
             this.uxMenuNewValue.Name = "uxMenuNewValue";
-            this.uxMenuNewValue.Size = new System.Drawing.Size(182, 110);
+            this.uxMenuNewValue.Size = new System.Drawing.Size(182, 82);
             // 
             // uxMenuItemNewPassword
             // 
@@ -274,26 +169,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.uxButtonCancel;
             this.ClientSize = new System.Drawing.Size(1269, 610);
-            this.Controls.Add(this.uxLinkLabelValue);
-            this.Controls.Add(this.uxLinkLabelSecretKind);
             this.Controls.Add(this.uxSplitContainer);
-            this.Controls.Add(this.uxButtonCancel);
-            this.Controls.Add(this.uxButtonOK);
             this.Controls.Add(this.uxLabelBytesLeft);
-            this.Controls.Add(this.uxTextBoxName);
             this.Controls.Add(tableLayoutPanel1);
-            this.Margin = new System.Windows.Forms.Padding(4);
-            this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(498, 491);
             this.Name = "SecretDialog";
-            this.ShowIcon = false;
-            this.ShowInTaskbar = false;
-            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "New Secret";
-            ((System.ComponentModel.ISupportInitialize)(this.uxErrorProvider)).EndInit();
             this.uxSplitContainer.Panel1.ResumeLayout(false);
             this.uxSplitContainer.Panel1.PerformLayout();
             this.uxSplitContainer.Panel2.ResumeLayout(false);
@@ -306,20 +186,10 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.TextBox uxTextBoxName;
-        private System.Windows.Forms.Button uxButtonOK;
-        private System.Windows.Forms.Button uxButtonCancel;
-        private System.Windows.Forms.ErrorProvider uxErrorProvider;
         private System.Windows.Forms.PropertyGrid uxPropertyGridSecret;
         private System.Windows.Forms.SplitContainer uxSplitContainer;
         private System.Windows.Forms.Label uxLabelBytesLeft;
-        private System.Windows.Forms.ToolTip uxToolTip;
         private System.Windows.Forms.Timer uxTimerValueTypingCompleted;
-        private System.Windows.Forms.LinkLabel uxLinkLabelSecretKind;
-        private System.Windows.Forms.ContextMenuStrip uxMenuSecretKind;
-        private System.Windows.Forms.LinkLabel uxLinkLabelValue;
-        private System.Windows.Forms.ContextMenuStrip uxMenuVersions;
         private System.Windows.Forms.ContextMenuStrip uxMenuNewValue;
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemNewPassword;
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemNewGuid;
