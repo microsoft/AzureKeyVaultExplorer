@@ -26,13 +26,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public ListViewItemBase FirstSelectedItem => SelectedItems.Count > 0 ? SelectedItems[0] as ListViewItemBase : null;
 
-        public void Replace(ListViewItemBase oldItem, ListViewItemBase newItem)
-        {
-            Items.Remove(oldItem);
-            Items.Add(newItem);
-            newItem.RefreshAndSelect();
-        }
-
         public void RemoveAllItems()
         {
             Items.Clear();

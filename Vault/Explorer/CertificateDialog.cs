@@ -85,6 +85,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             uxPropertyGridSecret.SelectedObject = PropertyObject = new PropertyObjectCertificate(cb, cp, certificate, SecretObject_PropertyChanged);
             uxTextBoxName.Text = PropertyObject.Name;
+            uxToolTip.SetToolTip(uxLinkLabelSecretKind, PropertyObject.SecretKind.Description);
         }
 
         protected override void uxTextBoxName_TextChanged(object sender, EventArgs e)

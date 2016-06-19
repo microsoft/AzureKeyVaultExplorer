@@ -27,9 +27,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         #region ISession
 
-        public VaultAlias CurrentVaultAlias { get; set; }
+        public VaultAlias CurrentVaultAlias { get; private set; }
 
-        public Vault CurrentVault { get; set; }
+        public Vault CurrentVault { get; private set; }
 
         public ListViewSecrets ListViewSecrets => uxListViewSecrets;
 
@@ -91,6 +91,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void uxComboBoxVaultAlias_DropDownClosed(object sender, EventArgs e)
         {
+            if (CurrentVaultAlias?.Alias == ((VaultAlias)uxComboBoxVaultAlias.SelectedItem).Alias) return;
             CurrentVaultAlias = (VaultAlias)uxComboBoxVaultAlias.SelectedItem;
             bool itemSelected = (null != CurrentVaultAlias);
             uxComboBoxVaultAlias.ToolTipText = itemSelected ? "Vault names: " + string.Join(", ", CurrentVaultAlias.VaultNames) : "";
@@ -278,17 +279,18 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 {
                     using (var op = NewUxOperationWithProgress(uxButtonAdd)) await op.Invoke("add secret to", async () =>
                     {
-                        AddNewItemToListView(await ListViewItemSecret.NewAsync(this, nsDlg.PropertyObject, op.CancellationToken));
+                        AddOrReplaceItemInListView(await ListViewItemSecret.NewAsync(this, nsDlg.PropertyObject, op.CancellationToken));
                     });
                 }
             }
         }
 
-        private void AddNewItemToListView(ListViewItemBase lvi)
+        private void AddOrReplaceItemInListView(ListViewItemBase newItem, ListViewItemBase oldItem = null)
         {
-            uxListViewSecrets.Items.Add(lvi);
+            if (null != oldItem) uxListViewSecrets.Items.Remove(oldItem);
+            uxListViewSecrets.Items.Add(newItem);
             uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search
-            lvi.RefreshAndSelect();
+            newItem.RefreshAndSelect();
             RefreshItemsCount();
         }
 
@@ -317,7 +319,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 {
                     using (var op = NewUxOperationWithProgress(uxButtonAdd)) await op.Invoke("add certificate to", async () =>
                     {
-                        AddNewItemToListView(await ListViewItemCertificate.NewAsync(this, certDlg.PropertyObject, op.CancellationToken));
+                        AddOrReplaceItemInListView(await ListViewItemCertificate.NewAsync(this, certDlg.PropertyObject, op.CancellationToken));
                     });
                 }
             }
@@ -341,9 +343,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     {
                         using (var op = NewUxOperationWithProgress(uxButtonEdit)) await op.Invoke($"update {item.Kind} in", async () =>
                         {
-                            var lvi = await item.UpdateAsync(this, editDlg.OriginalObject, editDlg.PropertyObject, op.CancellationToken);
-                            uxListViewSecrets.Items.Remove(item);
-                            AddNewItemToListView(lvi);
+                            var newItem = await item.UpdateAsync(this, editDlg.OriginalObject, editDlg.PropertyObject, op.CancellationToken);
+                            AddOrReplaceItemInListView(newItem, item);
                         });
                     }
                 }
@@ -360,7 +361,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 {
                     using (var op = NewUxOperationWithProgress(uxButtonToggle)) await op.Invoke($"update {slvi.Kind} in", async () =>
                     {
-                        uxListViewSecrets.Replace(slvi, await slvi.ToggleAsync(op.CancellationToken));
+                        AddOrReplaceItemInListView(await slvi.ToggleAsync(op.CancellationToken), slvi);
                     });
                 }
             }
