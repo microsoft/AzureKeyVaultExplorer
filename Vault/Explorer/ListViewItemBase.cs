@@ -17,10 +17,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
     /// </summary>
     public abstract class ListViewItemBase : ListViewItem, ICustomTypeDescriptor
     {
-        public const int FavoritesGroup = 0;
-        public const int CertificatesGroup = 1;
-        public const int KeyVaultCertificatesGroup = 2;
-        public const int SecretsGroup = 3;
+        public const int SearchResultsGroup = 0;
+        public const int FavoritesGroup = 1;
+        public const int CertificatesGroup = 2;
+        public const int KeyVaultCertificatesGroup = 3;
+        public const int SecretsGroup = 4;
 
         public readonly ISession Session;
         public readonly int GroupIndex;
@@ -46,7 +47,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             NotBefore = notBefore;
             Expires = expires;
 
-            ImageIndex = Enabled ? 2 * GroupIndex - 1 : 2 * GroupIndex;
+            ImageIndex = Enabled ? 2 * GroupIndex - 3 : 2 * GroupIndex - 2;
             ForeColor = Enabled ? SystemColors.WindowText : SystemColors.GrayText;
 
             Name = identifier.Name;
@@ -57,7 +58,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 Utils.NullableDateTimeToString(created),
                 Utils.NullableDateTimeToString(updated));
 
-            Group = Groups[FavoriteSecretUtil.Contains(Session.CurrentVaultAlias.Alias, Name) ? FavoritesGroup : GroupIndex];
+            _favorite = FavoriteSecretUtil.Contains(Session.CurrentVaultAlias.Alias, Name);
+            _searchResult = false;
+            SetGroup();
         }
 
         public ListViewGroupCollection Groups => Session.ListViewSecrets.Groups;
@@ -80,29 +83,37 @@ namespace Microsoft.PS.Common.Vault.Explorer
             Session.ListViewSecrets.MultiSelect = true;
         }
 
-        public bool Strikeout
+        private void SetGroup()
+        {
+            Group = _searchResult ? Groups[SearchResultsGroup] : _favorite ? Groups[FavoritesGroup] : Groups[GroupIndex];
+        }
+
+        private bool _searchResult;
+        public bool SearchResult
         {
             get
             {
-                return (ImageIndex == 0);
+                return _searchResult;
             }
             set
             {
-                ForeColor = value ? SystemColors.GrayText : SystemColors.WindowText;
-                ImageIndex = value ? 0 : Enabled ? 2 * GroupIndex - 1 : 2 * GroupIndex;
+                _searchResult = value;
+                SetGroup();
             }
         }
 
+        private bool _favorite;
         public bool Favorite
         {
             get
             {
-                return Group == Groups[FavoritesGroup];
+                return _favorite;
             }
             set
             {
-                Group = value ? Groups[FavoritesGroup] : Groups[GroupIndex];
-                if (value)
+                _favorite = value;
+                SetGroup();
+                if (_favorite)
                 {
                     FavoriteSecretUtil.Add(Session.CurrentVaultAlias.Alias, Name);
                 }
@@ -116,7 +127,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public bool Contains(Regex regexPattern)
         {
             if (string.IsNullOrWhiteSpace(regexPattern.ToString()))
-                return true;
+                return false;
             foreach (ReadOnlyPropertyDescriptor ropd in GetProperties(null))
             {
                 if (regexPattern.Match($"{ropd.Name}={ropd.Value}").Success)

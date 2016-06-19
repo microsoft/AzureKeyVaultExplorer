@@ -104,7 +104,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void RefreshItemsCount()
         {
-            uxStatusLabelSecertsCount.Text = (uxListViewSecrets.StrikedoutSecrets == 0) ? $"{uxListViewSecrets.Items.Count} items" : $"{uxListViewSecrets.Items.Count - uxListViewSecrets.StrikedoutSecrets} out of {uxListViewSecrets.Items.Count} items";
+            uxStatusLabelSecertsCount.Text = (uxListViewSecrets.SearchResultsCount == 0) ? $"{uxListViewSecrets.Items.Count} items" : $"{uxListViewSecrets.SearchResultsCount} out of {uxListViewSecrets.Items.Count} items";
             uxStatusLabelSecretsSelected.Text = $"{uxListViewSecrets.SelectedItems.Count} selected";
         }
 
@@ -204,7 +204,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             switch (e.KeyCode)
             {
                 case Keys.A:
-                    foreach (ListViewItemBase item in uxListViewSecrets.Items) item.Selected = !item.Strikeout;
+                    foreach (ListViewItemBase item in uxListViewSecrets.Items) item.Selected = true;
                     break;
                 case Keys.C:
                     uxButtonCopy.PerformClick();

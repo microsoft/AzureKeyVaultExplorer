@@ -16,8 +16,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
     {
         public int SortingColumn { get; set; }
 
-        public int StrikedoutSecrets { get; private set; }
-
         public ListViewSecrets()
         {
             InitializeComponent();
@@ -26,23 +24,22 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public ListViewItemBase FirstSelectedItem => SelectedItems.Count > 0 ? SelectedItems[0] as ListViewItemBase : null;
 
+        public int SearchResultsCount => Groups[ListViewItemBase.SearchResultsGroup].Items.Count;
+
         public void RemoveAllItems()
         {
             Items.Clear();
-            StrikedoutSecrets = 0;
         }
 
         public void FindItemsWithText(string regexPattern)
         {
-            StrikedoutSecrets = 0;
             ListViewItemBase selectItem = null;
             BeginUpdate();
             Regex regex = new Regex(regexPattern, RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
             foreach (ListViewItemBase lvib in Items)
             {
                 bool contains = lvib.Contains(regex);
-                lvib.Strikeout = !contains;
-                StrikedoutSecrets += contains ? 0 : 1;
+                lvib.SearchResult = contains;
                 if ((selectItem == null) && contains)
                 {
                     selectItem = lvib;
@@ -96,7 +93,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
             ListViewItem.ListViewSubItem a = sx.SubItems[_control.SortingColumn];
             ListViewItem.ListViewSubItem b = sy.SubItems[_control.SortingColumn];
-            if (sx.Strikeout != sy.Strikeout) return sx.Strikeout ? 1 : -1;
 
             int c = 0;
             if ((a.Tag != null) && (b.Tag != null) && (a.Tag is DateTime?) && (b.Tag is DateTime?) && (a.Tag as DateTime?).HasValue && (b.Tag as DateTime?).HasValue)
