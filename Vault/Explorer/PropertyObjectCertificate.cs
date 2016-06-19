@@ -28,7 +28,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         [Category("General")]
         [DisplayName("Thumbprint")]
-        public string Thumbprint => Certificate.Thumbprint;
+        public string Thumbprint => Certificate.Thumbprint.ToLowerInvariant();
 
         [Category("Identifiers")]
         [DisplayName("Certificate")]
@@ -105,7 +105,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             CertificatePolicy = policy;
             Certificate = certificate;
             _contentType = ContentType.Pkcs12;
-            _value = certificate.Thumbprint;
+            _value = certificate.Thumbprint.ToLowerInvariant();
             var olac = new ObservableLifetimeActionsCollection();
             if (null != CertificatePolicy?.LifetimeActions)
             {
