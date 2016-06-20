@@ -30,15 +30,28 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// </summary>
         public CertificateDialog(ISession session, FileInfo fi) : this(session, "New certificate", ItemDialogBaseMode.New)
         {
-            string password = null;
-            var pwdDlg = new PasswordDialog();
-            if (pwdDlg.ShowDialog() != DialogResult.OK)
+            X509Certificate2 cert = null;
+            switch (ContentTypeUtils.FromExtension(fi.Extension))
             {
-                DialogResult = DialogResult.Cancel;
-                return;
+                case ContentType.Certificate:
+                    cert = new X509Certificate2(fi.FullName);
+                    break;
+                case ContentType.Pkcs12:
+                    string password = null;
+                    var pwdDlg = new PasswordDialog();
+                    if (pwdDlg.ShowDialog() != DialogResult.OK)
+                    {
+                        DialogResult = DialogResult.Cancel;
+                        return;
+                    }
+                    password = pwdDlg.Password;
+                    cert = new X509Certificate2(fi.FullName, password, X509KeyStorageFlags.UserKeySet | X509KeyStorageFlags.Exportable);
+                    break;
+                case ContentType.KeyVaultCertificate:
+                    var kvcf = Utils.LoadFromJsonFile<KeyVaultCertificateFile>(fi.FullName);
+                    CertificateBundle s = kvcf.Deserialize();
+                    break;
             }
-            password = pwdDlg.Password;
-            var cert = new X509Certificate2(fi.FullName, password, X509KeyStorageFlags.UserKeySet | X509KeyStorageFlags.Exportable);
             NewCertificate(cert);
         }
 

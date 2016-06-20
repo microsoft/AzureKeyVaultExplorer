@@ -152,6 +152,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
             PropertyChanged += propertyChanged;
         }
 
+        public abstract string GetKeyVaultFileExtension();
+
         public abstract string GetClipboardValue();
 
         public abstract void SaveToFile(string fullName);
