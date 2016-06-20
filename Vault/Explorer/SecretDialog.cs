@@ -80,9 +80,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     }
                     password = pwdDlg.Password;
                     break;
-                case ContentType.Secret:
-                    SecretFile sf = Utils.LoadFromJsonFile<SecretFile>(fi.FullName);
-                    Secret s = sf.DeserializeAsSecret();
+                case ContentType.KeyVaultSecret:
+                    var kvsf = Utils.LoadFromJsonFile<KeyVaultSecretFile>(fi.FullName);
+                    Secret s = kvsf.Deserialize();
                     uxPropertyGridSecret.SelectedObject = PropertyObject = new PropertyObjectSecret(s, SecretObject_PropertyChanged);
                     uxTextBoxName.Text = s.SecretIdentifier?.Name;
                     uxTextBoxValue.Text = s.Value;

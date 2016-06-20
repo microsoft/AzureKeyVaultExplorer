@@ -11,18 +11,26 @@ using System.Threading.Tasks;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
-    public enum SecretFileType
+    /// <summary>
+    /// Represents .kv-secret file
+    /// </summary>
+    [JsonObject]
+    public class KeyVaultSecretFile : KeyVaultFile<Secret>
     {
-        Key,
-        Secret,
-        Certificate // Key Vault Certificate
+        public KeyVaultSecretFile(Secret secret) : base(secret) { }
     }
 
     /// <summary>
-    /// Represents .secret file
+    /// Represents .kv-certificate file
     /// </summary>
     [JsonObject]
-    public class SecretFile
+    public class KeyVaultCertificateFile : KeyVaultFile<CertificateBundle>
+    {
+        public KeyVaultCertificateFile(CertificateBundle cb) : base(cb) { }
+    }
+
+    [JsonObject]
+    public abstract class KeyVaultFile<T> where T : class
     {
         [JsonProperty]
         public readonly string CreatedBy;
@@ -31,41 +39,30 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public readonly DateTimeOffset CreationTime;
 
         [JsonProperty]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public readonly SecretFileType Type;
-
-        [JsonProperty]
         public readonly byte[] Data;
 
-        private SecretFile(SecretFileType type, object o)
+        [JsonConstructor]
+        public KeyVaultFile() { }
+
+        protected KeyVaultFile(T obj)
         {
             CreatedBy = $"{Environment.UserDomainName}\\{Environment.UserName}";
             CreationTime = DateTimeOffset.UtcNow;
-            Type = type;
-            Data = ProtectedData.Protect(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(o, Formatting.Indented)), null, DataProtectionScope.CurrentUser);
+            Data = ProtectedData.Protect(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(obj, Formatting.Indented)), null, DataProtectionScope.CurrentUser);
         }
-
-        [JsonConstructor]
-        public SecretFile() { }
-
-        public SecretFile(Secret s) : this(SecretFileType.Secret, s) { }
-
-        public SecretFile(CertificateBundle cb) : this(SecretFileType.Certificate, cb) { }
 
         private string GetValueForDeserialization() => Encoding.UTF8.GetString(ProtectedData.Unprotect(Data, null, DataProtectionScope.CurrentUser));
 
-        public Secret DeserializeAsSecret() => JsonConvert.DeserializeObject<Secret>(GetValueForDeserialization());
-
-        public CertificateBundle DeserializeAsCertificateBundle() => JsonConvert.DeserializeObject<CertificateBundle>(GetValueForDeserialization());
+        public T Deserialize() => JsonConvert.DeserializeObject<T>(GetValueForDeserialization());
 
         public string Serialize()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("// --------------------------------------------------------------------------------------");
-            sb.AppendLine("// Vault Explorer encrypted secret file");
-            sb.AppendLine("// Do not edit manually!!!");
-            sb.AppendLine("// This file can be opened only by the user who saved the secret");
-            sb.AppendLine("// --------------------------------------------------------------------------------------");
+            sb.AppendLine($"// --------------------------------------------------------------------------------------");
+            sb.AppendLine($"// {Utils.AppName} encrypted {typeof(T).Name}");
+            sb.AppendLine($"// Do not edit manually!!!");
+            sb.AppendLine($"// This file can be opened only by the user who saved the file");
+            sb.AppendLine($"// --------------------------------------------------------------------------------------");
             sb.AppendLine();
             sb.Append(JsonConvert.SerializeObject(this, Formatting.Indented));
             return sb.ToString();

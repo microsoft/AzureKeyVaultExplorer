@@ -70,24 +70,25 @@ namespace Microsoft.PS.Common.Vault.Explorer
             NotBefore = NotBefore
         };
 
-        public override string GetClipboardValue()
-        {
-            return ContentType.IsCertificate() ? CertificateValueObject.FromValue(Value).Password : Value;
-        }
+        public override string GetKeyVaultFileExtension() => ContentType.KeyVaultSecret.ToExtension();
+
+        public override string GetClipboardValue() => ContentType.IsCertificate() ? CertificateValueObject.FromValue(Value).Password : Value;
 
         public override void SaveToFile(string fullName)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(fullName));
             switch (ContentTypeUtils.FromExtension(Path.GetExtension(fullName)))
             {
-                case ContentType.Secret: // Serialize the entire secret as encrypted JSON for current user
-                    File.WriteAllText(fullName, new SecretFile(_secret).Serialize());
+                case ContentType.KeyVaultSecret: // Serialize the entire secret as encrypted JSON for current user
+                    File.WriteAllText(fullName, new KeyVaultSecretFile(_secret).Serialize());
                     break;
+                case ContentType.KeyVaultCertificate:
+                    throw new InvalidOperationException("One can't save key vault secret as key vault certificate");
                 case ContentType.Certificate:
                     File.WriteAllBytes(fullName, CertificateValueObject.FromValue(Value).Certificate.Export(X509ContentType.Cert));
                     break;
                 case ContentType.Pkcs12:
-                    File.WriteAllBytes(fullName, CertificateValueObject.FromValue(Value).Certificate.Export(X509ContentType.Pkcs12));
+                    File.WriteAllBytes(fullName, Convert.FromBase64String(CertificateValueObject.FromValue(Value).Data));
                     break;
                 default:
                     File.WriteAllBytes(fullName, Encoding.UTF8.GetBytes(Value));

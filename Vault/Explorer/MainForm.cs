@@ -487,8 +487,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 foreach (var item in uxListViewSecrets.SelectedItems.Cast<ListViewItemBase>())
                 {
                     var po = await item.GetAsync(op.CancellationToken);
-                    // Replace extension to .secret if CTRL is pressed
-                    var filename = po.Name + (_ctrlKeyPressed ? ContentType.Secret.ToExtension() : po.GetContentType().ToExtension());
+                    // Pick .kv-secret or .kv-certificate extension if CTRL is pressed
+                    var filename = po.Name + (_ctrlKeyPressed ? po.GetKeyVaultFileExtension() : po.GetContentType().ToExtension());
                     var fullName = Path.Combine(Path.GetTempPath(), filename);
                     po.SaveToFile(fullName);
                     filesList.Add(fullName);
@@ -525,10 +525,17 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             foreach (string file in files.Split('|'))
             {
-                //FileInfo fi = new FileInfo(file);
-                //switch ContentTypeUtils.FromExtension(fi.Extension);
-
-                uxMenuItemAddSecret_Click(uxAddFile, new AddFileEventArgs(file));
+                FileInfo fi = new FileInfo(file);
+                switch (ContentTypeUtils.FromExtension(fi.Extension))
+                {
+                    case ContentType.KeyVaultCertificate:
+                        uxMenuItemAddKVCertificate_Click(uxAddKVCertFromFile, new AddFileEventArgs(file));
+                        break;
+                    case ContentType.KeyVaultSecret:
+                    default:
+                        uxMenuItemAddSecret_Click(uxAddFile, new AddFileEventArgs(file));
+                        break;
+                }
             }
         }
 

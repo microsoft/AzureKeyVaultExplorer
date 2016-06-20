@@ -121,6 +121,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public CertificateAttributes ToCertificateAttributes() => new CertificateAttributes() { Enabled = Enabled, Expires = Expires, NotBefore = NotBefore };
 
+        public override string GetKeyVaultFileExtension() => ContentType.KeyVaultCertificate.ToExtension();
+
         public override string GetClipboardValue() => Thumbprint;
 
         public override void SaveToFile(string fullName)
@@ -128,8 +130,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
             Directory.CreateDirectory(Path.GetDirectoryName(fullName));
             switch (ContentTypeUtils.FromExtension(Path.GetExtension(fullName)))
             {
-                case ContentType.Secret: // Serialize the entire secret as encrypted JSON for current user
-                    File.WriteAllText(fullName, new SecretFile(CertificateBundle).Serialize());
+                case ContentType.KeyVaultSecret:
+                    throw new InvalidOperationException("One can't save key vault certificate as key vault secret");
+                case ContentType.KeyVaultCertificate: // Serialize the entire secret as encrypted JSON for current user
+                    File.WriteAllText(fullName, new KeyVaultCertificateFile(CertificateBundle).Serialize());
                     break;
                 case ContentType.Certificate:
                     File.WriteAllBytes(fullName, Certificate.Export(X509ContentType.Cert));
