@@ -24,7 +24,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 identifier, tags, attributes.Enabled, attributes.Created, attributes.Updated, attributes.NotBefore, attributes.Expires)
         {
             Attributes = attributes;
-            Thumbprint = thumbprint;
+            Thumbprint = thumbprint?.ToLowerInvariant();
         }
 
         public ListViewItemCertificate(ISession session, ListCertificateResponseMessage c) : this(session, c.Identifier, c.Attributes, c.X5T, c.Tags) { }
@@ -35,6 +35,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             yield return new ReadOnlyPropertyDescriptor("Content Type", CertificateContentType.Pfx);
             yield return new ReadOnlyPropertyDescriptor("Thumbprint", Thumbprint);
+        }
+
+        public override async Task<PropertyObject> GetAsync(CancellationToken cancellationToken)
+        {
+            var cb = await Session.CurrentVault.GetCertificateAsync(Name, null, cancellationToken);
+            var cert = await Session.CurrentVault.GetCertificateWithPrivateKeyAsync(Name, null, cancellationToken);
+            return new PropertyObjectCertificate(cb, cb.Policy, cert, null);
         }
 
         public override async Task<ListViewItemBase> ToggleAsync(CancellationToken cancellationToken)
@@ -54,18 +61,18 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return await Session.CurrentVault.GetCertificateVersionsAsync(Name, 0, cancellationToken);
         }
 
-        public override Form GetEditDialog(ISession session, string name, IEnumerable<object> versions)
+        public override Form GetEditDialog(string name, IEnumerable<object> versions)
         {
-            return new CertificateDialog(session, name, versions.Cast<ListCertificateResponseMessage>());
+            return new CertificateDialog(Session, name, versions.Cast<ListCertificateResponseMessage>());
         }
 
-        public override async Task<ListViewItemBase> UpdateAsync(ISession session, object originalObject, PropertyObject newObject, CancellationToken cancellationToken)
+        public override async Task<ListViewItemBase> UpdateAsync(object originalObject, PropertyObject newObject, CancellationToken cancellationToken)
         {
             CertificateBundle cb = (CertificateBundle)originalObject;
             PropertyObjectCertificate certNew = (PropertyObjectCertificate)newObject;
-            await session.CurrentVault.UpdateCertificatePolicyAsync(certNew.Name, certNew.CertificatePolicy, cancellationToken);
-            cb = await session.CurrentVault.UpdateCertificateAsync(certNew.Name, certNew.ToCertificateAttributes(), certNew.ToTagsDictionary(), cancellationToken);
-            return new ListViewItemCertificate(session, cb);
+            await Session.CurrentVault.UpdateCertificatePolicyAsync(certNew.Name, certNew.CertificatePolicy, cancellationToken);
+            cb = await Session.CurrentVault.UpdateCertificateAsync(certNew.Name, certNew.ToCertificateAttributes(), certNew.ToTagsDictionary(), cancellationToken);
+            return new ListViewItemCertificate(Session, cb);
         }
 
         public static async Task<ListViewItemCertificate> NewAsync(ISession session, PropertyObject newObject, CancellationToken cancellationToken)

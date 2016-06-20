@@ -82,7 +82,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     break;
                 case ContentType.Secret:
                     SecretFile sf = Utils.LoadFromJsonFile<SecretFile>(fi.FullName);
-                    Secret s = sf.Deserialize();
+                    Secret s = sf.DeserializeAsSecret();
                     uxPropertyGridSecret.SelectedObject = PropertyObject = new PropertyObjectSecret(s, SecretObject_PropertyChanged);
                     uxTextBoxName.Text = s.SecretIdentifier?.Name;
                     uxTextBoxValue.Text = s.Value;

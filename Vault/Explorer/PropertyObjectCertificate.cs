@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Drawing.Design;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -28,7 +29,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         [Category("General")]
         [DisplayName("Thumbprint")]
-        public string Thumbprint => Certificate.Thumbprint.ToLowerInvariant();
+        public string Thumbprint => Certificate.Thumbprint?.ToLowerInvariant();
 
         [Category("Identifiers")]
         [DisplayName("Certificate")]
@@ -119,6 +120,28 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         public CertificateAttributes ToCertificateAttributes() => new CertificateAttributes() { Enabled = Enabled, Expires = Expires, NotBefore = NotBefore };
+
+        public override string GetClipboardValue() => Thumbprint;
+
+        public override void SaveToFile(string fullName)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(fullName));
+            switch (ContentTypeUtils.FromExtension(Path.GetExtension(fullName)))
+            {
+                case ContentType.Secret: // Serialize the entire secret as encrypted JSON for current user
+                    File.WriteAllText(fullName, new SecretFile(CertificateBundle).Serialize());
+                    break;
+                case ContentType.Certificate:
+                    File.WriteAllBytes(fullName, Certificate.Export(X509ContentType.Cert));
+                    break;
+                case ContentType.Pkcs12:
+                    File.WriteAllBytes(fullName, Certificate.Export(X509ContentType.Pkcs12));
+                    break;
+                default:                    
+                    File.WriteAllBytes(fullName, Encoding.UTF8.GetBytes(Certificate.ToString()));
+                    break;
+            }
+        }
 
         protected override IEnumerable<KeyValuePair<string, string>> GetCustomTags()
         {

@@ -71,7 +71,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public string Md5 => Utils.GetMd5(Tags);
 
-        private static string[] GroupIndexToName = new string[] { "?", "certificate", "key vault certificate", "secret" };
+        private static string[] GroupIndexToName = new string[] { "s", "f", "certificate", "key vault certificate", "secret" };
         public string Kind => GroupIndexToName[GroupIndex];
 
         public void RefreshAndSelect()
@@ -159,15 +159,17 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         protected abstract IEnumerable<PropertyDescriptor> GetCustomProperties();
 
+        public abstract Task<PropertyObject> GetAsync(CancellationToken cancellationToken);
+
         public abstract Task<ListViewItemBase> ToggleAsync(CancellationToken cancellationToken);
 
         public abstract Task<ListViewItemBase> DeleteAsync(CancellationToken cancellationToken);
 
         public abstract Task<IEnumerable<object>> GetVersionsAsync(CancellationToken cancellationToken);
 
-        public abstract Form GetEditDialog(ISession session, string name, IEnumerable<object> versions);
+        public abstract Form GetEditDialog(string name, IEnumerable<object> versions);
 
-        public abstract Task<ListViewItemBase> UpdateAsync(ISession session, object originalObject, PropertyObject newObject, CancellationToken cancellationToken);
+        public abstract Task<ListViewItemBase> UpdateAsync(object originalObject, PropertyObject newObject, CancellationToken cancellationToken);
 
         #region ICustomTypeDescriptor interface to show properties in PropertyGrid
 

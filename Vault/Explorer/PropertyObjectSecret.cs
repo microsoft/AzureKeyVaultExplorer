@@ -8,6 +8,7 @@ using System.ComponentModel.Design;
 using System.Drawing.Design;
 using System.IO;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -69,18 +70,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
             NotBefore = NotBefore
         };
 
-
-        public string GetClipboardValue()
+        public override string GetClipboardValue()
         {
             return ContentType.IsCertificate() ? CertificateValueObject.FromValue(Value).Password : Value;
         }
 
-        public byte[] GetValueAsByteArray()
-        {
-            return ContentType.IsCertificate() ? Convert.FromBase64String(CertificateValueObject.FromValue(Value).Data) : Encoding.UTF8.GetBytes(Value);
-        }
-
-        public void SaveToFile(string fullName)
+        public override void SaveToFile(string fullName)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(fullName));
             switch (ContentTypeUtils.FromExtension(Path.GetExtension(fullName)))
@@ -88,8 +83,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 case ContentType.Secret: // Serialize the entire secret as encrypted JSON for current user
                     File.WriteAllText(fullName, new SecretFile(_secret).Serialize());
                     break;
+                case ContentType.Certificate:
+                    File.WriteAllBytes(fullName, CertificateValueObject.FromValue(Value).Certificate.Export(X509ContentType.Cert));
+                    break;
+                case ContentType.Pkcs12:
+                    File.WriteAllBytes(fullName, CertificateValueObject.FromValue(Value).Certificate.Export(X509ContentType.Pkcs12));
+                    break;
                 default:
-                    File.WriteAllBytes(fullName, GetValueAsByteArray());
+                    File.WriteAllBytes(fullName, Encoding.UTF8.GetBytes(Value));
                     break;
             }
         }
