@@ -24,7 +24,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public ListViewItemBase FirstSelectedItem => SelectedItems.Count > 0 ? SelectedItems[0] as ListViewItemBase : null;
 
-        public int SearchResultsCount => Groups[ListViewItemBase.SearchResultsGroup].Items.Count;
+        public void RefreshGroupsHeader()
+        {
+            foreach (var g in Groups.Cast<ListViewGroup>())
+            {
+                g.Header = $"{g.Name} ({g.Items.Count})";
+            }
+        }
 
         public void RemoveAllItems()
         {
@@ -47,6 +53,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
             Sort();
             selectItem?.RefreshAndSelect();
+            RefreshGroupsHeader();
             EndUpdate();
         }
 
@@ -55,6 +62,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             BeginUpdate();
             foreach (ListViewItemBase lvib in SelectedItems) lvib.Favorite = !lvib.Favorite;
             Sort();
+            RefreshGroupsHeader();
             EndUpdate();
         }
 

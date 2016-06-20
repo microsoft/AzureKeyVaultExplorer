@@ -37,6 +37,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
             yield return new ReadOnlyPropertyDescriptor("Content Type", ContentTypeStr);
         }
 
+        public override async Task<PropertyObject> GetAsync(CancellationToken cancellationToken)
+        {
+            var s = await Session.CurrentVault.GetSecretAsync(Name, null, cancellationToken);
+            return new PropertyObjectSecret(s, null);
+        }
+
         public override async Task<ListViewItemBase> ToggleAsync(CancellationToken cancellationToken)
         {
             Secret s = await Session.CurrentVault.UpdateSecretAsync(Name, Utils.AddChangedBy(Tags), null, new SecretAttributes() { Enabled = !Attributes.Enabled }, cancellationToken); // Toggle only Enabled attribute
@@ -54,9 +60,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return await Session.CurrentVault.GetSecretVersionsAsync(Name, 0, cancellationToken);
         }
 
-        public override Form GetEditDialog(ISession session, string name, IEnumerable<object> versions)
+        public override Form GetEditDialog(string name, IEnumerable<object> versions)
         {
-            return new SecretDialog(session, name, versions.Cast<SecretItem>());
+            return new SecretDialog(Session, name, versions.Cast<SecretItem>());
         }
 
         private static async Task<ListViewItemSecret> NewOrUpdateAsync(ISession session, object originalObject, PropertyObject newObject, CancellationToken cancellationToken)
@@ -81,9 +87,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return new ListViewItemSecret(session, s);
         }
 
-        public override async Task<ListViewItemBase> UpdateAsync(ISession session, object originalObject, PropertyObject newObject, CancellationToken cancellationToken)
+        public override async Task<ListViewItemBase> UpdateAsync(object originalObject, PropertyObject newObject, CancellationToken cancellationToken)
         {
-            return await NewOrUpdateAsync(session, originalObject, newObject, cancellationToken);
+            return await NewOrUpdateAsync(Session, originalObject, newObject, cancellationToken);
         }
 
         public static Task<ListViewItemSecret> NewAsync(ISession session, PropertyObject newObject, CancellationToken cancellationToken)

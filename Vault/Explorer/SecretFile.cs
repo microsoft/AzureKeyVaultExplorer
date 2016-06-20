@@ -1,5 +1,6 @@
 ﻿using Microsoft.Azure.KeyVault;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,6 +11,13 @@ using System.Threading.Tasks;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
+    public enum SecretFileType
+    {
+        Key,
+        Secret,
+        Certificate // Key Vault Certificate
+    }
+
     /// <summary>
     /// Represents .secret file
     /// </summary>
@@ -23,19 +31,32 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public readonly DateTimeOffset CreationTime;
 
         [JsonProperty]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public readonly SecretFileType Type;
+
+        [JsonProperty]
         public readonly byte[] Data;
 
-        public SecretFile(Secret s)
+        private SecretFile(SecretFileType type, object o)
         {
             CreatedBy = $"{Environment.UserDomainName}\\{Environment.UserName}";
             CreationTime = DateTimeOffset.UtcNow;
-            Data = ProtectedData.Protect(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(s, Formatting.Indented)), null, DataProtectionScope.CurrentUser);
+            Type = type;
+            Data = ProtectedData.Protect(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(o, Formatting.Indented)), null, DataProtectionScope.CurrentUser);
         }
 
-        public Secret Deserialize()
-        {
-            return JsonConvert.DeserializeObject<Secret>(Encoding.UTF8.GetString(ProtectedData.Unprotect(Data, null, DataProtectionScope.CurrentUser)));
-        }
+        [JsonConstructor]
+        public SecretFile() { }
+
+        public SecretFile(Secret s) : this(SecretFileType.Secret, s) { }
+
+        public SecretFile(CertificateBundle cb) : this(SecretFileType.Certificate, cb) { }
+
+        private string GetValueForDeserialization() => Encoding.UTF8.GetString(ProtectedData.Unprotect(Data, null, DataProtectionScope.CurrentUser));
+
+        public Secret DeserializeAsSecret() => JsonConvert.DeserializeObject<Secret>(GetValueForDeserialization());
+
+        public CertificateBundle DeserializeAsCertificateBundle() => JsonConvert.DeserializeObject<CertificateBundle>(GetValueForDeserialization());
 
         public string Serialize()
         {

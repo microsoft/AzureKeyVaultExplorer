@@ -20,6 +20,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         protected ContentType _contentType;
 
+        public ContentType GetContentType() => _contentType;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public readonly ObjectIdentifier Identifier;
@@ -149,6 +151,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
             PropertyChanged += propertyChanged;
         }
+
+        public abstract string GetClipboardValue();
+
+        public abstract void SaveToFile(string fullName);
 
         protected abstract IEnumerable<KeyValuePair<string, string>> GetCustomTags();
 
