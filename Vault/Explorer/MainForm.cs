@@ -96,6 +96,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void uxComboBoxVaultAlias_DropDownClosed(object sender, EventArgs e)
         {
+            if (null == uxComboBoxVaultAlias.SelectedItem) return;
             if (CurrentVaultAlias?.Alias == ((VaultAlias)uxComboBoxVaultAlias.SelectedItem).Alias) return;
             CurrentVaultAlias = (VaultAlias)uxComboBoxVaultAlias.SelectedItem;
             bool itemSelected = (null != CurrentVaultAlias);
