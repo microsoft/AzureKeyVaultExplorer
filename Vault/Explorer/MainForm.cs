@@ -259,12 +259,21 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void AddOrReplaceItemInListView(ListViewItemBase newItem, ListViewItemBase oldItem = null)
         {
-            if (null != oldItem) uxListViewSecrets.Items.Remove(oldItem);
-            uxListViewSecrets.Items.Add(newItem);
-            uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search
-            newItem.RefreshAndSelect();
-            uxListViewSecrets.RefreshGroupsHeader();
-            RefreshItemsCount();
+            try
+            {
+                uxListViewSecrets.BeginUpdate();
+                if (null != oldItem) uxListViewSecrets.Items.Remove(oldItem); // Rename flow
+                uxListViewSecrets.Items.RemoveByKey(newItem.Name); // Overwrite flow
+                uxListViewSecrets.Items.Add(newItem);
+                uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search
+                newItem.RefreshAndSelect();
+                uxListViewSecrets.RefreshGroupsHeader();
+                RefreshItemsCount();
+            }
+            finally
+            {
+                uxListViewSecrets.EndUpdate();
+            }
         }
 
         private async void uxMenuItemAddSecret_Click(object sender, EventArgs e)
