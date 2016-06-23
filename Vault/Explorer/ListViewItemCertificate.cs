@@ -40,7 +40,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public override async Task<PropertyObject> GetAsync(CancellationToken cancellationToken)
         {
             var cb = await Session.CurrentVault.GetCertificateAsync(Name, null, cancellationToken);
-            var cert = await Session.CurrentVault.GetCertificateWithPrivateKeyAsync(Name, null, cancellationToken);
+            var cert = await Session.CurrentVault.GetCertificateWithExportableKeysAsync(Name, null, cancellationToken);
             return new PropertyObjectCertificate(cb, cb.Policy, cert, null);
         }
 

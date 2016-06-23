@@ -118,7 +118,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         protected override async Task<CertificateBundle> OnVersionChangeAsync(CustomVersion cv)
         {
             var cb = await _session.CurrentVault.GetCertificateAsync(cv.Id.Name, (cv.Index == 0) ? null : cv.Id.Version); // Pass NULL as a version to fetch current CertificatePolicy
-            var cert = await _session.CurrentVault.GetCertificateWithPrivateKeyAsync(cv.Id.Name, cv.Id.Version);
+            var cert = await _session.CurrentVault.GetCertificateWithExportableKeysAsync(cv.Id.Name, cv.Id.Version);
             if ((_certificatePolicy == null) && (cb.Policy != null)) // cb.Policy will be NULL when version is not current
             {
                 _certificatePolicy = cb.Policy;
