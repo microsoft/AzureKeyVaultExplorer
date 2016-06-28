@@ -158,7 +158,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public abstract void SaveToFile(string fullName);
 
-        protected abstract IEnumerable<KeyValuePair<string, string>> GetCustomTags();
+        protected abstract IEnumerable<TagItem> GetCustomTags();
 
         public Dictionary<string, string> ToTagsDictionary()
         {
@@ -169,9 +169,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 result[tagItem.Name] = tagItem.Value;
             }
             // Add all custom tags
-            foreach (var kvp in GetCustomTags())
+            foreach (var tagItem in GetCustomTags())
             {
-                result[kvp.Key] = kvp.Value;
+                result[tagItem.Name] = tagItem.Value;
             }
             // Add Md5 and ChangedBy tags
             result[Consts.Md5Key] = Md5;

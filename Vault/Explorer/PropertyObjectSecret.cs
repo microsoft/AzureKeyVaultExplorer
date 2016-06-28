@@ -48,7 +48,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             _value = _contentType.FromRawValue(secret.Value);
         }
 
-        protected override IEnumerable<KeyValuePair<string, string>> GetCustomTags()
+        protected override IEnumerable<TagItem> GetCustomTags()
         {
             // Add tags based on all named groups in the value regex
             Match m = SecretKind.ValueRegex.Match(Value);
@@ -58,7 +58,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 {
                     string groupName = SecretKind.ValueRegex.GroupNameFromNumber(i);
                     if (groupName == i.ToString()) continue; // Skip unnamed groups
-                    yield return new KeyValuePair<string, string>(groupName, m.Groups[i].Value);
+                    yield return new TagItem(groupName, m.Groups[i].Value);
                 }
             }
         }
