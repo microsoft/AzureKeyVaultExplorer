@@ -104,6 +104,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return string.IsNullOrEmpty(result) ? "unknown" : result;
         }
 
+        public static string ConvertToValidTagValue(string value)
+        {
+            if (string.IsNullOrEmpty(value)) return value;
+            if (value.Length <= Consts.MaxTagNameLength) return value;
+            return value.Substring(0, Consts.MaxTagNameLength - 3) + "...";
+        }
+
         public static string GetRtfUnicodeEscapedString(string s)
         {
             var sb = new StringBuilder();

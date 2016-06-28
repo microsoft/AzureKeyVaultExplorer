@@ -147,7 +147,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
         }
 
-        protected override IEnumerable<KeyValuePair<string, string>> GetCustomTags()
+        protected override IEnumerable<TagItem> GetCustomTags()
         {
             yield break;
         }

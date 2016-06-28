@@ -168,7 +168,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public TagItem(string name, string value)
         {
             Name = name;
-            Value = value;
+            Value = Utils.ConvertToValidTagValue(value);
         }
 
         public override string ToString() => $"{Name}";
