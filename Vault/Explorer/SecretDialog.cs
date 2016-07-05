@@ -149,7 +149,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 autoDetectSecretKind = (SecretKind)uxMenuSecretKind.Items[0];
             }
-            _certificateObj = (PropertyObject.ContentType.IsCertificate() && autoDetectSecretKind.IsCertificate) ? CertificateValueObject.FromValue(uxTextBoxValue.Text) : null;
+            _certificateObj = PropertyObject.ContentType.IsCertificate() ? CertificateValueObject.FromValue(uxTextBoxValue.Text) : null;
             autoDetectSecretKind?.PerformClick();
         }
 
