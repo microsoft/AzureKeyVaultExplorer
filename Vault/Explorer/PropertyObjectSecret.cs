@@ -72,7 +72,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public override string GetKeyVaultFileExtension() => ContentType.KeyVaultSecret.ToExtension();
 
-        public override string GetClipboardValue() => ContentType.IsCertificate() ? CertificateValueObject.FromValue(Value).Password : Value;
+        public override string GetClipboardValue() => ContentType.IsCertificate() ? CertificateValueObject.FromValue(Value)?.Password : Value;
 
         public override void SaveToFile(string fullName)
         {
