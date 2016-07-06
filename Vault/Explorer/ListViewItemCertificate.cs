@@ -46,7 +46,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public override async Task<ListViewItemBase> ToggleAsync(CancellationToken cancellationToken)
         {
-            CertificateBundle cb = await Session.CurrentVault.UpdateCertificateAsync(Name, new CertificateAttributes() { Enabled = !Attributes.Enabled }, Utils.AddChangedBy(Tags), cancellationToken); // Toggle only Enabled attribute
+            CertificateBundle cb = await Session.CurrentVault.UpdateCertificateAsync(Name, new CertificateAttributes() { Enabled = !Attributes.Enabled }, Tags, cancellationToken); // Toggle only Enabled attribute
             return new ListViewItemCertificate(Session, cb);
         }
 

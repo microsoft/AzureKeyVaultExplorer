@@ -173,9 +173,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 result[tagItem.Name] = tagItem.Value;
             }
-            // Add Md5 and ChangedBy tags
+            // Add Md5 tag
             result[Consts.Md5Key] = Md5;
-            return Utils.AddChangedBy(result);
+            return result;
         }
 
         public string GetFileName() => Name + _contentType.ToExtension();
