@@ -67,7 +67,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public string Id => Identifier.Identifier;
 
-        public string ChangedBy => Utils.GetChangedBy(Tags);
+        public string ChangedBy => Common.Vault.Utils.GetChangedBy(Tags);
 
         public string Md5 => Utils.GetMd5(Tags);
 

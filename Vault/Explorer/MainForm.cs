@@ -38,8 +38,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public MainForm()
         {
             InitializeComponent();
-            Text = $"{Utils.AppName} ({Environment.UserDomainName}\\{Environment.UserName})";
-
             ApplySettings();
 
             _moveSecretCursor = Utils.LoadCursorFromResource(Resources.move_secret);
@@ -131,6 +129,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     {
                         uxListViewSecrets.Items.Add(new ListViewItemSecret(this, s));
                     }
+                    Text = $"{Utils.AppName} ({CurrentVault.AuthenticatedUserName})";
                     // List Key Vault Certificates
                     if (CurrentVaultAlias.KeyVaultCertificates)
                     {

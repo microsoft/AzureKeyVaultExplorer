@@ -48,25 +48,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
         }
 
-        public static Dictionary<string, string> AddChangedBy(IDictionary<string, string> tags)
-        {
-            if (tags == null)
-            {
-                tags = new Dictionary<string, string>();
-            }
-            tags[Consts.ChangedByKey] = $"{Environment.UserDomainName}\\{Environment.UserName}";
-            return new Dictionary<string, string>(tags);
-        }
-
-        public static string GetChangedBy(IDictionary<string, string> tags)
-        {
-            if ((tags == null) || (!tags.ContainsKey(Consts.ChangedByKey)))
-            {
-                return "";
-            }
-            return tags[Consts.ChangedByKey];
-        }
-
         public static string GetMd5(IDictionary<string, string> tags)
         {
             if ((tags == null) || (!tags.ContainsKey(Consts.Md5Key)))

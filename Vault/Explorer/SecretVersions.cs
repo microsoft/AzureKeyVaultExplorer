@@ -34,7 +34,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
     {
         public readonly SecretItem SecretItem;
 
-        public SecretVersion(int index, SecretItem secretItem) : base(index, secretItem.Attributes.Created, secretItem.Attributes.Updated, Utils.GetChangedBy(secretItem.Tags), secretItem.Identifier)
+        public SecretVersion(int index, SecretItem secretItem) : base(index, secretItem.Attributes.Created, secretItem.Attributes.Updated, Common.Vault.Utils.GetChangedBy(secretItem.Tags), secretItem.Identifier)
         {
             SecretItem = secretItem;
         }
@@ -44,7 +44,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
     {
         public readonly ListCertificateResponseMessage CertificateItem;
 
-        public CertificateVersion(int index, ListCertificateResponseMessage certificateItem) : base(index, certificateItem.Attributes.Created, certificateItem.Attributes.Updated, Utils.GetChangedBy(certificateItem.Tags), certificateItem.Identifier)
+        public CertificateVersion(int index, ListCertificateResponseMessage certificateItem) : base(index, certificateItem.Attributes.Created, certificateItem.Attributes.Updated, Common.Vault.Utils.GetChangedBy(certificateItem.Tags), certificateItem.Identifier)
         {
             CertificateItem = certificateItem;
         }
