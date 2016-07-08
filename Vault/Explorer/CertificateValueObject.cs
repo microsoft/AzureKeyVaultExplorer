@@ -85,9 +85,16 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 {
                     return new CertificateValueObject(m.Groups["CertificateBase64"].Value, null);
                 }
-                if (Consts.ValidBase64Regex.IsMatch(value)) // WD cert in JSON base64 format
+                if (Consts.ValidBase64Regex.IsMatch(value)) // Key Vault Certificate with empty password via secrets endpoint OR WD cert in JSON base64 format
                 {
-                    return JsonConvert.DeserializeObject<CertificateValueObject>(Encoding.UTF8.GetString(Convert.FromBase64String(value)));
+                    try
+                    {
+                        return new CertificateValueObject(value, "");
+                    }
+                    catch
+                    {
+                        return JsonConvert.DeserializeObject<CertificateValueObject>(Encoding.UTF8.GetString(Convert.FromBase64String(value)));
+                    }
                 }
                 return JsonConvert.DeserializeObject<CertificateValueObject>(value); // WD cert in JSON format
             }
