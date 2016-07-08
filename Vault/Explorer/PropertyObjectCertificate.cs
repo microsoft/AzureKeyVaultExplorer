@@ -84,7 +84,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
             set
             {
                 _lifetimeActions = value;
-                CertificatePolicy.LifetimeActions = LifetimeActionsToEnumerable();
+                if (null != CertificatePolicy)
+                {
+                    CertificatePolicy.LifetimeActions = LifetimeActionsToEnumerable();
+                }
             }
         }
 

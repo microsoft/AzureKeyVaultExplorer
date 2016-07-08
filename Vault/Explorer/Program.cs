@@ -25,6 +25,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             Application.ThreadException += (s, e) => TrackExceptionAndShowError(e.Exception);
             AppDomain.CurrentDomain.UnhandledException += (s, e) => TrackExceptionAndShowError(e.ExceptionObject as Exception);
+            // In case ActivationUri was passed perform the action and exit
+            if (ActivationUri.Parse().Perform())
+            {
+                return;
+            }
+
             Application.Run(new MainForm());
         }
 
