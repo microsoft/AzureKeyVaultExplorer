@@ -105,6 +105,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public static ActivationUri Parse()
         {
+            MessageBox.Show($"{ApplicationDeployment.CurrentDeployment.ActivationUri}", "foo");
             string queryString = ApplicationDeployment.IsNetworkDeployed ?
                 ApplicationDeployment.CurrentDeployment.ActivationUri?.Query :
                 (Environment.GetCommandLineArgs().Length == 2) ? Environment.GetCommandLineArgs()[1] : "";
