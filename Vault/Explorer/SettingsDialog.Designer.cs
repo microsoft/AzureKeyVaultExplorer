@@ -32,16 +32,16 @@
             this.uxTabPageOptions = new System.Windows.Forms.TabPage();
             this.uxPropertyGrid = new System.Windows.Forms.PropertyGrid();
             this.uxTabPageAbout = new System.Windows.Forms.TabPage();
+            this.uxLinkLabelUserSettingsLocation = new System.Windows.Forms.LinkLabel();
             this.uxTextBoxVersions = new System.Windows.Forms.TextBox();
             this.uxLinkLabelInstallLocation = new System.Windows.Forms.LinkLabel();
-            this.uxLinkLabelKudos = new System.Windows.Forms.LinkLabel();
+            this.uxLinkLabelClearTokenCache = new System.Windows.Forms.LinkLabel();
             this.uxLinkLabelSendFeedback = new System.Windows.Forms.LinkLabel();
             this.label2 = new System.Windows.Forms.Label();
             this.uxLinkLabelTitle = new System.Windows.Forms.LinkLabel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.uxButtonCancel = new System.Windows.Forms.Button();
             this.uxButtonOK = new System.Windows.Forms.Button();
-            this.uxLinkLabelUserSettingsLocation = new System.Windows.Forms.LinkLabel();
             uxTabControl = new System.Windows.Forms.TabControl();
             uxTabControl.SuspendLayout();
             this.uxTabPageOptions.SuspendLayout();
@@ -89,7 +89,7 @@
             this.uxTabPageAbout.Controls.Add(this.uxLinkLabelUserSettingsLocation);
             this.uxTabPageAbout.Controls.Add(this.uxTextBoxVersions);
             this.uxTabPageAbout.Controls.Add(this.uxLinkLabelInstallLocation);
-            this.uxTabPageAbout.Controls.Add(this.uxLinkLabelKudos);
+            this.uxTabPageAbout.Controls.Add(this.uxLinkLabelClearTokenCache);
             this.uxTabPageAbout.Controls.Add(this.uxLinkLabelSendFeedback);
             this.uxTabPageAbout.Controls.Add(this.label2);
             this.uxTabPageAbout.Controls.Add(this.uxLinkLabelTitle);
@@ -100,6 +100,17 @@
             this.uxTabPageAbout.Size = new System.Drawing.Size(513, 426);
             this.uxTabPageAbout.TabIndex = 1;
             this.uxTabPageAbout.Text = "About";
+            // 
+            // uxLinkLabelUserSettingsLocation
+            // 
+            this.uxLinkLabelUserSettingsLocation.AutoSize = true;
+            this.uxLinkLabelUserSettingsLocation.Location = new System.Drawing.Point(6, 249);
+            this.uxLinkLabelUserSettingsLocation.Name = "uxLinkLabelUserSettingsLocation";
+            this.uxLinkLabelUserSettingsLocation.Size = new System.Drawing.Size(156, 17);
+            this.uxLinkLabelUserSettingsLocation.TabIndex = 16;
+            this.uxLinkLabelUserSettingsLocation.TabStop = true;
+            this.uxLinkLabelUserSettingsLocation.Text = "User settings location...";
+            this.uxLinkLabelUserSettingsLocation.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.uxLinkLabelUserSettingsLocation_LinkClicked);
             // 
             // uxTextBoxVersions
             // 
@@ -119,7 +130,7 @@
             // uxLinkLabelInstallLocation
             // 
             this.uxLinkLabelInstallLocation.AutoSize = true;
-            this.uxLinkLabelInstallLocation.Location = new System.Drawing.Point(6, 244);
+            this.uxLinkLabelInstallLocation.Location = new System.Drawing.Point(6, 226);
             this.uxLinkLabelInstallLocation.Name = "uxLinkLabelInstallLocation";
             this.uxLinkLabelInstallLocation.Size = new System.Drawing.Size(109, 17);
             this.uxLinkLabelInstallLocation.TabIndex = 14;
@@ -127,26 +138,26 @@
             this.uxLinkLabelInstallLocation.Text = "Install location...";
             this.uxLinkLabelInstallLocation.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.uxLinkLabelInstallLocation_LinkClicked);
             // 
-            // uxLinkLabelKudos
+            // uxLinkLabelClearTokenCache
             // 
-            this.uxLinkLabelKudos.AutoSize = true;
-            this.uxLinkLabelKudos.Location = new System.Drawing.Point(6, 182);
-            this.uxLinkLabelKudos.Name = "uxLinkLabelKudos";
-            this.uxLinkLabelKudos.Size = new System.Drawing.Size(169, 17);
-            this.uxLinkLabelKudos.TabIndex = 12;
-            this.uxLinkLabelKudos.TabStop = true;
-            this.uxLinkLabelKudos.Text = "Like it? Send me Kudos...";
-            this.uxLinkLabelKudos.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.uxLinkLabelKudos_LinkClicked);
+            this.uxLinkLabelClearTokenCache.AutoSize = true;
+            this.uxLinkLabelClearTokenCache.Location = new System.Drawing.Point(6, 273);
+            this.uxLinkLabelClearTokenCache.Name = "uxLinkLabelClearTokenCache";
+            this.uxLinkLabelClearTokenCache.Size = new System.Drawing.Size(170, 17);
+            this.uxLinkLabelClearTokenCache.TabIndex = 12;
+            this.uxLinkLabelClearTokenCache.TabStop = true;
+            this.uxLinkLabelClearTokenCache.Text = "Clear access token cache";
+            this.uxLinkLabelClearTokenCache.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.uxLinkLabelClearTokenCache_LinkClicked);
             // 
             // uxLinkLabelSendFeedback
             // 
             this.uxLinkLabelSendFeedback.AutoSize = true;
-            this.uxLinkLabelSendFeedback.Location = new System.Drawing.Point(6, 213);
+            this.uxLinkLabelSendFeedback.Location = new System.Drawing.Point(6, 187);
             this.uxLinkLabelSendFeedback.Name = "uxLinkLabelSendFeedback";
-            this.uxLinkLabelSendFeedback.Size = new System.Drawing.Size(299, 17);
+            this.uxLinkLabelSendFeedback.Size = new System.Drawing.Size(346, 17);
             this.uxLinkLabelSendFeedback.TabIndex = 13;
             this.uxLinkLabelSendFeedback.TabStop = true;
-            this.uxLinkLabelSendFeedback.Text = "Questions or comments? Send me feedback...";
+            this.uxLinkLabelSendFeedback.Text = "Like it, Questions or Comments? Send me feedback...";
             this.uxLinkLabelSendFeedback.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.uxLinkLabelSendFeedback_LinkClicked);
             // 
             // label2
@@ -209,17 +220,6 @@
             this.uxButtonOK.UseVisualStyleBackColor = true;
             this.uxButtonOK.Click += new System.EventHandler(this.uxButtonOK_Click);
             // 
-            // uxLinkLabelUserSettingsLocation
-            // 
-            this.uxLinkLabelUserSettingsLocation.AutoSize = true;
-            this.uxLinkLabelUserSettingsLocation.Location = new System.Drawing.Point(6, 275);
-            this.uxLinkLabelUserSettingsLocation.Name = "uxLinkLabelUserSettingsLocation";
-            this.uxLinkLabelUserSettingsLocation.Size = new System.Drawing.Size(156, 17);
-            this.uxLinkLabelUserSettingsLocation.TabIndex = 16;
-            this.uxLinkLabelUserSettingsLocation.TabStop = true;
-            this.uxLinkLabelUserSettingsLocation.Text = "User settings location...";
-            this.uxLinkLabelUserSettingsLocation.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.uxLinkLabelUserSettingsLocation_LinkClicked);
-            // 
             // SettingsDialog
             // 
             this.AcceptButton = this.uxButtonOK;
@@ -257,7 +257,7 @@
         private System.Windows.Forms.LinkLabel uxLinkLabelTitle;
         private System.Windows.Forms.TextBox uxTextBoxVersions;
         private System.Windows.Forms.LinkLabel uxLinkLabelInstallLocation;
-        private System.Windows.Forms.LinkLabel uxLinkLabelKudos;
+        private System.Windows.Forms.LinkLabel uxLinkLabelClearTokenCache;
         private System.Windows.Forms.LinkLabel uxLinkLabelSendFeedback;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.LinkLabel uxLinkLabelUserSettingsLocation;

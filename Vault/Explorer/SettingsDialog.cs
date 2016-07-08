@@ -36,11 +36,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             Process.Start("http://aka.ms/vaultexplorer");
         }
 
-        private void uxLinkLabelKudos_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            Process.Start("http://kudos/SendKudos.aspx?alias=elize");
-        }
-
         private void uxLinkLabelSendFeedback_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             string body = uxTextBoxVersions.Text;
@@ -70,6 +65,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
             sb.AppendLine(string.Format(".NET framework version: {0}", Environment.Version));
             sb.AppendLine(Utils.GetFileVersionString("Microsoft.Azure.KeyVault.dll version: ", "Microsoft.Azure.KeyVault.dll"));
             return sb.ToString();
+        }
+
+        private void uxLinkLabelClearTokenCache_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var ftc = new FileTokenCache();
+            ftc.Clear();
         }
     }
 }
