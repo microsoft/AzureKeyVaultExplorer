@@ -166,7 +166,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             ListViewItemBase selectedItem = singleItemSelected ? uxListViewSecrets.SelectedItems[0] as ListViewItemBase : null;
             bool secretEnabled = selectedItem?.Enabled ?? false;
             bool favorite = selectedItem?.Favorite ?? false;
-            uxButtonEdit.Enabled = uxButtonCopy.Enabled = uxButtonSave.Enabled = secretEnabled;
+            uxButtonEdit.Enabled = uxButtonShare.Enabled = uxButtonCopy.Enabled = uxButtonSave.Enabled = secretEnabled;
             uxMenuItemEdit.Enabled = uxMenuItemCopy.Enabled = uxMenuItemSave.Enabled = secretEnabled;
             uxButtonDelete.Enabled = uxMenuItemDelete.Enabled = uxButtonFavorite.Enabled = uxMenuItemFavorite.Enabled = manyItemsSelected;
             uxButtonToggle.Enabled = uxMenuItemToggle.Enabled = singleItemSelected;

@@ -88,6 +88,8 @@
             this.uxTimerSearchTextTypingCompleted = new System.Windows.Forms.Timer(this.components);
             this.uxSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.uxTimerClearClipboard = new System.Windows.Forms.Timer(this.components);
+            this.uxButtonShare = new System.Windows.Forms.ToolStripDropDownButton();
+            this.uxButtonCopyLink = new System.Windows.Forms.ToolStripMenuItem();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
@@ -362,6 +364,7 @@
             toolStripSeparator2,
             this.uxImageSearch,
             this.uxTextBoxSearch,
+            this.uxButtonShare,
             this.uxButtonCopy,
             this.uxButtonSave,
             this.uxButtonFavorite,
@@ -370,7 +373,7 @@
             this.uxButtonHelp});
             this.uxToolStrip.Location = new System.Drawing.Point(3, 0);
             this.uxToolStrip.Name = "uxToolStrip";
-            this.uxToolStrip.Size = new System.Drawing.Size(1128, 28);
+            this.uxToolStrip.Size = new System.Drawing.Size(1247, 28);
             this.uxToolStrip.TabIndex = 0;
             // 
             // uxComboBoxVaultAlias
@@ -668,6 +671,24 @@
             // 
             this.uxTimerClearClipboard.Tick += new System.EventHandler(this.uxTimerClearClipboard_Tick);
             // 
+            // uxButtonShare
+            // 
+            this.uxButtonShare.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.uxButtonCopyLink});
+            this.uxButtonShare.Enabled = false;
+            this.uxButtonShare.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.group;
+            this.uxButtonShare.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.uxButtonShare.Name = "uxButtonShare";
+            this.uxButtonShare.Size = new System.Drawing.Size(80, 25);
+            this.uxButtonShare.Text = "Share";
+            // 
+            // uxButtonCopyLink
+            // 
+            this.uxButtonCopyLink.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.link;
+            this.uxButtonCopyLink.Name = "uxButtonCopyLink";
+            this.uxButtonCopyLink.Size = new System.Drawing.Size(145, 26);
+            this.uxButtonCopyLink.Text = "Copy link";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -753,6 +774,8 @@
         private System.Windows.Forms.ToolStripMenuItem uxAddKVCertFromFile;
         private System.Windows.Forms.ToolStripMenuItem uxAddKVCertFromUserStore;
         private System.Windows.Forms.ToolStripMenuItem uxAddKVCertFromMachineStore;
+        private System.Windows.Forms.ToolStripDropDownButton uxButtonShare;
+        private System.Windows.Forms.ToolStripMenuItem uxButtonCopyLink;
     }
 }
 
