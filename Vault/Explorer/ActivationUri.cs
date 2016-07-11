@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Win32;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Deployment.Application;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -12,128 +14,66 @@ using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
-    class Form1 : Form
+    public enum VaultEndpoint
     {
-        ToolTip _ToolTip = new ToolTip();
-
-        public Form1()
-        {
-            InitializeComponent();
-
-        }
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            BringToFront();
-            _ToolTip.Show("Blah blah... Blah blah... Blah blah...", this, Cursor.Position.X + 8, Cursor.Position.Y, 10000);
-        }
-
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
-
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent()
-        {
-            this.components = new System.ComponentModel.Container();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.SuspendLayout();
-            // 
-            // timer1
-            // 
-            this.timer1.Enabled = true;
-            this.timer1.Interval = 10;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // Form1
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 264);
-            this.ControlBox = false;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "Form1";
-            this.Opacity = 0;
-            this.ShowIcon = false;
-            this.ShowInTaskbar = false;
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.ResumeLayout(false);
-
-        }
-
-        #endregion
-
-        private System.Windows.Forms.Timer timer1;
-
+        Keys,
+        Secrets,
+        Certificates
     }
 
     public enum ActivationAction
     {
-        None,
-
-        CopyToClipboard
+        Default
     }
 
-    [JsonObject]
     public class ActivationUri
     {
-        [JsonProperty]
-        public readonly ActivationAction Action = ActivationAction.None;
+        public readonly Uri Uri;
 
-        [JsonProperty]
-        public readonly Uri Id;
+        public readonly string VaultName;
+
+        public readonly VaultEndpoint Endpoint;
+
+        public readonly string Name;
+
+        public readonly string Version;
+
+        public readonly ActivationAction Action = ActivationAction.Default;
+
+        public ActivationUri(string vaultUri)
+        {
+            Guard.ArgumentNotNullOrEmptyString(vaultUri, nameof(vaultUri));
+            vaultUri = vaultUri.Replace(@"\", "/");
+
+            var m = Consts.ValidVaultItemVaultUriRegex.Match(vaultUri);
+            if (false == m.Success)
+            {
+                throw new ArgumentException($"Invalid vault protocol URI {vaultUri}, URI must satisfy the following regex: {Consts.ValidVaultItemVaultUriRegex}", nameof(vaultUri));
+            }
+            Uri = new Uri(vaultUri);
+            VaultName = m.Groups["VaultName"].Value;
+            VaultEndpoint ve;
+            Enum.TryParse(m.Groups["Endpoint"].Value, true, out ve);
+            Endpoint = ve;
+            Name = m.Groups["Name"].Value;
+            Version = string.IsNullOrEmpty(m.Groups["Version"].Value) ? null : m.Groups["Version"].Value;
+        }
 
         public static ActivationUri Parse()
         {
-            MessageBox.Show($"{ApplicationDeployment.CurrentDeployment.ActivationUri}", "foo");
-            string queryString = ApplicationDeployment.IsNetworkDeployed ?
-                ApplicationDeployment.CurrentDeployment.ActivationUri?.Query :
-                (Environment.GetCommandLineArgs().Length == 2) ? Environment.GetCommandLineArgs()[1] : "";
-            var nameValueCollection = HttpUtility.ParseQueryString(queryString);
-            var json = new JavaScriptSerializer().Serialize(nameValueCollection.AllKeys.ToDictionary(k => k, k => nameValueCollection[k]));
-            return JsonConvert.DeserializeObject<ActivationUri>(json);
-        }
-
-        [JsonConstructor]
-        public ActivationUri(ActivationAction action, Uri id)
-        {            
-            Action = action;
-            if (action != ActivationAction.None)
-            {
-                Guard.ArgumentNotNull(id, nameof(id));
-            }
-            Id = id;
+            string vaultUri = (ApplicationDeployment.IsNetworkDeployed) ?
+                AppDomain.CurrentDomain.SetupInformation?.ActivationArguments?.ActivationData?.FirstOrDefault() :
+                (Environment.GetCommandLineArgs().Length == 2) ? Environment.GetCommandLineArgs()[1] : null;
+            if (null == vaultUri) return null;
+            if (vaultUri.StartsWith("file:", StringComparison.CurrentCultureIgnoreCase)) return null;
+            return new ActivationUri(vaultUri);
         }
 
         public bool Perform()
         {
-            //var f = new Form1();
-            //Application.Run(f);
             switch (Action)
             {
-                case ActivationAction.None:
-                    return false;
-                case ActivationAction.CopyToClipboard:
+                case ActivationAction.Default:
                     CopyToClipboard();
                     return true;
                 default:
@@ -143,43 +83,76 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void CopyToClipboard()
         {
-            var m = Consts.ValidVaultItemUriRegex.Match(Id.ToString());
-            if (false == m.Success)
-            {
-                throw new ArgumentException($"Invalid vault item URI {Id}, URI must satisfy the following regex: {Consts.ValidVaultItemUriRegex}", nameof(Id));
-            }
-            string vaultName = m.Groups["VaultName"].Value;
-            string endpoint = m.Groups["Endpoint"].Value;
-            string name = m.Groups["Name"].Value;
-            string version = string.IsNullOrEmpty(m.Groups["Version"].Value) ? null : m.Groups["Version"].Value;
             var vc = new VaultsConfig(new Dictionary<string, VaultAccessType>
             {
-                [vaultName] = new VaultAccessType(
+                [VaultName] = new VaultAccessType(
                     new VaultAccess[] { new VaultAccessUserInteractive(null) },
                     new VaultAccess[] { new VaultAccessUserInteractive(null) })
             });
-            var vault = new Vault(vc, VaultAccessTypeEnum.ReadOnly, vaultName);
+            var vault = new Vault(vc, VaultAccessTypeEnum.ReadOnly, VaultName);
             PropertyObject po = null;
-            switch (endpoint.ToLowerInvariant())
+            switch (Endpoint)
             {
-                case "keys":
+                case VaultEndpoint.Keys:
                     return;
-                case "certificates":
-                    var cb = vault.GetCertificateAsync(name, version, CancellationToken.None).GetAwaiter().GetResult();
-                    var cert = vault.GetCertificateWithExportableKeysAsync(name, version, CancellationToken.None).GetAwaiter().GetResult();
+                case VaultEndpoint.Certificates:
+                    var cb = vault.GetCertificateAsync(Name, Version, CancellationToken.None).GetAwaiter().GetResult();
+                    var cert = vault.GetCertificateWithExportableKeysAsync(Name, Version, CancellationToken.None).GetAwaiter().GetResult();
                     po = new PropertyObjectCertificate(cb, cb.Policy, cert, null);
                     break;
-                case "secrets":
-                    var s = vault.GetSecretAsync(name, version, CancellationToken.None).GetAwaiter().GetResult();
+                case VaultEndpoint.Secrets:
+                    var s = vault.GetSecretAsync(Name, Version, CancellationToken.None).GetAwaiter().GetResult();
                     po = new PropertyObjectSecret(s, null);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(endpoint), $"Invalid endpoint {endpoint}");
+                    throw new ArgumentOutOfRangeException(nameof(Endpoint), $"Invalid endpoint {Endpoint}");
             }
             string value = po.GetClipboardValue();
             if (null != value)
             {
                 Clipboard.SetText(value);
+            }
+        }
+
+        /// <summary>
+        /// Register vault: protocol for current user, pretty much will set the following regkey
+        /// HKEY_CURRENT_USER\SOFTWARE\Classes\vault\shell\open\command
+        /// "C:\windows\system32\rundll32.exe" C:\windows\system32\dfshim.dll, ShOpenVerbShortcut C:\Users\elize\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Microsoft\VaultExplorer.appref-ms|%1
+        /// </summary>
+        public static void RegisterVaultProtocol()
+        {
+            if (ApplicationDeployment.IsNetworkDeployed && ApplicationDeployment.CurrentDeployment.IsFirstRun)
+            {
+                try
+                {
+                    var subKey = Registry.CurrentUser.OpenSubKey(@"Software\Classes\vault", true);
+                    if (null != subKey)
+                    {
+                        subKey.CreateSubKey("DefaultIcon").SetValue("", $"{Application.ExecutablePath},0"); // Update the location to icon 
+                        return;
+                    }
+                    using (var vaultKey = Registry.CurrentUser.CreateSubKey(@"Software\Classes\vault"))
+                    {
+                        vaultKey.SetValue("", "URL:Vault Protocol");
+                        vaultKey.SetValue("URL Protocol", "");
+                        vaultKey.CreateSubKey("DefaultIcon").SetValue("", $"{Application.ExecutablePath},0");
+                        string system32 = Environment.GetFolderPath(Environment.SpecialFolder.System);
+                        string appref_ms = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs", "Microsoft", "VaultExplorer.appref-ms");
+                        vaultKey.CreateSubKey("shell").CreateSubKey("open").CreateSubKey("command").SetValue("",
+                                $"\"{system32}\\rundll32.exe\" {system32}\\dfshim.dll, ShOpenVerbShortcut {appref_ms}|%1");
+                    }
+                    // Enable trust to vault: protocol handler for different Office version(s)
+                    // https://support.microsoft.com/en-us/kb/982301
+                    for (int officeVersion = 14; officeVersion < 30; officeVersion++)
+                    {
+                        string version = $"{officeVersion}.0";
+                        if (null != Registry.CurrentUser.OpenSubKey($@"Software\Policies\Microsoft\Office\{version}"))
+                        {
+                            Registry.CurrentUser.CreateSubKey($@"Software\Policies\Microsoft\Office\{version}\common\security\trusted protocols\all applications\vault:");
+                        }
+                    }
+                }
+                catch { }
             }
         }
     }
