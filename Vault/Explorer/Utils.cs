@@ -2,19 +2,17 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Deployment.Application;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using Windows.Data.Xml.Dom;
+using Windows.UI.Notifications;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
@@ -210,6 +208,38 @@ namespace Microsoft.PS.Common.Vault.Explorer
             obj.SetData(DataFormats.UnicodeText, link);
             obj.SetData(DataFormats.Html, string.Format(html, link, link));
             Clipboard.SetDataObject(obj, true);
+        }
+
+        public static void ClearCliboard(TimeSpan interval, string md5)
+        {
+            ProcessStartInfo sInfo = new ProcessStartInfo(Path.Combine(Application.StartupPath, "ClearClipboard.exe"), $"{interval} {md5}")
+            {
+                CreateNoWindow = true,
+                WindowStyle = ProcessWindowStyle.Hidden,
+                UseShellExecute = false,
+                LoadUserProfile = false
+            };
+            Process.Start(sInfo);
+        }
+
+        public static void ShowToast(string body)
+        {
+            // Get a toast XML template
+            XmlDocument toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastImageAndText02);
+
+            // Fill in the text elements
+            XmlNodeList stringElements = toastXml.GetElementsByTagName("text");
+            stringElements[0].AppendChild(toastXml.CreateTextNode(Utils.AppName));
+            stringElements[1].AppendChild(toastXml.CreateTextNode(body));
+
+            // Absolute path to an image
+            var imagePath = "file:///" + Path.ChangeExtension(Application.ExecutablePath, ".png");
+            XmlNodeList imageElements = toastXml.GetElementsByTagName("image");
+            imageElements[0].Attributes.GetNamedItem("src").NodeValue = imagePath;
+
+            // Create and show the toast
+            ToastNotification toast = new ToastNotification(toastXml);
+            ToastNotificationManager.CreateToastNotifier(Utils.AppName).Show(toast);
         }
     }
 }

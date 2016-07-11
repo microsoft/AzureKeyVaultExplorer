@@ -87,7 +87,6 @@
             this.uxOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.uxTimerSearchTextTypingCompleted = new System.Windows.Forms.Timer(this.components);
             this.uxSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.uxTimerClearClipboard = new System.Windows.Forms.Timer(this.components);
             this.uxButtonShare = new System.Windows.Forms.ToolStripDropDownButton();
             this.uxButtonCopyLink = new System.Windows.Forms.ToolStripMenuItem();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -667,10 +666,6 @@
             this.uxSaveFileDialog.Filter = resources.GetString("uxSaveFileDialog.Filter");
             this.uxSaveFileDialog.Title = "Save As";
             // 
-            // uxTimerClearClipboard
-            // 
-            this.uxTimerClearClipboard.Tick += new System.EventHandler(this.uxTimerClearClipboard_Tick);
-            // 
             // uxButtonShare
             // 
             this.uxButtonShare.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -760,7 +755,6 @@
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemSave;
         private System.Windows.Forms.SaveFileDialog uxSaveFileDialog;
         private System.Windows.Forms.ToolStripProgressBar uxStatusProgressBar;
-        private System.Windows.Forms.Timer uxTimerClearClipboard;
         private System.Windows.Forms.ToolStripStatusLabel uxStatusLabelSecretsSelected;
         private System.Windows.Forms.ToolStripMenuItem uxAddCertFromFile;
         private System.Windows.Forms.ToolStripMenuItem uxAddCertFromUserStore;
