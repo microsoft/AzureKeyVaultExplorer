@@ -24,6 +24,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public ListViewItemBase FirstSelectedItem => SelectedItems.Count > 0 ? SelectedItems[0] as ListViewItemBase : null;
 
+        public int SearchResultsCount => Groups[ListViewItemBase.SearchResultsGroup].Items.Count;
+
         public void RefreshGroupsHeader()
         {
             foreach (var g in Groups.Cast<ListViewGroup>())
