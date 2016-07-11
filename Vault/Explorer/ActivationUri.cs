@@ -1,16 +1,13 @@
 ﻿using Microsoft.Win32;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Deployment.Application;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Script.Serialization;
 using System.Windows.Forms;
+using Windows.UI.Notifications;
+using Windows.Data.Xml.Dom;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
@@ -91,16 +88,20 @@ namespace Microsoft.PS.Common.Vault.Explorer
             });
             var vault = new Vault(vc, VaultAccessTypeEnum.ReadOnly, VaultName);
             PropertyObject po = null;
+            string kindStr;
             switch (Endpoint)
             {
                 case VaultEndpoint.Keys:
+                    kindStr = "Key";
                     return;
                 case VaultEndpoint.Certificates:
+                    kindStr = "Certificate";
                     var cb = vault.GetCertificateAsync(Name, Version, CancellationToken.None).GetAwaiter().GetResult();
                     var cert = vault.GetCertificateWithExportableKeysAsync(Name, Version, CancellationToken.None).GetAwaiter().GetResult();
                     po = new PropertyObjectCertificate(cb, cb.Policy, cert, null);
                     break;
                 case VaultEndpoint.Secrets:
+                    kindStr = "Secret";
                     var s = vault.GetSecretAsync(Name, Version, CancellationToken.None).GetAwaiter().GetResult();
                     po = new PropertyObjectSecret(s, null);
                     break;
@@ -111,6 +112,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             if (null != value)
             {
                 Clipboard.SetText(value);
+                ShowToast($"{kindStr} {Name} copied to clipboard");
             }
         }
 
@@ -154,6 +156,26 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 }
                 catch { }
             }
+        }
+
+        public static void ShowToast(string body)
+        {
+            // Get a toast XML template
+            XmlDocument toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastImageAndText02);
+
+            // Fill in the text elements
+            XmlNodeList stringElements = toastXml.GetElementsByTagName("text");
+            stringElements[0].AppendChild(toastXml.CreateTextNode(Utils.AppName));
+            stringElements[1].AppendChild(toastXml.CreateTextNode(body));
+
+            // Absolute path to an image
+            var imagePath = "file:///" + Path.ChangeExtension(Application.ExecutablePath, ".png");
+            XmlNodeList imageElements = toastXml.GetElementsByTagName("image");
+            imageElements[0].Attributes.GetNamedItem("src").NodeValue = imagePath;
+
+            // Create and show the toast
+            ToastNotification toast = new ToastNotification(toastXml);
+            ToastNotificationManager.CreateToastNotifier(Utils.AppName).Show(toast);
         }
     }
 }
