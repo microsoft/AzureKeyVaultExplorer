@@ -79,8 +79,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="Windows.Data" />
-    <Reference Include="Windows.UI" />
+    <Reference Include="Windows">
+      <HintPath>$(MSBuildProgramFiles32)\Windows Kits\8.1\References\CommonConfiguration\Neutral\Annotated\Windows.winmd</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActivationUri.cs" />

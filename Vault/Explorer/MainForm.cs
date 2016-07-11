@@ -108,7 +108,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void RefreshItemsCount()
         {
-            uxStatusLabelSecertsCount.Text = $"{uxListViewSecrets.Items.Count} items";
+            uxStatusLabelSecertsCount.Text = string.IsNullOrWhiteSpace(uxTextBoxSearch.Text) ? $"{uxListViewSecrets.Items.Count} items" : $"{uxListViewSecrets.SearchResultsCount} out of {uxListViewSecrets.Items.Count} items";
             uxStatusLabelSecretsSelected.Text = $"{uxListViewSecrets.SelectedItems.Count} selected";
         }
 

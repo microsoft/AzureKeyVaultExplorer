@@ -22,15 +22,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// Application Insights analytics:
         /// https://analytics.applicationinsights.io/subscriptions/34f2c5cf-b95b-4922-aad3-cc4c8ad13afb/resourcegroups/Default-ApplicationInsights-CentralUS/components/vaultexplorer
         /// </summary>
-        public const string TelemetryClientName = "vaultexplorer";
-
         public static TelemetryClient Default { get; private set; }
 
         public static void Init()
         {
             TelemetryConfiguration config = TelemetryConfiguration.CreateDefault();
             config.InstrumentationKey = "ebe1f199-8317-4c4f-913c-5b569f1cba9f";
-            config.DisableTelemetry = Settings.Default.DisableTelemetry;
+            config.DisableTelemetry = Settings.Default.DisableTelemetry || CommonUtils.IsDebug;
             Default = new TelemetryClient(config) { InstrumentationKey = config.InstrumentationKey };
             config.TelemetryInitializers.Add(new TelemetryInitializer());
         }

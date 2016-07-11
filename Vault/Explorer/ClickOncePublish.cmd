@@ -13,8 +13,9 @@ if '%COMPUTERNAME%' EQU 'ELIZE-HP8540' (
     set Configuration=Debug
 ) else (
     set ManifestCertificateThumbprint=F0DD019529A68E0257DD9E412ED61219776EB546
-    set ClickOnceInstallUpdateUrl=\\avtest.redmond.corp.microsoft.com\scratch\elize\VaultExplorer\
-    set Configuration=Release
+    set ClickOnceInstallUpdateUrl=\\elizedev\Temp\VaultExplorer\
+    rem set ClickOnceInstallUpdateUrl=\\avtest.redmond.corp.microsoft.com\scratch\elize\VaultExplorer\
+    set Configuration=Debug
 )
 
 msbuild /v:minimal /fl /flp:verbosity=normal /m /t:rebuild;publish /p:Configuration=%Configuration%;ClickOnceInstallUpdateUrl=%ClickOnceInstallUpdateUrl%;ManifestCertificateThumbprint=%ManifestCertificateThumbprint%
