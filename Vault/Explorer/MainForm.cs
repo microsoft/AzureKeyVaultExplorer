@@ -19,7 +19,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
     public partial class MainForm : FormTelemetry, ISession
     {
-        private string _clipboardValue;
         private Cursor _moveSecretCursor;
         private Cursor _moveValueCursor;
         private bool _keyDownOccured;
@@ -59,7 +58,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxListViewSecrets.Sorting = UISettings.Default.MainFormSecretsSorting;
             uxListViewSecrets.SortingColumn = UISettings.Default.MainFormSecretsSortingColumn;
             uxButtonCopy.ToolTipText = uxMenuItemCopy.ToolTipText = $"Copy secret value to clipboard for {Settings.Default.CopyToClipboardTimeToLive.TotalSeconds} seconds";
-            uxTimerClearClipboard.Interval = (int)Settings.Default.CopyToClipboardTimeToLive.TotalMilliseconds;
         }
 
         private void SaveSettings()
@@ -420,19 +418,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 using (var op = NewUxOperationWithProgress(uxButtonCopy)) await op.Invoke($"get {item.Kind} from", async () =>
                 {
                     var po = await item.GetAsync(op.CancellationToken);
-                    _clipboardValue = po.GetClipboardValue();
-                    Clipboard.SetText(_clipboardValue);
-                    uxTimerClearClipboard.Start();
+                    po.CopyToClipboard(false);
                 });
-            }
-        }
-
-        private void uxTimerClearClipboard_Tick(object sender, EventArgs e)
-        {
-            uxTimerClearClipboard.Stop();
-            if (_clipboardValue == Clipboard.GetText()) // We don't want to override other clipboard value
-            {
-                Clipboard.Clear();
             }
         }
 

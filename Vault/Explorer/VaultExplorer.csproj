@@ -235,6 +235,10 @@
       <Project>{c21160ab-02db-40d9-9bf3-94cb3eafe78b}</Project>
       <Name>Common.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ClearClipboard\ClearClipboard.csproj">
+      <Project>{9b19162f-ff53-45c4-b849-e293db19d7aa}</Project>
+      <Name>ClearClipboard</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Library\Common.Vault.csproj">
       <Project>{1815c86e-16e1-42d3-b7ee-cc2196ebb59a}</Project>
       <Name>Common.Vault</Name>

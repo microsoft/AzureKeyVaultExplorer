@@ -7,6 +7,7 @@ using System.Drawing.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
@@ -179,5 +180,19 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         public string GetFileName() => Name + _contentType.ToExtension();
+
+        public void CopyToClipboard(bool showToast)
+        {
+            string value = GetClipboardValue();
+            if (null != value)
+            {
+                Clipboard.SetText(value);
+                Utils.ClearCliboard(Settings.Default.CopyToClipboardTimeToLive, Md5);
+                if (showToast)
+                {
+                    Utils.ShowToast($"{(_contentType.IsCertificate() ? "Certificate" : "Secret")} {Name} copied to clipboard");
+                }
+            }
+        }
     }
 }
