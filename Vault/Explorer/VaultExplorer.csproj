@@ -80,9 +80,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActivationUri.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="ActivationUri.cs" />
     <Compile Include="AddFileEventArgs.cs" />
     <Compile Include="ISession.cs" />
     <Compile Include="ItemDialogBase.cs">

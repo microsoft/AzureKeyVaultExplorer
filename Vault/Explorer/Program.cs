@@ -20,13 +20,17 @@ namespace Microsoft.PS.Common.Vault.Explorer
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Telemetry.Init();
-            Utils.ClickOnce_SetAddRemoveProgramsIcon();
             Application.ApplicationExit += (s, e) => Telemetry.Default.Flush();
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             Application.ThreadException += (s, e) => TrackExceptionAndShowError(e.Exception);
             AppDomain.CurrentDomain.UnhandledException += (s, e) => TrackExceptionAndShowError(e.ExceptionObject as Exception);
+            // First run install steps
+            Utils.ClickOnce_SetAddRemoveProgramsIcon();
+            ActivationUri.RegisterVaultProtocol();
+
             // In case ActivationUri was passed perform the action and exit
-            if (ActivationUri.Parse().Perform())
+            var aUri = ActivationUri.Parse();
+            if ((null != aUri) && aUri.Perform())
             {
                 return;
             }

@@ -27,7 +27,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <summary>
         /// Space with black down triangle char
         /// </summary>
-        public const string DropDownSuffix = " \u25BC"; 
+        public const string DropDownSuffix = " \u25BC";
 
         /// <summary>
         /// Converts DateTime? to LocalTime string
@@ -121,7 +121,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         public static string NewSecurePassword()
-        {            
+        {
             var UpperCharsSet = Enumerable.Range(65, 26).Select(i => (byte)i).ToArray(); // A..Z
             var LowerCharsSet = Enumerable.Range(97, 26).Select(i => (byte)i).ToArray(); // a..z
             var NumbersSet = Enumerable.Range(48, 10).Select(i => (byte)i).ToArray(); // 0..9
@@ -154,15 +154,19 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 try
                 {
-                    RegistryKey myUninstallKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall");
-                    foreach (var subKeyName in myUninstallKey.GetSubKeyNames())
+                    using (RegistryKey myUninstallKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall"))
                     {
-                        RegistryKey myKey = myUninstallKey.OpenSubKey(subKeyName, true);
-                        object myValue = myKey.GetValue("DisplayName");
-                        if (myValue != null && myValue.ToString() == Utils.ProductName)
+                        foreach (var subKeyName in myUninstallKey.GetSubKeyNames())
                         {
-                            myKey.SetValue("DisplayIcon", Application.ExecutablePath);
-                            break;
+                            using (RegistryKey myKey = myUninstallKey.OpenSubKey(subKeyName, true))
+                            {
+                                object myValue = myKey.GetValue("DisplayName");
+                                if (myValue != null && myValue.ToString() == Utils.ProductName)
+                                {
+                                    myKey.SetValue("DisplayIcon", Application.ExecutablePath);
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
@@ -181,6 +185,31 @@ namespace Microsoft.PS.Common.Vault.Explorer
             X509Certificate2Collection selected = X509Certificate2UI.SelectFromCollection(notExpiredAndSortedCerts, Utils.AppName,
                 $"Select a certificate from the {location}\\{name} store that you would like to add to {vaultAlias}", X509SelectionFlag.SingleSelection, hwndParent);
             return (1 == selected.Count) ? selected[0] : null;
+        }
+
+        /// <summary>
+        /// Set specified hyperlink as HTML and Text formats in the Clipboard
+        /// </summary>
+        /// <param name="link">Hyperlink to set</param>
+        public static void ClipboardSetHyperlink(string link)
+        {
+            const string html = @"Version:0.9
+                StartHTML:<<<<<<<1
+                EndHTML:<<<<<<<2
+                StartFragment:<<<<<<<3
+                EndFragment:<<<<<<<4
+                SourceURL: {0}
+                <html>
+                <body>
+                <!--StartFragment-->
+                <a href='{0}'>{1}</a>
+                <!--EndFragment-->
+                </body>
+                </html>";
+            DataObject obj = new DataObject(DataFormats.Text, link);
+            obj.SetData(DataFormats.UnicodeText, link);
+            obj.SetData(DataFormats.Html, string.Format(html, link, link));
+            Clipboard.SetDataObject(obj, true);
         }
     }
 }
