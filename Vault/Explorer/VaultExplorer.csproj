@@ -212,6 +212,7 @@
     <Content Include="$(AssemblyName).png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\move_link.cur" />
     <Content Include="VaultAliases.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -242,7 +243,36 @@
     <None Include="ClickOnce.props" />
     <None Include="ClickOncePublish.cmd" />
     <None Include="CreateReleaseAnnotation.ps1" />
-    <None Include="Resources\*" />
+    <None Include="Resources\BigKey.png" />
+    <None Include="Resources\cancel.png" />
+    <None Include="Resources\certificate.png" />
+    <None Include="Resources\certificate2.png" />
+    <None Include="Resources\certificate2_disabled.png" />
+    <None Include="Resources\disk.png" />
+    <None Include="Resources\door_out.png" />
+    <None Include="Resources\empty.png" />
+    <None Include="Resources\error.png" />
+    <None Include="Resources\folder_key.png" />
+    <None Include="Resources\group.png" />
+    <None Include="Resources\information.png" />
+    <None Include="Resources\key.png" />
+    <None Include="Resources\Key64x64.png" />
+    <None Include="Resources\key_delete.png" />
+    <None Include="Resources\link.png" />
+    <None Include="Resources\lock_add.png" />
+    <None Include="Resources\lock_break.png" />
+    <None Include="Resources\lock_delete.png" />
+    <None Include="Resources\lock_edit.png" />
+    <None Include="Resources\lock_go.png" />
+    <None Include="Resources\magnifier.png" />
+    <None Include="Resources\main_window.png" />
+    <None Include="Resources\medal_bronze_1.png" />
+    <None Include="Resources\medal_bronze_delete.png" />
+    <None Include="Resources\move_secret.cur" />
+    <None Include="Resources\move_value.cur" />
+    <None Include="Resources\page_copy.png" />
+    <None Include="Resources\star.png" />
+    <None Include="Resources\wrench.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- 
@@ -255,7 +285,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>False</Visible>
     </Content>
-    <ClearClipboardExe Include="..\ClearClipboard\bin\$(Configuration)\ClearClipboard.exe" />
+    <ClearClipboardExe Include="..\ClearClipboard\bin\$(Configuration)\ClearClipboard.exe">
+      <Visible>False</Visible>
+    </ClearClipboardExe>
   </ItemGroup>
   <Target Name="BuildAndCopyClearClipboard" BeforeTargets="BeforeBuild">
     <MSBuild Projects="..\ClearClipboard\ClearClipboard.csproj" Targets="Build" />

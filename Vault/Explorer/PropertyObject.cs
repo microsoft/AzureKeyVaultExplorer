@@ -133,7 +133,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [Browsable(false)]
         public bool IsValueValid => (Value == null) ? false : SecretKind.ValueRegex.IsMatch(Value);
 
-        protected PropertyObject(ObjectIdentifier identifier, IDictionary<string, string> tags, 
+        protected PropertyObject(ObjectIdentifier identifier, IDictionary<string, string> tags,
             bool? enabled, DateTime? expires, DateTime? notBefore,
             PropertyChangedEventHandler propertyChanged)
         {
@@ -194,5 +194,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 }
             }
         }
+
+        public string GetLinkAsInternetShortcut() => $"[InternetShortcut]\nURL={new VaultHttpsUri(Identifier.Identifier).VaultLink}";
     }
 }

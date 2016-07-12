@@ -184,7 +184,7 @@
     <value>483, 17</value>
   </metadata>
   <data name="uxOpenFileDialog.Filter" xml:space="preserve">
-    <value>Text files|*.txt|Csv (Comma delimited)|*.csv|Tsv (Tab delimited)|*.tsv|Configuration files|*.json;*.xml;*.config|X509 Certificate|*.cer;*.crt|Personal Information Exchange|*.pfx;*.p12|Key Vault Secret files|*.kv-secret|Key Vault Certificate files|*.kv-certificate|All files|*.*</value>
+    <value>Text files|*.txt|Csv (Comma delimited)|*.csv|Tsv (Tab delimited)|*.tsv|Configuration files|*.json;*.xml;*.config|X509 Certificate|*.cer;*.crt|Personal Information Exchange|*.pfx;*.p12|Key Vault Secret files|*.kv-secret|Key Vault Certificate files|*.kv-certificate|Key Vault Link|*.url|All files|*.*</value>
   </data>
   <metadata name="uxTimerSearchTextTypingCompleted.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>646, 16</value>
@@ -193,7 +193,7 @@
     <value>1147, 26</value>
   </metadata>
   <data name="uxSaveFileDialog.Filter" xml:space="preserve">
-    <value>Text files|*.txt|Csv (Comma delimited)|*.csv|Tsv (Tab delimited)|*.tsv|Configuration files|*.json;*.xml;*.config|X509 Certificate|*.cer;*.crt|Personal Information Exchange|*.pfx;*.p12|Key Vault Secret files|*.kv-secret|Key Vault Certificate files|*.kv-certificate|All files|*.*</value>
+    <value>Text files|*.txt|Csv (Comma delimited)|*.csv|Tsv (Tab delimited)|*.tsv|Configuration files|*.json;*.xml;*.config|X509 Certificate|*.cer;*.crt|Personal Information Exchange|*.pfx;*.p12|Key Vault Secret files|*.kv-secret|Key Vault Certificate files|*.kv-certificate|Key Vault Link|*.url|All files|*.*</value>
   </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>163</value>

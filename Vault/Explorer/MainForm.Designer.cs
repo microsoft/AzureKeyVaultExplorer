@@ -629,6 +629,7 @@
             this.uxButtonShare.Name = "uxButtonShare";
             this.uxButtonShare.Size = new System.Drawing.Size(69, 24);
             this.uxButtonShare.Text = "Share";
+            this.uxButtonShare.ToolTipText = "Share item";
             // 
             // uxButtonCopy
             // 

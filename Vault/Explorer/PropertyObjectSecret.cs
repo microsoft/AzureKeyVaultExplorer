@@ -84,6 +84,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     break;
                 case ContentType.KeyVaultCertificate:
                     throw new InvalidOperationException("One can't save key vault secret as key vault certificate");
+                case ContentType.KeyVaultLink:
+                    File.WriteAllText(fullName, GetLinkAsInternetShortcut());
+                    break;
                 case ContentType.Certificate:
                     File.WriteAllBytes(fullName, CertificateValueObject.FromValue(Value).Certificate.Export(X509ContentType.Cert));
                     break;
@@ -91,7 +94,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     File.WriteAllBytes(fullName, Convert.FromBase64String(CertificateValueObject.FromValue(Value).Data));
                     break;
                 default:
-                    File.WriteAllBytes(fullName, Encoding.UTF8.GetBytes(Value));
+                    File.WriteAllText(fullName, Value);
                     break;
             }
         }

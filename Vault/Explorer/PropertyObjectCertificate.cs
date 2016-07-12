@@ -138,6 +138,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 case ContentType.KeyVaultCertificate: // Serialize the entire secret as encrypted JSON for current user
                     File.WriteAllText(fullName, new KeyVaultCertificateFile(CertificateBundle).Serialize());
                     break;
+                case ContentType.KeyVaultLink:
+                    File.WriteAllText(fullName, GetLinkAsInternetShortcut());
+                    break;
                 case ContentType.Certificate:
                     File.WriteAllBytes(fullName, Certificate.Export(X509ContentType.Cert));
                     break;
@@ -145,7 +148,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     File.WriteAllBytes(fullName, Certificate.Export(X509ContentType.Pkcs12));
                     break;
                 default:                    
-                    File.WriteAllBytes(fullName, Encoding.UTF8.GetBytes(Certificate.ToString()));
+                    File.WriteAllText(fullName, Certificate.ToString());
                     break;
             }
         }

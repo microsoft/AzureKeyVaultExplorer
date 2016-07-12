@@ -71,7 +71,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public string Md5 => Utils.GetMd5(Tags);
 
-        public string Link => $"vault://{VaultHttpsUri.VaultName}/{VaultHttpsUri.Collection.ToCollectionName()}/{VaultHttpsUri.ItemName}/{VaultHttpsUri.Version}".TrimEnd('/');
+        public string Link => VaultHttpsUri.VaultLink;
 
         private static string[] GroupIndexToName = new string[] { "s", "f", "certificate", "key vault certificate", "secret" };
         public string Kind => GroupIndexToName[GroupIndex];

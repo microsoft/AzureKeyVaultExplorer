@@ -21,6 +21,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
     {
         private Cursor _moveSecretCursor;
         private Cursor _moveValueCursor;
+        private Cursor _moveLinkCursor;
         private bool _keyDownOccured;
         private ToolStripButton uxButtonCancel;
 
@@ -41,6 +42,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
             _moveSecretCursor = Utils.LoadCursorFromResource(Resources.move_secret);
             _moveValueCursor = Utils.LoadCursorFromResource(Resources.move_value);
+            _moveLinkCursor = Utils.LoadCursorFromResource(Resources.move_link);
 
             uxButtonCancel = new ToolStripButton("", Resources.cancel)
             {
@@ -211,7 +213,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     foreach (ListViewItemBase item in uxListViewSecrets.Items) item.Selected = true;
                     break;
                 case Keys.C:
-                    uxButtonCopy.PerformClick();
+                    if (e.Shift) uxButtonCopyLink.PerformClick(); else uxButtonCopy.PerformClick();
                     return;
                 case Keys.E:
                     uxButtonEdit.PerformClick();
@@ -481,19 +483,22 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         #region Drag & Drop
 
-        private bool _ctrlKeyPressed = false; // Flag to indicate if CTRL key was down during start of the drag
+        // Flags to indicate if CTRL and SHIFT keys were down during start of the drag
+        private bool _ctrlKeyPressed = false;
+        private bool _shiftKeyPressed = false;
 
         private async void uxListViewSecrets_ItemDrag(object sender, ItemDragEventArgs e)
         {
             using (var op = NewUxOperation(uxButtonSave)) await op.Invoke("get item(s) from", async () =>
             {
                 _ctrlKeyPressed = (ModifierKeys & Keys.Control) != 0;
+                _shiftKeyPressed = (ModifierKeys & Keys.Shift) != 0;
                 List<string> filesList = new List<string>();
                 foreach (var item in uxListViewSecrets.SelectedItems.Cast<ListViewItemBase>())
                 {
                     var po = await item.GetAsync(op.CancellationToken);
-                    // Pick .kv-secret or .kv-certificate extension if CTRL is pressed
-                    var filename = po.Name + (_ctrlKeyPressed ? po.GetKeyVaultFileExtension() : po.GetContentType().ToExtension());
+                    // Pick .kv-secret or .kv-certificate or .url extension if CTRL and SHIFT are pressed
+                    var filename = po.Name + (_ctrlKeyPressed & _shiftKeyPressed ? ContentType.KeyVaultLink.ToExtension() : _ctrlKeyPressed ? po.GetKeyVaultFileExtension() : po.GetContentType().ToExtension());
                     var fullName = Path.Combine(Path.GetTempPath(), filename);
                     po.SaveToFile(fullName);
                     filesList.Add(fullName);
@@ -505,8 +510,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void uxListViewSecrets_GiveFeedback(object sender, GiveFeedbackEventArgs e)
         {
-            e.UseDefaultCursors = false;  
-            Cursor.Current = _ctrlKeyPressed ? _moveSecretCursor : _moveValueCursor;
+            e.UseDefaultCursors = false;
+            Cursor.Current = _ctrlKeyPressed & _shiftKeyPressed ? _moveLinkCursor : _ctrlKeyPressed ? _moveSecretCursor : _moveValueCursor;
         }
 
         private void uxListViewSecrets_DragEnter(object sender, DragEventArgs e)
