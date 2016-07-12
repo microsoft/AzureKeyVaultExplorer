@@ -423,6 +423,15 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
         }
 
+        private void uxButtonCopyLink_Click(object sender, EventArgs e)
+        {
+            var item = uxListViewSecrets.FirstSelectedItem;
+            if (null != item)
+            {
+                //item.
+            }
+        }
+
         private async void uxButtonSave_Click(object sender, EventArgs e)
         {
             var item = uxListViewSecrets.FirstSelectedItem;
