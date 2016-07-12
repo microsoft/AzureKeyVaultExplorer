@@ -43,7 +43,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [Description("application/x-kv-secret")]
         KeyVaultSecret,
         [Description("application/x-kv-certificate")]
-        KeyVaultCertificate
+        KeyVaultCertificate,
+        [Description("application/x-mswinurl")]
+        KeyVaultLink
     }
 
     public class ContentTypeEnumConverter : CustomEnumTypeConverter<ContentType> { }
@@ -136,6 +138,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 case ContentType.Pkcs12:
                 case ContentType.KeyVaultSecret:
                 case ContentType.KeyVaultCertificate:
+                case ContentType.KeyVaultLink:
                     return rawValue;
                 case ContentType.Pkcs12Base64:
                 case ContentType.Base64:
@@ -175,6 +178,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 case ContentType.Pkcs12:
                 case ContentType.KeyVaultSecret:
                 case ContentType.KeyVaultCertificate:
+                case ContentType.KeyVaultLink:
                     return value;
                 case ContentType.Pkcs12Base64:
                 case ContentType.Base64:
@@ -230,6 +234,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     return ContentType.KeyVaultSecret;
                 case ".kv-certificate":
                     return ContentType.KeyVaultCertificate;
+                case ".url":
+                    return ContentType.KeyVaultLink;
                 default:
                     return ContentType.None;
             }
@@ -262,6 +268,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     return ".kv-secret";
                 case ContentType.KeyVaultCertificate:
                     return ".kv-certificate";
+                case ContentType.KeyVaultLink:
+                    return ".url";
                 default:
                     throw new ArgumentException($"Invalid ContentType {contentType}");
             }
@@ -294,9 +302,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     return 7;
                 case ContentType.KeyVaultCertificate:
                     return 8;
+                case ContentType.KeyVaultLink:
+                    return 9;
                 case ContentType.None:
                 case ContentType.Base64:
-                    return 9;
+                    return 10;
                 default:
                     throw new ArgumentException($"Invalid ContentType {contentType}");
             }
@@ -320,6 +330,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 case ContentType.JsonGZipBase64:
                 case ContentType.KeyVaultSecret:
                 case ContentType.KeyVaultCertificate:
+                case ContentType.KeyVaultLink:
                     return "JavaScript";
                 case ContentType.Base64:
                     return "HTML";

@@ -253,6 +253,16 @@ namespace Microsoft.PS.Common.Vault.Explorer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] move_link {
+            get {
+                object obj = ResourceManager.GetObject("move_link", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] move_secret {
             get {
                 object obj = ResourceManager.GetObject("move_secret", resourceCulture);
