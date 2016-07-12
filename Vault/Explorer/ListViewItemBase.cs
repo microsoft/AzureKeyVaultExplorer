@@ -25,7 +25,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public readonly ISession Session;
         public readonly int GroupIndex;
-        public readonly ObjectIdentifier Identifier;
+        public readonly VaultHttpsUri VaultHttpsUri;
         public readonly IDictionary<string, string> Tags;
         public readonly bool Enabled;
         public readonly DateTime? Created;
@@ -39,7 +39,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             Session = session;
             GroupIndex = groupIndex;
-            Identifier = identifier;
+            VaultHttpsUri = new VaultHttpsUri(identifier.Identifier);
             Tags = tags;
             Enabled = enabled ?? true;
             Created = created;
@@ -65,11 +65,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public ListViewGroupCollection Groups => Session.ListViewSecrets.Groups;
 
-        public string Id => Identifier.Identifier;
+        public string Id => VaultHttpsUri.ToString();
 
         public string ChangedBy => Common.Vault.Utils.GetChangedBy(Tags);
 
         public string Md5 => Utils.GetMd5(Tags);
+
+        public string Link => $"vault://{VaultHttpsUri.VaultName}/{VaultHttpsUri.Collection.ToCollectionName()}/{VaultHttpsUri.ItemName}/{VaultHttpsUri.Version}".TrimEnd('/');
 
         private static string[] GroupIndexToName = new string[] { "s", "f", "certificate", "key vault certificate", "secret" };
         public string Kind => GroupIndexToName[GroupIndex];
@@ -200,6 +202,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             List<PropertyDescriptor> properties = new List<PropertyDescriptor>()
             {
                 new ReadOnlyPropertyDescriptor("Name", Name),
+                new ReadOnlyPropertyDescriptor("Link", Link),
                 new ReadOnlyPropertyDescriptor("Identifier", Id),
                 new ReadOnlyPropertyDescriptor("Creation time", Utils.NullableDateTimeToString(Created)),
                 new ReadOnlyPropertyDescriptor("Last updated time", Utils.NullableDateTimeToString(Updated)),

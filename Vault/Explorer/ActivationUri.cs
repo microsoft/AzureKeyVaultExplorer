@@ -4,57 +4,17 @@ using System.Collections.Generic;
 using System.Deployment.Application;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
-    public enum VaultEndpoint
+    public class ActivationUri : VaultLinkUri
     {
-        Keys,
-        Secrets,
-        Certificates
-    }
+        public ActivationUri(string vaultUri) : base(vaultUri) { }
 
-    public enum ActivationAction
-    {
-        Default
-    }
-
-    public class ActivationUri
-    {
-        public readonly Uri Uri;
-
-        public readonly string VaultName;
-
-        public readonly VaultEndpoint Endpoint;
-
-        public readonly string Name;
-
-        public readonly string Version;
-
-        public readonly ActivationAction Action = ActivationAction.Default;
-
-        public ActivationUri(string vaultUri)
-        {
-            Guard.ArgumentNotNullOrEmptyString(vaultUri, nameof(vaultUri));
-            vaultUri = vaultUri.Replace(@"\", "/");
-
-            var m = Consts.ValidVaultItemVaultUriRegex.Match(vaultUri);
-            if (false == m.Success)
-            {
-                throw new ArgumentException($"Invalid vault protocol URI {vaultUri}, URI must satisfy the following regex: {Consts.ValidVaultItemVaultUriRegex}", nameof(vaultUri));
-            }
-            Uri = new Uri(vaultUri);
-            VaultName = m.Groups["VaultName"].Value;
-            VaultEndpoint ve;
-            Enum.TryParse(m.Groups["Endpoint"].Value, true, out ve);
-            Endpoint = ve;
-            Name = m.Groups["Name"].Value;
-            Version = string.IsNullOrEmpty(m.Groups["Version"].Value) ? null : m.Groups["Version"].Value;
-        }
-
-        public static ActivationUri Parse()
+        public new static ActivationUri Parse()
         {
             string vaultUri = (ApplicationDeployment.IsNetworkDeployed) ?
                 AppDomain.CurrentDomain.SetupInformation?.ActivationArguments?.ActivationData?.FirstOrDefault() :
@@ -68,7 +28,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             switch (Action)
             {
-                case ActivationAction.Default:
+                case Action.Default:
                     CopyToClipboard();
                     return true;
                 default:
@@ -86,21 +46,21 @@ namespace Microsoft.PS.Common.Vault.Explorer
             });
             var vault = new Vault(vc, VaultAccessTypeEnum.ReadOnly, VaultName);
             PropertyObject po = null;
-            switch (Endpoint)
+            switch (Collection)
             {
-                case VaultEndpoint.Keys:
+                case VaultUriCollection.Keys:
                     return;
-                case VaultEndpoint.Certificates:
-                    var cb = vault.GetCertificateAsync(Name, Version, CancellationToken.None).GetAwaiter().GetResult();
-                    var cert = vault.GetCertificateWithExportableKeysAsync(Name, Version, CancellationToken.None).GetAwaiter().GetResult();
+                case VaultUriCollection.Certificates:
+                    var cb = vault.GetCertificateAsync(ItemName, Version, CancellationToken.None).GetAwaiter().GetResult();
+                    var cert = vault.GetCertificateWithExportableKeysAsync(ItemName, Version, CancellationToken.None).GetAwaiter().GetResult();
                     po = new PropertyObjectCertificate(cb, cb.Policy, cert, null);
                     break;
-                case VaultEndpoint.Secrets:
-                    var s = vault.GetSecretAsync(Name, Version, CancellationToken.None).GetAwaiter().GetResult();
+                case VaultUriCollection.Secrets:
+                    var s = vault.GetSecretAsync(ItemName, Version, CancellationToken.None).GetAwaiter().GetResult();
                     po = new PropertyObjectSecret(s, null);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(Endpoint), $"Invalid endpoint {Endpoint}");
+                    throw new ArgumentOutOfRangeException(nameof(Collection), $"Invalid endpoint {Collection}");
             }
             po.CopyToClipboard(true);
         }
