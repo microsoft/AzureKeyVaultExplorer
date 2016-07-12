@@ -226,14 +226,6 @@
       <Link>$(AssemblyName).BuildInfo.config</Link>
       <Visible>False</Visible>
     </Content>
-    <Content Include="..\ClearClipboard\bin\$(Configuration)\ClearClipboard.exe">
-      <Link>ClearClipboard.exe</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>False</Visible>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Common.Core.csproj">
@@ -246,12 +238,29 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="ClickOnce.props" />
     <None Include="ClickOncePublish.cmd" />
     <None Include="CreateReleaseAnnotation.ps1" />
     <None Include="Resources\*" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- 
+   Build ClearClipboard.csproj and copy the generated .exe with new extension .ex_, all this to avoid ClickOnce
+   warning MSB3178: Assembly '..\ClearClipboard\bin\Debug\ClearClipboard.exe' is incorrectly specified as a file.
+  -->
+  <ItemGroup>
+    <Content Include="..\ClearClipboard\bin\$(Configuration)\ClearClipboard.ex_">
+      <Link>ClearClipboard.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>False</Visible>
+    </Content>
+    <ClearClipboardExe Include="..\ClearClipboard\bin\$(Configuration)\ClearClipboard.exe" />
+  </ItemGroup>
+  <Target Name="BuildAndCopyClearClipboard" BeforeTargets="BeforeBuild">
+    <MSBuild Projects="..\ClearClipboard\ClearClipboard.csproj" Targets="Build" />
+    <Copy SourceFiles="@(ClearClipboardExe)" DestinationFiles="@(ClearClipboardExe->'..\ClearClipboard\bin\$(Configuration)\%(Filename).ex_')" ContinueOnError="false" />
+  </Target>
   <Target Name="AfterCompile">
     <GetAssemblyIdentity AssemblyFiles="$(IntermediateOutputPath)$(TargetFileName)">
       <Output TaskParameter="Assemblies" ItemName="TargetAssemblyIdentity" />
