@@ -45,33 +45,29 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.uxListViewSecrets = new Microsoft.PS.Common.Vault.Explorer.ListViewSecrets();
             this.uxContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.uxPropertyGridSecret = new System.Windows.Forms.PropertyGrid();
-            this.uxToolStrip = new System.Windows.Forms.ToolStrip();
-            this.uxComboBoxVaultAlias = new System.Windows.Forms.ToolStripComboBox();
-            this.uxTextBoxSearch = new System.Windows.Forms.ToolStripTextBox();
-            this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
-            this.uxStatusStrip = new System.Windows.Forms.StatusStrip();
-            this.uxStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.uxStatusProgressBar = new System.Windows.Forms.ToolStripProgressBar();
-            this.uxStatusLabelSecertsCount = new System.Windows.Forms.ToolStripStatusLabel();
-            this.uxStatusLabelSecretsSelected = new System.Windows.Forms.ToolStripStatusLabel();
-            this.uxOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.uxTimerSearchTextTypingCompleted = new System.Windows.Forms.Timer(this.components);
-            this.uxSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.uxMenuItemAdd = new System.Windows.Forms.ToolStripMenuItem();
             this.uxAddSecret2 = new System.Windows.Forms.ToolStripMenuItem();
             this.uxAddCert2 = new System.Windows.Forms.ToolStripMenuItem();
             this.uxAddCertFromFile2 = new System.Windows.Forms.ToolStripMenuItem();
             this.uxAddCertFromUserStore2 = new System.Windows.Forms.ToolStripMenuItem();
             this.uxAddCertFromMachineStore2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxAddKVCert2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxAddKVCertFromFile2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxAddKVCertFromUserStore2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxAddKVCertFromMachineStore2 = new System.Windows.Forms.ToolStripMenuItem();
             this.uxAddFile2 = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemEdit = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemToggle = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemDelete = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxMenuItemShare = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemCopy = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxMenuItemCopyLink = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemSave = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemFavorite = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemRefresh = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxPropertyGridSecret = new System.Windows.Forms.PropertyGrid();
+            this.uxToolStrip = new System.Windows.Forms.ToolStrip();
+            this.uxComboBoxVaultAlias = new System.Windows.Forms.ToolStripComboBox();
             this.uxButtonAdd = new System.Windows.Forms.ToolStripSplitButton();
             this.uxAddSecret = new System.Windows.Forms.ToolStripMenuItem();
             this.uxAddCert = new System.Windows.Forms.ToolStripMenuItem();
@@ -87,6 +83,7 @@
             this.uxButtonToggle = new System.Windows.Forms.ToolStripButton();
             this.uxButtonDelete = new System.Windows.Forms.ToolStripButton();
             this.uxImageSearch = new System.Windows.Forms.ToolStripLabel();
+            this.uxTextBoxSearch = new System.Windows.Forms.ToolStripTextBox();
             this.uxButtonShare = new System.Windows.Forms.ToolStripDropDownButton();
             this.uxButtonCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.uxButtonCopyLink = new System.Windows.Forms.ToolStripMenuItem();
@@ -94,6 +91,15 @@
             this.uxButtonFavorite = new System.Windows.Forms.ToolStripButton();
             this.uxButtonSettings = new System.Windows.Forms.ToolStripButton();
             this.uxButtonHelp = new System.Windows.Forms.ToolStripButton();
+            this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
+            this.uxStatusStrip = new System.Windows.Forms.StatusStrip();
+            this.uxStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.uxStatusProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.uxStatusLabelSecertsCount = new System.Windows.Forms.ToolStripStatusLabel();
+            this.uxStatusLabelSecretsSelected = new System.Windows.Forms.ToolStripStatusLabel();
+            this.uxOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.uxTimerSearchTextTypingCompleted = new System.Windows.Forms.Timer(this.components);
+            this.uxSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
@@ -120,7 +126,7 @@
             splitContainer1.DataBindings.Add(new System.Windows.Forms.Binding("SplitterDistance", global::Microsoft.PS.Common.Vault.Explorer.Properties.Settings.Default, "MainFormSplitterDistance", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             splitContainer1.Location = new System.Drawing.Point(0, 0);
-            splitContainer1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            splitContainer1.Margin = new System.Windows.Forms.Padding(2);
             splitContainer1.Name = "splitContainer1";
             splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -131,9 +137,9 @@
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(this.uxPropertyGridSecret);
-            splitContainer1.Size = new System.Drawing.Size(1372, 562);
+            splitContainer1.Size = new System.Drawing.Size(1029, 451);
             splitContainer1.SplitterDistance = global::Microsoft.PS.Common.Vault.Explorer.Properties.Settings.Default.MainFormSplitterDistance;
-            splitContainer1.SplitterWidth = 6;
+            splitContainer1.SplitterWidth = 5;
             splitContainer1.TabIndex = 8;
             // 
             // uxListViewSecrets
@@ -141,9 +147,9 @@
             this.uxListViewSecrets.ContextMenuStrip = this.uxContextMenuStrip;
             this.uxListViewSecrets.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uxListViewSecrets.Location = new System.Drawing.Point(0, 0);
-            this.uxListViewSecrets.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.uxListViewSecrets.Margin = new System.Windows.Forms.Padding(2);
             this.uxListViewSecrets.Name = "uxListViewSecrets";
-            this.uxListViewSecrets.Size = new System.Drawing.Size(1372, 260);
+            this.uxListViewSecrets.Size = new System.Drawing.Size(1029, 260);
             this.uxListViewSecrets.TabIndex = 0;
             this.uxListViewSecrets.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.uxListViewSecrets_ItemDrag);
             this.uxListViewSecrets.SelectedIndexChanged += new System.EventHandler(this.uxListViewSecrets_SelectedIndexChanged);
@@ -163,201 +169,24 @@
             this.uxMenuItemToggle,
             this.uxMenuItemDelete,
             toolStripSeparator5,
-            this.uxMenuItemCopy,
-            this.uxMenuItemSave,
+            this.uxMenuItemShare,
             this.uxMenuItemFavorite,
             toolStripSeparator4,
             this.uxMenuItemRefresh});
             this.uxContextMenuStrip.Name = "uxContextMenuStrip";
-            this.uxContextMenuStrip.Size = new System.Drawing.Size(144, 224);
-            // 
-            // toolStripSeparator5
-            // 
-            toolStripSeparator5.Name = "toolStripSeparator5";
-            toolStripSeparator5.Size = new System.Drawing.Size(140, 6);
-            // 
-            // toolStripSeparator4
-            // 
-            toolStripSeparator4.Name = "toolStripSeparator4";
-            toolStripSeparator4.Size = new System.Drawing.Size(140, 6);
-            // 
-            // uxPropertyGridSecret
-            // 
-            this.uxPropertyGridSecret.DisabledItemForeColor = System.Drawing.SystemColors.WindowText;
-            this.uxPropertyGridSecret.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.uxPropertyGridSecret.HelpVisible = false;
-            this.uxPropertyGridSecret.Location = new System.Drawing.Point(0, 0);
-            this.uxPropertyGridSecret.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.uxPropertyGridSecret.Name = "uxPropertyGridSecret";
-            this.uxPropertyGridSecret.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.uxPropertyGridSecret.Size = new System.Drawing.Size(1372, 296);
-            this.uxPropertyGridSecret.TabIndex = 0;
-            this.uxPropertyGridSecret.ToolbarVisible = false;
-            // 
-            // toolStripLabel1
-            // 
-            toolStripLabel1.Name = "toolStripLabel1";
-            toolStripLabel1.Size = new System.Drawing.Size(42, 25);
-            toolStripLabel1.Text = "Vault";
-            // 
-            // toolStripSeparator1
-            // 
-            toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new System.Drawing.Size(6, 28);
-            // 
-            // toolStripSeparator2
-            // 
-            toolStripSeparator2.Name = "toolStripSeparator2";
-            toolStripSeparator2.Size = new System.Drawing.Size(6, 28);
-            // 
-            // toolStripSeparator3
-            // 
-            toolStripSeparator3.Name = "toolStripSeparator3";
-            toolStripSeparator3.Size = new System.Drawing.Size(6, 28);
-            // 
-            // usStatusLabelSpring
-            // 
-            usStatusLabelSpring.Name = "usStatusLabelSpring";
-            usStatusLabelSpring.Size = new System.Drawing.Size(1165, 20);
-            usStatusLabelSpring.Spring = true;
-            // 
-            // uxToolStrip
-            // 
-            this.uxToolStrip.Dock = System.Windows.Forms.DockStyle.None;
-            this.uxToolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.uxToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            toolStripLabel1,
-            this.uxComboBoxVaultAlias,
-            toolStripSeparator1,
-            this.uxButtonAdd,
-            this.uxButtonEdit,
-            this.uxButtonToggle,
-            this.uxButtonDelete,
-            toolStripSeparator2,
-            this.uxImageSearch,
-            this.uxTextBoxSearch,
-            this.uxButtonShare,
-            this.uxButtonFavorite,
-            toolStripSeparator3,
-            this.uxButtonSettings,
-            this.uxButtonHelp});
-            this.uxToolStrip.Location = new System.Drawing.Point(3, 0);
-            this.uxToolStrip.Name = "uxToolStrip";
-            this.uxToolStrip.Size = new System.Drawing.Size(1247, 28);
-            this.uxToolStrip.TabIndex = 0;
-            // 
-            // uxComboBoxVaultAlias
-            // 
-            this.uxComboBoxVaultAlias.DropDownHeight = 200;
-            this.uxComboBoxVaultAlias.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.uxComboBoxVaultAlias.IntegralHeight = false;
-            this.uxComboBoxVaultAlias.Name = "uxComboBoxVaultAlias";
-            this.uxComboBoxVaultAlias.Size = new System.Drawing.Size(250, 28);
-            this.uxComboBoxVaultAlias.DropDown += new System.EventHandler(this.uxComboBoxVaultAlias_DropDown);
-            this.uxComboBoxVaultAlias.DropDownClosed += new System.EventHandler(this.uxComboBoxVaultAlias_DropDownClosed);
-            // 
-            // uxTextBoxSearch
-            // 
-            this.uxTextBoxSearch.Enabled = false;
-            this.uxTextBoxSearch.Name = "uxTextBoxSearch";
-            this.uxTextBoxSearch.Size = new System.Drawing.Size(120, 28);
-            this.uxTextBoxSearch.ToolTipText = "Regular expression search\nExamples: elize, enabled=false";
-            this.uxTextBoxSearch.TextChanged += new System.EventHandler(this.uxTextBoxSearch_TextChanged);
-            // 
-            // toolStripContainer1
-            // 
-            // 
-            // toolStripContainer1.BottomToolStripPanel
-            // 
-            this.toolStripContainer1.BottomToolStripPanel.Controls.Add(this.uxStatusStrip);
-            // 
-            // toolStripContainer1.ContentPanel
-            // 
-            this.toolStripContainer1.ContentPanel.Controls.Add(splitContainer1);
-            this.toolStripContainer1.ContentPanel.Margin = new System.Windows.Forms.Padding(2);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1029, 451);
-            this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
-            this.toolStripContainer1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.toolStripContainer1.Name = "toolStripContainer1";
-            this.toolStripContainer1.Size = new System.Drawing.Size(1029, 500);
-            this.toolStripContainer1.TabIndex = 8;
-            this.toolStripContainer1.Text = "toolStripContainer1";
-            // 
-            // toolStripContainer1.TopToolStripPanel
-            // 
-            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.uxToolStrip);
-            // 
-            // uxStatusStrip
-            // 
-            this.uxStatusStrip.Dock = System.Windows.Forms.DockStyle.None;
-            this.uxStatusStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.uxStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.uxStatusLabel,
-            usStatusLabelSpring,
-            this.uxStatusProgressBar,
-            this.uxStatusLabelSecertsCount,
-            this.uxStatusLabelSecretsSelected});
-            this.uxStatusStrip.Location = new System.Drawing.Point(0, 0);
-            this.uxStatusStrip.Name = "uxStatusStrip";
-            this.uxStatusStrip.ShowItemToolTips = true;
-            this.uxStatusStrip.Size = new System.Drawing.Size(1029, 22);
-            this.uxStatusStrip.TabIndex = 0;
-            // 
-            // uxStatusLabel
-            // 
-            this.uxStatusLabel.Name = "uxStatusLabel";
-            this.uxStatusLabel.Size = new System.Drawing.Size(39, 17);
-            this.uxStatusLabel.Text = "Ready";
-            this.uxStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // uxStatusProgressBar
-            // 
-            this.uxStatusProgressBar.AutoSize = false;
-            this.uxStatusProgressBar.Margin = new System.Windows.Forms.Padding(1, 3, 0, 3);
-            this.uxStatusProgressBar.Name = "uxStatusProgressBar";
-            this.uxStatusProgressBar.Size = new System.Drawing.Size(200, 19);
-            this.uxStatusProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
-            this.uxStatusProgressBar.Visible = false;
-            // 
-            // uxStatusLabelSecertsCount
-            // 
-            this.uxStatusLabelSecertsCount.Name = "uxStatusLabelSecertsCount";
-            this.uxStatusLabelSecertsCount.Size = new System.Drawing.Size(52, 17);
-            this.uxStatusLabelSecertsCount.Text = "0 secrets";
-            this.uxStatusLabelSecertsCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // uxStatusLabelSecretsSelected
-            // 
-            this.uxStatusLabelSecretsSelected.Name = "uxStatusLabelSecretsSelected";
-            this.uxStatusLabelSecretsSelected.Size = new System.Drawing.Size(59, 17);
-            this.uxStatusLabelSecretsSelected.Text = "0 selected";
-            // 
-            // uxOpenFileDialog
-            // 
-            this.uxOpenFileDialog.Filter = resources.GetString("uxOpenFileDialog.Filter");
-            this.uxOpenFileDialog.Title = "Open file";
-            // 
-            // uxTimerSearchTextTypingCompleted
-            // 
-            this.uxTimerSearchTextTypingCompleted.Interval = 250;
-            this.uxTimerSearchTextTypingCompleted.Tick += new System.EventHandler(this.uxTimerSearchTextTypingCompleted_Tick);
-            // 
-            // uxSaveFileDialog
-            // 
-            this.uxSaveFileDialog.Filter = resources.GetString("uxSaveFileDialog.Filter");
-            this.uxSaveFileDialog.Title = "Save As";
+            this.uxContextMenuStrip.Size = new System.Drawing.Size(163, 198);
             // 
             // uxMenuItemAdd
             // 
             this.uxMenuItemAdd.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.uxAddSecret2,
             this.uxAddCert2,
+            this.uxAddKVCert2,
             this.uxAddFile2});
             this.uxMenuItemAdd.Enabled = false;
             this.uxMenuItemAdd.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_add;
             this.uxMenuItemAdd.Name = "uxMenuItemAdd";
-            this.uxMenuItemAdd.Size = new System.Drawing.Size(125, 26);
+            this.uxMenuItemAdd.Size = new System.Drawing.Size(162, 26);
             this.uxMenuItemAdd.Text = "&Add";
             this.uxMenuItemAdd.ToolTipText = "Add item";
             this.uxMenuItemAdd.Click += new System.EventHandler(this.uxButtonAdd_Click);
@@ -366,7 +195,7 @@
             // 
             this.uxAddSecret2.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.key;
             this.uxAddSecret2.Name = "uxAddSecret2";
-            this.uxAddSecret2.Size = new System.Drawing.Size(141, 26);
+            this.uxAddSecret2.Size = new System.Drawing.Size(180, 22);
             this.uxAddSecret2.Text = "&Secret...";
             this.uxAddSecret2.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
             // 
@@ -378,7 +207,7 @@
             this.uxAddCertFromMachineStore2});
             this.uxAddCert2.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.certificate;
             this.uxAddCert2.Name = "uxAddCert2";
-            this.uxAddCert2.Size = new System.Drawing.Size(141, 26);
+            this.uxAddCert2.Size = new System.Drawing.Size(180, 22);
             this.uxAddCert2.Text = "Certificate...";
             this.uxAddCert2.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
             // 
@@ -403,11 +232,43 @@
             this.uxAddCertFromMachineStore2.Text = "From &machine store...";
             this.uxAddCertFromMachineStore2.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
             // 
+            // uxAddKVCert2
+            // 
+            this.uxAddKVCert2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.uxAddKVCertFromFile2,
+            this.uxAddKVCertFromUserStore2,
+            this.uxAddKVCertFromMachineStore2});
+            this.uxAddKVCert2.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.certificate2;
+            this.uxAddKVCert2.Name = "uxAddKVCert2";
+            this.uxAddKVCert2.Size = new System.Drawing.Size(180, 22);
+            this.uxAddKVCert2.Text = "Key Vault Certificate";
+            // 
+            // uxAddKVCertFromFile2
+            // 
+            this.uxAddKVCertFromFile2.Name = "uxAddKVCertFromFile2";
+            this.uxAddKVCertFromFile2.Size = new System.Drawing.Size(189, 22);
+            this.uxAddKVCertFromFile2.Text = "From &file...";
+            this.uxAddKVCertFromFile2.Click += new System.EventHandler(this.uxMenuItemAddKVCertificate_Click);
+            // 
+            // uxAddKVCertFromUserStore2
+            // 
+            this.uxAddKVCertFromUserStore2.Name = "uxAddKVCertFromUserStore2";
+            this.uxAddKVCertFromUserStore2.Size = new System.Drawing.Size(189, 22);
+            this.uxAddKVCertFromUserStore2.Text = "From &user store...";
+            this.uxAddKVCertFromUserStore2.Click += new System.EventHandler(this.uxMenuItemAddKVCertificate_Click);
+            // 
+            // uxAddKVCertFromMachineStore2
+            // 
+            this.uxAddKVCertFromMachineStore2.Name = "uxAddKVCertFromMachineStore2";
+            this.uxAddKVCertFromMachineStore2.Size = new System.Drawing.Size(189, 22);
+            this.uxAddKVCertFromMachineStore2.Text = "From &machine store...";
+            this.uxAddKVCertFromMachineStore2.Click += new System.EventHandler(this.uxMenuItemAddKVCertificate_Click);
+            // 
             // uxAddFile2
             // 
             this.uxAddFile2.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.folder_key;
             this.uxAddFile2.Name = "uxAddFile2";
-            this.uxAddFile2.Size = new System.Drawing.Size(141, 26);
+            this.uxAddFile2.Size = new System.Drawing.Size(180, 22);
             this.uxAddFile2.Text = "&File...";
             this.uxAddFile2.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
             // 
@@ -416,7 +277,8 @@
             this.uxMenuItemEdit.Enabled = false;
             this.uxMenuItemEdit.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_edit;
             this.uxMenuItemEdit.Name = "uxMenuItemEdit";
-            this.uxMenuItemEdit.Size = new System.Drawing.Size(125, 26);
+            this.uxMenuItemEdit.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
+            this.uxMenuItemEdit.Size = new System.Drawing.Size(162, 26);
             this.uxMenuItemEdit.Text = "&Edit...";
             this.uxMenuItemEdit.ToolTipText = "Edit item";
             this.uxMenuItemEdit.Click += new System.EventHandler(this.uxButtonEdit_Click);
@@ -426,7 +288,7 @@
             this.uxMenuItemToggle.Enabled = false;
             this.uxMenuItemToggle.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_break;
             this.uxMenuItemToggle.Name = "uxMenuItemToggle";
-            this.uxMenuItemToggle.Size = new System.Drawing.Size(125, 26);
+            this.uxMenuItemToggle.Size = new System.Drawing.Size(162, 26);
             this.uxMenuItemToggle.Text = "Disabl&e...";
             this.uxMenuItemToggle.ToolTipText = "Disable item";
             this.uxMenuItemToggle.Click += new System.EventHandler(this.uxButtonToggle_Click);
@@ -436,26 +298,55 @@
             this.uxMenuItemDelete.Enabled = false;
             this.uxMenuItemDelete.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_delete;
             this.uxMenuItemDelete.Name = "uxMenuItemDelete";
-            this.uxMenuItemDelete.Size = new System.Drawing.Size(125, 26);
+            this.uxMenuItemDelete.ShortcutKeys = System.Windows.Forms.Keys.Delete;
+            this.uxMenuItemDelete.Size = new System.Drawing.Size(162, 26);
             this.uxMenuItemDelete.Text = "&Delete...";
             this.uxMenuItemDelete.ToolTipText = "Delete item";
             this.uxMenuItemDelete.Click += new System.EventHandler(this.uxButtonDelete_Click);
             // 
+            // toolStripSeparator5
+            // 
+            toolStripSeparator5.Name = "toolStripSeparator5";
+            toolStripSeparator5.Size = new System.Drawing.Size(159, 6);
+            // 
+            // uxMenuItemShare
+            // 
+            this.uxMenuItemShare.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.uxMenuItemCopy,
+            this.uxMenuItemCopyLink,
+            this.uxMenuItemSave});
+            this.uxMenuItemShare.Enabled = false;
+            this.uxMenuItemShare.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.group;
+            this.uxMenuItemShare.Name = "uxMenuItemShare";
+            this.uxMenuItemShare.Size = new System.Drawing.Size(162, 26);
+            this.uxMenuItemShare.Text = "&Share";
+            // 
             // uxMenuItemCopy
             // 
-            this.uxMenuItemCopy.Enabled = false;
-            this.uxMenuItemCopy.Image = ((System.Drawing.Image)(resources.GetObject("uxMenuItemCopy.Image")));
+            this.uxMenuItemCopy.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.page_copy;
             this.uxMenuItemCopy.Name = "uxMenuItemCopy";
-            this.uxMenuItemCopy.Size = new System.Drawing.Size(125, 26);
-            this.uxMenuItemCopy.Text = "&Copy";
+            this.uxMenuItemCopy.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+            this.uxMenuItemCopy.Size = new System.Drawing.Size(198, 22);
+            this.uxMenuItemCopy.Text = "Copy";
             this.uxMenuItemCopy.Click += new System.EventHandler(this.uxButtonCopy_Click);
+            // 
+            // uxMenuItemCopyLink
+            // 
+            this.uxMenuItemCopyLink.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.link;
+            this.uxMenuItemCopyLink.Name = "uxMenuItemCopyLink";
+            this.uxMenuItemCopyLink.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.C)));
+            this.uxMenuItemCopyLink.Size = new System.Drawing.Size(198, 22);
+            this.uxMenuItemCopyLink.Text = "Copy &link";
+            this.uxMenuItemCopyLink.ToolTipText = "Copy link to clipboard";
+            this.uxMenuItemCopyLink.Click += new System.EventHandler(this.uxButtonCopyLink_Click);
             // 
             // uxMenuItemSave
             // 
-            this.uxMenuItemSave.Enabled = false;
             this.uxMenuItemSave.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.disk;
             this.uxMenuItemSave.Name = "uxMenuItemSave";
-            this.uxMenuItemSave.Size = new System.Drawing.Size(125, 26);
+            this.uxMenuItemSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.uxMenuItemSave.Size = new System.Drawing.Size(198, 22);
             this.uxMenuItemSave.Text = "&Save...";
             this.uxMenuItemSave.ToolTipText = "Save item to file";
             this.uxMenuItemSave.Click += new System.EventHandler(this.uxButtonSave_Click);
@@ -465,20 +356,102 @@
             this.uxMenuItemFavorite.Enabled = false;
             this.uxMenuItemFavorite.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.star;
             this.uxMenuItemFavorite.Name = "uxMenuItemFavorite";
-            this.uxMenuItemFavorite.Size = new System.Drawing.Size(125, 26);
+            this.uxMenuItemFavorite.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
+            this.uxMenuItemFavorite.Size = new System.Drawing.Size(162, 26);
             this.uxMenuItemFavorite.Text = "Favorite";
             this.uxMenuItemFavorite.ToolTipText = "Add item(s) to favorites group";
             this.uxMenuItemFavorite.Click += new System.EventHandler(this.uxButtonFavorite_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            toolStripSeparator4.Name = "toolStripSeparator4";
+            toolStripSeparator4.Size = new System.Drawing.Size(159, 6);
             // 
             // uxMenuItemRefresh
             // 
             this.uxMenuItemRefresh.Enabled = false;
             this.uxMenuItemRefresh.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_go;
             this.uxMenuItemRefresh.Name = "uxMenuItemRefresh";
-            this.uxMenuItemRefresh.Size = new System.Drawing.Size(125, 26);
+            this.uxMenuItemRefresh.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this.uxMenuItemRefresh.Size = new System.Drawing.Size(162, 26);
             this.uxMenuItemRefresh.Text = "&Refresh";
             this.uxMenuItemRefresh.ToolTipText = "Refresh all items";
             this.uxMenuItemRefresh.Click += new System.EventHandler(this.uxMenuItemRefresh_Click);
+            // 
+            // uxPropertyGridSecret
+            // 
+            this.uxPropertyGridSecret.DisabledItemForeColor = System.Drawing.SystemColors.WindowText;
+            this.uxPropertyGridSecret.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uxPropertyGridSecret.HelpVisible = false;
+            this.uxPropertyGridSecret.Location = new System.Drawing.Point(0, 0);
+            this.uxPropertyGridSecret.Margin = new System.Windows.Forms.Padding(2);
+            this.uxPropertyGridSecret.Name = "uxPropertyGridSecret";
+            this.uxPropertyGridSecret.PropertySort = System.Windows.Forms.PropertySort.NoSort;
+            this.uxPropertyGridSecret.Size = new System.Drawing.Size(1029, 186);
+            this.uxPropertyGridSecret.TabIndex = 0;
+            this.uxPropertyGridSecret.ToolbarVisible = false;
+            // 
+            // toolStripLabel1
+            // 
+            toolStripLabel1.Name = "toolStripLabel1";
+            toolStripLabel1.Size = new System.Drawing.Size(34, 24);
+            toolStripLabel1.Text = "Vault";
+            // 
+            // toolStripSeparator1
+            // 
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
+            // 
+            // toolStripSeparator2
+            // 
+            toolStripSeparator2.Name = "toolStripSeparator2";
+            toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
+            // 
+            // toolStripSeparator3
+            // 
+            toolStripSeparator3.Name = "toolStripSeparator3";
+            toolStripSeparator3.Size = new System.Drawing.Size(6, 27);
+            // 
+            // usStatusLabelSpring
+            // 
+            usStatusLabelSpring.Name = "usStatusLabelSpring";
+            usStatusLabelSpring.Size = new System.Drawing.Size(864, 17);
+            usStatusLabelSpring.Spring = true;
+            // 
+            // uxToolStrip
+            // 
+            this.uxToolStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.uxToolStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.uxToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            toolStripLabel1,
+            this.uxComboBoxVaultAlias,
+            toolStripSeparator1,
+            this.uxButtonAdd,
+            this.uxButtonEdit,
+            this.uxButtonToggle,
+            this.uxButtonDelete,
+            toolStripSeparator2,
+            this.uxImageSearch,
+            this.uxTextBoxSearch,
+            this.uxButtonShare,
+            this.uxButtonFavorite,
+            toolStripSeparator3,
+            this.uxButtonSettings,
+            this.uxButtonHelp});
+            this.uxToolStrip.Location = new System.Drawing.Point(3, 0);
+            this.uxToolStrip.Name = "uxToolStrip";
+            this.uxToolStrip.Size = new System.Drawing.Size(1009, 27);
+            this.uxToolStrip.TabIndex = 0;
+            // 
+            // uxComboBoxVaultAlias
+            // 
+            this.uxComboBoxVaultAlias.DropDownHeight = 200;
+            this.uxComboBoxVaultAlias.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.uxComboBoxVaultAlias.IntegralHeight = false;
+            this.uxComboBoxVaultAlias.Name = "uxComboBoxVaultAlias";
+            this.uxComboBoxVaultAlias.Size = new System.Drawing.Size(250, 27);
+            this.uxComboBoxVaultAlias.DropDown += new System.EventHandler(this.uxComboBoxVaultAlias_DropDown);
+            this.uxComboBoxVaultAlias.DropDownClosed += new System.EventHandler(this.uxComboBoxVaultAlias_DropDownClosed);
             // 
             // uxButtonAdd
             // 
@@ -500,7 +473,7 @@
             // 
             this.uxAddSecret.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.key;
             this.uxAddSecret.Name = "uxAddSecret";
-            this.uxAddSecret.Size = new System.Drawing.Size(184, 26);
+            this.uxAddSecret.Size = new System.Drawing.Size(180, 22);
             this.uxAddSecret.Text = "&Secret...";
             this.uxAddSecret.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
             // 
@@ -512,7 +485,7 @@
             this.uxAddCertFromMachineStore});
             this.uxAddCert.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.certificate;
             this.uxAddCert.Name = "uxAddCert";
-            this.uxAddCert.Size = new System.Drawing.Size(184, 26);
+            this.uxAddCert.Size = new System.Drawing.Size(180, 22);
             this.uxAddCert.Text = "Ce&rtificate";
             // 
             // uxAddCertFromFile
@@ -544,8 +517,8 @@
             this.uxAddKVCertFromMachineStore});
             this.uxAddKVCert.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.certificate2;
             this.uxAddKVCert.Name = "uxAddKVCert";
-            this.uxAddKVCert.Size = new System.Drawing.Size(184, 26);
-            this.uxAddKVCert.Text = "Key Vault Certificate";
+            this.uxAddKVCert.Size = new System.Drawing.Size(180, 22);
+            this.uxAddKVCert.Text = "Key Vault &Certificate";
             // 
             // uxAddKVCertFromFile
             // 
@@ -572,7 +545,7 @@
             // 
             this.uxAddFile.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.folder_key;
             this.uxAddFile.Name = "uxAddFile";
-            this.uxAddFile.Size = new System.Drawing.Size(184, 26);
+            this.uxAddFile.Size = new System.Drawing.Size(180, 22);
             this.uxAddFile.Text = "&File...";
             this.uxAddFile.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
             // 
@@ -617,6 +590,14 @@
             this.uxImageSearch.Size = new System.Drawing.Size(20, 24);
             this.uxImageSearch.ToolTipText = "Regular expression search\nExamples: elize, enabled=false";
             // 
+            // uxTextBoxSearch
+            // 
+            this.uxTextBoxSearch.Enabled = false;
+            this.uxTextBoxSearch.Name = "uxTextBoxSearch";
+            this.uxTextBoxSearch.Size = new System.Drawing.Size(120, 27);
+            this.uxTextBoxSearch.ToolTipText = "Regular expression search\nExamples: elize, enabled=false";
+            this.uxTextBoxSearch.TextChanged += new System.EventHandler(this.uxTextBoxSearch_TextChanged);
+            // 
             // uxButtonShare
             // 
             this.uxButtonShare.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -635,7 +616,7 @@
             // 
             this.uxButtonCopy.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.page_copy;
             this.uxButtonCopy.Name = "uxButtonCopy";
-            this.uxButtonCopy.Size = new System.Drawing.Size(156, 26);
+            this.uxButtonCopy.Size = new System.Drawing.Size(124, 22);
             this.uxButtonCopy.Text = "&Copy";
             this.uxButtonCopy.ToolTipText = "Copy value to clipboard";
             this.uxButtonCopy.Click += new System.EventHandler(this.uxButtonCopy_Click);
@@ -644,7 +625,7 @@
             // 
             this.uxButtonCopyLink.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.link;
             this.uxButtonCopyLink.Name = "uxButtonCopyLink";
-            this.uxButtonCopyLink.Size = new System.Drawing.Size(156, 26);
+            this.uxButtonCopyLink.Size = new System.Drawing.Size(124, 22);
             this.uxButtonCopyLink.Text = "Copy &link";
             this.uxButtonCopyLink.ToolTipText = "Copy link to clipboard";
             this.uxButtonCopyLink.Click += new System.EventHandler(this.uxButtonCopyLink_Click);
@@ -653,8 +634,8 @@
             // 
             this.uxButtonSave.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.disk;
             this.uxButtonSave.Name = "uxButtonSave";
-            this.uxButtonSave.Size = new System.Drawing.Size(156, 26);
-            this.uxButtonSave.Text = "&Save";
+            this.uxButtonSave.Size = new System.Drawing.Size(124, 22);
+            this.uxButtonSave.Text = "&Save...";
             this.uxButtonSave.ToolTipText = "Save item to file";
             this.uxButtonSave.Click += new System.EventHandler(this.uxButtonSave_Click);
             // 
@@ -685,21 +666,104 @@
             this.uxButtonHelp.Name = "uxButtonHelp";
             this.uxButtonHelp.Size = new System.Drawing.Size(56, 24);
             this.uxButtonHelp.Text = "&Help";
-            this.uxButtonHelp.ToolTipText = "Tip:\r\nYou can drag & drop secret as file to or from\r\nWindows Explorer or another " +
-    "instance of Vault Explorer.\r\nHold CTRL key to copy all secret information.";
+            this.uxButtonHelp.ToolTipText = resources.GetString("uxButtonHelp.ToolTipText");
             this.uxButtonHelp.Click += new System.EventHandler(this.uxButtonHelp_Click);
+            // 
+            // toolStripContainer1
+            // 
+            // 
+            // toolStripContainer1.BottomToolStripPanel
+            // 
+            this.toolStripContainer1.BottomToolStripPanel.Controls.Add(this.uxStatusStrip);
+            // 
+            // toolStripContainer1.ContentPanel
+            // 
+            this.toolStripContainer1.ContentPanel.Controls.Add(splitContainer1);
+            this.toolStripContainer1.ContentPanel.Margin = new System.Windows.Forms.Padding(2);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1029, 451);
+            this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
+            this.toolStripContainer1.Margin = new System.Windows.Forms.Padding(2);
+            this.toolStripContainer1.Name = "toolStripContainer1";
+            this.toolStripContainer1.Size = new System.Drawing.Size(1029, 500);
+            this.toolStripContainer1.TabIndex = 8;
+            this.toolStripContainer1.Text = "toolStripContainer1";
+            // 
+            // toolStripContainer1.TopToolStripPanel
+            // 
+            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.uxToolStrip);
+            // 
+            // uxStatusStrip
+            // 
+            this.uxStatusStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.uxStatusStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.uxStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.uxStatusLabel,
+            usStatusLabelSpring,
+            this.uxStatusProgressBar,
+            this.uxStatusLabelSecertsCount,
+            this.uxStatusLabelSecretsSelected});
+            this.uxStatusStrip.Location = new System.Drawing.Point(0, 0);
+            this.uxStatusStrip.Name = "uxStatusStrip";
+            this.uxStatusStrip.ShowItemToolTips = true;
+            this.uxStatusStrip.Size = new System.Drawing.Size(1029, 22);
+            this.uxStatusStrip.TabIndex = 0;
+            // 
+            // uxStatusLabel
+            // 
+            this.uxStatusLabel.Name = "uxStatusLabel";
+            this.uxStatusLabel.Size = new System.Drawing.Size(39, 17);
+            this.uxStatusLabel.Text = "Ready";
+            this.uxStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // uxStatusProgressBar
+            // 
+            this.uxStatusProgressBar.AutoSize = false;
+            this.uxStatusProgressBar.Margin = new System.Windows.Forms.Padding(1, 3, 0, 3);
+            this.uxStatusProgressBar.Name = "uxStatusProgressBar";
+            this.uxStatusProgressBar.Size = new System.Drawing.Size(200, 16);
+            this.uxStatusProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.uxStatusProgressBar.Visible = false;
+            // 
+            // uxStatusLabelSecertsCount
+            // 
+            this.uxStatusLabelSecertsCount.Name = "uxStatusLabelSecertsCount";
+            this.uxStatusLabelSecertsCount.Size = new System.Drawing.Size(52, 17);
+            this.uxStatusLabelSecertsCount.Text = "0 secrets";
+            this.uxStatusLabelSecertsCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // uxStatusLabelSecretsSelected
+            // 
+            this.uxStatusLabelSecretsSelected.Name = "uxStatusLabelSecretsSelected";
+            this.uxStatusLabelSecretsSelected.Size = new System.Drawing.Size(59, 17);
+            this.uxStatusLabelSecretsSelected.Text = "0 selected";
+            // 
+            // uxOpenFileDialog
+            // 
+            this.uxOpenFileDialog.Filter = resources.GetString("uxOpenFileDialog.Filter");
+            this.uxOpenFileDialog.Title = "Open file";
+            // 
+            // uxTimerSearchTextTypingCompleted
+            // 
+            this.uxTimerSearchTextTypingCompleted.Interval = 250;
+            this.uxTimerSearchTextTypingCompleted.Tick += new System.EventHandler(this.uxTimerSearchTextTypingCompleted_Tick);
+            // 
+            // uxSaveFileDialog
+            // 
+            this.uxSaveFileDialog.Filter = resources.GetString("uxSaveFileDialog.Filter");
+            this.uxSaveFileDialog.Title = "Save As";
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1372, 615);
+            this.ClientSize = new System.Drawing.Size(1029, 500);
             this.Controls.Add(this.toolStripContainer1);
             this.DataBindings.Add(new System.Windows.Forms.Binding("Location", global::Microsoft.PS.Common.Vault.Explorer.Properties.Settings.Default, "MainFormLocation", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Location = global::Microsoft.PS.Common.Vault.Explorer.Properties.Settings.Default.MainFormLocation;
-            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.MinimumSize = new System.Drawing.Size(797, 589);
+            this.Margin = new System.Windows.Forms.Padding(2);
+            this.MinimumSize = new System.Drawing.Size(602, 486);
             this.Name = "MainForm";
             this.Text = "Azure Key Vault Explorer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
@@ -743,7 +807,6 @@
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemEdit;
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemDelete;
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemRefresh;
-        private System.Windows.Forms.ToolStripMenuItem uxMenuItemCopy;
         private System.Windows.Forms.ToolStripButton uxButtonToggle;
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemToggle;
         private System.Windows.Forms.ToolStripMenuItem uxAddSecret2;
@@ -757,7 +820,6 @@
         private System.Windows.Forms.ToolStrip uxToolStrip;
         private System.Windows.Forms.ToolStripStatusLabel uxStatusLabelSecertsCount;
         private System.Windows.Forms.ToolStripMenuItem uxButtonSave;
-        private System.Windows.Forms.ToolStripMenuItem uxMenuItemSave;
         private System.Windows.Forms.SaveFileDialog uxSaveFileDialog;
         private System.Windows.Forms.ToolStripProgressBar uxStatusProgressBar;
         private System.Windows.Forms.ToolStripStatusLabel uxStatusLabelSecretsSelected;
@@ -775,6 +837,14 @@
         private System.Windows.Forms.ToolStripMenuItem uxAddKVCertFromMachineStore;
         private System.Windows.Forms.ToolStripDropDownButton uxButtonShare;
         private System.Windows.Forms.ToolStripMenuItem uxButtonCopyLink;
+        private System.Windows.Forms.ToolStripMenuItem uxAddKVCert2;
+        private System.Windows.Forms.ToolStripMenuItem uxAddKVCertFromFile2;
+        private System.Windows.Forms.ToolStripMenuItem uxAddKVCertFromUserStore2;
+        private System.Windows.Forms.ToolStripMenuItem uxAddKVCertFromMachineStore2;
+        private System.Windows.Forms.ToolStripMenuItem uxMenuItemShare;
+        private System.Windows.Forms.ToolStripMenuItem uxMenuItemCopy;
+        private System.Windows.Forms.ToolStripMenuItem uxMenuItemCopyLink;
+        private System.Windows.Forms.ToolStripMenuItem uxMenuItemSave;
     }
 }
 

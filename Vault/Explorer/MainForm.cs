@@ -146,12 +146,16 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
                     uxButtonAdd.Enabled = uxMenuItemAdd.Enabled = true;
                     uxImageSearch.Enabled = uxTextBoxSearch.Enabled = true;
-                    uxAddKVCert.Visible = CurrentVaultAlias.KeyVaultCertificates;
+                    uxAddKVCert.Visible = uxAddKVCert2.Visible = CurrentVaultAlias.KeyVaultCertificates;
                     uxListViewSecrets.AllowDrop = true;
                     uxListViewSecrets.RefreshGroupsHeader();
                     RefreshItemsCount();
                     uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search
                 }
+                catch
+                {
+                    uxListViewSecrets.RemoveAllItems();
+                }                 
                 finally
                 {
                     uxListViewSecrets.EndUpdate();
@@ -166,8 +170,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
             ListViewItemBase selectedItem = singleItemSelected ? uxListViewSecrets.SelectedItems[0] as ListViewItemBase : null;
             bool secretEnabled = selectedItem?.Enabled ?? false;
             bool favorite = selectedItem?.Favorite ?? false;
-            uxButtonEdit.Enabled = uxButtonShare.Enabled = uxButtonCopy.Enabled = uxButtonSave.Enabled = secretEnabled;
-            uxMenuItemEdit.Enabled = uxMenuItemCopy.Enabled = uxMenuItemSave.Enabled = secretEnabled;
+            uxButtonEdit.Enabled = uxButtonShare.Enabled = secretEnabled;
+            uxMenuItemEdit.Enabled = uxMenuItemShare.Enabled = secretEnabled;
             uxButtonDelete.Enabled = uxMenuItemDelete.Enabled = uxButtonFavorite.Enabled = uxMenuItemFavorite.Enabled = manyItemsSelected;
             uxButtonToggle.Enabled = uxMenuItemToggle.Enabled = singleItemSelected;
             uxButtonToggle.Text = uxMenuItemToggle.Text = secretEnabled ? "Disabl&e" : "&Enable";
@@ -199,9 +203,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 case Keys.Insert:
                     uxButtonAdd.PerformClick();
                     return;
-                case Keys.Delete:
-                    uxButtonDelete.PerformClick();
-                    return;
                 case Keys.Enter:
                     uxButtonEdit.PerformClick();
                     return;
@@ -211,21 +212,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 case Keys.A:
                     foreach (ListViewItemBase item in uxListViewSecrets.Items) item.Selected = true;
-                    break;
-                case Keys.C:
-                    if (e.Shift) uxButtonCopyLink.PerformClick(); else uxButtonCopy.PerformClick();
-                    return;
-                case Keys.E:
-                    uxButtonEdit.PerformClick();
                     return;
                 case Keys.F:
-                    uxButtonFavorite.PerformClick();
-                    return;
-                case Keys.R:
-                    uxMenuItemRefresh.PerformClick();
-                    return;
-                case Keys.S:
-                    uxButtonSave.PerformClick();
+                    uxTextBoxSearch.Focus();
                     return;
             }
         }
@@ -244,7 +233,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
             else
             {
-                uxOpenFileDialog.FilterIndex = (sender == uxAddCertFromFile) || (sender == uxAddCertFromFile2) || (sender == uxAddKVCertFromFile) ? ContentType.Pkcs12.ToFilterIndex() : ContentType.None.ToFilterIndex();
+                uxOpenFileDialog.FilterIndex = (sender == uxAddCertFromFile) || (sender == uxAddCertFromFile2) || (sender == uxAddKVCertFromFile) || (sender == uxAddKVCertFromFile2)  ? ContentType.Pkcs12.ToFilterIndex() : ContentType.None.ToFilterIndex();
                 if (uxOpenFileDialog.ShowDialog() != DialogResult.OK) return null;
                 fi = new FileInfo(uxOpenFileDialog.FileName);
             }
@@ -317,16 +306,16 @@ namespace Microsoft.PS.Common.Vault.Explorer
             using (var dtf = new DeleteTempFileInfo())
             {
                 // Add certificate from file
-                if (sender == uxAddKVCertFromFile)
+                if ((sender == uxAddKVCertFromFile) || (sender == uxAddKVCertFromFile2))
                 {
                     dtf.FileInfoObject = GetFileInfo(sender, e);
                     if (dtf.FileInfoObject == null) return;
                     certDlg = new CertificateDialog(this, dtf.FileInfoObject);
                 }
                 // Add certificate from store
-                if ((sender == uxAddKVCertFromUserStore) || (sender == uxAddKVCertFromMachineStore))
+                if ((sender == uxAddKVCertFromUserStore) || (sender == uxAddKVCertFromMachineStore) || (sender == uxAddKVCertFromUserStore2) || (sender == uxAddKVCertFromMachineStore2))
                 {
-                    var cert = Utils.SelectCertFromStore(StoreName.My, (sender == uxAddKVCertFromUserStore) ? StoreLocation.CurrentUser : StoreLocation.LocalMachine, CurrentVaultAlias.Alias, Handle);
+                    var cert = Utils.SelectCertFromStore(StoreName.My, (sender == uxAddKVCertFromUserStore) || (sender == uxAddKVCertFromUserStore2) ? StoreLocation.CurrentUser : StoreLocation.LocalMachine, CurrentVaultAlias.Alias, Handle);
                     if (cert == null) return;
                     certDlg = new CertificateDialog(this, cert);
                 }
