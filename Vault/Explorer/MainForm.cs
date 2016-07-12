@@ -428,7 +428,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             var item = uxListViewSecrets.FirstSelectedItem;
             if (null != item)
             {
-                //item.
+                Utils.ClipboardSetHyperlink(item.Link);
             }
         }
 

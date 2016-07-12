@@ -20,8 +20,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public readonly string Thumbprint;
 
         private ListViewItemCertificate(ISession session, CertificateIdentifier identifier, CertificateAttributes attributes, string thumbprint, IDictionary<string, string> tags) : 
-            base(session, KeyVaultCertificatesGroup,
-                identifier, tags, attributes.Enabled, attributes.Created, attributes.Updated, attributes.NotBefore, attributes.Expires)
+            base(session, KeyVaultCertificatesGroup, identifier, tags, attributes.Enabled, attributes.Created, attributes.Updated, attributes.NotBefore, attributes.Expires)
         {
             Attributes = attributes;
             Thumbprint = thumbprint?.ToLowerInvariant();
