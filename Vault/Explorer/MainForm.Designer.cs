@@ -30,16 +30,34 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.SplitContainer splitContainer1;
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("", System.Windows.Forms.HorizontalAlignment.Center);
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("", System.Windows.Forms.HorizontalAlignment.Center);
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("", System.Windows.Forms.HorizontalAlignment.Center);
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("", System.Windows.Forms.HorizontalAlignment.Center);
+            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("", System.Windows.Forms.HorizontalAlignment.Center);
             System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
             System.Windows.Forms.ToolStripLabel toolStripLabel1;
             System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
             System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
             System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
             System.Windows.Forms.ToolStripStatusLabel usStatusLabelSpring;
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.uxListViewSecrets = new Microsoft.PS.Common.Vault.Explorer.ListViewSecrets();
             this.uxContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.uxPropertyGridSecret = new System.Windows.Forms.PropertyGrid();
+            this.uxToolStrip = new System.Windows.Forms.ToolStrip();
+            this.uxComboBoxVaultAlias = new System.Windows.Forms.ToolStripComboBox();
+            this.uxTextBoxSearch = new System.Windows.Forms.ToolStripTextBox();
+            this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
+            this.uxStatusStrip = new System.Windows.Forms.StatusStrip();
+            this.uxStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.uxStatusProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.uxStatusLabelSecertsCount = new System.Windows.Forms.ToolStripStatusLabel();
+            this.uxStatusLabelSecretsSelected = new System.Windows.Forms.ToolStripStatusLabel();
+            this.uxOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.uxTimerSearchTextTypingCompleted = new System.Windows.Forms.Timer(this.components);
+            this.uxSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.uxMenuItemAdd = new System.Windows.Forms.ToolStripMenuItem();
             this.uxAddSecret2 = new System.Windows.Forms.ToolStripMenuItem();
             this.uxAddCert2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,9 +72,6 @@
             this.uxMenuItemSave = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemFavorite = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemRefresh = new System.Windows.Forms.ToolStripMenuItem();
-            this.uxPropertyGridSecret = new System.Windows.Forms.PropertyGrid();
-            this.uxToolStrip = new System.Windows.Forms.ToolStrip();
-            this.uxComboBoxVaultAlias = new System.Windows.Forms.ToolStripComboBox();
             this.uxButtonAdd = new System.Windows.Forms.ToolStripSplitButton();
             this.uxAddSecret = new System.Windows.Forms.ToolStripMenuItem();
             this.uxAddCert = new System.Windows.Forms.ToolStripMenuItem();
@@ -72,23 +87,13 @@
             this.uxButtonToggle = new System.Windows.Forms.ToolStripButton();
             this.uxButtonDelete = new System.Windows.Forms.ToolStripButton();
             this.uxImageSearch = new System.Windows.Forms.ToolStripLabel();
-            this.uxTextBoxSearch = new System.Windows.Forms.ToolStripTextBox();
-            this.uxButtonCopy = new System.Windows.Forms.ToolStripButton();
-            this.uxButtonSave = new System.Windows.Forms.ToolStripButton();
+            this.uxButtonShare = new System.Windows.Forms.ToolStripDropDownButton();
+            this.uxButtonCopy = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxButtonCopyLink = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxButtonSave = new System.Windows.Forms.ToolStripMenuItem();
             this.uxButtonFavorite = new System.Windows.Forms.ToolStripButton();
             this.uxButtonSettings = new System.Windows.Forms.ToolStripButton();
             this.uxButtonHelp = new System.Windows.Forms.ToolStripButton();
-            this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
-            this.uxStatusStrip = new System.Windows.Forms.StatusStrip();
-            this.uxStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.uxStatusProgressBar = new System.Windows.Forms.ToolStripProgressBar();
-            this.uxStatusLabelSecertsCount = new System.Windows.Forms.ToolStripStatusLabel();
-            this.uxStatusLabelSecretsSelected = new System.Windows.Forms.ToolStripStatusLabel();
-            this.uxOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.uxTimerSearchTextTypingCompleted = new System.Windows.Forms.Timer(this.components);
-            this.uxSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.uxButtonShare = new System.Windows.Forms.ToolStripDropDownButton();
-            this.uxButtonCopyLink = new System.Windows.Forms.ToolStripMenuItem();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
@@ -166,147 +171,15 @@
             this.uxContextMenuStrip.Name = "uxContextMenuStrip";
             this.uxContextMenuStrip.Size = new System.Drawing.Size(144, 224);
             // 
-            // uxMenuItemAdd
-            // 
-            this.uxMenuItemAdd.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.uxAddSecret2,
-            this.uxAddCert2,
-            this.uxAddFile2});
-            this.uxMenuItemAdd.Enabled = false;
-            this.uxMenuItemAdd.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_add;
-            this.uxMenuItemAdd.Name = "uxMenuItemAdd";
-            this.uxMenuItemAdd.Size = new System.Drawing.Size(143, 26);
-            this.uxMenuItemAdd.Text = "&Add";
-            this.uxMenuItemAdd.ToolTipText = "Add item";
-            this.uxMenuItemAdd.Click += new System.EventHandler(this.uxButtonAdd_Click);
-            // 
-            // uxAddSecret2
-            // 
-            this.uxAddSecret2.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.key;
-            this.uxAddSecret2.Name = "uxAddSecret2";
-            this.uxAddSecret2.Size = new System.Drawing.Size(161, 26);
-            this.uxAddSecret2.Text = "&Secret...";
-            this.uxAddSecret2.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
-            // 
-            // uxAddCert2
-            // 
-            this.uxAddCert2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.uxAddCertFromFile2,
-            this.uxAddCertFromUserStore2,
-            this.uxAddCertFromMachineStore2});
-            this.uxAddCert2.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.certificate;
-            this.uxAddCert2.Name = "uxAddCert2";
-            this.uxAddCert2.Size = new System.Drawing.Size(161, 26);
-            this.uxAddCert2.Text = "Certificate...";
-            this.uxAddCert2.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
-            // 
-            // uxAddCertFromFile2
-            // 
-            this.uxAddCertFromFile2.Name = "uxAddCertFromFile2";
-            this.uxAddCertFromFile2.Size = new System.Drawing.Size(224, 26);
-            this.uxAddCertFromFile2.Text = "From &file...";
-            this.uxAddCertFromFile2.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
-            // 
-            // uxAddCertFromUserStore2
-            // 
-            this.uxAddCertFromUserStore2.Name = "uxAddCertFromUserStore2";
-            this.uxAddCertFromUserStore2.Size = new System.Drawing.Size(224, 26);
-            this.uxAddCertFromUserStore2.Text = "From &user store...";
-            this.uxAddCertFromUserStore2.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
-            // 
-            // uxAddCertFromMachineStore2
-            // 
-            this.uxAddCertFromMachineStore2.Name = "uxAddCertFromMachineStore2";
-            this.uxAddCertFromMachineStore2.Size = new System.Drawing.Size(224, 26);
-            this.uxAddCertFromMachineStore2.Text = "From &machine store...";
-            this.uxAddCertFromMachineStore2.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
-            // 
-            // uxAddFile2
-            // 
-            this.uxAddFile2.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.folder_key;
-            this.uxAddFile2.Name = "uxAddFile2";
-            this.uxAddFile2.Size = new System.Drawing.Size(161, 26);
-            this.uxAddFile2.Text = "&File...";
-            this.uxAddFile2.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
-            // 
-            // uxMenuItemEdit
-            // 
-            this.uxMenuItemEdit.Enabled = false;
-            this.uxMenuItemEdit.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_edit;
-            this.uxMenuItemEdit.Name = "uxMenuItemEdit";
-            this.uxMenuItemEdit.Size = new System.Drawing.Size(143, 26);
-            this.uxMenuItemEdit.Text = "&Edit...";
-            this.uxMenuItemEdit.ToolTipText = "Edit item";
-            this.uxMenuItemEdit.Click += new System.EventHandler(this.uxButtonEdit_Click);
-            // 
-            // uxMenuItemToggle
-            // 
-            this.uxMenuItemToggle.Enabled = false;
-            this.uxMenuItemToggle.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_break;
-            this.uxMenuItemToggle.Name = "uxMenuItemToggle";
-            this.uxMenuItemToggle.Size = new System.Drawing.Size(143, 26);
-            this.uxMenuItemToggle.Text = "Disabl&e...";
-            this.uxMenuItemToggle.ToolTipText = "Disable item";
-            this.uxMenuItemToggle.Click += new System.EventHandler(this.uxButtonToggle_Click);
-            // 
-            // uxMenuItemDelete
-            // 
-            this.uxMenuItemDelete.Enabled = false;
-            this.uxMenuItemDelete.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_delete;
-            this.uxMenuItemDelete.Name = "uxMenuItemDelete";
-            this.uxMenuItemDelete.Size = new System.Drawing.Size(143, 26);
-            this.uxMenuItemDelete.Text = "&Delete...";
-            this.uxMenuItemDelete.ToolTipText = "Delete item";
-            this.uxMenuItemDelete.Click += new System.EventHandler(this.uxButtonDelete_Click);
-            // 
             // toolStripSeparator5
             // 
             toolStripSeparator5.Name = "toolStripSeparator5";
             toolStripSeparator5.Size = new System.Drawing.Size(140, 6);
             // 
-            // uxMenuItemCopy
-            // 
-            this.uxMenuItemCopy.Enabled = false;
-            this.uxMenuItemCopy.Image = ((System.Drawing.Image)(resources.GetObject("uxMenuItemCopy.Image")));
-            this.uxMenuItemCopy.Name = "uxMenuItemCopy";
-            this.uxMenuItemCopy.Size = new System.Drawing.Size(143, 26);
-            this.uxMenuItemCopy.Text = "&Copy";
-            this.uxMenuItemCopy.Click += new System.EventHandler(this.uxButtonCopy_Click);
-            // 
-            // uxMenuItemSave
-            // 
-            this.uxMenuItemSave.Enabled = false;
-            this.uxMenuItemSave.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.disk;
-            this.uxMenuItemSave.Name = "uxMenuItemSave";
-            this.uxMenuItemSave.Size = new System.Drawing.Size(143, 26);
-            this.uxMenuItemSave.Text = "&Save...";
-            this.uxMenuItemSave.ToolTipText = "Save item to file";
-            this.uxMenuItemSave.Click += new System.EventHandler(this.uxButtonSave_Click);
-            // 
-            // uxMenuItemFavorite
-            // 
-            this.uxMenuItemFavorite.Enabled = false;
-            this.uxMenuItemFavorite.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.star;
-            this.uxMenuItemFavorite.Name = "uxMenuItemFavorite";
-            this.uxMenuItemFavorite.Size = new System.Drawing.Size(143, 26);
-            this.uxMenuItemFavorite.Text = "Favorite";
-            this.uxMenuItemFavorite.ToolTipText = "Add item(s) to favorites group";
-            this.uxMenuItemFavorite.Click += new System.EventHandler(this.uxButtonFavorite_Click);
-            // 
             // toolStripSeparator4
             // 
             toolStripSeparator4.Name = "toolStripSeparator4";
             toolStripSeparator4.Size = new System.Drawing.Size(140, 6);
-            // 
-            // uxMenuItemRefresh
-            // 
-            this.uxMenuItemRefresh.Enabled = false;
-            this.uxMenuItemRefresh.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_go;
-            this.uxMenuItemRefresh.Name = "uxMenuItemRefresh";
-            this.uxMenuItemRefresh.Size = new System.Drawing.Size(143, 26);
-            this.uxMenuItemRefresh.Text = "&Refresh";
-            this.uxMenuItemRefresh.ToolTipText = "Refresh all items";
-            this.uxMenuItemRefresh.Click += new System.EventHandler(this.uxMenuItemRefresh_Click);
             // 
             // uxPropertyGridSecret
             // 
@@ -364,8 +237,6 @@
             this.uxImageSearch,
             this.uxTextBoxSearch,
             this.uxButtonShare,
-            this.uxButtonCopy,
-            this.uxButtonSave,
             this.uxButtonFavorite,
             toolStripSeparator3,
             this.uxButtonSettings,
@@ -385,143 +256,6 @@
             this.uxComboBoxVaultAlias.DropDown += new System.EventHandler(this.uxComboBoxVaultAlias_DropDown);
             this.uxComboBoxVaultAlias.DropDownClosed += new System.EventHandler(this.uxComboBoxVaultAlias_DropDownClosed);
             // 
-            // uxButtonAdd
-            // 
-            this.uxButtonAdd.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.uxAddSecret,
-            this.uxAddCert,
-            this.uxAddKVCert,
-            this.uxAddFile});
-            this.uxButtonAdd.Enabled = false;
-            this.uxButtonAdd.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_add;
-            this.uxButtonAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.uxButtonAdd.Name = "uxButtonAdd";
-            this.uxButtonAdd.Size = new System.Drawing.Size(76, 25);
-            this.uxButtonAdd.Text = "&Add";
-            this.uxButtonAdd.ToolTipText = "Add item";
-            this.uxButtonAdd.Click += new System.EventHandler(this.uxButtonAdd_Click);
-            // 
-            // uxAddSecret
-            // 
-            this.uxAddSecret.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.key;
-            this.uxAddSecret.Name = "uxAddSecret";
-            this.uxAddSecret.Size = new System.Drawing.Size(217, 26);
-            this.uxAddSecret.Text = "&Secret...";
-            this.uxAddSecret.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
-            // 
-            // uxAddCert
-            // 
-            this.uxAddCert.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.uxAddCertFromFile,
-            this.uxAddCertFromUserStore,
-            this.uxAddCertFromMachineStore});
-            this.uxAddCert.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.certificate;
-            this.uxAddCert.Name = "uxAddCert";
-            this.uxAddCert.Size = new System.Drawing.Size(217, 26);
-            this.uxAddCert.Text = "Ce&rtificate";
-            // 
-            // uxAddCertFromFile
-            // 
-            this.uxAddCertFromFile.Name = "uxAddCertFromFile";
-            this.uxAddCertFromFile.Size = new System.Drawing.Size(224, 26);
-            this.uxAddCertFromFile.Text = "From &file...";
-            this.uxAddCertFromFile.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
-            // 
-            // uxAddCertFromUserStore
-            // 
-            this.uxAddCertFromUserStore.Name = "uxAddCertFromUserStore";
-            this.uxAddCertFromUserStore.Size = new System.Drawing.Size(224, 26);
-            this.uxAddCertFromUserStore.Text = "From &user store...";
-            this.uxAddCertFromUserStore.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
-            // 
-            // uxAddCertFromMachineStore
-            // 
-            this.uxAddCertFromMachineStore.Name = "uxAddCertFromMachineStore";
-            this.uxAddCertFromMachineStore.Size = new System.Drawing.Size(224, 26);
-            this.uxAddCertFromMachineStore.Text = "From &machine store...";
-            this.uxAddCertFromMachineStore.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
-            // 
-            // uxAddKVCert
-            // 
-            this.uxAddKVCert.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.uxAddKVCertFromFile,
-            this.uxAddKVCertFromUserStore,
-            this.uxAddKVCertFromMachineStore});
-            this.uxAddKVCert.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.certificate2;
-            this.uxAddKVCert.Name = "uxAddKVCert";
-            this.uxAddKVCert.Size = new System.Drawing.Size(217, 26);
-            this.uxAddKVCert.Text = "Key Vault Certificate";
-            // 
-            // uxAddKVCertFromFile
-            // 
-            this.uxAddKVCertFromFile.Name = "uxAddKVCertFromFile";
-            this.uxAddKVCertFromFile.Size = new System.Drawing.Size(224, 26);
-            this.uxAddKVCertFromFile.Text = "From &file...";
-            this.uxAddKVCertFromFile.Click += new System.EventHandler(this.uxMenuItemAddKVCertificate_Click);
-            // 
-            // uxAddKVCertFromUserStore
-            // 
-            this.uxAddKVCertFromUserStore.Name = "uxAddKVCertFromUserStore";
-            this.uxAddKVCertFromUserStore.Size = new System.Drawing.Size(224, 26);
-            this.uxAddKVCertFromUserStore.Text = "From &user store...";
-            this.uxAddKVCertFromUserStore.Click += new System.EventHandler(this.uxMenuItemAddKVCertificate_Click);
-            // 
-            // uxAddKVCertFromMachineStore
-            // 
-            this.uxAddKVCertFromMachineStore.Name = "uxAddKVCertFromMachineStore";
-            this.uxAddKVCertFromMachineStore.Size = new System.Drawing.Size(224, 26);
-            this.uxAddKVCertFromMachineStore.Text = "From &machine store...";
-            this.uxAddKVCertFromMachineStore.Click += new System.EventHandler(this.uxMenuItemAddKVCertificate_Click);
-            // 
-            // uxAddFile
-            // 
-            this.uxAddFile.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.folder_key;
-            this.uxAddFile.Name = "uxAddFile";
-            this.uxAddFile.Size = new System.Drawing.Size(217, 26);
-            this.uxAddFile.Text = "&File...";
-            this.uxAddFile.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
-            // 
-            // uxButtonEdit
-            // 
-            this.uxButtonEdit.Enabled = false;
-            this.uxButtonEdit.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_edit;
-            this.uxButtonEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.uxButtonEdit.Name = "uxButtonEdit";
-            this.uxButtonEdit.Size = new System.Drawing.Size(59, 25);
-            this.uxButtonEdit.Text = "&Edit";
-            this.uxButtonEdit.ToolTipText = "Edit item";
-            this.uxButtonEdit.Click += new System.EventHandler(this.uxButtonEdit_Click);
-            // 
-            // uxButtonToggle
-            // 
-            this.uxButtonToggle.Enabled = false;
-            this.uxButtonToggle.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_break;
-            this.uxButtonToggle.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.uxButtonToggle.Name = "uxButtonToggle";
-            this.uxButtonToggle.Size = new System.Drawing.Size(83, 25);
-            this.uxButtonToggle.Text = "Disabl&e";
-            this.uxButtonToggle.ToolTipText = "Disable item";
-            this.uxButtonToggle.Click += new System.EventHandler(this.uxButtonToggle_Click);
-            // 
-            // uxButtonDelete
-            // 
-            this.uxButtonDelete.Enabled = false;
-            this.uxButtonDelete.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_delete;
-            this.uxButtonDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.uxButtonDelete.Name = "uxButtonDelete";
-            this.uxButtonDelete.Size = new System.Drawing.Size(77, 25);
-            this.uxButtonDelete.Text = "&Delete";
-            this.uxButtonDelete.ToolTipText = "Delete item";
-            this.uxButtonDelete.Click += new System.EventHandler(this.uxButtonDelete_Click);
-            // 
-            // uxImageSearch
-            // 
-            this.uxImageSearch.Enabled = false;
-            this.uxImageSearch.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.magnifier;
-            this.uxImageSearch.Name = "uxImageSearch";
-            this.uxImageSearch.Size = new System.Drawing.Size(20, 25);
-            this.uxImageSearch.ToolTipText = "Regular expression search\nExamples: elize, enabled=false";
-            // 
             // uxTextBoxSearch
             // 
             this.uxTextBoxSearch.Enabled = false;
@@ -529,58 +263,6 @@
             this.uxTextBoxSearch.Size = new System.Drawing.Size(120, 28);
             this.uxTextBoxSearch.ToolTipText = "Regular expression search\nExamples: elize, enabled=false";
             this.uxTextBoxSearch.TextChanged += new System.EventHandler(this.uxTextBoxSearch_TextChanged);
-            // 
-            // uxButtonCopy
-            // 
-            this.uxButtonCopy.Enabled = false;
-            this.uxButtonCopy.Image = ((System.Drawing.Image)(resources.GetObject("uxButtonCopy.Image")));
-            this.uxButtonCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.uxButtonCopy.Name = "uxButtonCopy";
-            this.uxButtonCopy.Size = new System.Drawing.Size(67, 25);
-            this.uxButtonCopy.Text = "&Copy";
-            this.uxButtonCopy.Click += new System.EventHandler(this.uxButtonCopy_Click);
-            // 
-            // uxButtonSave
-            // 
-            this.uxButtonSave.Enabled = false;
-            this.uxButtonSave.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.disk;
-            this.uxButtonSave.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.uxButtonSave.Name = "uxButtonSave";
-            this.uxButtonSave.Size = new System.Drawing.Size(64, 25);
-            this.uxButtonSave.Text = "&Save";
-            this.uxButtonSave.ToolTipText = "Save item to file";
-            this.uxButtonSave.Click += new System.EventHandler(this.uxButtonSave_Click);
-            // 
-            // uxButtonFavorite
-            // 
-            this.uxButtonFavorite.Enabled = false;
-            this.uxButtonFavorite.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.star;
-            this.uxButtonFavorite.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.uxButtonFavorite.Name = "uxButtonFavorite";
-            this.uxButtonFavorite.Size = new System.Drawing.Size(85, 25);
-            this.uxButtonFavorite.Text = "&Favorite";
-            this.uxButtonFavorite.ToolTipText = "Add item(s) to favorites group";
-            this.uxButtonFavorite.Click += new System.EventHandler(this.uxButtonFavorite_Click);
-            // 
-            // uxButtonSettings
-            // 
-            this.uxButtonSettings.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.wrench;
-            this.uxButtonSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.uxButtonSettings.Name = "uxButtonSettings";
-            this.uxButtonSettings.Size = new System.Drawing.Size(86, 25);
-            this.uxButtonSettings.Text = "&Settings";
-            this.uxButtonSettings.Click += new System.EventHandler(this.uxButtonSettings_Click);
-            // 
-            // uxButtonHelp
-            // 
-            this.uxButtonHelp.Image = ((System.Drawing.Image)(resources.GetObject("uxButtonHelp.Image")));
-            this.uxButtonHelp.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.uxButtonHelp.Name = "uxButtonHelp";
-            this.uxButtonHelp.Size = new System.Drawing.Size(65, 25);
-            this.uxButtonHelp.Text = "&Help";
-            this.uxButtonHelp.ToolTipText = "Tip:\r\nYou can drag & drop secret as file to or from\r\nWindows Explorer or another " +
-    "instance of Vault Explorer.\r\nHold CTRL key to copy all secret information.";
-            this.uxButtonHelp.Click += new System.EventHandler(this.uxButtonHelp_Click);
             // 
             // toolStripContainer1
             // 
@@ -592,13 +274,13 @@
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(splitContainer1);
-            this.toolStripContainer1.ContentPanel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1372, 562);
+            this.toolStripContainer1.ContentPanel.Margin = new System.Windows.Forms.Padding(2);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1029, 451);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
-            this.toolStripContainer1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.toolStripContainer1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.toolStripContainer1.Name = "toolStripContainer1";
-            this.toolStripContainer1.Size = new System.Drawing.Size(1372, 615);
+            this.toolStripContainer1.Size = new System.Drawing.Size(1029, 500);
             this.toolStripContainer1.TabIndex = 8;
             this.toolStripContainer1.Text = "toolStripContainer1";
             // 
@@ -619,13 +301,13 @@
             this.uxStatusStrip.Location = new System.Drawing.Point(0, 0);
             this.uxStatusStrip.Name = "uxStatusStrip";
             this.uxStatusStrip.ShowItemToolTips = true;
-            this.uxStatusStrip.Size = new System.Drawing.Size(1372, 25);
+            this.uxStatusStrip.Size = new System.Drawing.Size(1029, 22);
             this.uxStatusStrip.TabIndex = 0;
             // 
             // uxStatusLabel
             // 
             this.uxStatusLabel.Name = "uxStatusLabel";
-            this.uxStatusLabel.Size = new System.Drawing.Size(50, 20);
+            this.uxStatusLabel.Size = new System.Drawing.Size(39, 17);
             this.uxStatusLabel.Text = "Ready";
             this.uxStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -641,14 +323,14 @@
             // uxStatusLabelSecertsCount
             // 
             this.uxStatusLabelSecertsCount.Name = "uxStatusLabelSecertsCount";
-            this.uxStatusLabelSecertsCount.Size = new System.Drawing.Size(66, 20);
+            this.uxStatusLabelSecertsCount.Size = new System.Drawing.Size(52, 17);
             this.uxStatusLabelSecertsCount.Text = "0 secrets";
             this.uxStatusLabelSecertsCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // uxStatusLabelSecretsSelected
             // 
             this.uxStatusLabelSecretsSelected.Name = "uxStatusLabelSecretsSelected";
-            this.uxStatusLabelSecretsSelected.Size = new System.Drawing.Size(76, 20);
+            this.uxStatusLabelSecretsSelected.Size = new System.Drawing.Size(59, 17);
             this.uxStatusLabelSecretsSelected.Text = "0 selected";
             // 
             // uxOpenFileDialog
@@ -666,23 +348,345 @@
             this.uxSaveFileDialog.Filter = resources.GetString("uxSaveFileDialog.Filter");
             this.uxSaveFileDialog.Title = "Save As";
             // 
+            // uxMenuItemAdd
+            // 
+            this.uxMenuItemAdd.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.uxAddSecret2,
+            this.uxAddCert2,
+            this.uxAddFile2});
+            this.uxMenuItemAdd.Enabled = false;
+            this.uxMenuItemAdd.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_add;
+            this.uxMenuItemAdd.Name = "uxMenuItemAdd";
+            this.uxMenuItemAdd.Size = new System.Drawing.Size(125, 26);
+            this.uxMenuItemAdd.Text = "&Add";
+            this.uxMenuItemAdd.ToolTipText = "Add item";
+            this.uxMenuItemAdd.Click += new System.EventHandler(this.uxButtonAdd_Click);
+            // 
+            // uxAddSecret2
+            // 
+            this.uxAddSecret2.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.key;
+            this.uxAddSecret2.Name = "uxAddSecret2";
+            this.uxAddSecret2.Size = new System.Drawing.Size(141, 26);
+            this.uxAddSecret2.Text = "&Secret...";
+            this.uxAddSecret2.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
+            // 
+            // uxAddCert2
+            // 
+            this.uxAddCert2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.uxAddCertFromFile2,
+            this.uxAddCertFromUserStore2,
+            this.uxAddCertFromMachineStore2});
+            this.uxAddCert2.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.certificate;
+            this.uxAddCert2.Name = "uxAddCert2";
+            this.uxAddCert2.Size = new System.Drawing.Size(141, 26);
+            this.uxAddCert2.Text = "Certificate...";
+            this.uxAddCert2.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
+            // 
+            // uxAddCertFromFile2
+            // 
+            this.uxAddCertFromFile2.Name = "uxAddCertFromFile2";
+            this.uxAddCertFromFile2.Size = new System.Drawing.Size(189, 22);
+            this.uxAddCertFromFile2.Text = "From &file...";
+            this.uxAddCertFromFile2.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
+            // 
+            // uxAddCertFromUserStore2
+            // 
+            this.uxAddCertFromUserStore2.Name = "uxAddCertFromUserStore2";
+            this.uxAddCertFromUserStore2.Size = new System.Drawing.Size(189, 22);
+            this.uxAddCertFromUserStore2.Text = "From &user store...";
+            this.uxAddCertFromUserStore2.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
+            // 
+            // uxAddCertFromMachineStore2
+            // 
+            this.uxAddCertFromMachineStore2.Name = "uxAddCertFromMachineStore2";
+            this.uxAddCertFromMachineStore2.Size = new System.Drawing.Size(189, 22);
+            this.uxAddCertFromMachineStore2.Text = "From &machine store...";
+            this.uxAddCertFromMachineStore2.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
+            // 
+            // uxAddFile2
+            // 
+            this.uxAddFile2.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.folder_key;
+            this.uxAddFile2.Name = "uxAddFile2";
+            this.uxAddFile2.Size = new System.Drawing.Size(141, 26);
+            this.uxAddFile2.Text = "&File...";
+            this.uxAddFile2.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
+            // 
+            // uxMenuItemEdit
+            // 
+            this.uxMenuItemEdit.Enabled = false;
+            this.uxMenuItemEdit.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_edit;
+            this.uxMenuItemEdit.Name = "uxMenuItemEdit";
+            this.uxMenuItemEdit.Size = new System.Drawing.Size(125, 26);
+            this.uxMenuItemEdit.Text = "&Edit...";
+            this.uxMenuItemEdit.ToolTipText = "Edit item";
+            this.uxMenuItemEdit.Click += new System.EventHandler(this.uxButtonEdit_Click);
+            // 
+            // uxMenuItemToggle
+            // 
+            this.uxMenuItemToggle.Enabled = false;
+            this.uxMenuItemToggle.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_break;
+            this.uxMenuItemToggle.Name = "uxMenuItemToggle";
+            this.uxMenuItemToggle.Size = new System.Drawing.Size(125, 26);
+            this.uxMenuItemToggle.Text = "Disabl&e...";
+            this.uxMenuItemToggle.ToolTipText = "Disable item";
+            this.uxMenuItemToggle.Click += new System.EventHandler(this.uxButtonToggle_Click);
+            // 
+            // uxMenuItemDelete
+            // 
+            this.uxMenuItemDelete.Enabled = false;
+            this.uxMenuItemDelete.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_delete;
+            this.uxMenuItemDelete.Name = "uxMenuItemDelete";
+            this.uxMenuItemDelete.Size = new System.Drawing.Size(125, 26);
+            this.uxMenuItemDelete.Text = "&Delete...";
+            this.uxMenuItemDelete.ToolTipText = "Delete item";
+            this.uxMenuItemDelete.Click += new System.EventHandler(this.uxButtonDelete_Click);
+            // 
+            // uxMenuItemCopy
+            // 
+            this.uxMenuItemCopy.Enabled = false;
+            this.uxMenuItemCopy.Image = ((System.Drawing.Image)(resources.GetObject("uxMenuItemCopy.Image")));
+            this.uxMenuItemCopy.Name = "uxMenuItemCopy";
+            this.uxMenuItemCopy.Size = new System.Drawing.Size(125, 26);
+            this.uxMenuItemCopy.Text = "&Copy";
+            this.uxMenuItemCopy.Click += new System.EventHandler(this.uxButtonCopy_Click);
+            // 
+            // uxMenuItemSave
+            // 
+            this.uxMenuItemSave.Enabled = false;
+            this.uxMenuItemSave.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.disk;
+            this.uxMenuItemSave.Name = "uxMenuItemSave";
+            this.uxMenuItemSave.Size = new System.Drawing.Size(125, 26);
+            this.uxMenuItemSave.Text = "&Save...";
+            this.uxMenuItemSave.ToolTipText = "Save item to file";
+            this.uxMenuItemSave.Click += new System.EventHandler(this.uxButtonSave_Click);
+            // 
+            // uxMenuItemFavorite
+            // 
+            this.uxMenuItemFavorite.Enabled = false;
+            this.uxMenuItemFavorite.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.star;
+            this.uxMenuItemFavorite.Name = "uxMenuItemFavorite";
+            this.uxMenuItemFavorite.Size = new System.Drawing.Size(125, 26);
+            this.uxMenuItemFavorite.Text = "Favorite";
+            this.uxMenuItemFavorite.ToolTipText = "Add item(s) to favorites group";
+            this.uxMenuItemFavorite.Click += new System.EventHandler(this.uxButtonFavorite_Click);
+            // 
+            // uxMenuItemRefresh
+            // 
+            this.uxMenuItemRefresh.Enabled = false;
+            this.uxMenuItemRefresh.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_go;
+            this.uxMenuItemRefresh.Name = "uxMenuItemRefresh";
+            this.uxMenuItemRefresh.Size = new System.Drawing.Size(125, 26);
+            this.uxMenuItemRefresh.Text = "&Refresh";
+            this.uxMenuItemRefresh.ToolTipText = "Refresh all items";
+            this.uxMenuItemRefresh.Click += new System.EventHandler(this.uxMenuItemRefresh_Click);
+            // 
+            // uxButtonAdd
+            // 
+            this.uxButtonAdd.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.uxAddSecret,
+            this.uxAddCert,
+            this.uxAddKVCert,
+            this.uxAddFile});
+            this.uxButtonAdd.Enabled = false;
+            this.uxButtonAdd.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_add;
+            this.uxButtonAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.uxButtonAdd.Name = "uxButtonAdd";
+            this.uxButtonAdd.Size = new System.Drawing.Size(65, 24);
+            this.uxButtonAdd.Text = "&Add";
+            this.uxButtonAdd.ToolTipText = "Add item";
+            this.uxButtonAdd.Click += new System.EventHandler(this.uxButtonAdd_Click);
+            // 
+            // uxAddSecret
+            // 
+            this.uxAddSecret.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.key;
+            this.uxAddSecret.Name = "uxAddSecret";
+            this.uxAddSecret.Size = new System.Drawing.Size(184, 26);
+            this.uxAddSecret.Text = "&Secret...";
+            this.uxAddSecret.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
+            // 
+            // uxAddCert
+            // 
+            this.uxAddCert.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.uxAddCertFromFile,
+            this.uxAddCertFromUserStore,
+            this.uxAddCertFromMachineStore});
+            this.uxAddCert.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.certificate;
+            this.uxAddCert.Name = "uxAddCert";
+            this.uxAddCert.Size = new System.Drawing.Size(184, 26);
+            this.uxAddCert.Text = "Ce&rtificate";
+            // 
+            // uxAddCertFromFile
+            // 
+            this.uxAddCertFromFile.Name = "uxAddCertFromFile";
+            this.uxAddCertFromFile.Size = new System.Drawing.Size(189, 22);
+            this.uxAddCertFromFile.Text = "From &file...";
+            this.uxAddCertFromFile.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
+            // 
+            // uxAddCertFromUserStore
+            // 
+            this.uxAddCertFromUserStore.Name = "uxAddCertFromUserStore";
+            this.uxAddCertFromUserStore.Size = new System.Drawing.Size(189, 22);
+            this.uxAddCertFromUserStore.Text = "From &user store...";
+            this.uxAddCertFromUserStore.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
+            // 
+            // uxAddCertFromMachineStore
+            // 
+            this.uxAddCertFromMachineStore.Name = "uxAddCertFromMachineStore";
+            this.uxAddCertFromMachineStore.Size = new System.Drawing.Size(189, 22);
+            this.uxAddCertFromMachineStore.Text = "From &machine store...";
+            this.uxAddCertFromMachineStore.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
+            // 
+            // uxAddKVCert
+            // 
+            this.uxAddKVCert.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.uxAddKVCertFromFile,
+            this.uxAddKVCertFromUserStore,
+            this.uxAddKVCertFromMachineStore});
+            this.uxAddKVCert.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.certificate2;
+            this.uxAddKVCert.Name = "uxAddKVCert";
+            this.uxAddKVCert.Size = new System.Drawing.Size(184, 26);
+            this.uxAddKVCert.Text = "Key Vault Certificate";
+            // 
+            // uxAddKVCertFromFile
+            // 
+            this.uxAddKVCertFromFile.Name = "uxAddKVCertFromFile";
+            this.uxAddKVCertFromFile.Size = new System.Drawing.Size(189, 22);
+            this.uxAddKVCertFromFile.Text = "From &file...";
+            this.uxAddKVCertFromFile.Click += new System.EventHandler(this.uxMenuItemAddKVCertificate_Click);
+            // 
+            // uxAddKVCertFromUserStore
+            // 
+            this.uxAddKVCertFromUserStore.Name = "uxAddKVCertFromUserStore";
+            this.uxAddKVCertFromUserStore.Size = new System.Drawing.Size(189, 22);
+            this.uxAddKVCertFromUserStore.Text = "From &user store...";
+            this.uxAddKVCertFromUserStore.Click += new System.EventHandler(this.uxMenuItemAddKVCertificate_Click);
+            // 
+            // uxAddKVCertFromMachineStore
+            // 
+            this.uxAddKVCertFromMachineStore.Name = "uxAddKVCertFromMachineStore";
+            this.uxAddKVCertFromMachineStore.Size = new System.Drawing.Size(189, 22);
+            this.uxAddKVCertFromMachineStore.Text = "From &machine store...";
+            this.uxAddKVCertFromMachineStore.Click += new System.EventHandler(this.uxMenuItemAddKVCertificate_Click);
+            // 
+            // uxAddFile
+            // 
+            this.uxAddFile.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.folder_key;
+            this.uxAddFile.Name = "uxAddFile";
+            this.uxAddFile.Size = new System.Drawing.Size(184, 26);
+            this.uxAddFile.Text = "&File...";
+            this.uxAddFile.Click += new System.EventHandler(this.uxMenuItemAddSecret_Click);
+            // 
+            // uxButtonEdit
+            // 
+            this.uxButtonEdit.Enabled = false;
+            this.uxButtonEdit.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_edit;
+            this.uxButtonEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.uxButtonEdit.Name = "uxButtonEdit";
+            this.uxButtonEdit.Size = new System.Drawing.Size(51, 24);
+            this.uxButtonEdit.Text = "&Edit";
+            this.uxButtonEdit.ToolTipText = "Edit item";
+            this.uxButtonEdit.Click += new System.EventHandler(this.uxButtonEdit_Click);
+            // 
+            // uxButtonToggle
+            // 
+            this.uxButtonToggle.Enabled = false;
+            this.uxButtonToggle.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_break;
+            this.uxButtonToggle.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.uxButtonToggle.Name = "uxButtonToggle";
+            this.uxButtonToggle.Size = new System.Drawing.Size(69, 24);
+            this.uxButtonToggle.Text = "Disabl&e";
+            this.uxButtonToggle.ToolTipText = "Disable item";
+            this.uxButtonToggle.Click += new System.EventHandler(this.uxButtonToggle_Click);
+            // 
+            // uxButtonDelete
+            // 
+            this.uxButtonDelete.Enabled = false;
+            this.uxButtonDelete.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.lock_delete;
+            this.uxButtonDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.uxButtonDelete.Name = "uxButtonDelete";
+            this.uxButtonDelete.Size = new System.Drawing.Size(64, 24);
+            this.uxButtonDelete.Text = "&Delete";
+            this.uxButtonDelete.ToolTipText = "Delete item";
+            this.uxButtonDelete.Click += new System.EventHandler(this.uxButtonDelete_Click);
+            // 
+            // uxImageSearch
+            // 
+            this.uxImageSearch.Enabled = false;
+            this.uxImageSearch.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.magnifier;
+            this.uxImageSearch.Name = "uxImageSearch";
+            this.uxImageSearch.Size = new System.Drawing.Size(20, 24);
+            this.uxImageSearch.ToolTipText = "Regular expression search\nExamples: elize, enabled=false";
+            // 
             // uxButtonShare
             // 
             this.uxButtonShare.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.uxButtonCopyLink});
+            this.uxButtonCopy,
+            this.uxButtonCopyLink,
+            this.uxButtonSave});
             this.uxButtonShare.Enabled = false;
             this.uxButtonShare.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.group;
             this.uxButtonShare.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonShare.Name = "uxButtonShare";
-            this.uxButtonShare.Size = new System.Drawing.Size(80, 25);
+            this.uxButtonShare.Size = new System.Drawing.Size(69, 24);
             this.uxButtonShare.Text = "Share";
+            // 
+            // uxButtonCopy
+            // 
+            this.uxButtonCopy.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.page_copy;
+            this.uxButtonCopy.Name = "uxButtonCopy";
+            this.uxButtonCopy.Size = new System.Drawing.Size(156, 26);
+            this.uxButtonCopy.Text = "&Copy";
+            this.uxButtonCopy.ToolTipText = "Copy value to clipboard";
+            this.uxButtonCopy.Click += new System.EventHandler(this.uxButtonCopy_Click);
             // 
             // uxButtonCopyLink
             // 
             this.uxButtonCopyLink.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.link;
             this.uxButtonCopyLink.Name = "uxButtonCopyLink";
-            this.uxButtonCopyLink.Size = new System.Drawing.Size(145, 26);
-            this.uxButtonCopyLink.Text = "Copy link";
+            this.uxButtonCopyLink.Size = new System.Drawing.Size(156, 26);
+            this.uxButtonCopyLink.Text = "Copy &link";
+            this.uxButtonCopyLink.ToolTipText = "Copy link to clipboard";
+            this.uxButtonCopyLink.Click += new System.EventHandler(this.uxButtonCopyLink_Click);
+            // 
+            // uxButtonSave
+            // 
+            this.uxButtonSave.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.disk;
+            this.uxButtonSave.Name = "uxButtonSave";
+            this.uxButtonSave.Size = new System.Drawing.Size(156, 26);
+            this.uxButtonSave.Text = "&Save";
+            this.uxButtonSave.ToolTipText = "Save item to file";
+            this.uxButtonSave.Click += new System.EventHandler(this.uxButtonSave_Click);
+            // 
+            // uxButtonFavorite
+            // 
+            this.uxButtonFavorite.Enabled = false;
+            this.uxButtonFavorite.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.star;
+            this.uxButtonFavorite.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.uxButtonFavorite.Name = "uxButtonFavorite";
+            this.uxButtonFavorite.Size = new System.Drawing.Size(73, 24);
+            this.uxButtonFavorite.Text = "&Favorite";
+            this.uxButtonFavorite.ToolTipText = "Add item(s) to favorites group";
+            this.uxButtonFavorite.Click += new System.EventHandler(this.uxButtonFavorite_Click);
+            // 
+            // uxButtonSettings
+            // 
+            this.uxButtonSettings.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.wrench;
+            this.uxButtonSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.uxButtonSettings.Name = "uxButtonSettings";
+            this.uxButtonSettings.Size = new System.Drawing.Size(73, 24);
+            this.uxButtonSettings.Text = "&Settings";
+            this.uxButtonSettings.Click += new System.EventHandler(this.uxButtonSettings_Click);
+            // 
+            // uxButtonHelp
+            // 
+            this.uxButtonHelp.Image = ((System.Drawing.Image)(resources.GetObject("uxButtonHelp.Image")));
+            this.uxButtonHelp.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.uxButtonHelp.Name = "uxButtonHelp";
+            this.uxButtonHelp.Size = new System.Drawing.Size(56, 24);
+            this.uxButtonHelp.Text = "&Help";
+            this.uxButtonHelp.ToolTipText = "Tip:\r\nYou can drag & drop secret as file to or from\r\nWindows Explorer or another " +
+    "instance of Vault Explorer.\r\nHold CTRL key to copy all secret information.";
+            this.uxButtonHelp.Click += new System.EventHandler(this.uxButtonHelp_Click);
             // 
             // MainForm
             // 
@@ -725,7 +729,7 @@
         private ListViewSecrets uxListViewSecrets;
         private System.Windows.Forms.PropertyGrid uxPropertyGridSecret;
         private System.Windows.Forms.ToolStripComboBox uxComboBoxVaultAlias;
-        private System.Windows.Forms.ToolStripButton uxButtonCopy;
+        private System.Windows.Forms.ToolStripMenuItem uxButtonCopy;
         private System.Windows.Forms.ToolStripButton uxButtonHelp;
         private System.Windows.Forms.ToolStripButton uxButtonEdit;
         private System.Windows.Forms.ToolStripButton uxButtonDelete;
@@ -751,7 +755,7 @@
         private System.Windows.Forms.Timer uxTimerSearchTextTypingCompleted;
         private System.Windows.Forms.ToolStrip uxToolStrip;
         private System.Windows.Forms.ToolStripStatusLabel uxStatusLabelSecertsCount;
-        private System.Windows.Forms.ToolStripButton uxButtonSave;
+        private System.Windows.Forms.ToolStripMenuItem uxButtonSave;
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemSave;
         private System.Windows.Forms.SaveFileDialog uxSaveFileDialog;
         private System.Windows.Forms.ToolStripProgressBar uxStatusProgressBar;
