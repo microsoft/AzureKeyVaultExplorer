@@ -421,7 +421,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 using (var op = NewUxOperation(uxButtonCopyLink))
                 {
-                    Utils.ClipboardSetHyperlink(item.Link);
+                    Utils.ClipboardSetHyperlink(item.Link, item.Name);
                 }
             }
         }
