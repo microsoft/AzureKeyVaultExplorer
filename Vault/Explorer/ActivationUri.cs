@@ -12,6 +12,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
 {
     public class ActivationUri : VaultLinkUri
     {
+        public static readonly ActivationUri Empty = new ActivationUri("vault:");
+
         public ActivationUri(string vaultUri) : base(vaultUri) { }
 
         public new static ActivationUri Parse()
@@ -19,32 +21,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
             string vaultUri = (ApplicationDeployment.IsNetworkDeployed) ?
                 AppDomain.CurrentDomain.SetupInformation?.ActivationArguments?.ActivationData?.FirstOrDefault() :
                 (Environment.GetCommandLineArgs().Length == 2) ? Environment.GetCommandLineArgs()[1] : null;
-            if (null == vaultUri) return null;
-            if (vaultUri.StartsWith("file:", StringComparison.CurrentCultureIgnoreCase)) return null;
-            return new ActivationUri(vaultUri);
+            if (null == vaultUri) return Empty;
+            if (vaultUri.StartsWith("file:", StringComparison.CurrentCultureIgnoreCase)) return Empty;
+            return new ActivationUri(vaultUri.TrimEnd('/', '\\'));
         }
 
-        public bool Perform()
+        public void CopyToClipboard(Vault vault)
         {
-            switch (Action)
-            {
-                case Action.Default:
-                    CopyToClipboard();
-                    return true;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(Action), $"Invalid action {Action}");
-            }
-        }
-
-        private void CopyToClipboard()
-        {
-            var vc = new VaultsConfig(new Dictionary<string, VaultAccessType>
-            {
-                [VaultName] = new VaultAccessType(
-                    new VaultAccess[] { new VaultAccessUserInteractive(null) },
-                    new VaultAccess[] { new VaultAccessUserInteractive(null) })
-            });
-            var vault = new Vault(vc, VaultAccessTypeEnum.ReadOnly, VaultName);
             PropertyObject po = null;
             switch (Collection)
             {
