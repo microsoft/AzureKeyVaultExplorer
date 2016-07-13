@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Deployment.Application;
 using System.Diagnostics;
 using System.IO;
@@ -186,11 +187,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         /// <summary>
-        /// Set specified hyperlink as HTML and Text formats in the Clipboard
+        /// Set specified hyperlink as HTML, Text formats and .URL file in the Clipboard
         /// </summary>
         /// <param name="link">Hyperlink to set</param>
-        public static void ClipboardSetHyperlink(string link)
+        /// <param name="name">Name of the link</param>
+        public static void ClipboardSetHyperlink(string link, string name)
         {
+            // HTML format which works fine with any Office product
             const string html = @"Version:0.9
                 StartHTML:<<<<<<<1
                 EndHTML:<<<<<<<2
@@ -204,10 +207,17 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 <!--EndFragment-->
                 </body>
                 </html>";
-            DataObject obj = new DataObject(DataFormats.Text, link);
-            obj.SetData(DataFormats.UnicodeText, link);
-            obj.SetData(DataFormats.Html, string.Format(html, link, link));
-            Clipboard.SetDataObject(obj, true);
+            var dataObj = new DataObject("Preferred DropEffect", DragDropEffects.Move); // "Cut" file to clipboard
+            dataObj.SetData(DataFormats.Text, link);
+            dataObj.SetData(DataFormats.UnicodeText, link);
+            // Add HTML format and .URL as a file
+            dataObj.SetData(DataFormats.Html, string.Format(html, link, name));
+            var tempPath = Path.Combine(Path.GetTempPath(), name + ContentType.KeyVaultLink.ToExtension());
+            File.WriteAllText(tempPath, $"[InternetShortcut]\nURL={link}");
+            var sc = new StringCollection();
+            sc.Add(tempPath);
+            dataObj.SetFileDropList(sc);
+            Clipboard.SetDataObject(dataObj, true);
         }
 
         public static void ClearCliboard(TimeSpan interval, string md5)
