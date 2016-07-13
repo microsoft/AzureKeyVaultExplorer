@@ -19,6 +19,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
     public partial class MainForm : FormTelemetry, ISession
     {
+        private readonly ActivationUri _activationUri;
         private Cursor _moveSecretCursor;
         private Cursor _moveValueCursor;
         private Cursor _moveLinkCursor;
@@ -54,6 +55,34 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxStatusStrip.Items.Insert(3, uxButtonCancel);
         }
 
+        public MainForm(ActivationUri activationUri) : this()
+        {
+            Guard.ArgumentNotNull(activationUri, nameof(activationUri));
+            _activationUri = activationUri;
+            // ActivaionUri is Empty, nothing special to do
+            if (_activationUri == ActivationUri.Empty) return;
+            // Activation by vault://name
+            uxComboBoxVaultAlias_DropDown(this, EventArgs.Empty);
+            uxComboBoxVaultAlias.SelectedIndex = 0;
+            SetCurrentVaultAlias();
+            if (!string.IsNullOrEmpty(_activationUri.VaultName) && string.IsNullOrEmpty(_activationUri.ItemName))
+            {
+                uxMenuItemRefresh.PerformClick(); // Refresh list
+                return;
+            }
+            // Activation by vault://name/collection/itemName
+            SetCurrentVault();
+            switch (_activationUri.Action)
+            {
+                case Action.Default:
+                    _activationUri.CopyToClipboard(CurrentVault);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(Action), $"Invalid action {_activationUri.Action}");
+            }
+            Close();
+        }
+
         private void ApplySettings()
         {
             Size = UISettings.Default.MainFormWindowSize;
@@ -83,9 +112,18 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void uxComboBoxVaultAlias_DropDown(object sender, EventArgs e)
         {
+            IEnumerable<VaultAlias> va = Utils.LoadFromJsonFile<VaultAliases>(Settings.Default.VaultAliasesJsonFileLocation);
+            if (!string.IsNullOrEmpty(_activationUri.VaultName)) // In case vault name was provided during activation, search for it, if not found let us add it on the fly
+            {
+                va = from v in va where v.VaultNames.Contains(_activationUri.VaultName, StringComparer.CurrentCultureIgnoreCase) select v;
+                if (0 == va.Count()) // Not found, let add new vault alias == vault name, with Custom secret kind
+                {
+                    va = Enumerable.Repeat(new VaultAlias(_activationUri.VaultName, new string[] { _activationUri.VaultName }, new string[] { "Custom" }), 1);
+                }
+            }
             int prevSelectedIndex = uxComboBoxVaultAlias.SelectedIndex;
             uxComboBoxVaultAlias.Items.Clear();
-            uxComboBoxVaultAlias.Items.AddRange(Utils.LoadFromJsonFile<VaultAliases>(Settings.Default.VaultAliasesJsonFileLocation).ToArray());
+            uxComboBoxVaultAlias.Items.AddRange(va.ToArray());
             if (prevSelectedIndex < uxComboBoxVaultAlias.Items.Count)
             {
                 uxComboBoxVaultAlias.SelectedIndex = prevSelectedIndex;
@@ -94,13 +132,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void uxComboBoxVaultAlias_DropDownClosed(object sender, EventArgs e)
         {
-            if (null == uxComboBoxVaultAlias.SelectedItem) return;
-            if (CurrentVaultAlias?.Alias == ((VaultAlias)uxComboBoxVaultAlias.SelectedItem).Alias) return;
-            CurrentVaultAlias = (VaultAlias)uxComboBoxVaultAlias.SelectedItem;
-            bool itemSelected = (null != CurrentVaultAlias);
-            uxComboBoxVaultAlias.ToolTipText = itemSelected ? "Vault names: " + string.Join(", ", CurrentVaultAlias.VaultNames) : "";
-            uxMenuItemRefresh.Enabled = itemSelected;
-            if (itemSelected)
+            if (SetCurrentVaultAlias())
             {
                 uxMenuItemRefresh.PerformClick();
             }
@@ -114,13 +146,36 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private delegate void UpdateLabelSecertsCountDelegate(int count);
 
+        private bool SetCurrentVaultAlias()
+        {
+            if (null == uxComboBoxVaultAlias.SelectedItem) return false;
+            if (CurrentVaultAlias?.Alias == ((VaultAlias)uxComboBoxVaultAlias.SelectedItem).Alias) return false;
+            CurrentVaultAlias = (VaultAlias)uxComboBoxVaultAlias.SelectedItem;
+            bool itemSelected = (null != CurrentVaultAlias);
+            uxComboBoxVaultAlias.ToolTipText = itemSelected ? "Vault names: " + string.Join(", ", CurrentVaultAlias.VaultNames) : "";
+            uxMenuItemRefresh.Enabled = itemSelected;
+            return itemSelected;
+        }
+
+        private void SetCurrentVault()
+        {
+            CurrentVault = new Vault(Utils.FullPathToJsonFile(Settings.Default.VaultsJsonFileLocation), VaultAccessTypeEnum.ReadWrite, CurrentVaultAlias.VaultNames);
+            // In case current Vaults.json doesn't contain provided vault name during activation, add one assuming UserInteractive access
+            if (false == CurrentVault.VaultsConfig.ContainsKey(_activationUri.VaultName))
+            {
+                CurrentVault.VaultsConfig.Add(_activationUri.VaultName, new VaultAccessType(
+                    new VaultAccess[] { new VaultAccessUserInteractive(null) },
+                    new VaultAccess[] { new VaultAccessUserInteractive(null) }));
+            }
+        }
+
         private async void uxMenuItemRefresh_Click(object sender, EventArgs e)
         {
             using (var op = NewUxOperationWithProgress(uxMenuItemRefresh)) await op.Invoke("access", async () =>
             {
                 try
                 {
-                    CurrentVault = new Vault(Utils.FullPathToJsonFile(Settings.Default.VaultsJsonFileLocation), VaultAccessTypeEnum.ReadWrite, CurrentVaultAlias.VaultNames);
+                    SetCurrentVault();
                     uxListViewSecrets.BeginUpdate();
                     uxListViewSecrets.RemoveAllItems();
                     RefreshItemsCount();
@@ -155,6 +210,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 catch
                 {
                     uxListViewSecrets.RemoveAllItems();
+                    throw;
                 }                 
                 finally
                 {
