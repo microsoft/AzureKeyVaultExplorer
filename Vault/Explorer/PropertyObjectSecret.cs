@@ -11,6 +11,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
@@ -72,7 +73,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public override string GetKeyVaultFileExtension() => ContentType.KeyVaultSecret.ToExtension();
 
-        public override string GetClipboardValue() => ContentType.IsCertificate() ? CertificateValueObject.FromValue(Value)?.Password : Value;
+        public override DataObject GetClipboardValue()
+        {
+            var dataObj = base.GetClipboardValue();
+            dataObj.SetText(ContentType.IsCertificate() ? CertificateValueObject.FromValue(Value)?.Password : Value);
+            return dataObj;
+        }
 
         public override void SaveToFile(string fullName)
         {

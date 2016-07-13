@@ -1,6 +1,7 @@
 ﻿using Microsoft.Azure.KeyVault;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Drawing.Design;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
@@ -126,7 +128,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public override string GetKeyVaultFileExtension() => ContentType.KeyVaultCertificate.ToExtension();
 
-        public override string GetClipboardValue() => Thumbprint;
+        public override DataObject GetClipboardValue()
+        {
+            var dataObj = base.GetClipboardValue();
+            dataObj.SetText(Certificate.ToString());
+            return dataObj;
+        }
 
         public override void SaveToFile(string fullName)
         {
