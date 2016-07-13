@@ -1,6 +1,7 @@
 ﻿namespace ClearClipboard
 {
     using System;
+    using System.IO;
     using System.Security.Cryptography;
     using System.Text;
     using System.Text.RegularExpressions;
@@ -59,16 +60,27 @@
                     return 0;
                 }
 
-                string currentValue = Clipboard.GetText();
-                if (string.IsNullOrEmpty(currentValue))
+                var dataObj = Clipboard.GetDataObject();
+                if (!dataObj.GetDataPresent(DataFormats.Text))
                 {
                     Console.WriteLine("Clipboard is already empty");
                     return 0;
                 }
-                if (0 == string.Compare(md5, CalculateMd5(currentValue), true))
+                if (0 == string.Compare(md5, CalculateMd5(dataObj.GetData(DataFormats.Text).ToString()), true))
                 {
-                    Console.WriteLine("Clipboard cleared");
+                    if (dataObj.GetDataPresent(DataFormats.FileDrop)) // In case clipboard has temp files ("cut" mode) we will delete them
+                    {
+                        string[] files = (string[])dataObj.GetData(DataFormats.FileDrop);
+                        foreach (var file in files)
+                        {
+                            if (file.StartsWith(Path.GetTempPath().TrimEnd('\\'), StringComparison.CurrentCultureIgnoreCase))
+                            {
+                                File.Delete(file);
+                            }
+                        }
+                    }
                     Clipboard.Clear();
+                    Console.WriteLine("Clipboard cleared");
                 }
                 else
                 {
