@@ -1,9 +1,11 @@
 ﻿using Microsoft.Azure.KeyVault;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Drawing.Design;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -155,7 +157,19 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public abstract string GetKeyVaultFileExtension();
 
-        public abstract string GetClipboardValue();
+        public virtual DataObject GetClipboardValue()
+        {
+            var dataObj = new DataObject("Preferred DropEffect", DragDropEffects.Move); // "Cut" file to clipboard
+            if (_contentType.IsCertificate()) // Common logic for .cer and .pfx
+            {
+                var tempPath = Path.Combine(Path.GetTempPath(), Name + _contentType.ToExtension());
+                SaveToFile(tempPath);
+                var sc = new StringCollection();
+                sc.Add(tempPath);
+                dataObj.SetFileDropList(sc);
+            }
+            return dataObj;
+        }
 
         public abstract void SaveToFile(string fullName);
 
@@ -183,11 +197,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public void CopyToClipboard(bool showToast)
         {
-            string value = GetClipboardValue();
-            if (null != value)
+            var dataObj = GetClipboardValue();
+            if (null != dataObj)
             {
-                Clipboard.SetText(value);
-                Utils.ClearCliboard(Settings.Default.CopyToClipboardTimeToLive, Md5);
+                Clipboard.SetDataObject(dataObj, true);
+                Utils.ClearCliboard(Settings.Default.CopyToClipboardTimeToLive, Utils.CalculateMd5(dataObj.GetText()));
                 if (showToast)
                 {
                     Utils.ShowToast($"{(_contentType.IsCertificate() ? "Certificate" : "Secret")} {Name} copied to clipboard");

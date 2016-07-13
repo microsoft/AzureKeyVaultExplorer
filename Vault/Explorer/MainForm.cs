@@ -419,7 +419,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
             var item = uxListViewSecrets.FirstSelectedItem;
             if (null != item)
             {
-                Utils.ClipboardSetHyperlink(item.Link);
+                using (var op = NewUxOperation(uxButtonCopyLink))
+                {
+                    Utils.ClipboardSetHyperlink(item.Link);
+                }
             }
         }
 
@@ -467,7 +470,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void uxButtonHelp_Click(object sender, EventArgs e)
         {
-            Process.Start("http://aka.ms/vaultexplorer");
+            using (var op = NewUxOperation(uxButtonHelp))
+            {
+                Process.Start("http://aka.ms/vaultexplorer");
+            }
         }
 
         #region Drag & Drop
