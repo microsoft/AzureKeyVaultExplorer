@@ -243,9 +243,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             bool singleItemSelected = (uxListViewSecrets.SelectedItems.Count == 1);
             bool manyItemsSelected = (uxListViewSecrets.SelectedItems.Count >= 1);
-            ListViewItemBase selectedItem = singleItemSelected ? uxListViewSecrets.SelectedItems[0] as ListViewItemBase : null;
-            bool secretEnabled = selectedItem?.Enabled ?? false;
-            bool favorite = selectedItem?.Favorite ?? false;
+            bool secretEnabled = uxListViewSecrets.FirstSelectedItem?.Enabled ?? false;
+            bool favorite = uxListViewSecrets.FirstSelectedItem?.Favorite ?? false;
             uxButtonEdit.Enabled = uxButtonShare.Enabled = secretEnabled;
             uxMenuItemEdit.Enabled = uxMenuItemShare.Enabled = secretEnabled;
             uxButtonDelete.Enabled = uxMenuItemDelete.Enabled = uxButtonFavorite.Enabled = uxMenuItemFavorite.Enabled = manyItemsSelected;
@@ -255,7 +254,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxMenuItemToggle.Text = uxButtonToggle.Text + "...";
             uxButtonFavorite.Checked = uxMenuItemFavorite.Checked = favorite;
             uxButtonFavorite.ToolTipText = uxMenuItemFavorite.ToolTipText = favorite ? "Remove item(s) from favorites group" : "Add item(s) to favorites group";
-            uxPropertyGridSecret.SelectedObject = singleItemSelected ? uxListViewSecrets.SelectedItems[0] : null;
+            uxPropertyGridSecret.SelectedObjects = uxListViewSecrets.SelectedItems?.Cast<ListViewItemBase>().ToArray();
             RefreshItemsCount();
         }
 
