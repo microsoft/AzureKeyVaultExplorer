@@ -20,6 +20,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             InitializeComponent();
             ListViewItemSorter = new ListViewSecretsSorter(this);
+            DoubleBuffered = true;
         }
 
         public ListViewItemBase FirstSelectedItem => SelectedItems.Count > 0 ? SelectedItems[0] as ListViewItemBase : null;
