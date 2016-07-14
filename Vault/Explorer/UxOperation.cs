@@ -1,7 +1,9 @@
 ﻿using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Azure.KeyVault;
 using System;
+using System.Linq;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Runtime.Remoting.Messaging;
 using System.Threading;
@@ -74,20 +76,33 @@ namespace Microsoft.PS.Common.Vault.Explorer
             _disposedValue = true;
         }
 
+        /// <summary>
+        /// Invoke specified vault releated tasks in parallel, in case all tasks failed with Forbidden code
+        /// show access denied message box. If at least one task finished successfully, no error is showed to user
+        /// </summary>
+        /// <param name="actionName">Nice name of the action to show in the message box</param>
+        /// <param name="tasks"></param>
+        /// <returns></returns>
         public async Task Invoke(string actionName, params Func<Task>[] tasks)
         {
-            var exceptions = new List<Exception>();
+            var tasksList = new List<Task>();
+            var exceptions = new ConcurrentQueue<Exception>();
+
             foreach (var t in tasks)
             {
-                try
+                tasksList.Add(Task.Run(async () =>
                 {
-                    await t();
-                }
-                catch (KeyVaultClientException kvce) when (kvce.Status == System.Net.HttpStatusCode.Forbidden)
-                {
-                    exceptions.Add(kvce);
-                }
+                    try
+                    {
+                        await t();
+                    }
+                    catch (KeyVaultClientException kvce) when (kvce.Status == System.Net.HttpStatusCode.Forbidden)
+                    {
+                        exceptions.Enqueue(kvce);
+                    }
+                }));
             }
+            await Task.WhenAll(tasksList);
             ProgressBarVisibility(false);
             if (exceptions.Count == tasks.Length) // In case all tasks failed with Forbidden, show message box to user
             {
