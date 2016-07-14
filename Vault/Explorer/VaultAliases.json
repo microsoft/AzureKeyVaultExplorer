@@ -10,8 +10,7 @@
   {
     "Alias": "WD.Services US Int",
     "VaultNames": [ "wdvaultus1westint", "wdvaultus1eastint" ],
-    "SecretKinds": [ "Custom", "WD.Certificate", "WD.ServiceFabricService.Configuration.Secret", "WCD.StorageAccount", "WCD.SQLAccount", "WCD.WindowsAccount", "WCD.PfxCertificate", "WCD.CerCertificate", "WCD.ServiceBus", "WCD.DataFactory", "WCD.ApiKey", "WCD.RedisCache", "WCD.AppKey" ],
-    "KeyVaultCertificates":  true
+    "SecretKinds": [ "Custom", "WD.Certificate", "WD.ServiceFabricService.Configuration.Secret", "WCD.StorageAccount", "WCD.SQLAccount", "WCD.WindowsAccount", "WCD.PfxCertificate", "WCD.CerCertificate", "WCD.ServiceBus", "WCD.DataFactory", "WCD.ApiKey", "WCD.RedisCache", "WCD.AppKey" ]
   },
   {
     "Alias": "WD.Services US PPE",
