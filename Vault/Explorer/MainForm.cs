@@ -137,8 +137,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxStatusLabelSecretsSelected.Text = $"{uxListViewSecrets.SelectedItems.Count} selected";
         }
 
-        private delegate void UpdateLabelSecertsCountDelegate(int count);
-
         private bool SetCurrentVaultAlias()
         {
             if (null == uxComboBoxVaultAlias.SelectedItem) return false;
@@ -174,45 +172,37 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     Text = Utils.AppName;
                     SetCurrentVault();
                     uxPropertyGridSecret.SelectedObject = null;
+                    uxListViewSecrets.AllowDrop = false;
                     uxListViewSecrets.RemoveAllItems();
                     uxListViewSecrets.Refresh();
-                    uxListViewSecrets.BeginUpdate();
-                    uxListViewSecrets.AllowDrop = false;
                     RefreshItemsCount();
-                    UpdateLabelSecertsCountDelegate ulscd = (c) => uxStatusLabelSecertsCount.Text = $"{uxListViewSecrets.Items.Count + c} secrets"; // We use delegate and Invoke() below to execute on the thread that owns the control
+                    uxListViewSecrets.BeginUpdate();
+                    int s = 0, c = 0;
+                    System.Action updateCount = () => uxStatusLabelSecertsCount.Text = $"{s + c} secrets"; // We use delegate and Invoke() below to execute on the thread that owns the control
+                    IEnumerable<SecretItem> secrets = Enumerable.Empty<SecretItem>();
+                    IEnumerable<ListCertificateResponseMessage> certificates = Enumerable.Empty<ListCertificateResponseMessage>();
                     await op.Invoke("access",
                         async () => // List Secrets
                         {
                             CurrentVaultAlias.SecretsCollectionEnabled = false;
-                            foreach (var s in await CurrentVault.ListSecretsAsync(0, (c) => { Invoke(ulscd, c); }, cancellationToken: op.CancellationToken))
-                            {
-                                uxListViewSecrets.Items.Add(new ListViewItemSecret(this, s));
-                            }
+                            secrets = await CurrentVault.ListSecretsAsync(0, (p) => { s = p;  Invoke(updateCount); }, cancellationToken: op.CancellationToken);
                             CurrentVaultAlias.SecretsCollectionEnabled = true;
                         },
                         async () => // List Key Vault Certificates
                         {
                             CurrentVaultAlias.CertificatesCollectionEnabled = false;
-                            foreach (var c in await CurrentVault.ListCertificatesAsync(0, (c) => { Invoke(ulscd, c); }, cancellationToken: op.CancellationToken))
-                            {
-                                int secretAsKvCertIndex = uxListViewSecrets.Items.IndexOfKey(c.Identifier.Name); // Remove "secret" (in fact this is a certifiacte) which was returned as part of ListSecretsAsync
-                                if (secretAsKvCertIndex != -1)
-                                {
-                                    uxListViewSecrets.Items.RemoveAt(secretAsKvCertIndex);
-                                }
-                                uxListViewSecrets.Items.Add(new ListViewItemCertificate(this, c));
-                            }
+                            certificates = await CurrentVault.ListCertificatesAsync(0, (p) => { c = p;  Invoke(updateCount); }, cancellationToken: op.CancellationToken);
                             CurrentVaultAlias.CertificatesCollectionEnabled = true;
                         }
                     );
-                    // We were able to list from one or from both collections
-                    if (CurrentVaultAlias.SecretsCollectionEnabled || CurrentVaultAlias.CertificatesCollectionEnabled)
+                    foreach (var secret in secrets)
                     {
-                        Text += $" ({CurrentVault.AuthenticatedUserName})";
-                        uxAddSecret.Visible = uxAddSecret2.Visible = uxAddCert.Visible = uxAddCert2.Visible = uxAddFile.Visible = uxAddFile2.Visible = CurrentVaultAlias.SecretsCollectionEnabled;
-                        uxAddKVCert.Visible = uxAddKVCert2.Visible = CurrentVaultAlias.CertificatesCollectionEnabled;
-                        uxListViewSecrets.AllowDrop = true;
-                        uxListViewSecrets.RefreshGroupsHeader();
+                        uxListViewSecrets.AddOrReplaceItem(new ListViewItemSecret(this, secret));
+                    }
+                    foreach (var cert in certificates)
+                    {
+                        // Remove "secret" (in fact this is a certifiacte) which was returned as part of ListSecretsAsync
+                        uxListViewSecrets.AddOrReplaceItem(new ListViewItemCertificate(this, cert));
                     }
                 }
                 catch (OperationCanceledException) // User cancelled one of the list operations
@@ -224,21 +214,29 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 catch
                 {
                     uxListViewSecrets.RemoveAllItems();
-                    throw;
+                    throw; // Propogate the error and show error to user
                 }
                 finally
                 {
+                    // We failed to list from all collections, disable controls
+                    if (!CurrentVaultAlias.SecretsCollectionEnabled && !CurrentVaultAlias.CertificatesCollectionEnabled)
+                    {
+                        UxOperation.ToggleControls(false, uxButtonAdd, uxMenuItemAdd,
+                            uxButtonEdit, uxMenuItemEdit, uxButtonToggle, uxMenuItemToggle, uxButtonDelete, uxMenuItemDelete, uxImageSearch, uxTextBoxSearch,
+                            uxButtonShare, uxMenuItemShare, uxButtonFavorite, uxMenuItemFavorite);
+                    }
+                    else // We were able to list from one or from both collections
+                    {
+                        Text += $" ({CurrentVault.AuthenticatedUserName})";
+                        uxAddSecret.Visible = uxAddSecret2.Visible = uxAddCert.Visible = uxAddCert2.Visible = uxAddFile.Visible = uxAddFile2.Visible = CurrentVaultAlias.SecretsCollectionEnabled;
+                        uxAddKVCert.Visible = uxAddKVCert2.Visible = CurrentVaultAlias.CertificatesCollectionEnabled;
+                        uxListViewSecrets.AllowDrop = true;
+                        uxListViewSecrets.RefreshGroupsHeader();
+                    }
                     uxListViewSecrets.EndUpdate();
+                    uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search and items count
                 }
             }
-            // We failed to list from all collections
-            if (!CurrentVaultAlias.SecretsCollectionEnabled && !CurrentVaultAlias.CertificatesCollectionEnabled)
-            {
-                UxOperation.ToggleControls(false, uxButtonAdd, uxMenuItemAdd,
-                    uxButtonEdit, uxMenuItemEdit, uxButtonToggle, uxMenuItemToggle, uxButtonDelete, uxMenuItemDelete, uxImageSearch, uxTextBoxSearch,
-                    uxButtonShare, uxMenuItemShare, uxButtonFavorite, uxMenuItemFavorite);
-            }
-            uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search and items count
         }
 
         private void uxListViewSecrets_SelectedIndexChanged(object sender, EventArgs e)
@@ -329,8 +327,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 uxListViewSecrets.BeginUpdate();
                 if (null != oldItem) uxListViewSecrets.Items.Remove(oldItem); // Rename flow
-                uxListViewSecrets.Items.RemoveByKey(newItem.Name); // Overwrite flow
-                uxListViewSecrets.Items.Add(newItem);
+                uxListViewSecrets.AddOrReplaceItem(newItem); // Overwrite flow
                 uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search
                 newItem.RefreshAndSelect();
                 uxListViewSecrets.RefreshGroupsHeader();
