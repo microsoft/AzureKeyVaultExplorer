@@ -26,7 +26,19 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return new ActivationUri(vaultUri.TrimEnd('/', '\\'));
         }
 
-        public void CopyToClipboard(Vault vault)
+        public void PerformAction(Vault vault)
+        {
+            switch (Action)
+            {
+                case Action.Default:
+                    CopyToClipboard(vault);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(Action), $"Invalid action {Action}");
+            }
+        }
+
+        private void CopyToClipboard(Vault vault)
         {
             PropertyObject po = null;
             switch (Collection)

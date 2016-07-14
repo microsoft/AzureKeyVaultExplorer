@@ -72,14 +72,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
             // Activation by vault://name/collection/itemName
             SetCurrentVault();
-            switch (_activationUri.Action)
-            {
-                case Action.Default:
-                    _activationUri.CopyToClipboard(CurrentVault);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(Action), $"Invalid action {_activationUri.Action}");
-            }
+            _activationUri.PerformAction(CurrentVault);
             Close();
         }
 
