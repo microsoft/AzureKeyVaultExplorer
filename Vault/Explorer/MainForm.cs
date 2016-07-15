@@ -16,6 +16,7 @@ using System.Windows.Forms;
 namespace Microsoft.PS.Common.Vault.Explorer
 {
     using UISettings = Properties.Settings;
+    using Action = System.Action;
 
     public partial class MainForm : FormTelemetry, ISession
     {
@@ -171,14 +172,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 {
                     Text = Utils.AppName;
                     SetCurrentVault();
-                    uxPropertyGridSecret.SelectedObject = null;
+                    uxPropertyGridSecret.SelectedObjects = null;
                     uxListViewSecrets.AllowDrop = false;
                     uxListViewSecrets.RemoveAllItems();
                     uxListViewSecrets.Refresh();
                     RefreshItemsCount();
                     uxListViewSecrets.BeginUpdate();
                     int s = 0, c = 0;
-                    System.Action updateCount = () => uxStatusLabelSecertsCount.Text = $"{s + c} secrets"; // We use delegate and Invoke() below to execute on the thread that owns the control
+                    Action updateCount = () => uxStatusLabelSecertsCount.Text = $"{s + c} secrets"; // We use delegate and Invoke() below to execute on the thread that owns the control
                     IEnumerable<SecretItem> secrets = Enumerable.Empty<SecretItem>();
                     IEnumerable<ListCertificateResponseMessage> certificates = Enumerable.Empty<ListCertificateResponseMessage>();
                     await op.Invoke("access",
@@ -483,7 +484,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 using (var op = NewUxOperationWithProgress(uxButtonCopy, uxMenuItemCopy)) await op.Invoke($"get {item.Kind} from", async () =>
                 {
                     var po = await item.GetAsync(op.CancellationToken);
-                    po.CopyToClipboard(false);
+                    Invoke(new Action(() => po.CopyToClipboard(false))); // Always execute on single thread apartment (STA) - UI thread, because of OLE limitations
                 });
             }
         }
