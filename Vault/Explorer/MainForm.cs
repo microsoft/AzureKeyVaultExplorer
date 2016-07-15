@@ -104,6 +104,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private UxOperation NewUxOperation(params ToolStripItem[] controlsToToggle) => new UxOperation(CurrentVaultAlias, uxStatusLabel, null, null, controlsToToggle);
 
+        private void Invoke(Action action) => base.Invoke(action); // Small helper to avoid casting delegate to Action
+
         private void uxComboBoxVaultAlias_DropDown(object sender, EventArgs e)
         {
             IEnumerable<VaultAlias> va = Utils.LoadFromJsonFile<VaultAliases>(Settings.Default.VaultAliasesJsonFileLocation);
@@ -329,7 +331,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 if (null != oldItem) uxListViewSecrets.Items.Remove(oldItem); // Rename flow
                 uxListViewSecrets.AddOrReplaceItem(newItem); // Overwrite flow
                 uxTimerSearchTextTypingCompleted_Tick(null, EventArgs.Empty); // Refresh search
-                newItem.RefreshAndSelect();
+                newItem?.RefreshAndSelect();
                 uxListViewSecrets.RefreshGroupsHeader();
                 RefreshItemsCount();
             }
@@ -366,10 +368,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 // DialogResult.Cancel is when user clicked cancel during password prompt from the ctor(), if OK was clicked, check for duplication by Name and Md5
                 if ((nsDlg != null) && (nsDlg.DialogResult != DialogResult.Cancel) && (nsDlg.ShowDialog() == DialogResult.OK) && ListViewItemBase.VerifyDuplication(this, null, nsDlg.PropertyObject))
                 {
-                    using (var op = NewUxOperationWithProgress(uxButtonAdd, uxMenuItemAdd)) await op.Invoke("add secret to", async () =>
+                    using (var op = NewUxOperationWithProgress(uxButtonAdd, uxMenuItemAdd))
                     {
-                        AddOrReplaceItemInListView(await ListViewItemSecret.NewAsync(this, nsDlg.PropertyObject, op.CancellationToken));
-                    });
+                        ListViewItemSecret lvis = null;
+                        await op.Invoke("add secret to", async () => lvis = await ListViewItemSecret.NewAsync(this, nsDlg.PropertyObject, op.CancellationToken));
+                        AddOrReplaceItemInListView(lvis);
+                    }
                 }
             }
         }
@@ -397,14 +401,16 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 // DialogResult.Cancel is when user clicked cancel during password prompt from the ctor(), if OK was clicked, check for duplication by Name and Md5
                 if ((certDlg != null) && (certDlg.DialogResult != DialogResult.Cancel) && (certDlg.ShowDialog() == DialogResult.OK) && ListViewItemBase.VerifyDuplication(this, null, certDlg.PropertyObject))
                 {
-                    using (var op = NewUxOperationWithProgress(uxButtonAdd, uxMenuItemAdd)) await op.Invoke("add certificate to", async () =>
+                    using (var op = NewUxOperationWithProgress(uxButtonAdd, uxMenuItemAdd))
                     {
-                        AddOrReplaceItemInListView(await ListViewItemCertificate.NewAsync(this, certDlg.PropertyObject, op.CancellationToken));
-                    });
+                        ListViewItemCertificate lvic = null;
+                        await op.Invoke("add certificate to", async () => lvic = await ListViewItemCertificate.NewAsync(this, certDlg.PropertyObject, op.CancellationToken));
+                        AddOrReplaceItemInListView(lvic);
+                    }
                 }
             }
         }
-
+      
         private async void uxButtonEdit_Click(object sender, EventArgs e)
         {
             var item = uxListViewSecrets.FirstSelectedItem;
@@ -419,11 +425,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 // If OK was clicked, check for duplication by Name and Md5
                 if ((editDlg.ShowDialog() == DialogResult.OK) && ListViewItemBase.VerifyDuplication(this, item.Name, editDlg.PropertyObject))
                 {
-                    using (var op = NewUxOperationWithProgress(uxButtonEdit, uxMenuItemEdit)) await op.Invoke($"update {item.Kind} in", async () =>
+                    using (var op = NewUxOperationWithProgress(uxButtonEdit, uxMenuItemEdit))
                     {
-                        var newItem = await item.UpdateAsync(editDlg.OriginalObject, editDlg.PropertyObject, op.CancellationToken);
+                        ListViewItemBase newItem = null;
+                        await op.Invoke($"update {item.Kind} in", async () => newItem = await item.UpdateAsync(editDlg.OriginalObject, editDlg.PropertyObject, op.CancellationToken));
                         AddOrReplaceItemInListView(newItem, item);
-                    });
+                    };
                 }
             }
         }
@@ -436,10 +443,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 string action = item.Enabled ? "disable" : "enable";
                 if (MessageBox.Show($"Are you sure you want to {action} {item.Kind} '{item.Name}'?", Utils.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    using (var op = NewUxOperationWithProgress(uxButtonToggle, uxMenuItemToggle)) await op.Invoke($"update {item.Kind} in", async () =>
+                    using (var op = NewUxOperationWithProgress(uxButtonToggle, uxMenuItemToggle))
                     {
-                        AddOrReplaceItemInListView(await item.ToggleAsync(op.CancellationToken), item);
-                    });
+                        ListViewItemBase lvib = null;
+                        await op.Invoke($"update {item.Kind} in", async () => lvib = await item.ToggleAsync(op.CancellationToken));
+                        AddOrReplaceItemInListView(lvib, item);
+                    }
                 }
             }
         }
@@ -451,14 +460,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 string itemNames = string.Join(", ", from item in uxListViewSecrets.SelectedItems.Cast<ListViewItem>() select item.Name);
                 if (MessageBox.Show($"Are you sure you want to delete {uxListViewSecrets.SelectedItems.Count} item(s) with the following name(s)?\n{itemNames}\n\nWarning: This operation can not be undone!", Utils.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
                 {
-                    using (var op = NewUxOperationWithProgress(uxButtonDelete, uxMenuItemDelete)) await op.Invoke("delete item(s) in", async () =>
+                    using (var op = NewUxOperationWithProgress(uxButtonDelete, uxMenuItemDelete))
                     {
                         foreach (ListViewItemBase lvi in uxListViewSecrets.SelectedItems)
                         {
-                            uxListViewSecrets.Items.Remove(await lvi.DeleteAsync(op.CancellationToken));
-                            RefreshItemsCount();
+                            await op.Invoke("delete item in", async () => await lvi.DeleteAsync(op.CancellationToken));
+                            AddOrReplaceItemInListView(null, lvi);
                         }
-                    });
+                    }
                 }
             }
         }
@@ -481,11 +490,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
             var item = uxListViewSecrets.FirstSelectedItem;
             if (null != item)
             {
-                using (var op = NewUxOperationWithProgress(uxButtonCopy, uxMenuItemCopy)) await op.Invoke($"get {item.Kind} from", async () =>
+                using (var op = NewUxOperationWithProgress(uxButtonCopy, uxMenuItemCopy))
                 {
-                    var po = await item.GetAsync(op.CancellationToken);
-                    Invoke(new Action(() => po.CopyToClipboard(false))); // Always execute on single thread apartment (STA) - UI thread, because of OLE limitations
-                });
+                    PropertyObject po = null;
+                    await op.Invoke($"get {item.Kind} from", async () => po = await item.GetAsync(op.CancellationToken));
+                    po.CopyToClipboard(false); // Always execute on single thread apartment (STA) - UI thread, because of OLE limitations
+                }
             }
         }
 
@@ -559,14 +569,15 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private async void uxListViewSecrets_ItemDrag(object sender, ItemDragEventArgs e)
         {
-            using (var op = NewUxOperation(uxButtonSave, uxMenuItemSave)) await op.Invoke("get item(s) from", async () =>
+            using (var op = NewUxOperation(uxButtonSave, uxMenuItemSave))
             {
                 _ctrlKeyPressed = (ModifierKeys & Keys.Control) != 0;
                 _shiftKeyPressed = (ModifierKeys & Keys.Shift) != 0;
                 List<string> filesList = new List<string>();
                 foreach (var item in uxListViewSecrets.SelectedItems.Cast<ListViewItemBase>())
                 {
-                    var po = await item.GetAsync(op.CancellationToken);
+                    PropertyObject po = null;
+                    await op.Invoke("get item from", async () => po = await item.GetAsync(op.CancellationToken));
                     // Pick .kv-secret or .kv-certificate or .url extension if CTRL and SHIFT are pressed
                     var filename = po.Name + (_ctrlKeyPressed & _shiftKeyPressed ? ContentType.KeyVaultLink.ToExtension() : _ctrlKeyPressed ? po.GetKeyVaultFileExtension() : po.GetContentType().ToExtension());
                     var fullName = Path.Combine(Path.GetTempPath(), filename);
@@ -575,7 +586,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 }
                 var dataObject = new DataObject(DataFormats.FileDrop, filesList.ToArray());
                 uxListViewSecrets.DoDragDrop(dataObject, DragDropEffects.Move);
-            });
+            }
         }
 
         private void uxListViewSecrets_GiveFeedback(object sender, GiveFeedbackEventArgs e)
