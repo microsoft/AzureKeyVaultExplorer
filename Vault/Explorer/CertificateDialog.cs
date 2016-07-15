@@ -101,6 +101,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxToolTip.SetToolTip(uxLinkLabelSecretKind, PropertyObject.SecretKind.Description);
         }
 
+        protected override void uxLinkLabelSecretKind_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            X509Certificate2UI.DisplayCertificate(PropertyObject.Certificate);
+        }
+
         protected override void uxTextBoxName_TextChanged(object sender, EventArgs e)
         {
             PropertyObject.Name = uxTextBoxName.Text;
