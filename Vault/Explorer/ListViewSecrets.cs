@@ -37,7 +37,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public void AddOrReplaceItem(ListViewItemBase item)
         {
-            Guard.ArgumentNotNull(item, nameof(item));
+            if (null == item) return;
             Items.RemoveByKey(item.Name); // Overwrite flow
             Items.Add(item);
         }
