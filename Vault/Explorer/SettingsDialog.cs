@@ -69,8 +69,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void uxLinkLabelClearTokenCache_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            var ftc = new FileTokenCache();
-            ftc.Clear();
+            new FileTokenCache("microsoft.com").Clear();
+            new FileTokenCache("gme.gbl").Clear();
         }
     }
 }
