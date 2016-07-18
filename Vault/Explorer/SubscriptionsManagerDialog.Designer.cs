@@ -91,7 +91,7 @@
             // toolStripLabel1
             // 
             toolStripLabel1.Name = "toolStripLabel1";
-            toolStripLabel1.Size = new System.Drawing.Size(63, 25);
+            toolStripLabel1.Size = new System.Drawing.Size(52, 22);
             toolStripLabel1.Text = "Account";
             // 
             // splitContainer1
@@ -99,7 +99,8 @@
             splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            splitContainer1.Location = new System.Drawing.Point(12, 34);
+            splitContainer1.Location = new System.Drawing.Point(9, 28);
+            splitContainer1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             splitContainer1.Name = "splitContainer1";
             splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -110,14 +111,16 @@
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(this.uxPropertyGridVault);
-            splitContainer1.Size = new System.Drawing.Size(806, 598);
-            splitContainer1.SplitterDistance = 424;
+            splitContainer1.Size = new System.Drawing.Size(604, 486);
+            splitContainer1.SplitterDistance = 344;
+            splitContainer1.SplitterWidth = 3;
             splitContainer1.TabIndex = 11;
             // 
             // splitContainer2
             // 
             splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
             splitContainer2.Location = new System.Drawing.Point(0, 0);
+            splitContainer2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             splitContainer2.Name = "splitContainer2";
             splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -128,8 +131,9 @@
             // splitContainer2.Panel2
             // 
             splitContainer2.Panel2.Controls.Add(this.uxListViewVaults);
-            splitContainer2.Size = new System.Drawing.Size(806, 424);
-            splitContainer2.SplitterDistance = 184;
+            splitContainer2.Size = new System.Drawing.Size(604, 344);
+            splitContainer2.SplitterDistance = 149;
+            splitContainer2.SplitterWidth = 3;
             splitContainer2.TabIndex = 3;
             // 
             // uxListViewSubscriptions
@@ -142,11 +146,13 @@
             this.uxListViewSubscriptions.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.uxListViewSubscriptions.HideSelection = false;
             this.uxListViewSubscriptions.Location = new System.Drawing.Point(0, 0);
+            this.uxListViewSubscriptions.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.uxListViewSubscriptions.MultiSelect = false;
             this.uxListViewSubscriptions.Name = "uxListViewSubscriptions";
             this.uxListViewSubscriptions.ShowItemToolTips = true;
-            this.uxListViewSubscriptions.Size = new System.Drawing.Size(806, 184);
+            this.uxListViewSubscriptions.Size = new System.Drawing.Size(604, 149);
             this.uxListViewSubscriptions.SmallImageList = imageList1;
+            this.uxListViewSubscriptions.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.uxListViewSubscriptions.TabIndex = 3;
             this.uxListViewSubscriptions.UseCompatibleStateImageBehavior = false;
             this.uxListViewSubscriptions.View = System.Windows.Forms.View.Details;
@@ -169,11 +175,13 @@
             this.uxListViewVaults.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.uxListViewVaults.HideSelection = false;
             this.uxListViewVaults.Location = new System.Drawing.Point(0, 0);
+            this.uxListViewVaults.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.uxListViewVaults.MultiSelect = false;
             this.uxListViewVaults.Name = "uxListViewVaults";
             this.uxListViewVaults.ShowItemToolTips = true;
-            this.uxListViewVaults.Size = new System.Drawing.Size(806, 236);
+            this.uxListViewVaults.Size = new System.Drawing.Size(604, 192);
             this.uxListViewVaults.SmallImageList = imageList1;
+            this.uxListViewVaults.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.uxListViewVaults.TabIndex = 5;
             this.uxListViewVaults.UseCompatibleStateImageBehavior = false;
             this.uxListViewVaults.View = System.Windows.Forms.View.Details;
@@ -185,9 +193,10 @@
             this.uxPropertyGridVault.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uxPropertyGridVault.HelpVisible = false;
             this.uxPropertyGridVault.Location = new System.Drawing.Point(0, 0);
+            this.uxPropertyGridVault.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.uxPropertyGridVault.Name = "uxPropertyGridVault";
             this.uxPropertyGridVault.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-            this.uxPropertyGridVault.Size = new System.Drawing.Size(806, 170);
+            this.uxPropertyGridVault.Size = new System.Drawing.Size(604, 139);
             this.uxPropertyGridVault.TabIndex = 12;
             this.uxPropertyGridVault.ToolbarVisible = false;
             // 
@@ -202,7 +211,7 @@
             this.uxStatusLabel});
             toolStrip1.Location = new System.Drawing.Point(0, 0);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new System.Drawing.Size(830, 28);
+            toolStrip1.Size = new System.Drawing.Size(622, 25);
             toolStrip1.TabIndex = 10;
             toolStrip1.Text = "toolStrip1";
             // 
@@ -211,7 +220,7 @@
             this.uxComboBoxAccounts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.uxComboBoxAccounts.DropDownWidth = 250;
             this.uxComboBoxAccounts.Name = "uxComboBoxAccounts";
-            this.uxComboBoxAccounts.Size = new System.Drawing.Size(350, 28);
+            this.uxComboBoxAccounts.Size = new System.Drawing.Size(264, 25);
             this.uxComboBoxAccounts.SelectedIndexChanged += new System.EventHandler(this.uxComboBoxAccounts_SelectedIndexChanged);
             // 
             // uxButtonCancelOperation
@@ -231,7 +240,7 @@
             this.uxProgressBar.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.uxProgressBar.AutoSize = false;
             this.uxProgressBar.Name = "uxProgressBar";
-            this.uxProgressBar.Size = new System.Drawing.Size(100, 22);
+            this.uxProgressBar.Size = new System.Drawing.Size(75, 18);
             this.uxProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.uxProgressBar.Visible = false;
             // 
@@ -239,7 +248,7 @@
             // 
             this.uxStatusLabel.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.uxStatusLabel.Name = "uxStatusLabel";
-            this.uxStatusLabel.Size = new System.Drawing.Size(50, 25);
+            this.uxStatusLabel.Size = new System.Drawing.Size(39, 22);
             this.uxStatusLabel.Text = "Ready";
             this.uxStatusLabel.Visible = false;
             // 
@@ -247,10 +256,9 @@
             // 
             this.uxButtonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.uxButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.uxButtonCancel.Location = new System.Drawing.Point(718, 646);
-            this.uxButtonCancel.Margin = new System.Windows.Forms.Padding(4);
+            this.uxButtonCancel.Location = new System.Drawing.Point(538, 525);
             this.uxButtonCancel.Name = "uxButtonCancel";
-            this.uxButtonCancel.Size = new System.Drawing.Size(100, 28);
+            this.uxButtonCancel.Size = new System.Drawing.Size(75, 23);
             this.uxButtonCancel.TabIndex = 7;
             this.uxButtonCancel.Text = "Cancel";
             this.uxButtonCancel.UseVisualStyleBackColor = true;
@@ -260,10 +268,9 @@
             this.uxButtonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.uxButtonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.uxButtonOK.Enabled = false;
-            this.uxButtonOK.Location = new System.Drawing.Point(610, 646);
-            this.uxButtonOK.Margin = new System.Windows.Forms.Padding(4);
+            this.uxButtonOK.Location = new System.Drawing.Point(458, 525);
             this.uxButtonOK.Name = "uxButtonOK";
-            this.uxButtonOK.Size = new System.Drawing.Size(100, 28);
+            this.uxButtonOK.Size = new System.Drawing.Size(75, 23);
             this.uxButtonOK.TabIndex = 6;
             this.uxButtonOK.Text = "OK";
             this.uxButtonOK.UseVisualStyleBackColor = true;
@@ -271,14 +278,15 @@
             // SubscriptionsManagerDialog
             // 
             this.AcceptButton = this.uxButtonOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.uxButtonCancel;
-            this.ClientSize = new System.Drawing.Size(830, 687);
+            this.ClientSize = new System.Drawing.Size(622, 558);
             this.Controls.Add(splitContainer1);
             this.Controls.Add(toolStrip1);
             this.Controls.Add(this.uxButtonCancel);
             this.Controls.Add(this.uxButtonOK);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MinimizeBox = false;
             this.Name = "SubscriptionsManagerDialog";
             this.ShowIcon = false;

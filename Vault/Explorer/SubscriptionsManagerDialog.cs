@@ -22,10 +22,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
     public partial class SubscriptionsManagerDialog : Form
     {
         const string ApiVersion = "api-version=2016-07-01";
-        const string Authority = "https://login.windows.net/72f988bf-86f1-41af-91ab-2d7cd011db47";
         const string ManagmentEndpoint = "https://management.azure.com/";
 
-        private readonly AuthenticationContext _authContext;
         private AuthenticationResult _currentAuthResult;
         private readonly HttpClient _httpClient;
 
@@ -34,7 +32,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             InitializeComponent();
             uxComboBoxAccounts.Items.Add(new AccountItem("microsoft.com"));
             uxComboBoxAccounts.Items.Add(new AccountItem("gme.gbl"));
-            _authContext = new AuthenticationContext(Authority, new FileTokenCache());
             _httpClient = new HttpClient();
         }
 
@@ -47,14 +44,16 @@ namespace Microsoft.PS.Common.Vault.Explorer
             using (var op = NewUxOperationWithProgress(uxComboBoxAccounts))
             {
                 var vaui = new VaultAccessUserInteractive(ai.DomainHint);
-                _currentAuthResult = vaui.AcquireToken(_authContext, ManagmentEndpoint);
+                _currentAuthResult = vaui.AcquireToken(ai.AuthContext, ManagmentEndpoint);
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_currentAuthResult.AccessTokenType, _currentAuthResult.AccessToken);
                 var hrm = await _httpClient.GetAsync($"{ManagmentEndpoint}subscriptions?{ApiVersion}", op.CancellationToken);
                 var json = await hrm.Content.ReadAsStringAsync();
                 var subs = JsonConvert.DeserializeObject<SubscriptionsResponse>(json);
 
                 uxListViewSubscriptions.Items.Clear();
-                foreach (var s in (from s in subs.Subscriptions orderby s.DisplayName select s))
+                uxListViewVaults.Items.Clear();
+                uxPropertyGridVault.SelectedObject = null;
+                foreach (var s in subs.Subscriptions)
                 {
                     uxListViewSubscriptions.Items.Add(new ListViewItemSubscription(s));
                 }
@@ -71,7 +70,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 var json = await hrm.Content.ReadAsStringAsync();
                 var rr = JsonConvert.DeserializeObject<ResourcesResponse>(json);
                 uxListViewVaults.Items.Clear();
-                foreach (var r in (from r in rr.Resources orderby r.Name select r))
+                foreach (var r in rr.Resources)
                 {
                     uxListViewVaults.Items.Add(new ListViewItemVault(s.Subscription.SubscriptionId, r));
                 }
@@ -96,9 +95,17 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
     public class AccountItem
     {
+        const string Authority = "https://login.windows.net/72f988bf-86f1-41af-91ab-2d7cd011db47";
+
+        public readonly AuthenticationContext AuthContext;
+
         public readonly string DomainHint;
 
-        public AccountItem(string domainHint) { DomainHint = domainHint; }
+        public AccountItem(string domainHint)
+        {
+            AuthContext = new AuthenticationContext(Authority, new FileTokenCache(domainHint));
+            DomainHint = domainHint;
+        }
 
         public override string ToString() => $"{Environment.UserName}@{DomainHint}";
     }
