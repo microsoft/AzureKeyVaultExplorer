@@ -45,6 +45,9 @@
     <Reference Include="Microsoft.Azure.KeyVault.dll">
       <HintPath>$(PkgMicrosoft_Azure_KeyVault)\lib\net45\Microsoft.Azure.KeyVault.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Azure.Management.KeyVault.dll">
+      <HintPath>$(PkgMicrosoft_Azure_Management_KeyVault)\lib\net40\Microsoft.Azure.Management.KeyVault.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Azure.Common">
       <HintPath>$(PkgMicrosoft_Azure_Common)\lib\net45\Microsoft.Azure.Common.dll</HintPath>
     </Reference>
@@ -163,6 +166,12 @@
     <Compile Include="SettingsDialog.Designer.cs">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="SubscriptionsManagerDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SubscriptionsManagerDialog.Designer.cs">
+      <DependentUpon>SubscriptionsManagerDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Telemetry.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="UxOperation.cs" />
@@ -201,6 +210,9 @@
     </Compile>
     <EmbeddedResource Include="SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SubscriptionsManagerDialog.resx">
+      <DependentUpon>SubscriptionsManagerDialog.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
