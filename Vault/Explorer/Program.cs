@@ -1,10 +1,7 @@
 ﻿using Microsoft.ApplicationInsights.DataContracts;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
@@ -27,6 +24,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
             // First run install steps
             Utils.ClickOnce_SetAddRemoveProgramsIcon();
             ActivationUri.RegisterVaultProtocol();
+
+            //Application.Run(new SubscriptionsManagerDialog());
+            //return;
+
             // In case ActivationUri was passed perform the action and exit
             var form = new MainForm(ActivationUri.Parse());
             if (!form.IsDisposed)
