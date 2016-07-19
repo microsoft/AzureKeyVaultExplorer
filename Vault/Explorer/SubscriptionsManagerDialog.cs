@@ -72,7 +72,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 uxListViewVaults.Items.Clear();
                 foreach (var r in rr.Resources)
                 {
-                    uxListViewVaults.Items.Add(new ListViewItemVault(s.Subscription.SubscriptionId, r));
+                    uxListViewVaults.Items.Add(new ListViewItemVault(s.Subscription, r));
                 }
             }
         }
@@ -83,10 +83,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
             if (null == v) return;
             using (var op = NewUxOperationWithProgress(uxComboBoxAccounts))
             {
-                var tvcc = new TokenCloudCredentials(v.SubscriptionId.ToString(), _currentAuthResult.AccessToken);
+                var tvcc = new TokenCloudCredentials(v.Subscription.SubscriptionId.ToString(), _currentAuthResult.AccessToken);
                 var kvmc = new KeyVaultManagementClient(tvcc);
                 var vgr = kvmc.Vaults.Get(v.VaultResource.GroupName, v.Name);
-                uxPropertyGridVault.SelectedObject = new PropertyObjectVault(vgr.Vault);
+                uxPropertyGridVault.SelectedObject = new PropertyObjectVault(v.Subscription, v.VaultResource, vgr.Vault);
             }
         }
     }
@@ -127,11 +127,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
     public class ListViewItemVault : ListViewItem
     {
         public readonly Resource VaultResource;
-        public readonly Guid SubscriptionId;
+        public readonly Subscription Subscription;
 
-        public ListViewItemVault(Guid subscriptionId, Resource r) : base(r.Name)
+        public ListViewItemVault(Subscription s, Resource r) : base(r.Name)
         {
-            SubscriptionId = subscriptionId;
+            Subscription = s;
             VaultResource = r;
             Name = r.Name;
             SubItems.Add(r.GroupName);
@@ -142,10 +142,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
     public class PropertyObjectVault
     {
+        private readonly Subscription _subscription;
+        private readonly Resource _resource;
         private readonly Azure.Management.KeyVault.Vault _vault;
 
-        public PropertyObjectVault(Azure.Management.KeyVault.Vault vault)
+        public PropertyObjectVault(Subscription s, Resource r, Azure.Management.KeyVault.Vault vault)
         {
+            _subscription = s;
+            _resource = r;
             _vault = vault;
             Tags = new ObservableTagItemsCollection();
             if (null != _vault.Tags) foreach (var kvp in _vault.Tags) Tags.Add(new TagItem(kvp));
@@ -165,6 +169,18 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [DisplayName("Uri")]
         [ReadOnly(true)]
         public string Uri => _vault.Properties.VaultUri;
+
+        [DisplayName("Subscription Name")]
+        [ReadOnly(true)]
+        public string SubscriptionName => _subscription.DisplayName;
+
+        [DisplayName("Subscription Id")]
+        [ReadOnly(true)]
+        public Guid SubscriptionId => _subscription.SubscriptionId;
+
+        [DisplayName("Resource Group Name")]
+        [ReadOnly(true)]
+        public string ResourceGroupName => _resource.GroupName;
 
         [DisplayName("Custom Tags")]
         [ReadOnly(true)]
