@@ -13,7 +13,7 @@ if '%COMPUTERNAME%' EQU 'ELIZE-HP8540' (
     set Configuration=Debug
 ) else (
     set ManifestCertificateThumbprint=F0DD019529A68E0257DD9E412ED61219776EB546
-    set ClickOnceInstallUpdateUrl=\\elizedev\Temp\VaultExplorer\
+    set ClickOnceInstallUpdateUrl=https://elize.blob.core.windows.net/vaultexplorer/
     rem set ClickOnceInstallUpdateUrl=\\avtest.redmond.corp.microsoft.com\scratch\elize\VaultExplorer\
     set Configuration=Debug
 )
@@ -41,12 +41,20 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
-echo Copying files from .\bin\%Configuration%\app.publish to %ClickOnceInstallUpdateUrl%
-xcopy .\bin\%Configuration%\app.publish %ClickOnceInstallUpdateUrl% /S /Y /Q
-if %ERRORLEVEL% NEQ 0 (
-    echo Error: Failed to copy from .\bin\%Configuration%\app.publish to %ClickOnceInstallUpdateUrl%
+set AzCopy="%ProgramFiles(x86)%\Microsoft SDKs\Azure\AzCopy\AzCopy.exe"
+if not exist %AzCopy% (
+    echo Error: %AzCopy% is not found. Please install it from here http://aka.ms/azcopy
     exit /b 1
 )
+
+echo Uploading files from .\bin\%Configuration%\app.publish to %ClickOnceInstallUpdateUrl%
+%AzCopy% /Source:.\bin\%Configuration%\app.publish /Dest:%ClickOnceInstallUpdateUrl% /DestKey:e44/rtNSwcbUoPMV73vA0ELecGk+N54lix+mTv4zEROfqkOWQmTyeVKyIAxkNkDUFa+f8vULMU722zDZ8mzMiQ== /S /Y
+if %ERRORLEVEL% NEQ 0 (
+    echo Error: Failed to upload from .\bin\%Configuration%\app.publish to %ClickOnceInstallUpdateUrl%
+    exit /b 1
+)
+
+exit /b 1
 
 set LatestVersionLink=%ClickOnceInstallUpdateUrl%LatestVersion.lnk
 if not exist %LatestVersionLink% (
