@@ -12,6 +12,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 {
     public class ActivationUri : VaultLinkUri
     {
+        private static readonly string OnlineActivationUri = $"https://elize.blob.core.windows.net/{Utils.ProductName}/{Utils.ProductName}.application";
         public static readonly ActivationUri Empty = new ActivationUri("vault:");
 
         public ActivationUri(string vaultUri) : base(vaultUri) { }
@@ -21,8 +22,15 @@ namespace Microsoft.PS.Common.Vault.Explorer
             string vaultUri = (ApplicationDeployment.IsNetworkDeployed) ?
                 AppDomain.CurrentDomain.SetupInformation?.ActivationArguments?.ActivationData?.FirstOrDefault() :
                 (Environment.GetCommandLineArgs().Length == 2) ? Environment.GetCommandLineArgs()[1] : null;
-            if (null == vaultUri) return Empty;
+            // Arguments were not passed at all or activation happend via Application Reference (.appref-ms)
+            if (string.IsNullOrEmpty(vaultUri)) return Empty;
             if (vaultUri.StartsWith("file:", StringComparison.CurrentCultureIgnoreCase)) return Empty;
+            // Online activation
+            if (vaultUri.StartsWith(OnlineActivationUri, StringComparison.CurrentCultureIgnoreCase))
+            {
+                vaultUri = vaultUri.Substring(OnlineActivationUri.Length).TrimStart('?');
+            }
+            if (string.IsNullOrEmpty(vaultUri)) return Empty;
             return new ActivationUri(vaultUri.TrimEnd('/', '\\'));
         }
 
