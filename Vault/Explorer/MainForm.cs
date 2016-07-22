@@ -26,6 +26,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private Cursor _moveLinkCursor;
         private bool _keyDownOccured;
         private ToolStripButton uxButtonCancel;
+        private readonly Dictionary<string, VaultAlias> _tempVaultAliases; // Temporary picked VaultAliases via SubscriptionsManager
 
         #region ISession
 
@@ -54,6 +55,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 Visible = false
             };
             uxStatusStrip.Items.Insert(3, uxButtonCancel);
+            _tempVaultAliases = new Dictionary<string, VaultAlias>();
         }
 
         public MainForm(ActivationUri activationUri) : this()
@@ -108,22 +110,24 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private void uxComboBoxVaultAlias_DropDown(object sender, EventArgs e)
         {
+            object prevSelectedItem = uxComboBoxVaultAlias.SelectedItem;
+            uxComboBoxVaultAlias.Items.Clear();
             IEnumerable<VaultAlias> va = Utils.LoadFromJsonFile<VaultAliases>(Settings.Default.VaultAliasesJsonFileLocation);
-            if (!string.IsNullOrEmpty(_activationUri.VaultName)) // In case vault name was provided during activation, search for it, if not found let us add it on the fly
+            if (string.IsNullOrEmpty(_activationUri.VaultName))
+            {
+                uxComboBoxVaultAlias.Items.AddRange(va.ToArray());
+                uxComboBoxVaultAlias.Items.AddRange(_tempVaultAliases.Values.ToArray());
+                uxComboBoxVaultAlias.Items.Add("Pick vault from subscription...");
+            }
+            else // In case vault name was provided during activation, search for it, if not found let us add it on the fly
             {
                 va = from v in va where v.VaultNames.Contains(_activationUri.VaultName, StringComparer.CurrentCultureIgnoreCase) select v;
                 if (0 == va.Count()) // Not found, let add new vault alias == vault name, with Custom secret kind
                 {
-                    va = Enumerable.Repeat(new VaultAlias(_activationUri.VaultName, new string[] { _activationUri.VaultName }, new string[] { "Custom" }), 1);
+                    uxComboBoxVaultAlias.Items.Add(new VaultAlias(_activationUri.VaultName, new string[] { _activationUri.VaultName }, new string[] { "Custom" }));
                 }
             }
-            int prevSelectedIndex = uxComboBoxVaultAlias.SelectedIndex;
-            uxComboBoxVaultAlias.Items.Clear();
-            uxComboBoxVaultAlias.Items.AddRange(va.ToArray());
-            if (prevSelectedIndex < uxComboBoxVaultAlias.Items.Count)
-            {
-                uxComboBoxVaultAlias.SelectedIndex = prevSelectedIndex;
-            }
+            uxComboBoxVaultAlias.SelectedItem = prevSelectedItem;
         }
 
         private void uxComboBoxVaultAlias_DropDownClosed(object sender, EventArgs e)
@@ -144,7 +148,19 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             if (null == uxComboBoxVaultAlias.SelectedItem) return false;
             // Ignore selection of the same vault alias, only when list view is not empty
-            if ((CurrentVaultAlias?.Alias == ((VaultAlias)uxComboBoxVaultAlias.SelectedItem).Alias) && (uxListViewSecrets.Items.Count > 0)) return false;
+            if ((CurrentVaultAlias?.Alias == uxComboBoxVaultAlias.SelectedItem.ToString()) && (uxListViewSecrets.Items.Count > 0)) return false;
+            if (uxComboBoxVaultAlias.SelectedItem is string)
+            {
+                var smd = new SubscriptionsManagerDialog();
+                if (smd.ShowDialog() != DialogResult.OK)
+                {
+                    uxComboBoxVaultAlias.SelectedItem = CurrentVaultAlias;
+                    return false;
+                }
+                _tempVaultAliases[smd.CurrentVaultAlias.Alias] = smd.CurrentVaultAlias;
+                uxComboBoxVaultAlias.Items.Insert(uxComboBoxVaultAlias.Items.Count - 1, smd.CurrentVaultAlias);
+                uxComboBoxVaultAlias.SelectedItem = smd.CurrentVaultAlias;
+            }
             CurrentVaultAlias = (VaultAlias)uxComboBoxVaultAlias.SelectedItem;
             bool itemSelected = (null != CurrentVaultAlias);
             uxComboBoxVaultAlias.ToolTipText = itemSelected ? "Vault names: " + string.Join(", ", CurrentVaultAlias.VaultNames) : "";
@@ -156,11 +172,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             CurrentVault = new Vault(Utils.FullPathToJsonFile(Settings.Default.VaultsJsonFileLocation), VaultAccessTypeEnum.ReadWrite, CurrentVaultAlias.VaultNames);
             // In case current Vaults.json doesn't contain provided vault name during activation, add one assuming UserInteractive access
-            if (false == CurrentVault.VaultsConfig.ContainsKey(_activationUri.VaultName))
+            if (false == CurrentVault.VaultsConfig.ContainsKey(CurrentVaultAlias.VaultNames[0]))
             {
-                CurrentVault.VaultsConfig.Add(_activationUri.VaultName, new VaultAccessType(
-                    new VaultAccess[] { new VaultAccessUserInteractive(null) },
-                    new VaultAccess[] { new VaultAccessUserInteractive(null) }));
+                CurrentVault.VaultsConfig.Add(CurrentVaultAlias.VaultNames[0], new VaultAccessType(
+                    new VaultAccess[] { new VaultAccessUserInteractive(CurrentVaultAlias.DomainHint) },
+                    new VaultAccess[] { new VaultAccessUserInteractive(CurrentVaultAlias.DomainHint) }));
             }
         }
 

@@ -445,9 +445,9 @@
             // 
             // uxComboBoxVaultAlias
             // 
-            this.uxComboBoxVaultAlias.DropDownHeight = 200;
+            this.uxComboBoxVaultAlias.MaxDropDownItems = 16;
             this.uxComboBoxVaultAlias.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.uxComboBoxVaultAlias.IntegralHeight = false;
+            this.uxComboBoxVaultAlias.IntegralHeight = true;
             this.uxComboBoxVaultAlias.Name = "uxComboBoxVaultAlias";
             this.uxComboBoxVaultAlias.Size = new System.Drawing.Size(250, 27);
             this.uxComboBoxVaultAlias.DropDown += new System.EventHandler(this.uxComboBoxVaultAlias_DropDown);

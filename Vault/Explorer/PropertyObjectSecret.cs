@@ -76,7 +76,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public override DataObject GetClipboardValue()
         {
             var dataObj = base.GetClipboardValue();
-            dataObj.SetText(ContentType.IsCertificate() ? CertificateValueObject.FromValue(Value)?.Password : Value);
+            // We use SetData() and not SetText() to support correctly empty string "" as a value
+            dataObj.SetData(DataFormats.UnicodeText, ContentType.IsCertificate() ? CertificateValueObject.FromValue(Value)?.Password : Value);
             return dataObj;
         }
 
