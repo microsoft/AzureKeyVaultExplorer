@@ -131,7 +131,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public override DataObject GetClipboardValue()
         {
             var dataObj = base.GetClipboardValue();
-            dataObj.SetText(Certificate.ToString());
+            dataObj.SetData(DataFormats.UnicodeText, Certificate.ToString());
             return dataObj;
         }
 

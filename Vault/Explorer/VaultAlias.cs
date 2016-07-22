@@ -25,6 +25,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public bool CertificatesCollectionEnabled;
 
+        public string DomainHint;
+
         [JsonConstructor]
         public VaultAlias(string alias, string[] vaultNames, string[] secretKinds)
         {
@@ -37,6 +39,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         public override string ToString() => Alias;
+
+        public override bool Equals(object obj) => Equals((VaultAlias)obj);
+
+        public bool Equals(VaultAlias va) => (Alias == va?.Alias);
+
+        public override int GetHashCode() => Alias?.GetHashCode() ?? 0;
     }
 
     [JsonArray]

@@ -24,27 +24,31 @@ namespace Microsoft.PS.Common.Vault.Explorer
         const string ApiVersion = "api-version=2016-07-01";
         const string ManagmentEndpoint = "https://management.azure.com/";
 
+        private AccountItem _currentAccountItem;
         private AuthenticationResult _currentAuthResult;
         private readonly HttpClient _httpClient;
+
+        public VaultAlias CurrentVaultAlias { get; private set; }
 
         public SubscriptionsManagerDialog()
         {
             InitializeComponent();
+            _httpClient = new HttpClient();
             uxComboBoxAccounts.Items.Add(new AccountItem("microsoft.com"));
             uxComboBoxAccounts.Items.Add(new AccountItem("gme.gbl"));
-            _httpClient = new HttpClient();
+            uxComboBoxAccounts.SelectedIndex = 0;
         }
 
         private UxOperation NewUxOperationWithProgress(params ToolStripItem[] controlsToToggle) => new UxOperation(null, uxStatusLabel, uxProgressBar, uxButtonCancelOperation, controlsToToggle);
 
         private async void uxComboBoxAccounts_SelectedIndexChanged(object sender, EventArgs e)
         {
-            AccountItem ai = (AccountItem)uxComboBoxAccounts.SelectedItem;
-            if (null == ai) return;
+            _currentAccountItem = (AccountItem)uxComboBoxAccounts.SelectedItem;
+            if (null == _currentAccountItem) return;
             using (var op = NewUxOperationWithProgress(uxComboBoxAccounts))
             {
-                var vaui = new VaultAccessUserInteractive(ai.DomainHint);
-                _currentAuthResult = vaui.AcquireToken(ai.AuthContext, ManagmentEndpoint);
+                var vaui = new VaultAccessUserInteractive(_currentAccountItem.DomainHint);
+                _currentAuthResult = vaui.AcquireToken(_currentAccountItem.AuthContext, ManagmentEndpoint);
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_currentAuthResult.AccessTokenType, _currentAuthResult.AccessToken);
                 var hrm = await _httpClient.GetAsync($"{ManagmentEndpoint}subscriptions?{ApiVersion}", op.CancellationToken);
                 var json = await hrm.Content.ReadAsStringAsync();
@@ -80,6 +84,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private void uxListViewVaults_SelectedIndexChanged(object sender, EventArgs e)
         {
             ListViewItemVault v = uxListViewVaults.SelectedItems.Count > 0 ? (ListViewItemVault)uxListViewVaults.SelectedItems[0] : null;
+            uxButtonOK.Enabled = false;
             if (null == v) return;
             using (var op = NewUxOperationWithProgress(uxComboBoxAccounts))
             {
@@ -87,6 +92,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 var kvmc = new KeyVaultManagementClient(tvcc);
                 var vgr = kvmc.Vaults.Get(v.VaultResource.GroupName, v.Name);
                 uxPropertyGridVault.SelectedObject = new PropertyObjectVault(v.Subscription, v.VaultResource, vgr.Vault);
+                uxButtonOK.Enabled = true;
+                CurrentVaultAlias = new VaultAlias(v.Name, new string[] { v.Name }, new string[] { "Custom" }) { DomainHint = _currentAccountItem.DomainHint };
             }
         }
     }

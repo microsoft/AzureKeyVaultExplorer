@@ -24,10 +24,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             // First run install steps
             Utils.ClickOnce_SetAddRemoveProgramsIcon();
             ActivationUri.RegisterVaultProtocol();
-
-            //Application.Run(new SubscriptionsManagerDialog());
-            //return;
-
             // In case ActivationUri was passed perform the action and exit
             var form = new MainForm(ActivationUri.Parse());
             if (!form.IsDisposed)

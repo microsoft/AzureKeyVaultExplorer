@@ -234,6 +234,7 @@
             this.MinimumSize = new System.Drawing.Size(500, 550);
             this.Name = "SettingsDialog";
             this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Settings";
