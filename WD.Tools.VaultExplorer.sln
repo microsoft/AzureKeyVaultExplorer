@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClearClipboard", "Vault\ClearClipboard\ClearClipboard.csproj", "{9B19162F-FF53-45C4-B849-E293DB19D7AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VaultExplorer", "Vault\Explorer\VaultExplorer.csproj", "{0720CA4C-5D06-47FC-8DF9-2A42C40119A3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9B19162F-FF53-45C4-B849-E293DB19D7AA}.Debug|x64.ActiveCfg = Debug|x64
+		{9B19162F-FF53-45C4-B849-E293DB19D7AA}.Debug|x64.Build.0 = Debug|x64
+		{9B19162F-FF53-45C4-B849-E293DB19D7AA}.Release|x64.ActiveCfg = Release|x64
+		{9B19162F-FF53-45C4-B849-E293DB19D7AA}.Release|x64.Build.0 = Release|x64
+		{0720CA4C-5D06-47FC-8DF9-2A42C40119A3}.Debug|x64.ActiveCfg = Debug|x64
+		{0720CA4C-5D06-47FC-8DF9-2A42C40119A3}.Debug|x64.Build.0 = Debug|x64
+		{0720CA4C-5D06-47FC-8DF9-2A42C40119A3}.Release|x64.ActiveCfg = Release|x64
+		{0720CA4C-5D06-47FC-8DF9-2A42C40119A3}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
