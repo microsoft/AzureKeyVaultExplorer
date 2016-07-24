@@ -22,8 +22,8 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <ManifestKeyFile></ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
-    <SignManifests>true</SignManifests>
-    <SignAssembly>true</SignAssembly>
+    <SignManifests>false</SignManifests>
+    <SignAssembly>false</SignAssembly>
     <IsWebBootstrapper>false</IsWebBootstrapper>
   </PropertyGroup>
   <ItemGroup>

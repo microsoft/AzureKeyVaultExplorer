@@ -10,6 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Microsoft.PS.Common.Vault.Explorer</RootNamespace>
     <AssemblyName>VaultExplorer</AssemblyName>
+    <AssemblyDescription>Azure Key Vault Explorer</AssemblyDescription>
     <ErrorReport>prompt</ErrorReport>
     <ApplicationIcon>$(AssemblyName).ico</ApplicationIcon>
     <FileAlignment>512</FileAlignment>
@@ -18,22 +19,19 @@
     <TargetPlatformVersion>8.0</TargetPlatformVersion>
     <PlatformTarget Condition="'$(BuildingInsideVisualStudio)' != ''">AnyCPU</PlatformTarget>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch Condition="'$(BuildingInsideVisualStudio)' != ''">None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-    <GenerateBuildInfoConfigFile>true</GenerateBuildInfoConfigFile>
-    <IncludeServerNameInBuildInfo>true</IncludeServerNameInBuildInfo>
+    <AutoVersioning>true</AutoVersioning>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
-    <WebProjectOutputDir Condition="'$(WebProjectOutputDir)' == ''">$(OutputPath)</WebProjectOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
-    <WebProjectOutputDir Condition="'$(WebProjectOutputDir)' == ''">$(OutputPath)</WebProjectOutputDir>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.ApplicationInsights">
@@ -151,7 +149,6 @@
     </Compile>
     <Compile Include="ObservableCollections.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadOnlyPropertyDescriptor.cs" />
     <Compile Include="SecretFile.cs" />
     <Compile Include="SecretKind.cs">
