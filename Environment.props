@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!-- Repository root -->
+    <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
+
+    <!-- Default Configuration -->
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <!-- Default Platform -->
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    
+    <!-- Target .NET framework (default) -->
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+
+    <!-- Generate binding redirect automatically across projects -->
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+
+    <!-- Make sure we generate redirects for libraries (dll) as well (by default, it's only exe) -->
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+
+    <!-- Disable Visual Studio hosting process -->
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+
+    <!-- Generate [AssemblyName].BuildInfo.config with SourceControl and Build info -->
+    <GenerateBuildInfoConfigFile>true</GenerateBuildInfoConfigFile>
+    <IncludeServerNameInBuildInfo>true</IncludeServerNameInBuildInfo>
+    <WebProjectOutputDir Condition="'$(WebProjectOutputDir)' == ''">.</WebProjectOutputDir>
+  </PropertyGroup>
+
+  <!-- Import (generated) NuGet package properties -->
+  <Import Project="$(RepositoryRoot)\.packages\Packages.props" 
+    Condition="Exists('$(RepositoryRoot)\.packages\Packages.props')"/>
+
+  <!-- Import repository custom properties (if any) -->
+  <Import Project="$(RepositoryRoot)\Environment.Custom.props" 
+    Condition="Exists('$(RepositoryRoot)\Environment.Custom.props')"/>
+  
+  <!-- NuGet package restore verification task/target -->
+  <UsingTask TaskName="CheckNuGetPackagesUpToDateTask" 
+             TaskFactory="CodeTaskFactory" 
+             AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll"
+             >
+    
+    <ParameterGroup>
+      <RepositoryRoot ParameterType="System.String" Required="true" />
+      <NuGetPackagesUpToDate ParameterType="System.Boolean" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System.Security.Cryptography" />
+      <Code Type="Method" Language="cs">
+        <![CDATA[
+          public override bool Execute()
+          {
+              // Load the current fingerprint, if any
+              var fpFileName = Path.Combine(RepositoryRoot, @".packages\.fingerprint");
+
+              var fpCurrent = string.Empty;
+
+              if (File.Exists(fpFileName))
+              {
+                  fpCurrent = File.ReadAllText(fpFileName);    
+              }
+
+              // Obtain the finderprint of packages.config and compare it with the current FP
+              var packageConfigFileName = Path.Combine(RepositoryRoot, @".init\packages.config");
+
+              using (var md5 = MD5.Create())
+              {
+                  var fpPackageConfig = BitConverter.ToString(md5.ComputeHash(
+                      File.ReadAllBytes(packageConfigFileName))).Replace("-", "");
+
+                  if (fpPackageConfig == fpCurrent)
+                  {
+                      NuGetPackagesUpToDate = true;
+                  }
+              }
+
+              return true;
+          }
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+  
+  <Target Name="EnsureNuGetPackagesUpToDate" BeforeTargets="BeforeBuild">
+    <PropertyGroup>
+      <ErrorText>NuGet packages have not been restored or they are not up-to-date. Please run '$(RepositoryRoot)init.cmd' and reopen/rebuild your solution/projects. </ErrorText>
+    </PropertyGroup>
+    <CheckNuGetPackagesUpToDateTask RepositoryRoot="$(RepositoryRoot)">
+      <Output PropertyName="NuGetPackagesUpToDate" TaskParameter="NuGetPackagesUpToDate" />      
+    </CheckNuGetPackagesUpToDateTask>
+    <Error Condition="$(NuGetPackagesUpToDate) != 'true'" Text="$(ErrorText)" />
+  </Target>
+
+  <!-- 
+    Hook up a Release build target (in Debug configuration) in case 
+    we want to build both Debug and Release configurations - we always 
+    start with Debug configuration and then proceed to Release if build
+    (in Debug) was successful. Note that the technique used here should 
+    also cover building solutions - not just individual projects. 
+    -->
+  <Target Name="BuildRelease" AfterTargets="AfterBuild"
+    Condition="'$(BuildRelease)' != '' and '$(Configuration)' == 'Debug'">
+    <ItemGroup>
+      <ProjectToBuild Include="$(MSBuildProjectFile)">
+        <Properties>Configuration=Release</Properties>
+      </ProjectToBuild>
+    </ItemGroup>
+    <Message Text="Building release configuration for project [@(ProjectToBuild)] ..." />
+    <MSBuild Projects="@(ProjectToBuild)" BuildInParallel="true" />
+  </Target>
+  <Target Name="CleanRelease" AfterTargets="AfterClean"
+    Condition="'$(BuildRelease)' != '' and '$(Configuration)' == 'Debug'">
+    <ItemGroup>
+      <ProjectToBuild Include="$(MSBuildProjectFile)">
+        <Properties>Configuration=Release</Properties>
+      </ProjectToBuild>
+    </ItemGroup>
+    <Message Text="Cleaning release configuration for project [@(ProjectToBuild)] ..." />
+    <MSBuild Projects="@(ProjectToBuild)" BuildInParallel="true" Targets="Clean"/>
+  </Target>
+  
+</Project>
+
