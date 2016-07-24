@@ -3,6 +3,8 @@
   <!-- Environment -->
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Environment.props))\Environment.props" Condition=" '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Environment.props))' != '' " />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <!-- WD.Services.Core -->
+  <Import Project="$(PkgWD_Services_Core)\Build\WD.Services.Core.props" Condition="Exists('$(PkgWD_Services_Core)\Build\WD.Services.Core.props')" />
   <PropertyGroup>
     <ProjectGuid>{9B19162F-FF53-45C4-B849-E293DB19D7AA}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -10,6 +12,8 @@
     <RootNamespace>ClearClipboard</RootNamespace>
     <AssemblyName>ClearClipboard</AssemblyName>
     <FileAlignment>512</FileAlignment>
+    <AutoVersioning>true</AutoVersioning>
+    <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -36,7 +40,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

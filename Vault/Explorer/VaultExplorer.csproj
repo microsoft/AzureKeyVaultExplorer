@@ -88,6 +88,16 @@
       <HintPath>$(MSBuildProgramFiles32)\Windows Kits\8.1\References\CommonConfiguration\Neutral\Annotated\Windows.winmd</HintPath>
     </Reference>
   </ItemGroup>
+  <!-- 
+   Build ClearClipboard.csproj and copy the generated .exe as a dependent assembly all this to avoid ClickOnce
+   warning MSB3178: Assembly 'ClearClipboard.exe' is incorrectly specified as a file.
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\ClearClipboard\ClearClipboard.csproj">
+      <Project>{9b19162f-ff53-45c4-b849-e293db19d7aa}</Project>
+      <Name>ClearClipboard</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="ActivationUri.cs" />
     <Compile Include="AddFileEventArgs.cs" />
@@ -278,24 +288,6 @@
     <None Include="Resources\wrench.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- 
-   Build ClearClipboard.csproj and copy the generated .exe with new extension .ex_, all this to avoid ClickOnce
-   warning MSB3178: Assembly '..\ClearClipboard\bin\Debug\ClearClipboard.exe' is incorrectly specified as a file.
-  -->
-  <ItemGroup>
-    <Content Include="..\ClearClipboard\bin\$(Configuration)\ClearClipboard.ex_">
-      <Link>ClearClipboard.exe</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>False</Visible>
-    </Content>
-    <ClearClipboardExe Include="..\ClearClipboard\bin\$(Configuration)\ClearClipboard.exe">
-      <Visible>False</Visible>
-    </ClearClipboardExe>
-  </ItemGroup>
-  <Target Name="BuildAndCopyClearClipboard" BeforeTargets="BeforeBuild">
-    <MSBuild Projects="..\ClearClipboard\ClearClipboard.csproj" Targets="Build" />
-    <Copy SourceFiles="@(ClearClipboardExe)" DestinationFiles="@(ClearClipboardExe->'..\ClearClipboard\bin\$(Configuration)\%(Filename).ex_')" ContinueOnError="false" />
-  </Target>
   <Target Name="AfterCompile">
     <GetAssemblyIdentity AssemblyFiles="$(IntermediateOutputPath)$(TargetFileName)">
       <Output TaskParameter="Assemblies" ItemName="TargetAssemblyIdentity" />
