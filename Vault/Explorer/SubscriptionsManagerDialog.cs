@@ -240,6 +240,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [Description("Permissions to secrets")]
         public string PermissionsToSecrets => string.Join(",", _ape.PermissionsToSecrets);
 
+        [Description("Permissions to certificates")]
+        public string PermissionsToCertificates => string.Join(",", _ape.PermissionsToCertificates);
+
         [Description("Tenant ID of the principal")]
         public Guid TenantId => _ape.TenantId;
 
