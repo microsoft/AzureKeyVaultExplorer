@@ -113,20 +113,17 @@ namespace Microsoft.PS.Common.Vault.Explorer
             object prevSelectedItem = uxComboBoxVaultAlias.SelectedItem;
             uxComboBoxVaultAlias.Items.Clear();
             IEnumerable<VaultAlias> va = Utils.LoadFromJsonFile<VaultAliases>(Settings.Default.VaultAliasesJsonFileLocation);
-            if (string.IsNullOrEmpty(_activationUri.VaultName))
-            {
-                uxComboBoxVaultAlias.Items.AddRange(va.ToArray());
-                uxComboBoxVaultAlias.Items.AddRange(_tempVaultAliases.Values.ToArray());
-                uxComboBoxVaultAlias.Items.Add("Pick vault from subscription...");
-            }
-            else // In case vault name was provided during activation, search for it, if not found let us add it on the fly
+            if (!string.IsNullOrEmpty(_activationUri.VaultName)) // In case vault name was provided during activation, search for it, if not found let us add it on the fly
             {
                 va = from v in va where v.VaultNames.Contains(_activationUri.VaultName, StringComparer.CurrentCultureIgnoreCase) select v;
                 if (0 == va.Count()) // Not found, let add new vault alias == vault name, with Custom secret kind
                 {
-                    uxComboBoxVaultAlias.Items.Add(new VaultAlias(_activationUri.VaultName, new string[] { _activationUri.VaultName }, new string[] { "Custom" }));
+                    va = Enumerable.Repeat(new VaultAlias(_activationUri.VaultName, new string[] { _activationUri.VaultName }, new string[] { "Custom" }), 1);
                 }
             }
+            uxComboBoxVaultAlias.Items.AddRange(va.ToArray());
+            uxComboBoxVaultAlias.Items.AddRange(_tempVaultAliases.Values.ToArray());
+            uxComboBoxVaultAlias.Items.Add("Pick vault from subscription...");
             uxComboBoxVaultAlias.SelectedItem = prevSelectedItem;
         }
 
