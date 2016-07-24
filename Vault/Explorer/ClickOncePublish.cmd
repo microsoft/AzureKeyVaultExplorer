@@ -8,17 +8,15 @@ rem ============================================================================
 setlocal
 
 if '%COMPUTERNAME%'=='ELIZE-HP8540' (
-    set ManifestCertificateThumbprint=14B804B917DE9AF55006443639A49BD5C0A42505
     set ClickOnceInstallUpdateUrl=\\ELIZE-HP8540\Temp\VaultExplorer\
     set Configuration=Debug
 ) else (
-    set ManifestCertificateThumbprint=F0DD019529A68E0257DD9E412ED61219776EB546
     rem set ClickOnceInstallUpdateUrl=https://elize.blob.core.windows.net/vaultexplorer/
     set ClickOnceInstallUpdateUrl=\\elizedev\Temp\VaultExplorer\
     set Configuration=Debug
 )
 
-msbuild /v:minimal /fl /flp:verbosity=normal /m /t:rebuild;publish /p:Configuration=%Configuration%;ClickOnceInstallUpdateUrl=%ClickOnceInstallUpdateUrl%;ManifestCertificateThumbprint=%ManifestCertificateThumbprint%
+msbuild /v:minimal /fl /flp:verbosity=normal /m /t:rebuild;publish /p:Configuration=%Configuration%;ClickOnceInstallUpdateUrl=%ClickOnceInstallUpdateUrl%
 
 if %ERRORLEVEL% NEQ 0 (
     echo Error: Build break!
