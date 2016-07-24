@@ -2,7 +2,7 @@
 rem ===============================================================================================
 rem Script to build and publish new VaultExplorer ClickOnce package
 rem
-rem Author: Eli Zeitlin (elize) 06/03/2016
+rem Author: Eli Zeitlin (elize) 07/23/2016
 rem ===============================================================================================
 
 setlocal
