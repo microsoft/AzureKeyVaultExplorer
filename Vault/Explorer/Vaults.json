@@ -1,0 +1,253 @@
+// --------------------------------------------------------------------------------------
+// Windows Defender Services - Azure Key Vaults Configuration
+// Author: Eli Zeitlin
+//
+// Supported Vault Access types are:
+// 1. VaultAccessClientCertificate - client id (application id) in AzureAD will be selected with right certificate thumbprint (sha1) of the application's principal to get the access
+// 2. VaultAccessClientCredential - client id and client secret will be used to get the access
+// 3. VaultAccessUserInteractive - client id (powershell app id) and user credentials will be used to get the access
+//
+// In case of dual vaults (primary and secondary) use $id and $ref to avoid duplication
+// --------------------------------------------------------------------------------------
+
+{
+  "wdvaultus1westint": {
+    "$id": "1",
+    "ReadOnly": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessClientCertificate, Microsoft.PS.Common.Vault",
+        "ClientId": "5073cdea-01c2-4268-aab3-16b8cbf87210",
+        "CertificateThumbprint": "015c61f14b25316fc3550a3d050a98e65cd4e5e7"
+      }
+    ],
+    "ReadWrite": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessClientCertificate, Microsoft.PS.Common.Vault",
+        "ClientId": "9eeccc29-9b01-4462-acff-c44c0311294c",
+        "CertificateThumbprint": "ed2df9d40d455208f47af0aaea4d7cb99ca38ebf"
+      },
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault",
+        "DomainHint": "microsoft.com"
+      }
+    ]
+  },
+  "wdvaultus1eastint": {
+    "$ref": "1"
+  },
+  "wdvaultus1westppe": {
+    "$id": "2",
+    "ReadOnly": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessClientCertificate, Microsoft.PS.Common.Vault",
+        "ClientId": "0b84f533-bcb1-433d-bccd-100cdbf42226",
+        "CertificateThumbprint": "7845f791edc38ae4ec7347bf225f35a521f8556e"
+      }
+    ],
+    "ReadWrite": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessClientCertificate, Microsoft.PS.Common.Vault",
+        "ClientId": "410a42a1-7c71-490b-8d62-193d07ce3a07",
+        "CertificateThumbprint": "7a78debd4fd0cdc32758d204ffe8139f30d05373"
+      },
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
+      }
+    ]
+  },
+  "wdvaultus1eastppe": {
+    "$ref": "2"
+  },
+  "wdvaultus1westprod": {
+    "$id": "3",
+    "ReadOnly": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessClientCertificate, Microsoft.PS.Common.Vault",
+        "ClientId": "820a9860-ed10-48f7-a716-31661e19a12a",
+        "CertificateThumbprint": "90ef01ccd5ddabcc3942f823068fdc1db9f48803"
+      }
+    ],
+    "ReadWrite": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessClientCertificate, Microsoft.PS.Common.Vault",
+        "ClientId": "832b3f43-eb5e-4564-a540-51862ec5bf93",
+        "CertificateThumbprint": "d90783d5ada64960657ebc7ba0ce70419e6aab7a"
+      },
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
+      }
+    ]
+  },
+  "wdvaultus1eastprod": {
+    "$ref": "3"
+  },
+  "wdvaultau1eastprod": {
+    "$id": "4",
+    "ReadOnly": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessClientCertificate, Microsoft.PS.Common.Vault",
+        "ClientId": "7cb67201-d034-4d83-8feb-1423a3f3501b",
+        "CertificateThumbprint": "dae8faa9a6c5f11cd6fccdcfa0cdbbf535ed6e32"
+      }
+    ],
+    "ReadWrite": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessClientCertificate, Microsoft.PS.Common.Vault",
+        "ClientId": "491ad94f-368c-4847-820f-de608c7c573c",
+        "CertificateThumbprint": "bd9514ad9decd6eb3e29b4badbc58c6d94514f8b"
+      },
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
+      }
+    ]
+  },
+  "wdvaultau1southeastprod": {
+    "$ref": "4"
+  },
+  "wdvaulteu1northprod": {
+    "$id": "5",
+    "ReadOnly": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessClientCertificate, Microsoft.PS.Common.Vault",
+        "ClientId": "5f3086c4-d42e-4d31-bae6-83beeccc7032",
+        "CertificateThumbprint": "66a0c56e2ed8613f1a2aa2a3a9e73b6a46dada0d"
+      }
+    ],
+    "ReadWrite": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessClientCertificate, Microsoft.PS.Common.Vault",
+        "ClientId": "2493fe38-cdd1-4820-b138-e6a8b2e2c1cd",
+        "CertificateThumbprint": "5ae18d92d651e1a1a6fedfdb6cecb2afce533b54"
+      },
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
+      }
+    ]
+  },
+  "wdvaulteu1westprod": {
+    "$ref": "5"
+  },
+  "wdvaultas1eastprod": {
+    "$id": "6",
+    "ReadOnly": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessClientCertificate, Microsoft.PS.Common.Vault",
+        "ClientId": "f5fe4a51-d378-4d3c-834e-42fd6ae5f7df",
+        "CertificateThumbprint": "7b81e3836c75f69e06b3f290e65c9a5d68c23961"
+      }
+    ],
+    "ReadWrite": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessClientCertificate, Microsoft.PS.Common.Vault",
+        "ClientId": "67cb4202-1cd1-4f90-8123-1c36fca36f22",
+        "CertificateThumbprint": "95412626a4d8f1b4f92c2660f84aa9aa11e84fba"
+      },
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
+      }
+    ]
+  },
+  "wdvaultas1southeastprod": {
+    "$ref": "6"
+  },
+  "wdvaultbr1southprod": {
+    "$id": "7",
+    "ReadOnly": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessClientCertificate, Microsoft.PS.Common.Vault",
+        "ClientId": "c77304bb-aa5d-4820-9626-0f340407180d",
+        "CertificateThumbprint": "d0110dd2ad033ccb9e7dbeeec4f21392d1a222ee"
+      }
+    ],
+    "ReadWrite": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessClientCertificate, Microsoft.PS.Common.Vault",
+        "ClientId": "1d03412c-d7c4-4d28-a2b9-214d2d35857b",
+        "CertificateThumbprint": "9b013ac97b469fe1c39a0e12a850da72c2892460"
+      },
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
+      }
+    ]
+  },
+  "defenderkeyvault": {
+    "ReadOnly": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
+      }
+    ],
+    "ReadWrite": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
+      }
+    ]
+  },
+  "defenderkeyvaultdev": {
+    "ReadOnly": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
+      }
+    ],
+    "ReadWrite": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
+      }
+    ]
+  },
+  "defenderkeyvaultresearch": {
+    "ReadOnly": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
+      }
+    ],
+    "ReadWrite": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
+      }
+    ]
+  },
+  "defenderkeyvaultbuild": {
+    "ReadOnly": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
+      }
+    ],
+    "ReadWrite": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
+      }
+    ]
+  },
+  "wcd-production-vault": {
+    "$id": "8",
+    "ReadOnly": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
+      }
+    ],
+    "ReadWrite": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
+      }
+    ]
+  },
+  "wcd-production-vault-dr": {
+    "$ref": "8"
+  },
+  "wcd-staging-vault": {
+    "$id": "9",
+    "ReadOnly": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
+      }
+    ],
+    "ReadWrite": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
+      }
+    ]
+  },
+  "wcd-staging-vault-dr":  {
+    "$ref": "9"
+  }
+}
