@@ -47,24 +47,35 @@ namespace Microsoft.PS.Common.Vault.Explorer
             Items.Clear();
         }
 
-        public void FindItemsWithText(string regexPattern)
+        public Exception FindItemsWithText(string regexPattern)
         {
-            ListViewItemBase selectItem = null;
-            BeginUpdate();
-            Regex regex = new Regex(regexPattern, RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
-            foreach (ListViewItemBase lvib in Items)
+            try
             {
-                bool contains = lvib.Contains(regex);
-                lvib.SearchResult = contains;
-                if ((selectItem == null) && contains)
+                ListViewItemBase selectItem = null;
+                BeginUpdate();
+                Regex regex = new Regex(regexPattern, RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+                foreach (ListViewItemBase lvib in Items)
                 {
-                    selectItem = lvib;
+                    bool contains = lvib.Contains(regex);
+                    lvib.SearchResult = contains;
+                    if ((selectItem == null) && contains)
+                    {
+                        selectItem = lvib;
+                    }
                 }
+                Sort();
+                selectItem?.RefreshAndSelect();
+                RefreshGroupsHeader();
+                return null;
             }
-            Sort();
-            selectItem?.RefreshAndSelect();
-            RefreshGroupsHeader();
-            EndUpdate();
+            catch (Exception e)
+            {
+                return e;
+            }
+            finally
+            {
+                EndUpdate();
+            }
         }
 
         public void ToggleSelectedItemsToFromFavorites()
