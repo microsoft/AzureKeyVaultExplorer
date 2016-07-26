@@ -1,7 +1,5 @@
 ﻿using Microsoft.Azure.KeyVault;
-using Microsoft.PS.Common.Vault;
 using Microsoft.PS.Common.Vault.Explorer.Properties;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,8 +7,6 @@ using System.Drawing;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
@@ -488,7 +484,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private void uxTimerSearchTextTypingCompleted_Tick(object sender, EventArgs e)
         {
             uxTimerSearchTextTypingCompleted.Stop();
-            uxListViewSecrets.FindItemsWithText(uxTextBoxSearch.Text);
+            var ex = uxListViewSecrets.FindItemsWithText(uxTextBoxSearch.Text);
+            uxTextBoxSearch.ForeColor = (ex == null) ? DefaultForeColor : Color.Red;
+            uxTextBoxSearch.ToolTipText = (ex == null) ? uxImageSearch.ToolTipText : $"Regular expression error during {ex.Message}";
             RefreshItemsCount();
         }
 
