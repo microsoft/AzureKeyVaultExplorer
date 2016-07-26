@@ -242,8 +242,7 @@
     <Content Include="SecretKinds.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="$(PkgWD_Services_Vault)\lib\net45\Vaults.json">
-      <Link>Vaults.json</Link>
+    <Content Include="Vaults.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="$(OutputPath)\$(AssemblyName).BuildInfo.config">
