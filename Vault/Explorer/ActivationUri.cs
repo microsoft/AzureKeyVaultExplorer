@@ -71,7 +71,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <summary>
         /// Register vault: protocol for current user, pretty much will set the following regkey
         /// HKEY_CURRENT_USER\SOFTWARE\Classes\vault\shell\open\command
-        /// "C:\windows\system32\rundll32.exe" C:\windows\system32\dfshim.dll, ShOpenVerbShortcut C:\Users\elize\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Microsoft\VaultExplorer.appref-ms|%1
+        /// "C:\windows\system32\rundll32.exe" C:\windows\system32\dfshim.dll, ShOpenVerbShortcut C:\Users\elize\AppData\Roaming\Microsoft Corporation\Windows\Start Menu\Programs\Microsoft\VaultExplorer.appref-ms|%1
         /// </summary>
         public static void RegisterVaultProtocol()
         {
@@ -91,7 +91,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                         vaultKey.SetValue("URL Protocol", "");
                         vaultKey.CreateSubKey("DefaultIcon").SetValue("", $"{Application.ExecutablePath},0");
                         string system32 = Environment.GetFolderPath(Environment.SpecialFolder.System);
-                        string appref_ms = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs", "Microsoft", "VaultExplorer.appref-ms");
+                        string appref_ms = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs", "Microsoft Corporation", "VaultExplorer.appref-ms");
                         vaultKey.CreateSubKey("shell").CreateSubKey("open").CreateSubKey("command").SetValue("",
                                 $"\"{system32}\\rundll32.exe\" {system32}\\dfshim.dll, ShOpenVerbShortcut {appref_ms}|%1");
                     }
