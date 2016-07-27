@@ -213,7 +213,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             // Add HTML format and .URL as a file
             dataObj.SetData(DataFormats.Html, string.Format(html, link, name));
             var tempPath = Path.Combine(Path.GetTempPath(), name + ContentType.KeyVaultLink.ToExtension());
-            File.WriteAllText(tempPath, $"[InternetShortcut]\nURL={link}");
+            File.WriteAllText(tempPath, $"[InternetShortcut]\r\nURL={link}\r\nIconIndex=47\r\nIconFile=%SystemRoot%\\system32\\SHELL32.dll");
             var sc = new StringCollection();
             sc.Add(tempPath);
             dataObj.SetFileDropList(sc);
