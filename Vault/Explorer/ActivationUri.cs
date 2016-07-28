@@ -79,12 +79,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 try
                 {
-                    var subKey = Registry.CurrentUser.OpenSubKey(@"Software\Classes\vault", true);
-                    if (null != subKey)
-                    {
-                        subKey.CreateSubKey("DefaultIcon").SetValue("", $"{Application.ExecutablePath},0"); // Update the location to icon 
-                        return;
-                    }
                     using (var vaultKey = Registry.CurrentUser.CreateSubKey(@"Software\Classes\vault"))
                     {
                         vaultKey.SetValue("", "URL:Vault Protocol");
