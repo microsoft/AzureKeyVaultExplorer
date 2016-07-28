@@ -15,7 +15,7 @@
     <SupportUrl>http://aka.ms/vaultexplorer</SupportUrl>
     <ErrorReportUrl>http://aka.ms/vaultexplorer</ErrorReportUrl>
     <ProductName>VaultExplorer</ProductName>
-    <PublisherName>Microsoft</PublisherName>
+    <PublisherName>Microsoft Corporation</PublisherName>
     <TrustUrlParameters>true</TrustUrlParameters>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
