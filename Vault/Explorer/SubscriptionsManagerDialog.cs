@@ -81,7 +81,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
         }
 
-        private void uxListViewVaults_SelectedIndexChanged(object sender, EventArgs e)
+        private async void uxListViewVaults_SelectedIndexChanged(object sender, EventArgs e)
         {
             ListViewItemVault v = uxListViewVaults.SelectedItems.Count > 0 ? (ListViewItemVault)uxListViewVaults.SelectedItems[0] : null;
             uxButtonOK.Enabled = false;
@@ -90,7 +90,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 var tvcc = new TokenCloudCredentials(v.Subscription.SubscriptionId.ToString(), _currentAuthResult.AccessToken);
                 var kvmc = new KeyVaultManagementClient(tvcc);
-                var vgr = kvmc.Vaults.Get(v.VaultResource.GroupName, v.Name);
+                var vgr = await kvmc.Vaults.GetAsync(v.VaultResource.GroupName, v.Name);
                 uxPropertyGridVault.SelectedObject = new PropertyObjectVault(v.Subscription, v.VaultResource, vgr.Vault);
                 uxButtonOK.Enabled = true;
                 CurrentVaultAlias = new VaultAlias(v.Name, new string[] { v.Name }, new string[] { "Custom" }) { DomainHint = _currentAccountItem.DomainHint };

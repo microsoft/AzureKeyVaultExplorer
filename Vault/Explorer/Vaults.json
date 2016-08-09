@@ -86,14 +86,14 @@
     "ReadOnly": [
       {
         "$type": "Microsoft.PS.Common.Vault.VaultAccessClientCertificate, Microsoft.PS.Common.Vault",
-        "ClientId": "7cb67201-d034-4d83-8feb-1423a3f3501b",
+        "ClientId": "eea8a693-2733-4f3a-8c43-32bb8d148f8e",
         "CertificateThumbprint": "dae8faa9a6c5f11cd6fccdcfa0cdbbf535ed6e32"
       }
     ],
     "ReadWrite": [
       {
         "$type": "Microsoft.PS.Common.Vault.VaultAccessClientCertificate, Microsoft.PS.Common.Vault",
-        "ClientId": "491ad94f-368c-4847-820f-de608c7c573c",
+        "ClientId": "8e7da139-9e49-406f-a63c-30c670fb8773",
         "CertificateThumbprint": "bd9514ad9decd6eb3e29b4badbc58c6d94514f8b"
       },
       {
