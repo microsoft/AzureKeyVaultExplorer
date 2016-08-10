@@ -280,7 +280,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
     [JsonObject]
     public class Resource
     {
-        private static Regex s_resourceNameRegex = new Regex(@".*\/resourceGroups\/(?<GroupName>[a-zA-Z._-]{1,64})\/", RegexOptions.CultureInvariant | RegexOptions.Compiled);
+        // https://azure.microsoft.com/en-us/documentation/articles/guidance-naming-conventions/
+        private static Regex s_resourceNameRegex = new Regex(@".*\/resourceGroups\/(?<GroupName>[a-zA-Z0-9_-]{1,64})\/", RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
         public readonly string Id;
         public readonly string Name;
