@@ -17,6 +17,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
     [JsonObject]
     public class KeyVaultSecretFile : KeyVaultFile<Secret>
     {
+        public KeyVaultSecretFile() : base() { }
         public KeyVaultSecretFile(Secret secret) : base(secret) { }
     }
 
@@ -26,6 +27,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
     [JsonObject]
     public class KeyVaultCertificateFile : KeyVaultFile<CertificateBundle>
     {
+        public KeyVaultCertificateFile() : base() { }
         public KeyVaultCertificateFile(CertificateBundle cb) : base(cb) { }
     }
 

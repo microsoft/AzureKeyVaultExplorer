@@ -57,7 +57,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             Process.Start(sInfo);
         }
 
-
         private string FetchVersions()
         {
             StringBuilder sb = new StringBuilder();

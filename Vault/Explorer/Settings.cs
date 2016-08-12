@@ -213,6 +213,24 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         [UserScopedSetting()]
+        [DefaultSettingValue(@"CustomTags.json")]
+        [DisplayName("Custom tags file name")]
+        [Description("Relative or absolute path to .json file with custom tags definitions.\nEnvironment variables are supported and expanded accordingly.")]
+        [Category("Vaults configuration")]
+        [Editor(typeof(FileNameEditor), typeof(UITypeEditor))]
+        public string CustomTagsJsonFileLocation
+        {
+            get
+            {
+                return ((string)(this[nameof(CustomTagsJsonFileLocation)]));
+            }
+            set
+            {
+                this[nameof(CustomTagsJsonFileLocation)] = value;
+            }
+        }
+
+        [UserScopedSetting()]
         [DefaultSettingValue(@"{}")]
         [DisplayName("Favorite secrets")]
         [Description("List of favorite secrets per vault alias.")]

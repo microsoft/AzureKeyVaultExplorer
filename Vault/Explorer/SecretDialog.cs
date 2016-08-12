@@ -20,6 +20,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
     {
         private CertificateValueObject _certificateObj;
         private readonly TextEditorControl uxTextBoxValue;
+        private readonly CustomTags _customTags;
 
         private SecretDialog(ISession session, string title, ItemDialogBaseMode mode) : base(session, title, mode)
         {
@@ -42,6 +43,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             };
             uxTextBoxValue.TextChanged += uxTextBoxValue_TextChanged;
             var sk = Utils.LoadFromJsonFile<SecretKinds>(Settings.Default.SecretKindsJsonFileLocation);
+            _customTags = Utils.LoadFromJsonFile<CustomTags>(Settings.Default.CustomTagsJsonFileLocation, isOptional: true);
             uxMenuSecretKind.Items.AddRange((from name in _session.CurrentVaultAlias.SecretKinds select sk[name]).ToArray());
             uxSplitContainer_Panel1_SizeChanged(null, EventArgs.Empty);
         }

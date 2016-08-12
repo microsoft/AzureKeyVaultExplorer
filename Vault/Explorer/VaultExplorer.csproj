@@ -101,6 +101,7 @@
   <ItemGroup>
     <Compile Include="ActivationUri.cs" />
     <Compile Include="AddFileEventArgs.cs" />
+    <Compile Include="CustomTag.cs" />
     <Compile Include="ISession.cs" />
     <Compile Include="ItemDialogBase.cs">
       <SubType>Form</SubType>
@@ -236,6 +237,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\move_link.cur" />
+    <Content Include="CustomTags.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="VaultAliases.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
