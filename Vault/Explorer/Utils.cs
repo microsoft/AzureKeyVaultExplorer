@@ -65,9 +65,18 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
         }
 
-        public static T LoadFromJsonFile<T>(string filename)
+        public static T LoadFromJsonFile<T>(string filename, bool isOptional = false) where T : new()
         {
-            return JsonConvert.DeserializeObject<T>(File.ReadAllText(FullPathToJsonFile(filename)));
+            string path = FullPathToJsonFile(filename);
+            if (File.Exists(path))
+            {
+                return JsonConvert.DeserializeObject<T>(File.ReadAllText(path));
+            }
+            if (isOptional)
+            {
+                return new T();
+            }
+            throw new FileNotFoundException("Mandatory .json configuration file is not found", path);
         }
 
         public static Cursor LoadCursorFromResource(byte[] buffer)

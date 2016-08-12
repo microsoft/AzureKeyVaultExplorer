@@ -1,0 +1,15 @@
+﻿// --------------------------------------------------------------------------------------
+// Vault Explorer Configuration file
+//
+// Defines a dictionary for different secret custom tags
+//
+// Author: Eli Zeitlin
+// --------------------------------------------------------------------------------------
+
+{
+  "WCD.Squad": {
+    "Name":  "Squad",
+    "DefaultValue": "elize",
+    "ValueRegex": "^elize|yaelf$"
+  }
+}

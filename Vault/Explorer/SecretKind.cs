@@ -30,6 +30,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [JsonIgnore]
         public bool IsCertificate => !string.IsNullOrEmpty(CertificateFormat);
 
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public readonly string[] CustomTags;
+
         public SecretKind() : base("Custom")
         {
             Alias = "Custom";
@@ -40,13 +43,18 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         [JsonConstructor]
-        public SecretKind(string alias, string description, string nameRegex, string valueRegex, string certificateFormat) : base(alias)
+        public SecretKind(string alias, string description, string nameRegex, string valueRegex, string certificateFormat, string[] customTags) : base(alias)
         {
             Alias = alias;
             ToolTipText = Description = description;
             NameRegex = new Regex(nameRegex, RegexOptions.Singleline | RegexOptions.Compiled);
             ValueRegex = new Regex(valueRegex, RegexOptions.Singleline | RegexOptions.Compiled);
             CertificateFormat = certificateFormat;
+            CustomTags = customTags ?? new string[0];
+            if (CustomTags.Length > Consts.MaxNumberOfTags)
+            {
+                throw new ArgumentOutOfRangeException("CustomTags.Length", $"Too many custom tags for secret kind {alias}, maximum number of tags for secret is only {Consts.MaxNumberOfTags}");
+            }
         }
 
         public override string ToString() => Text + " secret name" + Utils.DropDownSuffix;
@@ -55,6 +63,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
     [JsonDictionary]
     public class SecretKinds : Dictionary<string, SecretKind>
     {
+        public SecretKinds() : base() { }
+
         [JsonConstructor]
         public SecretKinds(IDictionary<string, SecretKind> secretKinds) : base(secretKinds, StringComparer.CurrentCultureIgnoreCase)
         {
