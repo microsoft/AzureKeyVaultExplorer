@@ -247,7 +247,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Vaults.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="$(OutputPath)\$(AssemblyName).BuildInfo.config">
       <Link>$(AssemblyName).BuildInfo.config</Link>
