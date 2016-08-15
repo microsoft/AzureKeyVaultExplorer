@@ -19,6 +19,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
     [TypeConverter(typeof(ExpandableCollectionObjectConverter))]
     public abstract class ObservableCustomCollection<T> : ObservableCollection<T>, ICustomTypeDescriptor where T : class
     {
+        private PropertyChangedEventHandler _propertyChanged;
         protected abstract PropertyDescriptor GetPropertyDescriptor(T item);
 
         public ObservableCustomCollection() : base() { }
@@ -27,13 +28,28 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public void SetPropertyChangedEventHandler(PropertyChangedEventHandler propertyChanged)
         {
+            _propertyChanged = propertyChanged;
             PropertyChanged += propertyChanged;
         }
+
+        public PropertyChangedEventHandler GetLastPropertyChangedEventHandler() => _propertyChanged;
 
         public void AddOrReplace(T item)
         {
             int i = IndexOf(item);
             if (i == -1) Add(item); else SetItem(i, item);
+        }
+
+        public void AddOrKeep(T item)
+        {
+            int i = IndexOf(item);
+            if (i == -1) Add(item);
+        }
+
+        public T GetOrNull(T item)
+        {
+            int i = IndexOf(item);
+            return (i == -1) ? null : this[i];
         }
 
         #region ICustomTypeDescriptor interface to show properties in PropertyGrid
@@ -88,12 +104,23 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
         {
-            T oc = value as T;
+            T oldCollection = value as T;
             bool changed = false;
-            oc.SetPropertyChangedEventHandler((s, e) => { changed = true; });
+            var lastHandler = oldCollection.GetLastPropertyChangedEventHandler();
+            oldCollection.SetPropertyChangedEventHandler((s, e) => { changed = true; });
             var collection = base.EditValue(context, provider, value);
-            // If something was changed in the collection we always return a new value (copy ctor), to force refresh the expandable properties
-            return (changed) ? (T)Activator.CreateInstance(typeof(T), (IEnumerable<U>)collection) : collection;
+            // If something was changed in the collection we always return a new value (copy ctor), to force refresh the expandable properties and force PropertyChanged chain
+            if (changed)
+            {
+                T newCollection = (T)Activator.CreateInstance(typeof(T), (IEnumerable<U>)collection);
+                newCollection.SetPropertyChangedEventHandler(lastHandler);
+                lastHandler.Invoke(newCollection, new PropertyChangedEventArgs("Count"));
+                return newCollection;
+            }
+            else
+            {
+                return collection;
+            }
         }
     }
 

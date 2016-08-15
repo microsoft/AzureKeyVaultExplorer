@@ -31,7 +31,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public bool IsCertificate => !string.IsNullOrEmpty(CertificateFormat);
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public readonly string[] CustomTags;
+        public readonly string[] RequiredCustomTags;
+
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public readonly string[] OptionalCustomTags;
 
         public SecretKind() : base("Custom")
         {
@@ -40,20 +43,23 @@ namespace Microsoft.PS.Common.Vault.Explorer
             NameRegex = Consts.ValidSecretNameRegex;
             ValueRegex = new Regex("^.{0,1048576}$", RegexOptions.Singleline | RegexOptions.Compiled);
             CertificateFormat = null;
+            RequiredCustomTags = new string[0];
+            OptionalCustomTags = new string[0];
         }
 
         [JsonConstructor]
-        public SecretKind(string alias, string description, string nameRegex, string valueRegex, string certificateFormat, string[] customTags) : base(alias)
+        public SecretKind(string alias, string description, string nameRegex, string valueRegex, string certificateFormat, string[] requiredCustomTags, string[] optionalCustomTags) : base(alias)
         {
             Alias = alias;
             ToolTipText = Description = description;
             NameRegex = new Regex(nameRegex, RegexOptions.Singleline | RegexOptions.Compiled);
             ValueRegex = new Regex(valueRegex, RegexOptions.Singleline | RegexOptions.Compiled);
             CertificateFormat = certificateFormat;
-            CustomTags = customTags ?? new string[0];
-            if (CustomTags.Length > Consts.MaxNumberOfTags)
+            RequiredCustomTags = requiredCustomTags ?? new string[0];
+            OptionalCustomTags = optionalCustomTags ?? new string[0];
+            if (RequiredCustomTags.Length + OptionalCustomTags.Length > Consts.MaxNumberOfTags)
             {
-                throw new ArgumentOutOfRangeException("CustomTags.Length", $"Too many custom tags for secret kind {alias}, maximum number of tags for secret is only {Consts.MaxNumberOfTags}");
+                throw new ArgumentOutOfRangeException("Total CustomTags.Length", $"Too many custom tags for secret kind {alias}, maximum number of tags for secret is only {Consts.MaxNumberOfTags}");
             }
         }
 

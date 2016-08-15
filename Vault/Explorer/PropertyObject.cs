@@ -173,18 +173,22 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public abstract void SaveToFile(string fullName);
 
-        protected abstract IEnumerable<TagItem> GetCustomTags();
+        protected abstract IEnumerable<TagItem> GetValueBasedCustomTags();
+
+        public abstract void PopulateCustomTags();
+
+        public abstract string AreCustomTagsValid();
 
         public Dictionary<string, string> ToTagsDictionary()
         {
             var result = new Dictionary<string, string>();
-            // Add all user tags
+            // Add all user and custom tags
             foreach (var tagItem in Tags)
             {
                 result[tagItem.Name] = tagItem.Value;
             }
-            // Add all custom tags
-            foreach (var tagItem in GetCustomTags())
+            // Add all custom tags which are based on the secret value
+            foreach (var tagItem in GetValueBasedCustomTags())
             {
                 result[tagItem.Name] = tagItem.Value;
             }

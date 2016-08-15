@@ -160,10 +160,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
         }
 
-        protected override IEnumerable<TagItem> GetCustomTags()
+        protected override IEnumerable<TagItem> GetValueBasedCustomTags()
         {
             yield break;
         }
+
+        public override void PopulateCustomTags() { }
+
+        public override string AreCustomTagsValid() => ""; // Return always valid
 
         private IEnumerable<LifetimeAction> LifetimeActionsToEnumerable() =>
             from lai in LifetimeActions select new LifetimeAction() { Action = new Azure.KeyVault.Action() { Type = lai.Type.ToString() }, Trigger = new Trigger() { DaysBeforeExpiry = lai.DaysBeforeExpiry, LifetimePercentage = lai.LifetimePercentage } };

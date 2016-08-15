@@ -37,12 +37,16 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         protected virtual void InvalidateOkButton()
         {
-            uxButtonOK.Enabled = _changed && PropertyObject.IsNameValid && PropertyObject.IsValueValid;
+            string tagsError = PropertyObject.AreCustomTagsValid();
+            uxButtonOK.Enabled = _changed && PropertyObject.IsNameValid && PropertyObject.IsValueValid && string.IsNullOrEmpty(tagsError);
         }
 
         protected virtual void uxTextBoxName_TextChanged(object sender, EventArgs e)
         {
+            PropertyObject.Name = uxTextBoxName.Text;
             _changed = true;
+            uxErrorProvider.SetError(uxTextBoxName, PropertyObject.IsNameValid ? null : $"Name must match the following regex:\n{PropertyObject.SecretKind.NameRegex}");
+            InvalidateOkButton();
         }
 
         protected virtual void uxLinkLabelSecretKind_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Drawing.Design;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -24,6 +25,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// Original secret
         /// </summary>
         private readonly Secret _secret;
+
+        private readonly CustomTags _customTags;
 
         [Category("General")]
         [DisplayName("Content Type")]
@@ -47,9 +50,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
             _secret = secret;
             _contentType = ContentTypeEnumConverter.GetValue(secret.ContentType);
             _value = _contentType.FromRawValue(secret.Value);
+            _customTags = Utils.LoadFromJsonFile<CustomTags>(Settings.Default.CustomTagsJsonFileLocation, isOptional: true);
         }
 
-        protected override IEnumerable<TagItem> GetCustomTags()
+        protected override IEnumerable<TagItem> GetValueBasedCustomTags()
         {
             // Add tags based on all named groups in the value regex
             Match m = SecretKind.ValueRegex.Match(Value);
@@ -62,6 +66,38 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     yield return new TagItem(groupName, m.Groups[i].Value);
                 }
             }
+        }
+
+        public override void PopulateCustomTags()
+        {
+            if ((null == _customTags) || (_customTags.Count == 0)) return;
+            // Add RequiredCustomTags and OptionalCustomTags
+            foreach (var tagId in SecretKind.RequiredCustomTags.Concat(SecretKind.OptionalCustomTags))
+            {
+                if (false == _customTags.ContainsKey(tagId)) continue;
+                Tags.AddOrKeep(_customTags[tagId].ToTagItem());
+            }
+        }
+
+        public override string AreCustomTagsValid()
+        {
+            if ((null == _customTags) || (_customTags.Count == 0)) return "";
+            StringBuilder result = new StringBuilder();
+            // Verify RequiredCustomTags
+            foreach (var tagId in SecretKind.RequiredCustomTags)
+            {
+                if (false == _customTags.ContainsKey(tagId)) continue;
+                var ct = _customTags[tagId];
+                result.Append(ct.Verify(Tags.GetOrNull(ct.ToTagItem()), true));
+            }
+            // Verify OptionalCustomTags
+            foreach (var tagId in SecretKind.OptionalCustomTags)
+            {
+                if (false == _customTags.ContainsKey(tagId)) continue;
+                var ct = _customTags[tagId];
+                result.Append(ct.Verify(Tags.GetOrNull(ct.ToTagItem()), false));
+            }
+            return result.ToString();
         }
 
         public SecretAttributes ToSecretAttributes() => new SecretAttributes()
