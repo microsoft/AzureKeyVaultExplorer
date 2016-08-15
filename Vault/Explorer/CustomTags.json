@@ -8,8 +8,13 @@
 
 {
   "WCD.Squad": {
-    "Name":  "Squad",
-    "DefaultValue": "elize",
-    "ValueRegex": "^elize|yaelf$"
+    "Name": "Squad",
+    "DefaultValue": "",
+    "ValueRegex": "^(foo|bar)$"
+  },
+  "WCD.Description": {
+    "Name": "Description",
+    "DefaultValue": "",
+    "ValueRegex": ".{0,256}"
   }
 }

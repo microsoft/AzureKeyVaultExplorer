@@ -106,14 +106,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             X509Certificate2UI.DisplayCertificate(PropertyObject.Certificate);
         }
 
-        protected override void uxTextBoxName_TextChanged(object sender, EventArgs e)
-        {
-            PropertyObject.Name = uxTextBoxName.Text;
-            uxErrorProvider.SetError(uxTextBoxName, PropertyObject.IsNameValid ? null : $"Certificate name must match the following regex:\n{Consts.ValidSecretNameRegex}");
-            base.uxTextBoxName_TextChanged(sender, e);
-            InvalidateOkButton();
-        }
-
         private void SecretObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             _changed = true;

@@ -20,12 +20,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
     {
         private CertificateValueObject _certificateObj;
         private readonly TextEditorControl uxTextBoxValue;
-        private readonly CustomTags _customTags;
 
         private SecretDialog(ISession session, string title, ItemDialogBaseMode mode) : base(session, title, mode)
         {
             InitializeComponent();
             uxErrorProvider.SetIconAlignment(uxSplitContainer, ErrorIconAlignment.TopLeft);
+            uxErrorProvider.SetIconAlignment(uxPropertyGridSecret, ErrorIconAlignment.TopLeft);
+            uxErrorProvider.SetIconPadding(uxPropertyGridSecret, -16);
             uxTextBoxValue = new TextEditorControl()
             {
                 Parent = uxSplitContainer.Panel1,
@@ -43,7 +44,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             };
             uxTextBoxValue.TextChanged += uxTextBoxValue_TextChanged;
             var sk = Utils.LoadFromJsonFile<SecretKinds>(Settings.Default.SecretKindsJsonFileLocation);
-            _customTags = Utils.LoadFromJsonFile<CustomTags>(Settings.Default.CustomTagsJsonFileLocation, isOptional: true);
             uxMenuSecretKind.Items.AddRange((from name in _session.CurrentVaultAlias.SecretKinds select sk[name]).ToArray());
             uxSplitContainer_Panel1_SizeChanged(null, EventArgs.Empty);
         }
@@ -173,14 +173,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             ToggleCertificateMode(_certificateObj != null);
         }
 
-        protected override void uxTextBoxName_TextChanged(object sender, EventArgs e)
-        {
-            PropertyObject.Name = uxTextBoxName.Text;
-            uxErrorProvider.SetError(uxTextBoxName, PropertyObject.IsNameValid ? null : $"Secret name must match the following regex:\n{PropertyObject.SecretKind.NameRegex}");
-            base.uxTextBoxName_TextChanged(sender, e);
-            InvalidateOkButton();
-        }
-
         private void uxTextBoxValue_TextChanged(object sender, EventArgs e)
         {
             _changed = true;
@@ -199,6 +191,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 uxTextBoxValue_TextChanged(sender, null);
                 uxTextBoxValue.SetHighlighting(PropertyObject.ContentType.ToSyntaxHighlightingMode());
             }
+
+            string tagsError = PropertyObject.AreCustomTagsValid();
+            uxErrorProvider.SetError(uxPropertyGridSecret, string.IsNullOrEmpty(tagsError) ? null : tagsError);
+
             InvalidateOkButton();
         }
 
@@ -225,12 +221,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
             if (sk.Checked) return; // Same item was clicked
             foreach (var item in uxMenuSecretKind.Items) ((SecretKind)item).Checked = false;
             PropertyObject.SecretKind = sk;
+            PropertyObject.PopulateCustomTags();
             sk.Checked = true;
             uxLinkLabelSecretKind.Text = sk.ToString();
             uxToolTip.SetToolTip(uxLinkLabelSecretKind, sk.Description);
             RefreshCertificate(_certificateObj);
             uxTextBoxName_TextChanged(sender, null);
             uxTextBoxValue_TextChanged(sender, null);
+            uxPropertyGridSecret.Refresh();
         }
 
         protected override async Task<Secret> OnVersionChangeAsync(CustomVersion cv)

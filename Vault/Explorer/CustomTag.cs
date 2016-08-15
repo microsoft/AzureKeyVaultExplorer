@@ -34,6 +34,18 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         public override string ToString() => Name;
+
+        public TagItem ToTagItem() => new TagItem(Name, DefaultValue);
+
+        public string Verify(TagItem tagItem, bool required)
+        {
+            if (null == tagItem)
+            {
+                return required ? $"Tag {Name} is required\n" : "";
+            }
+            var m = ValueRegex.Match(tagItem.Value);
+            return m.Success ? "" : $"Tag {Name} value must match the following regex: {ValueRegex}\n";
+        }
     }
 
     [JsonDictionary]
