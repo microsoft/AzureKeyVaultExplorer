@@ -9,7 +9,7 @@
 {
   "WCD.Squad": {
     "Name": "Squad",
-    "DefaultValue": "",
+    "DefaultValue": "foo",
     "ValueRegex": "^(foo|bar)$"
   },
   "WCD.Description": {
