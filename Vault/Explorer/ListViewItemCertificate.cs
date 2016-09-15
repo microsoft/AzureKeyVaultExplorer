@@ -49,6 +49,17 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return new ListViewItemCertificate(Session, cb);
         }
 
+        public override async Task<ListViewItemBase> ResetExpirationAsync(CancellationToken cancellationToken)
+        {
+            var ca = new CertificateAttributes()
+            {
+                NotBefore = (this.NotBefore == null) ? (DateTime?)null : DateTime.UtcNow.AddHours(-1),
+                Expires = (this.Expires == null) ? (DateTime?)null : DateTime.UtcNow.AddYears(1)
+            };
+            CertificateBundle cb = await Session.CurrentVault.UpdateCertificateAsync(Name, ca, Tags, cancellationToken); // Reset only NotBefore and Expires attributes
+            return new ListViewItemCertificate(Session, cb);
+        }
+
         public override async Task<ListViewItemBase> DeleteAsync(CancellationToken cancellationToken)
         {
             await Session.CurrentVault.DeleteCertificateAsync(Name, cancellationToken);

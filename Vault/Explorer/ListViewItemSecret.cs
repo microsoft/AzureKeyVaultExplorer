@@ -49,6 +49,17 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return new ListViewItemSecret(Session, s);
         }
 
+        public override async Task<ListViewItemBase> ResetExpirationAsync(CancellationToken cancellationToken)
+        {
+            var sa = new SecretAttributes()
+            {
+                NotBefore = (this.NotBefore == null) ? (DateTime?)null : DateTime.UtcNow.AddHours(-1),
+                Expires = (this.Expires == null) ? (DateTime?)null : DateTime.UtcNow.AddYears(1)
+            };
+            Secret s = await Session.CurrentVault.UpdateSecretAsync(Name, new Dictionary<string, string>(Tags), null, sa, cancellationToken); // Reset only NotBefore and Expires attributes
+            return new ListViewItemSecret(Session, s);
+        }
+
         public override async Task<ListViewItemBase> DeleteAsync(CancellationToken cancellationToken)
         {
             await Session.CurrentVault.DeleteSecretAsync(Name, cancellationToken);

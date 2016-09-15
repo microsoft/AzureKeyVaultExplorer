@@ -255,14 +255,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             bool singleItemSelected = (uxListViewSecrets.SelectedItems.Count == 1);
             bool manyItemsSelected = (uxListViewSecrets.SelectedItems.Count >= 1);
-            bool secretEnabled = uxListViewSecrets.FirstSelectedItem?.Enabled ?? false;
+            bool itemEnabled = uxListViewSecrets.FirstSelectedItem?.Enabled ?? false;
             bool favorite = uxListViewSecrets.FirstSelectedItem?.Favorite ?? false;
-            uxButtonEdit.Enabled = uxButtonShare.Enabled = secretEnabled;
-            uxMenuItemEdit.Enabled = uxMenuItemShare.Enabled = secretEnabled;
+            uxButtonEdit.Enabled = uxButtonShare.Enabled = itemEnabled;
+            uxMenuItemEdit.Enabled = uxMenuItemShare.Enabled = itemEnabled;
             uxButtonDelete.Enabled = uxMenuItemDelete.Enabled = uxButtonFavorite.Enabled = uxMenuItemFavorite.Enabled = manyItemsSelected;
             uxButtonToggle.Enabled = uxMenuItemToggle.Enabled = singleItemSelected;
-            uxButtonToggle.Text = uxMenuItemToggle.Text = secretEnabled ? "Disabl&e" : "&Enable";
-            uxButtonToggle.ToolTipText = uxMenuItemToggle.ToolTipText = secretEnabled ? "Disable secret" : "Enable secret";
+            uxButtonToggle.Text = uxMenuItemToggle.Text = itemEnabled ? "Disabl&e" : "&Enable";
+            uxButtonToggle.ToolTipText = uxMenuItemToggle.ToolTipText = itemEnabled ? "Disable item" : "Enable item";
             uxMenuItemToggle.Text = uxButtonToggle.Text + "...";
             uxButtonFavorite.Checked = uxMenuItemFavorite.Checked = favorite;
             uxButtonFavorite.ToolTipText = uxMenuItemFavorite.ToolTipText = favorite ? "Remove item(s) from favorites group" : "Add item(s) to favorites group";
@@ -423,7 +423,19 @@ namespace Microsoft.PS.Common.Vault.Explorer
         private async void uxButtonEdit_Click(object sender, EventArgs e)
         {
             var item = uxListViewSecrets.FirstSelectedItem;
-            if ((null != item) && (item.Enabled))
+            if (item == null) return;
+            if (!item.Active && MessageBox.Show($"'{item.Name}' {item.Kind} is not active or expired. In order to view or edit {item.Kind}, {Utils.AppName} must change the expiration times of '{item.Name}'. Are you sure you want to change Valid from time (UTC): '{Utils.NullableDateTimeToString(item.NotBefore)}' and Valid until time (UTC): '{Utils.NullableDateTimeToString(item.Expires)}' to one year from now?\n\nNote: You will be able to change back the expiration times in the Edit dialog if needed.",
+                Utils.AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                using (var op = NewUxOperationWithProgress(uxButtonEdit, uxMenuItemEdit))
+                {
+                    ListViewItemBase newItem = null;
+                    await op.Invoke($"update {item.Kind} in", async () => newItem = await item.ResetExpirationAsync(op.CancellationToken));
+                    AddOrReplaceItemInListView(newItem, item);
+                    item = newItem;
+                };
+            }
+            if (item.Enabled && item.Active)
             {
                 IEnumerable<object> versions = null;
                 using (var op = NewUxOperationWithProgress(uxButtonEdit, uxMenuItemEdit)) await op.Invoke($"get {item.Kind} from", async () =>

@@ -49,12 +49,15 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
             ImageIndex = Enabled ? 2 * GroupIndex - 3 : 2 * GroupIndex - 2;
             ForeColor = Enabled ? SystemColors.WindowText : SystemColors.GrayText;
+            Font = Active ? Font : new Font(this.Font, FontStyle.Strikeout);
 
             Name = identifier.Name;
             SubItems.Add(new ListViewSubItem(this, Utils.NullableDateTimeToString(updated)) { Tag = updated }); // Add Tag so ListViewItemSorter will sort datetime correctly
             SubItems.Add(ChangedBy);
 
-            ToolTipText = string.Format("Creation time:\t\t{0}\nLast updated time:\t{1}",
+            string status = (Enabled ? "Enabled" : "Disabled") + (Active ? ", Active" : ", Expired");
+            ToolTipText += string.Format("Status:\t\t\t{0}\nCreation time:\t\t{1}\nLast updated time:\t{2}",
+                status,
                 Utils.NullableDateTimeToString(created),
                 Utils.NullableDateTimeToString(updated));
 
@@ -72,6 +75,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public string Md5 => Utils.GetMd5(Tags);
 
         public string Link => $"https://aka.ms/ve?{VaultHttpsUri.VaultLink}";
+
+        /// <summary>
+        /// True only if current time is within the below range, or range is NULL
+        /// [NotBefore] Valid from time (UTC) 
+        /// [Expires] Valid until time (UTC) 
+        /// </summary>
+        public bool Active => (DateTime.UtcNow >= (NotBefore ?? DateTime.MinValue)) && (DateTime.UtcNow <= (Expires ?? DateTime.MaxValue));
 
         private static string[] GroupIndexToName = new string[] { "s", "f", "certificate", "key vault certificate", "secret" };
         public string Kind => GroupIndexToName[GroupIndex];
@@ -164,6 +174,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public abstract Task<PropertyObject> GetAsync(CancellationToken cancellationToken);
 
         public abstract Task<ListViewItemBase> ToggleAsync(CancellationToken cancellationToken);
+
+        public abstract Task<ListViewItemBase> ResetExpirationAsync(CancellationToken cancellationToken);
 
         public abstract Task<ListViewItemBase> DeleteAsync(CancellationToken cancellationToken);
 
