@@ -56,6 +56,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return tags[Consts.Md5Key];
         }
 
+        public static string ByteArrayToHex(byte[] arr)
+        {
+            Guard.ArgumentNotNull(arr, nameof(arr));
+            string hex = BitConverter.ToString(arr);
+            return hex.Replace("-", "");
+        }
+
         public static string FullPathToJsonFile(string filename)
         {
             filename = Environment.ExpandEnvironmentVariables(filename);

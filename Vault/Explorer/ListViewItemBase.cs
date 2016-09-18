@@ -25,6 +25,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public readonly ISession Session;
         public readonly int GroupIndex;
+        public readonly ObjectIdentifier Identifier;
         public readonly VaultHttpsUri VaultHttpsUri;
         public readonly IDictionary<string, string> Tags;
         public readonly bool Enabled;
@@ -39,6 +40,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             Session = session;
             GroupIndex = groupIndex;
+            Identifier = identifier;
             VaultHttpsUri = new VaultHttpsUri(identifier.Identifier);
             Tags = tags;
             Enabled = enabled ?? true;
@@ -48,8 +50,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
             Expires = expires;
 
             ImageIndex = Enabled ? 2 * GroupIndex - 3 : 2 * GroupIndex - 2;
-            ForeColor = Enabled ? SystemColors.WindowText : SystemColors.GrayText;
-            Font = Active ? Font : new Font(this.Font, FontStyle.Strikeout);
+            ForeColor = Enabled ? ForeColor: SystemColors.GrayText;
+            ForeColor = Active ? ForeColor : Color.Red;
 
             Name = identifier.Name;
             SubItems.Add(new ListViewSubItem(this, Utils.NullableDateTimeToString(updated)) { Tag = updated }); // Add Tag so ListViewItemSorter will sort datetime correctly

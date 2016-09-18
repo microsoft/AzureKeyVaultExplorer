@@ -1,5 +1,6 @@
 ﻿using ICSharpCode.TextEditor;
 using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.KeyVault.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ using System.Windows.Forms;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
-    public partial class SecretDialog : ItemDialogBase<PropertyObjectSecret, Secret>
+    public partial class SecretDialog : ItemDialogBase<PropertyObjectSecret, SecretBundle>
     {
         private CertificateValueObject _certificateObj;
         private readonly TextEditorControl uxTextBoxValue;
@@ -54,7 +55,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public SecretDialog(ISession session) : this(session, "New secret", ItemDialogBaseMode.New)
         {
             _changed = true;
-            var s = new Secret() { Attributes = new SecretAttributes(), ContentType = ContentTypeEnumConverter.GetDescription(ContentType.Text) };
+            var s = new SecretBundle() { Attributes = new SecretAttributes(), ContentType = ContentTypeEnumConverter.GetDescription(ContentType.Text) };
             RefreshSecretObject(s);
             uxMenuSecretKind.Items[0].PerformClick();
         }
@@ -84,7 +85,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     break;
                 case ContentType.KeyVaultSecret:
                     var kvsf = Utils.LoadFromJsonFile<KeyVaultSecretFile>(fi.FullName);
-                    Secret s = kvsf.Deserialize();
+                    SecretBundle s = kvsf.Deserialize();
                     uxPropertyGridSecret.SelectedObject = PropertyObject = new PropertyObjectSecret(s, SecretObject_PropertyChanged);
                     uxTextBoxName.Text = s.SecretIdentifier?.Name;
                     uxTextBoxValue.Text = s.Value;
@@ -126,7 +127,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxMenuVersions_ItemClicked(null, new ToolStripItemClickedEventArgs(uxMenuVersions.Items[0])); // Pass sender as NULL so _changed will be set to false
         }
 
-        private void RefreshSecretObject(Secret s)
+        private void RefreshSecretObject(SecretBundle s)
         {
             PropertyObject = new PropertyObjectSecret(s, SecretObject_PropertyChanged);
             uxPropertyGridSecret.SelectedObject = PropertyObject;
@@ -231,7 +232,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxPropertyGridSecret.Refresh();
         }
 
-        protected override async Task<Secret> OnVersionChangeAsync(CustomVersion cv)
+        protected override async Task<SecretBundle> OnVersionChangeAsync(CustomVersion cv)
         {
             SecretVersion sv = (SecretVersion)cv;
             var s = await _session.CurrentVault.GetSecretAsync(sv.SecretItem.Identifier.Name, sv.SecretItem.Identifier.Version);            

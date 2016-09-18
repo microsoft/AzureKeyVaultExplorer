@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Azure.KeyVault.Models;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -222,23 +223,14 @@ namespace Microsoft.PS.Common.Vault.Explorer
             new ReadOnlyPropertyDescriptor(item.ToString(), $"DaysBeforeExpiry={Utils.NullableIntToString(item.DaysBeforeExpiry)}, LifetimePercentage={Utils.NullableIntToString(item.LifetimePercentage)}");
     }
 
-    public enum LifetimeActionType
-    {
-        [Description("EmailContacts")]
-        EmailContacts,
-
-        [Description("AutoRenew")]
-        AutoRenew
-    }
-
-    public class LifetimeActionTypeEnumConverter : CustomEnumTypeConverter<LifetimeActionType> { }
+    public class LifetimeActionTypeEnumConverter : CustomEnumTypeConverter<ActionType> { }
 
     [DefaultProperty("Type")]
     [Description("Action and its trigger that will be performed by Key Vault over the lifetime of a certificate.")]
     public class LifetimeActionItem
     {
         [Category("Action")]
-        public LifetimeActionType Type { get; set; }
+        public ActionType? Type { get; set; }
 
         [Category("Trigger")]
         public int? DaysBeforeExpiry { get; set; }
@@ -246,7 +238,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [Category("Trigger")]
         public int? LifetimePercentage { get; set; }
 
-        public override string ToString() => Type.ToString();
+        public override string ToString() => Type?.ToString();
     }
 
     #endregion

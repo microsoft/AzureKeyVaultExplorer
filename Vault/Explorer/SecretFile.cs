@@ -1,4 +1,5 @@
 ﻿using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.KeyVault.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
@@ -15,10 +16,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
     /// Represents .kv-secret file
     /// </summary>
     [JsonObject]
-    public class KeyVaultSecretFile : KeyVaultFile<Secret>
+    public class KeyVaultSecretFile : KeyVaultFile<SecretBundle>
     {
         public KeyVaultSecretFile() : base() { }
-        public KeyVaultSecretFile(Secret secret) : base(secret) { }
+        public KeyVaultSecretFile(SecretBundle secret) : base(secret) { }
     }
 
     /// <summary>

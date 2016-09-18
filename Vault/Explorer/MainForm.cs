@@ -1,4 +1,4 @@
-﻿using Microsoft.Azure.KeyVault;
+﻿using Microsoft.Azure.KeyVault.Models;
 using Microsoft.PS.Common.Vault.Explorer.Properties;
 using System;
 using System.Collections.Generic;
@@ -192,7 +192,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     int s = 0, c = 0;
                     Action updateCount = () => uxStatusLabelSecertsCount.Text = $"{s + c} secrets"; // We use delegate and Invoke() below to execute on the thread that owns the control
                     IEnumerable<SecretItem> secrets = Enumerable.Empty<SecretItem>();
-                    IEnumerable<ListCertificateResponseMessage> certificates = Enumerable.Empty<ListCertificateResponseMessage>();
+                    IEnumerable<CertificateItem> certificates = Enumerable.Empty<CertificateItem>();
                     await op.Invoke("access",
                         async () => // List Secrets
                         {

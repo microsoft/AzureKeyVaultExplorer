@@ -1,5 +1,6 @@
 ﻿using ICSharpCode.TextEditor;
 using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.KeyVault.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// </summary>
         public CertificateDialog(ISession session, FileInfo fi) : this(session, "New certificate", ItemDialogBaseMode.New)
         {
+            CertificateBundle cb = null;
             X509Certificate2 cert = null;
             switch (ContentTypeUtils.FromExtension(fi.Extension))
             {
@@ -49,10 +51,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     break;
                 case ContentType.KeyVaultCertificate:
                     var kvcf = Utils.LoadFromJsonFile<KeyVaultCertificateFile>(fi.FullName);
-                    CertificateBundle s = kvcf.Deserialize();
+                    cb = kvcf.Deserialize();
+                    cert = new X509Certificate2(cb.Cer);
                     break;
             }
-            NewCertificate(cert);
+            NewCertificate(cb, cert);
         }
 
         /// <summary>
@@ -60,13 +63,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// </summary>
         public CertificateDialog(ISession session, X509Certificate2 cert) : this(session, "New certificate", ItemDialogBaseMode.New)
         {
-            NewCertificate(cert);
+            NewCertificate(null, cert);
         }
 
         /// <summary>
         /// Edit certificate
         /// </summary>
-        public CertificateDialog(ISession session, string name, IEnumerable<ListCertificateResponseMessage> versions) : this(session, $"Edit certificate {name}", ItemDialogBaseMode.Edit)
+        public CertificateDialog(ISession session, string name, IEnumerable<CertificateItem> versions) : this(session, $"Edit certificate {name}", ItemDialogBaseMode.Edit)
         {
             uxTextBoxName.ReadOnly = true;
             int i = 0;
@@ -74,15 +77,16 @@ namespace Microsoft.PS.Common.Vault.Explorer
             uxMenuVersions_ItemClicked(null, new ToolStripItemClickedEventArgs(uxMenuVersions.Items[0])); // Pass sender as NULL so _changed will be set to false
         }
 
-        private void NewCertificate(X509Certificate2 cert)
+        private void NewCertificate(CertificateBundle cb, X509Certificate2 cert)
         {
-            _certificatePolicy = new CertificatePolicy()
+            _certificatePolicy = cb?.Policy;
+            _certificatePolicy = _certificatePolicy ?? new CertificatePolicy()
             {
                 KeyProperties = new KeyProperties()
                 {
                     Exportable = true,
                     KeySize = 2048,
-                    Kty = "RSA",
+                    KeyType = "RSA",
                     ReuseKey = false
                 },
                 SecretProperties = new SecretProperties()
@@ -90,7 +94,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     ContentType = CertificateContentType.Pfx
                 }
             };
-            RefreshCertificateObject(new CertificateBundle(), _certificatePolicy, cert);
+            cb = cb ?? new CertificateBundle()
+            {
+                Attributes = new CertificateAttributes()
+            };
+            RefreshCertificateObject(cb, _certificatePolicy, cert);
             uxTextBoxName.Text = Utils.ConvertToValidSecretName(cert.GetNameInfo(X509NameType.SimpleName, false));
         }
 

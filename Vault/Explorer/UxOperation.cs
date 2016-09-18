@@ -9,6 +9,8 @@ using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Azure.KeyVault.Models;
+using Microsoft.Rest.Azure;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
@@ -96,7 +98,11 @@ namespace Microsoft.PS.Common.Vault.Explorer
                     {
                         await t();
                     }
-                    catch (KeyVaultClientException kvce) when (kvce.Status == System.Net.HttpStatusCode.Forbidden)
+                    catch (CloudException ce) when (ce.Response?.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                    {
+                        exceptions.Enqueue(ce);
+                    }
+                    catch (KeyVaultErrorException kvce) when (kvce.Response?.StatusCode == System.Net.HttpStatusCode.Forbidden)
                     {
                         exceptions.Enqueue(kvce);
                     }
