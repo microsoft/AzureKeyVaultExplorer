@@ -1,4 +1,5 @@
 ﻿using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.KeyVault.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -36,23 +37,23 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [Category("Identifiers")]
         [DisplayName("Certificate")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        public CertificateIdentifier Id => CertificateBundle.Id;
+        public CertificateIdentifier Id => CertificateBundle.CertificateIdentifier;
 
         [Category("Identifiers")]
         [DisplayName("Key")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        public KeyIdentifier KeyId => CertificateBundle.KeyId;
+        public KeyIdentifier KeyId => CertificateBundle.KeyIdentifier;
 
         [Category("Identifiers")]
         [DisplayName("Secret")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        public SecretIdentifier SecretId => CertificateBundle.SecretId;
+        public SecretIdentifier SecretId => CertificateBundle.SecretIdentifier;
 
         [Category("Policy")]
         [DisplayName("Attributes")]
         [ReadOnly(true)]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        public CertificatePolicyAttributes PolicyAttributes => CertificatePolicy.Attributes;
+        public CertificateAttributes PolicyAttributes => CertificatePolicy.Attributes;
 
         [Category("Policy")]
         [DisplayName("Certificate properties")]
@@ -88,7 +89,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 _lifetimeActions = value;
                 if (null != CertificatePolicy)
                 {
-                    CertificatePolicy.LifetimeActions = LifetimeActionsToEnumerable();
+                    CertificatePolicy.LifetimeActions = LifetimeActionsToList();
                 }
             }
         }
@@ -99,13 +100,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public IssuerReference IssuerReference => CertificatePolicy.IssuerReference;
 
-        [Category("Other")]
-        [DisplayName("Pending Reference")]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        public PendingReference PendingReference => CertificateBundle.PendingReference;
-
         public PropertyObjectCertificate(CertificateBundle certificateBundle, CertificatePolicy policy, X509Certificate2 certificate, PropertyChangedEventHandler propertyChanged) :
-            base(certificateBundle.Id, certificateBundle.Tags, certificateBundle.Attributes.Enabled, certificateBundle.Attributes.Expires, certificateBundle.Attributes.NotBefore, propertyChanged)
+            base(certificateBundle.CertificateIdentifier, certificateBundle.Tags, certificateBundle.Attributes.Enabled, certificateBundle.Attributes.Expires, certificateBundle.Attributes.NotBefore, propertyChanged)
         {
             CertificateBundle = certificateBundle;
             CertificatePolicy = policy;
@@ -117,7 +113,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 foreach (var la in CertificatePolicy.LifetimeActions)
                 {
-                    olac.Add(new LifetimeActionItem() { Type = LifetimeActionTypeEnumConverter.GetValue(la.Action.Type), DaysBeforeExpiry = la.Trigger.DaysBeforeExpiry, LifetimePercentage = la.Trigger.LifetimePercentage });
+                    olac.Add(new LifetimeActionItem() { Type = la.Action.ActionType, DaysBeforeExpiry = la.Trigger.DaysBeforeExpiry, LifetimePercentage = la.Trigger.LifetimePercentage });
                 }
             }
             LifetimeActions = olac;
@@ -169,8 +165,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public override string AreCustomTagsValid() => ""; // Return always valid
 
-        private IEnumerable<LifetimeAction> LifetimeActionsToEnumerable() =>
-            from lai in LifetimeActions select new LifetimeAction() { Action = new Azure.KeyVault.Action() { Type = lai.Type.ToString() }, Trigger = new Trigger() { DaysBeforeExpiry = lai.DaysBeforeExpiry, LifetimePercentage = lai.LifetimePercentage } };
+        private IList<LifetimeAction> LifetimeActionsToList() =>
+            (from lai in LifetimeActions select new LifetimeAction(new Trigger(lai.LifetimePercentage, lai.DaysBeforeExpiry), new Microsoft.Azure.KeyVault.Models.Action(lai.Type))).ToList();
     }
 
     public class CertificateUIEditor : UITypeEditor

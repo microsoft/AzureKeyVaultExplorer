@@ -1,6 +1,8 @@
 ﻿using Microsoft.Azure;
 using Microsoft.Azure.Management.KeyVault;
+using Microsoft.Azure.Management.KeyVault.Models;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Microsoft.Rest;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -26,6 +28,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private AccountItem _currentAccountItem;
         private AuthenticationResult _currentAuthResult;
+        private KeyVaultManagementClient _currentKeyVaultMgmtClient;
         private readonly HttpClient _httpClient;
 
         public VaultAlias CurrentVaultAlias { get; private set; }
@@ -70,28 +73,27 @@ namespace Microsoft.PS.Common.Vault.Explorer
             if (null == s) return;
             using (var op = NewUxOperationWithProgress(uxComboBoxAccounts))
             {
-                var hrm = await _httpClient.GetAsync($"{ManagmentEndpoint}subscriptions/{s.Subscription.SubscriptionId}/resources?{ApiVersion}&$filter=resourceType eq 'Microsoft.KeyVault/vaults'", op.CancellationToken);
-                var json = await hrm.Content.ReadAsStringAsync();
-                var rr = JsonConvert.DeserializeObject<ResourcesResponse>(json);
+                var tvcc = new TokenCredentials(_currentAuthResult.AccessToken);
+                _currentKeyVaultMgmtClient = new KeyVaultManagementClient(tvcc) { SubscriptionId = s.Subscription.SubscriptionId.ToString() };
+                var vaults = await _currentKeyVaultMgmtClient.Vaults.ListAsync(null, op.CancellationToken);
                 uxListViewVaults.Items.Clear();
-                foreach (var r in rr.Resources)
+                foreach (var v in vaults)
                 {
-                    uxListViewVaults.Items.Add(new ListViewItemVault(s.Subscription, r));
+                    uxListViewVaults.Items.Add(new ListViewItemVault(v));
                 }
             }
         }
 
         private async void uxListViewVaults_SelectedIndexChanged(object sender, EventArgs e)
         {
+            ListViewItemSubscription s = uxListViewSubscriptions.SelectedItems.Count > 0 ? (ListViewItemSubscription)uxListViewSubscriptions.SelectedItems[0] : null;
             ListViewItemVault v = uxListViewVaults.SelectedItems.Count > 0 ? (ListViewItemVault)uxListViewVaults.SelectedItems[0] : null;
             uxButtonOK.Enabled = false;
-            if (null == v) return;
+            if ((null == s) || (null == v)) return;
             using (var op = NewUxOperationWithProgress(uxComboBoxAccounts))
             {
-                var tvcc = new TokenCloudCredentials(v.Subscription.SubscriptionId.ToString(), _currentAuthResult.AccessToken);
-                var kvmc = new KeyVaultManagementClient(tvcc);
-                var vgr = await kvmc.Vaults.GetAsync(v.VaultResource.GroupName, v.Name);
-                uxPropertyGridVault.SelectedObject = new PropertyObjectVault(v.Subscription, v.VaultResource, vgr.Vault);
+                var vault = await _currentKeyVaultMgmtClient.Vaults.GetAsync(v.GroupName, v.Name);
+                uxPropertyGridVault.SelectedObject = new PropertyObjectVault(s.Subscription, v.GroupName, vault);
                 uxButtonOK.Enabled = true;
                 CurrentVaultAlias = new VaultAlias(v.Name, new string[] { v.Name }, new string[] { "Custom" }) { DomainHint = _currentAccountItem.DomainHint };
             }
@@ -133,16 +135,19 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
     public class ListViewItemVault : ListViewItem
     {
-        public readonly Resource VaultResource;
-        public readonly Subscription Subscription;
+        // https://azure.microsoft.com/en-us/documentation/articles/guidance-naming-conventions/
+        private static Regex s_resourceNameRegex = new Regex(@".*\/resourceGroups\/(?<GroupName>[a-zA-Z0-9_\-\.]{1,64})\/", RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
-        public ListViewItemVault(Subscription s, Resource r) : base(r.Name)
+        public readonly Azure.Management.KeyVault.Models.Vault Vault;
+        public readonly string GroupName;
+
+        public ListViewItemVault(Azure.Management.KeyVault.Models.Vault vault) : base(vault.Name)
         {
-            Subscription = s;
-            VaultResource = r;
-            Name = r.Name;
-            SubItems.Add(r.GroupName);
-            ToolTipText = $"Location: {r.Location}";
+            Vault = vault;
+            Name = vault.Name;
+            GroupName = s_resourceNameRegex.Match(vault.Id).Groups["GroupName"].Value;
+            SubItems.Add(GroupName);
+            ToolTipText = $"Location: {vault.Location}";
             ImageIndex = 1;
         }
     }
@@ -150,13 +155,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
     public class PropertyObjectVault
     {
         private readonly Subscription _subscription;
-        private readonly Resource _resource;
-        private readonly Azure.Management.KeyVault.Vault _vault;
+        private readonly string _resourceGroupName;
+        private readonly Azure.Management.KeyVault.Models.Vault _vault;
 
-        public PropertyObjectVault(Subscription s, Resource r, Azure.Management.KeyVault.Vault vault)
+        public PropertyObjectVault(Subscription s, string resourceGroupName, Azure.Management.KeyVault.Models.Vault vault)
         {
             _subscription = s;
-            _resource = r;
+            _resourceGroupName = resourceGroupName;
             _vault = vault;
             Tags = new ObservableTagItemsCollection();
             if (null != _vault.Tags) foreach (var kvp in _vault.Tags) Tags.Add(new TagItem(kvp));
@@ -187,7 +192,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         [DisplayName("Resource Group Name")]
         [ReadOnly(true)]
-        public string ResourceGroupName => _resource.GroupName;
+        public string ResourceGroupName => _resourceGroupName;
 
         [DisplayName("Custom Tags")]
         [ReadOnly(true)]
@@ -195,7 +200,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         [DisplayName("Sku")]
         [ReadOnly(true)]
-        public string Sku => _vault.Properties.Sku.Name;
+        public SkuName Sku => _vault.Properties.Sku.Name;
         
         [DisplayName("Access Policies")]
         [ReadOnly(true)]
@@ -217,6 +222,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
     [Editor(typeof(ExpandableObjectConverter), typeof(UITypeEditor))]
     public class AccessPolicyEntryItem
     {
+        private static string[] EmptyList = new string[] { };
         private AccessPolicyEntry _ape;
 
         public AccessPolicyEntryItem(int index, AccessPolicyEntry ape)
@@ -235,13 +241,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public Guid ObjectId => _ape.ObjectId;
 
         [Description("Permissions to keys")]
-        public string PermissionsToKeys => string.Join(",", _ape.PermissionsToKeys);
+        public string PermissionsToKeys => string.Join(",", _ape.Permissions.Keys ?? EmptyList);
 
         [Description("Permissions to secrets")]
-        public string PermissionsToSecrets => string.Join(",", _ape.PermissionsToSecrets);
+        public string PermissionsToSecrets => string.Join(",", _ape.Permissions.Secrets ?? EmptyList);
 
         [Description("Permissions to certificates")]
-        public string PermissionsToCertificates => string.Join(",", _ape.PermissionsToCertificates);
+        public string PermissionsToCertificates => string.Join(",", _ape.Permissions.Certificates ?? EmptyList);
 
         [Description("Tenant ID of the principal")]
         public Guid TenantId => _ape.TenantId;
@@ -268,38 +274,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public string DisplayName { get; set; }
         public string State { get; set; }
         public string AuthorizationSource { get; set; }
-    }
-
-    [JsonObject]
-    public class ResourcesResponse
-    {
-        [JsonProperty(PropertyName = "value")]
-        public Resource[] Resources { get; set; }
-    }
-
-    [JsonObject]
-    public class Resource
-    {
-        // https://azure.microsoft.com/en-us/documentation/articles/guidance-naming-conventions/
-        private static Regex s_resourceNameRegex = new Regex(@".*\/resourceGroups\/(?<GroupName>[a-zA-Z0-9_-]{1,64})\/", RegexOptions.CultureInvariant | RegexOptions.Compiled);
-
-        public readonly string Id;
-        public readonly string Name;
-        public readonly string Type;
-        public readonly string Location;
-        public readonly string Kind;
-        public readonly string GroupName;
-
-        [JsonConstructor]
-        public Resource(string id, string name, string type, string location, string kind)
-        {
-            Id = id;
-            Name = name;
-            Type = type;
-            Location = location;
-            Kind = kind;
-            GroupName = s_resourceNameRegex.Match(id).Groups["GroupName"].Value;
-        }
     }
 
     #endregion

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.Azure.KeyVault.Models;
 
 namespace Microsoft.PS.Common.Vault.Explorer
 {
@@ -26,9 +27,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
             Thumbprint = thumbprint?.ToLowerInvariant();
         }
 
-        public ListViewItemCertificate(ISession session, ListCertificateResponseMessage c) : this(session, c.Identifier, c.Attributes, c.X5T, c.Tags) { }
+        public ListViewItemCertificate(ISession session, CertificateItem c) : this(session, c.Identifier, c.Attributes, Utils.ByteArrayToHex(c.X509Thumbprint), c.Tags) { }
 
-        public ListViewItemCertificate(ISession session, CertificateBundle cb) : this(session, cb.Id, cb.Attributes, cb.X5T, cb.Tags) { }
+        public ListViewItemCertificate(ISession session, CertificateBundle cb) : this(session, cb.CertificateIdentifier, cb.Attributes, Utils.ByteArrayToHex(cb.X509Thumbprint), cb.Tags) { }
 
         protected override IEnumerable<PropertyDescriptor> GetCustomProperties()
         {
@@ -45,7 +46,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public override async Task<ListViewItemBase> ToggleAsync(CancellationToken cancellationToken)
         {
-            CertificateBundle cb = await Session.CurrentVault.UpdateCertificateAsync(Name, new CertificateAttributes() { Enabled = !Attributes.Enabled }, Tags, cancellationToken); // Toggle only Enabled attribute
+            CertificateBundle cb = await Session.CurrentVault.UpdateCertificateAsync(Name, null, null, new CertificateAttributes() { Enabled = !Attributes.Enabled }, Tags, cancellationToken); // Toggle only Enabled attribute
             return new ListViewItemCertificate(Session, cb);
         }
 
@@ -56,7 +57,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 NotBefore = (this.NotBefore == null) ? (DateTime?)null : DateTime.UtcNow.AddHours(-1),
                 Expires = (this.Expires == null) ? (DateTime?)null : DateTime.UtcNow.AddYears(1)
             };
-            CertificateBundle cb = await Session.CurrentVault.UpdateCertificateAsync(Name, ca, Tags, cancellationToken); // Reset only NotBefore and Expires attributes
+            CertificateBundle cb = await Session.CurrentVault.UpdateCertificateAsync(Name, null, null, ca, Tags, cancellationToken); // Reset only NotBefore and Expires attributes
             return new ListViewItemCertificate(Session, cb);
         }
 
@@ -73,7 +74,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public override Form GetEditDialog(string name, IEnumerable<object> versions)
         {
-            return new CertificateDialog(Session, name, versions.Cast<ListCertificateResponseMessage>());
+            return new CertificateDialog(Session, name, versions.Cast<CertificateItem>());
         }
 
         public override async Task<ListViewItemBase> UpdateAsync(object originalObject, PropertyObject newObject, CancellationToken cancellationToken)
@@ -81,7 +82,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             CertificateBundle cb = (CertificateBundle)originalObject;
             PropertyObjectCertificate certNew = (PropertyObjectCertificate)newObject;
             await Session.CurrentVault.UpdateCertificatePolicyAsync(certNew.Name, certNew.CertificatePolicy, cancellationToken);
-            cb = await Session.CurrentVault.UpdateCertificateAsync(certNew.Name, certNew.ToCertificateAttributes(), certNew.ToTagsDictionary(), cancellationToken);
+            cb = await Session.CurrentVault.UpdateCertificateAsync(certNew.Name, null, null, certNew.ToCertificateAttributes(), certNew.ToTagsDictionary(), cancellationToken);
             return new ListViewItemCertificate(Session, cb);
         }
 

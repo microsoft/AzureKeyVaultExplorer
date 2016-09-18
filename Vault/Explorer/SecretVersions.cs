@@ -1,4 +1,5 @@
 ﻿using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.KeyVault.Models;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -42,9 +43,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
     public class CertificateVersion : CustomVersion
     {
-        public readonly ListCertificateResponseMessage CertificateItem;
+        public readonly CertificateItem CertificateItem;
 
-        public CertificateVersion(int index, ListCertificateResponseMessage certificateItem) : base(index, certificateItem.Attributes.Created, certificateItem.Attributes.Updated, Common.Vault.Utils.GetChangedBy(certificateItem.Tags), certificateItem.Identifier)
+        public CertificateVersion(int index, CertificateItem certificateItem) : base(index, certificateItem.Attributes.Created, certificateItem.Attributes.Updated, Common.Vault.Utils.GetChangedBy(certificateItem.Tags), certificateItem.Identifier)
         {
             CertificateItem = certificateItem;
         }

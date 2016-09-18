@@ -1,4 +1,5 @@
 ﻿using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.KeyVault.Models;
 using Microsoft.PS.Common.Types;
 using Newtonsoft.Json;
 using System;
@@ -24,7 +25,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         /// <summary>
         /// Original secret
         /// </summary>
-        private readonly Secret _secret;
+        private readonly SecretBundle _secret;
 
         private readonly CustomTags _customTags;
 
@@ -44,7 +45,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
         }
 
-        public PropertyObjectSecret(Secret secret, PropertyChangedEventHandler propertyChanged) :
+        public PropertyObjectSecret(SecretBundle secret, PropertyChangedEventHandler propertyChanged) :
             base(secret.SecretIdentifier, secret.Tags, secret.Attributes.Enabled, secret.Attributes.Expires, secret.Attributes.NotBefore, propertyChanged)
         {
             _secret = secret;
