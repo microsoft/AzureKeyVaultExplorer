@@ -38,6 +38,7 @@
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.uxSmallImageList = new System.Windows.Forms.ImageList(this.components);
             this.SuspendLayout();
             // 
@@ -55,6 +56,11 @@
             // 
             this.columnHeader3.Text = "Changed by";
             this.columnHeader3.Width = 200;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "Expires";
+            this.columnHeader4.Width = 100;
             // 
             // uxSmallImageList
             // 
@@ -74,7 +80,8 @@
             this.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
-            this.columnHeader3});
+            this.columnHeader3,
+            this.columnHeader4});
             this.Dock = System.Windows.Forms.DockStyle.Fill;
             this.FullRowSelect = true;
             listViewGroup1.Header = "";
@@ -115,6 +122,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.ImageList uxSmallImageList;
     }
 }

@@ -73,6 +73,74 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         [UserScopedSetting()]
+        [DefaultSettingValue("14.00:00:00")]
+        [DisplayName("About to expire warning period")]
+        [Description("Warning interval to use for items that are close to their expiration date.")]
+        [Category("General")]
+        public TimeSpan AboutToExpireWarningPeriod
+        {
+            get
+            {
+                return ((TimeSpan)(this[nameof(AboutToExpireWarningPeriod)]));
+            }
+            set
+            {
+                this[nameof(AboutToExpireWarningPeriod)] = value;
+            }
+        }
+
+        [UserScopedSetting()]
+        [DefaultSettingValue("Orange")]
+        [DisplayName("About to expire item color")]
+        [Description("Color to use for items that are close to their expiration date.")]
+        [Category("General")]
+        public Color AboutToExpireItemColor
+        {
+            get
+            {
+                return ((Color)(this[nameof(AboutToExpireItemColor)]));
+            }
+            set
+            {
+                this[nameof(AboutToExpireItemColor)] = value;
+            }
+        }
+
+        [UserScopedSetting()]
+        [DefaultSettingValue("Red")]
+        [DisplayName("Expired item color")]
+        [Description("Color to use for expired or not yet active item.")]
+        [Category("General")]
+        public Color ExpiredItemColor
+        {
+            get
+            {
+                return ((Color)(this[nameof(ExpiredItemColor)]));
+            }
+            set
+            {
+                this[nameof(ExpiredItemColor)] = value;
+            }
+        }
+
+        [UserScopedSetting()]
+        [DefaultSettingValue("GrayText")]
+        [DisplayName("Disabled item color")]
+        [Description("Color to use for disabled item.")]
+        [Category("General")]
+        public Color DisabledItemColor
+        {
+            get
+            {
+                return ((Color)(this[nameof(DisabledItemColor)]));
+            }
+            set
+            {
+                this[nameof(DisabledItemColor)] = value;
+            }
+        }
+
+        [UserScopedSetting()]
         [DefaultSettingValue("Courier New, 9.75pt")]
         [DisplayName("Secret font")]
         [Description("Font to use for secret value and name in the secret dialog.")]

@@ -223,6 +223,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             foreach (var item in uxMenuSecretKind.Items) ((SecretKind)item).Checked = false;
             PropertyObject.SecretKind = sk;
             PropertyObject.PopulateCustomTags();
+            if (_mode == ItemDialogBaseMode.New) PropertyObject.PopulateExpiration();
             sk.Checked = true;
             uxLinkLabelSecretKind.Text = sk.ToString();
             uxToolTip.SetToolTip(uxLinkLabelSecretKind, sk.Description);

@@ -179,6 +179,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public abstract string AreCustomTagsValid();
 
+        public abstract void PopulateExpiration();
+
         public Dictionary<string, string> ToTagsDictionary()
         {
             var result = new Dictionary<string, string>();
