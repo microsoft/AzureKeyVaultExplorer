@@ -50,12 +50,15 @@ namespace Microsoft.PS.Common.Vault.Explorer
             Expires = expires;
 
             ImageIndex = Enabled ? 2 * GroupIndex - 3 : 2 * GroupIndex - 2;
-            ForeColor = Enabled ? ForeColor: SystemColors.GrayText;
-            ForeColor = Active ? ForeColor : Color.Red;
+
+            ForeColor = AboutToExpire ? ForeColor : Settings.Default.AboutToExpireItemColor;
+            ForeColor = Active ? ForeColor : Settings.Default.ExpiredItemColor;
+            ForeColor = Enabled ? ForeColor : Settings.Default.DisabledItemColor;
 
             Name = identifier.Name;
-            SubItems.Add(new ListViewSubItem(this, Utils.NullableDateTimeToString(updated)) { Tag = updated }); // Add Tag so ListViewItemSorter will sort datetime correctly
+            SubItems.Add(new ListViewSubItem(this, Utils.NullableDateTimeToString(updated)) { Tag = Updated }); // Add Tag so ListViewItemSorter will sort DateTime correctly
             SubItems.Add(ChangedBy);
+            SubItems.Add(new ListViewSubItem(this, Utils.ExpirationToString(Expires)) { Tag = Expires }); // Add Tag so ListViewItemSorter will sort TimeSpan correctly
 
             string status = (Enabled ? "Enabled" : "Disabled") + (Active ? ", Active" : ", Expired");
             ToolTipText += string.Format("Status:\t\t\t{0}\nCreation time:\t\t{1}\nLast updated time:\t{2}",
@@ -77,6 +80,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public string Md5 => Utils.GetMd5(Tags);
 
         public string Link => $"https://aka.ms/ve?{VaultHttpsUri.VaultLink}";
+
+        public bool AboutToExpire => DateTime.UtcNow + Settings.Default.AboutToExpireWarningPeriod <= (Expires ?? DateTime.MaxValue);
 
         /// <summary>
         /// True only if current time is within the below range, or range is NULL

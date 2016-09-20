@@ -101,6 +101,13 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return result.ToString();
         }
 
+        public override void PopulateExpiration()
+        {
+            // Set item expiration in case DefaultExpiration is not zero
+            Expires = (default(TimeSpan) == SecretKind.DefaultExpiration) ? (DateTime?)null :
+                DateTime.UtcNow.Add(SecretKind.DefaultExpiration);
+        }
+
         public SecretAttributes ToSecretAttributes() => new SecretAttributes()
         {
             Enabled = Enabled,

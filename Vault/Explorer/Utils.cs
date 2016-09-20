@@ -37,6 +37,16 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public static string NullableIntToString(int? x) => (x == null) ? "(none)" : x.ToString();
 
+        public static string ExpirationToString(DateTime? dt)
+        {
+            if (dt == null) return "";
+            var ts = dt.Value - DateTime.UtcNow;
+            if (ts.TotalDays < 0) return "Expired";
+            if (ts.TotalDays >= 2) return $"{ts.TotalDays:N0} days";
+            if (ts.TotalDays >= 1) return $"{ts.TotalDays:N0} day and {ts.Hours} hours";
+            return $"{ts.Hours} hours";
+        }
+
         public static string CalculateMd5(string value)
         {
             byte[] buff = Encoding.UTF8.GetBytes(value);

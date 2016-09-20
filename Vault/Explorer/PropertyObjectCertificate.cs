@@ -163,6 +163,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public override void PopulateCustomTags() { }
 
+        public override void PopulateExpiration() { }
+
         public override string AreCustomTagsValid() => ""; // Return always valid
 
         private IList<LifetimeAction> LifetimeActionsToList() =>

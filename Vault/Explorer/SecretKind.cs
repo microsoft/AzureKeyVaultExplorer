@@ -36,6 +36,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public readonly string[] OptionalCustomTags;
 
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public readonly TimeSpan DefaultExpiration;
+
         public SecretKind() : base("Custom")
         {
             Alias = "Custom";
@@ -48,7 +51,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         [JsonConstructor]
-        public SecretKind(string alias, string description, string nameRegex, string valueRegex, string certificateFormat, string[] requiredCustomTags, string[] optionalCustomTags) : base(alias)
+        public SecretKind(string alias, string description, string nameRegex, string valueRegex, string certificateFormat, 
+            string[] requiredCustomTags, string[] optionalCustomTags, TimeSpan defaultExpiration) : base(alias)
         {
             Alias = alias;
             ToolTipText = Description = description;
@@ -57,6 +61,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             CertificateFormat = certificateFormat;
             RequiredCustomTags = requiredCustomTags ?? new string[0];
             OptionalCustomTags = optionalCustomTags ?? new string[0];
+            DefaultExpiration = defaultExpiration;
             if (RequiredCustomTags.Length + OptionalCustomTags.Length > Consts.MaxNumberOfTags)
             {
                 throw new ArgumentOutOfRangeException("Total CustomTags.Length", $"Too many custom tags for secret kind {alias}, maximum number of tags for secret is only {Consts.MaxNumberOfTags}");

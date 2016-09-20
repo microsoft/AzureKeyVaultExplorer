@@ -124,11 +124,22 @@ namespace Microsoft.PS.Common.Vault.Explorer
             ListViewItem.ListViewSubItem b = sy.SubItems[_control.SortingColumn];
 
             int c = 0;
-            if ((a.Tag != null) && (b.Tag != null) && (a.Tag is DateTime?) && (b.Tag is DateTime?) && (a.Tag as DateTime?).HasValue && (b.Tag as DateTime?).HasValue)
+            if ((a.Tag != null) && (b.Tag != null))
             {
-                var adt = (a.Tag as DateTime?).Value;
-                var bdt = (b.Tag as DateTime?).Value;
-                c = DateTime.Compare(adt, bdt);
+                // Compare DateTime
+                if ((a.Tag is DateTime?) && (b.Tag is DateTime?) && (a.Tag as DateTime?).HasValue && (b.Tag as DateTime?).HasValue)
+                {
+                    var adt = (a.Tag as DateTime?).Value;
+                    var bdt = (b.Tag as DateTime?).Value;
+                    c = DateTime.Compare(adt, bdt);
+                }
+                // Compare TimeSpan
+                if ((a.Tag is TimeSpan?) && (b.Tag is TimeSpan?) && (a.Tag as TimeSpan?).HasValue && (b.Tag as TimeSpan?).HasValue)
+                {
+                    var ats = (a.Tag as TimeSpan?).Value;
+                    var bts = (b.Tag as TimeSpan?).Value;
+                    c = TimeSpan.Compare(ats, bts);
+                }
             }
             else
             {
