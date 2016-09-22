@@ -47,6 +47,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             var sk = Utils.LoadFromJsonFile<SecretKinds>(Settings.Default.SecretKindsJsonFileLocation);
             uxMenuSecretKind.Items.AddRange((from name in _session.CurrentVaultAlias.SecretKinds select sk[name]).ToArray());
             uxSplitContainer_Panel1_SizeChanged(null, EventArgs.Empty);
+            ActiveControl = uxTextBoxName;
         }
 
         /// <summary>
@@ -57,7 +58,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             _changed = true;
             var s = new SecretBundle() { Attributes = new SecretAttributes(), ContentType = ContentTypeEnumConverter.GetDescription(ContentType.Text) };
             RefreshSecretObject(s);
-            uxMenuSecretKind.Items[0].PerformClick();
+            uxMenuSecretKind.Items[0].PerformClick();            
         }
 
         /// <summary>
@@ -167,7 +168,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             _certificateObj = cvo;
             if (_certificateObj != null)
             {
-                _certificateObj.FillTags(PropertyObject.Tags);
+                _certificateObj.FillTagsAndExpiration(PropertyObject);
                 uxTextBoxValue.Text = _certificateObj.ToValue(PropertyObject.SecretKind.CertificateFormat);
                 uxTextBoxValue.Refresh();
             }

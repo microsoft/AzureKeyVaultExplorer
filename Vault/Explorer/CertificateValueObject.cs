@@ -39,8 +39,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
         }
 
-        public void FillTags(ObservableTagItemsCollection tags)
+        public void FillTagsAndExpiration(PropertyObject obj)
         {
+            ObservableTagItemsCollection tags = obj.Tags;
             tags.AddOrReplace(new TagItem("Thumbprint", Certificate.Thumbprint.ToLowerInvariant()));
             tags.AddOrReplace(new TagItem("Expiration", Certificate.GetExpirationDateString()));
             tags.AddOrReplace(new TagItem("Subject", Certificate.GetNameInfo(X509NameType.SimpleName, false)));
@@ -48,7 +49,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 from X509Extension ext in Certificate.Extensions
                 where ext.Oid.Value == "2.5.29.17" // Subject Alternative Name
                 select ext.Format(false).Replace("DNS Name=", "");
-            tags.AddOrReplace(new TagItem("SAN", string.Join(";", sans)));           
+            tags.AddOrReplace(new TagItem("SAN", string.Join(";", sans)));
+            obj.NotBefore = Certificate.NotBefore;
+            obj.Expires = Certificate.NotAfter;
         }
 
         public override string ToString() => JsonConvert.SerializeObject(this, Formatting.Indented);
