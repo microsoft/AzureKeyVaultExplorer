@@ -53,23 +53,6 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
         }
 
-        private DateTime? _expires;
-        [Category("General")]
-        [DisplayName("Valid until time (UTC)")]
-        [Editor(typeof(NullableDateTimePickerEditor), typeof(UITypeEditor))]
-        public DateTime? Expires
-        {
-            get
-            {
-                return _expires;
-            }
-            set
-            {
-                _expires = value;
-                NotifyPropertyChanged(nameof(Expires));
-            }
-        }
-
         private DateTime? _notBefore;
         [Category("General")]
         [DisplayName("Valid from time (UTC)")]
@@ -84,6 +67,23 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 _notBefore = value;
                 NotifyPropertyChanged(nameof(NotBefore));
+            }
+        }
+
+        private DateTime? _expires;
+        [Category("General")]
+        [DisplayName("Valid until time (UTC)")]
+        [Editor(typeof(NullableDateTimePickerEditor), typeof(UITypeEditor))]
+        public DateTime? Expires
+        {
+            get
+            {
+                return _expires;
+            }
+            set
+            {
+                _expires = value;
+                NotifyPropertyChanged(nameof(Expires));
             }
         }
 
