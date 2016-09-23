@@ -30,16 +30,17 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ListViewSecrets));
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("", System.Windows.Forms.HorizontalAlignment.Center);
-            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("", System.Windows.Forms.HorizontalAlignment.Center);
-            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup("", System.Windows.Forms.HorizontalAlignment.Center);
-            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("", System.Windows.Forms.HorizontalAlignment.Center);
-            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("", System.Windows.Forms.HorizontalAlignment.Center);
+            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("", System.Windows.Forms.HorizontalAlignment.Center);
+            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("", System.Windows.Forms.HorizontalAlignment.Center);
+            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("", System.Windows.Forms.HorizontalAlignment.Center);
+            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup("", System.Windows.Forms.HorizontalAlignment.Center);
+            System.Windows.Forms.ListViewGroup listViewGroup10 = new System.Windows.Forms.ListViewGroup("", System.Windows.Forms.HorizontalAlignment.Center);
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.uxSmallImageList = new System.Windows.Forms.ImageList(this.components);
+            this.uxMenuStripColumns = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.SuspendLayout();
             // 
             // columnHeader1
@@ -74,6 +75,12 @@
             this.uxSmallImageList.Images.SetKeyName(5, "key.png");
             this.uxSmallImageList.Images.SetKeyName(6, "key_delete.png");
             // 
+            // uxMenuStripColumns
+            // 
+            this.uxMenuStripColumns.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.uxMenuStripColumns.Name = "uxMenuStripColumns";
+            this.uxMenuStripColumns.Size = new System.Drawing.Size(67, 4);
+            // 
             // ListViewSecrets
             // 
             this.AllowColumnReorder = true;
@@ -84,28 +91,28 @@
             this.columnHeader4});
             this.Dock = System.Windows.Forms.DockStyle.Fill;
             this.FullRowSelect = true;
-            listViewGroup1.Header = "";
-            listViewGroup1.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
-            listViewGroup1.Name = "Search Results";
-            listViewGroup2.Header = "";
-            listViewGroup2.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
-            listViewGroup2.Name = "Favorites";
-            listViewGroup3.Header = "";
-            listViewGroup3.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
-            listViewGroup3.Name = "Certificates";
-            listViewGroup4.Header = "";
-            listViewGroup4.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
-            listViewGroup4.Name = "Key Vault Certificates";
-            listViewGroup5.Header = "";
-            listViewGroup5.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
-            listViewGroup5.Name = "Secrets";
-            listViewGroup5.Tag = "";
+            listViewGroup6.Header = "";
+            listViewGroup6.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
+            listViewGroup6.Name = "Search Results";
+            listViewGroup7.Header = "";
+            listViewGroup7.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
+            listViewGroup7.Name = "Favorites";
+            listViewGroup8.Header = "";
+            listViewGroup8.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
+            listViewGroup8.Name = "Certificates";
+            listViewGroup9.Header = "";
+            listViewGroup9.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
+            listViewGroup9.Name = "Key Vault Certificates";
+            listViewGroup10.Header = "";
+            listViewGroup10.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Center;
+            listViewGroup10.Name = "Secrets";
+            listViewGroup10.Tag = "";
             this.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1,
-            listViewGroup2,
-            listViewGroup3,
-            listViewGroup4,
-            listViewGroup5});
+            listViewGroup6,
+            listViewGroup7,
+            listViewGroup8,
+            listViewGroup9,
+            listViewGroup10});
             this.HideSelection = false;
             this.ShowItemToolTips = true;
             this.SmallImageList = this.uxSmallImageList;
@@ -124,5 +131,6 @@
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.ImageList uxSmallImageList;
+        private System.Windows.Forms.ContextMenuStrip uxMenuStripColumns;
     }
 }

@@ -51,14 +51,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
             ImageIndex = Enabled ? 2 * GroupIndex - 3 : 2 * GroupIndex - 2;
 
-            ForeColor = AboutToExpire ? ForeColor : Settings.Default.AboutToExpireItemColor;
-            ForeColor = Active ? ForeColor : Settings.Default.ExpiredItemColor;
-            ForeColor = Enabled ? ForeColor : Settings.Default.DisabledItemColor;
-
-            Name = identifier.Name;
-            SubItems.Add(new ListViewSubItem(this, Utils.NullableDateTimeToString(updated)) { Tag = Updated }); // Add Tag so ListViewItemSorter will sort DateTime correctly
-            SubItems.Add(ChangedBy);
-            SubItems.Add(new ListViewSubItem(this, Utils.ExpirationToString(Expires)) { Tag = Expires }); // Add Tag so ListViewItemSorter will sort TimeSpan correctly
+            RepopulateSubItems();
 
             string status = (Enabled ? "Enabled" : "Disabled") + (Active ? ", Active" : ", Expired");
             ToolTipText += string.Format("Status:\t\t\t{0}\nCreation time:\t\t{1}\nLast updated time:\t{2}",
@@ -92,6 +85,25 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         private static string[] GroupIndexToName = new string[] { "s", "f", "certificate", "key vault certificate", "secret" };
         public string Kind => GroupIndexToName[GroupIndex];
+
+        public void RepopulateSubItems()
+        {
+            SubItems.Clear();
+            SubItems[0].Name = SubItems[0].Text = Identifier.Name;
+            SubItems.Add(new ListViewSubItem(this, Utils.NullableDateTimeToString(Updated)) { Tag = Updated }); // Add Tag so ListViewItemSorter will sort DateTime correctly
+            SubItems.Add(ChangedBy);
+            SubItems.Add(new ListViewSubItem(this, Utils.ExpirationToString(Expires)) { Tag = Expires }); // Add Tag so ListViewItemSorter will sort TimeSpan correctly
+            // Add tag value for all the custom columns
+            for (int i = ListViewSecrets.FirstCustomColumnIndex; i < Session.ListViewSecrets.Columns.Count; i++)
+            {
+                string key = Session.ListViewSecrets.Columns[i].Name;
+                SubItems.Add((null == Tags) || (Tags.Count == 0) || !Tags.ContainsKey(key) ? "" : string.IsNullOrWhiteSpace(Tags[key]) ? "(none)" : Tags[key]);
+            }
+
+            ForeColor = AboutToExpire ? ForeColor : Settings.Default.AboutToExpireItemColor;
+            ForeColor = Active ? ForeColor : Settings.Default.ExpiredItemColor;
+            ForeColor = Enabled ? ForeColor : Settings.Default.DisabledItemColor;
+        }
 
         public void RefreshAndSelect()
         {
