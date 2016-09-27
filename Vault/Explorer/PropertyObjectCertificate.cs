@@ -95,10 +95,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
         }
 
         [Category("Policy")]
-        [DisplayName("Issuer reference")]
+        [DisplayName("Issuer parameters")]
         [ReadOnly(true)]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        public IssuerReference IssuerReference => CertificatePolicy.IssuerReference;
+        public IssuerParameters IssuerReference => CertificatePolicy.IssuerParameters;
 
         public PropertyObjectCertificate(CertificateBundle certificateBundle, CertificatePolicy policy, X509Certificate2 certificate, PropertyChangedEventHandler propertyChanged) :
             base(certificateBundle.CertificateIdentifier, certificateBundle.Tags, certificateBundle.Attributes.Enabled, certificateBundle.Attributes.Expires, certificateBundle.Attributes.NotBefore, propertyChanged)

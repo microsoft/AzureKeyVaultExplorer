@@ -135,6 +135,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [Browsable(false)]
         public bool IsValueValid => (Value == null) ? false : SecretKind.ValueRegex.IsMatch(Value);
 
+        [Browsable(false)]
+        public bool IsExpirationValid => (NotBefore ?? DateTime.MinValue) < (Expires ?? DateTime.MaxValue);
+
         protected PropertyObject(ObjectIdentifier identifier, IDictionary<string, string> tags,
             bool? enabled, DateTime? expires, DateTime? notBefore,
             PropertyChangedEventHandler propertyChanged)

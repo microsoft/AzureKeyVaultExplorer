@@ -194,8 +194,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 uxTextBoxValue.SetHighlighting(PropertyObject.ContentType.ToSyntaxHighlightingMode());
             }
 
-            string tagsError = PropertyObject.AreCustomTagsValid();
-            uxErrorProvider.SetError(uxPropertyGridSecret, string.IsNullOrEmpty(tagsError) ? null : tagsError);
+            string tagsExpirationError = PropertyObject.AreCustomTagsValid();
+            if (false == PropertyObject.IsExpirationValid)
+            {
+                tagsExpirationError += "Expiration values are invalid: 'Valid from time' must be less then 'Valid until time'";
+            }
+            uxErrorProvider.SetError(uxPropertyGridSecret, string.IsNullOrEmpty(tagsExpirationError) ? null : tagsExpirationError);
 
             InvalidateOkButton();
         }

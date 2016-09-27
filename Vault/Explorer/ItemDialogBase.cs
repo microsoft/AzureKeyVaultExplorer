@@ -38,7 +38,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
         protected virtual void InvalidateOkButton()
         {
             string tagsError = PropertyObject.AreCustomTagsValid();
-            uxButtonOK.Enabled = _changed && PropertyObject.IsNameValid && PropertyObject.IsValueValid && string.IsNullOrEmpty(tagsError);
+            uxButtonOK.Enabled = _changed && PropertyObject.IsNameValid && PropertyObject.IsValueValid && 
+                PropertyObject.IsExpirationValid && string.IsNullOrEmpty(tagsError);
         }
 
         protected virtual void uxTextBoxName_TextChanged(object sender, EventArgs e)
