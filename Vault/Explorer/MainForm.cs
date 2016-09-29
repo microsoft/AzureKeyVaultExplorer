@@ -554,6 +554,17 @@ namespace Microsoft.PS.Common.Vault.Explorer
             }
         }
 
+        private void uxButtonExportToTsv_Click(object sender, EventArgs e)
+        {
+            uxSaveFileDialog.FileName = $"{CurrentVaultAlias.Alias}_{DateTime.Now.ToString("yyyy-MM-dd")}";
+            uxSaveFileDialog.DefaultExt = ".tsv";
+            uxSaveFileDialog.FilterIndex = ContentType.Tsv.ToFilterIndex();
+            if (uxSaveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                uxListViewSecrets.ExportToTsv(uxSaveFileDialog.FileName);
+            }
+        }
+
         private void uxButtonFavorite_Click(object sender, EventArgs e)
         {
             if (uxListViewSecrets.SelectedItems.Count > 0)

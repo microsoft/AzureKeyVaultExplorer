@@ -38,6 +38,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
             yield return new ReadOnlyPropertyDescriptor("Content Type", ContentTypeStr);
         }
 
+        public override ContentType GetContentType() => ContentType;
+
         public override async Task<PropertyObject> GetAsync(CancellationToken cancellationToken)
         {
             var s = await Session.CurrentVault.GetSecretAsync(Name, null, cancellationToken);

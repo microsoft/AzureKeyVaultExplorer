@@ -36,12 +36,14 @@
             System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup("", System.Windows.Forms.HorizontalAlignment.Center);
             System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("", System.Windows.Forms.HorizontalAlignment.Center);
             System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+            System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
             System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
             System.Windows.Forms.ToolStripLabel toolStripLabel1;
             System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
             System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
             System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
             System.Windows.Forms.ToolStripStatusLabel usStatusLabelSpring;
+            System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.uxListViewSecrets = new Microsoft.PS.Common.Vault.Explorer.ListViewSecrets();
             this.uxContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -63,6 +65,7 @@
             this.uxMenuItemCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemCopyLink = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportToTsvToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemFavorite = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemRefresh = new System.Windows.Forms.ToolStripMenuItem();
             this.uxPropertyGridSecret = new System.Windows.Forms.PropertyGrid();
@@ -88,6 +91,7 @@
             this.uxButtonCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.uxButtonCopyLink = new System.Windows.Forms.ToolStripMenuItem();
             this.uxButtonSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxButtonExportToTsv = new System.Windows.Forms.ToolStripMenuItem();
             this.uxButtonFavorite = new System.Windows.Forms.ToolStripButton();
             this.uxButtonSettings = new System.Windows.Forms.ToolStripButton();
             this.uxButtonHelp = new System.Windows.Forms.ToolStripButton();
@@ -102,12 +106,14 @@
             this.uxSaveFileDialog = new System.Windows.Forms.SaveFileDialog();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             usStatusLabelSpring = new System.Windows.Forms.ToolStripStatusLabel();
+            toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             ((System.ComponentModel.ISupportInitialize)(splitContainer1)).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -314,7 +320,9 @@
             this.uxMenuItemShare.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.uxMenuItemCopy,
             this.uxMenuItemCopyLink,
-            this.uxMenuItemSave});
+            this.uxMenuItemSave,
+            toolStripMenuItem2,
+            this.exportToTsvToolStripMenuItem});
             this.uxMenuItemShare.Enabled = false;
             this.uxMenuItemShare.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.group;
             this.uxMenuItemShare.Name = "uxMenuItemShare";
@@ -350,6 +358,19 @@
             this.uxMenuItemSave.Text = "&Save...";
             this.uxMenuItemSave.ToolTipText = "Save item to file";
             this.uxMenuItemSave.Click += new System.EventHandler(this.uxButtonSave_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            toolStripMenuItem2.Name = "toolStripMenuItem2";
+            toolStripMenuItem2.Size = new System.Drawing.Size(233, 6);
+            // 
+            // exportToTsvToolStripMenuItem
+            // 
+            this.exportToTsvToolStripMenuItem.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.table;
+            this.exportToTsvToolStripMenuItem.Name = "exportToTsvToolStripMenuItem";
+            this.exportToTsvToolStripMenuItem.Size = new System.Drawing.Size(236, 26);
+            this.exportToTsvToolStripMenuItem.Text = "&Export to Tsv...";
+            this.exportToTsvToolStripMenuItem.Click += new System.EventHandler(this.uxButtonExportToTsv_Click);
             // 
             // uxMenuItemFavorite
             // 
@@ -417,6 +438,11 @@
             usStatusLabelSpring.Name = "usStatusLabelSpring";
             usStatusLabelSpring.Size = new System.Drawing.Size(864, 17);
             usStatusLabelSpring.Spring = true;
+            // 
+            // toolStripMenuItem1
+            // 
+            toolStripMenuItem1.Name = "toolStripMenuItem1";
+            toolStripMenuItem1.Size = new System.Drawing.Size(178, 6);
             // 
             // uxToolStrip
             // 
@@ -523,7 +549,7 @@
             // uxAddKVCertFromFile
             // 
             this.uxAddKVCertFromFile.Name = "uxAddKVCertFromFile";
-            this.uxAddKVCertFromFile.Size = new System.Drawing.Size(189, 22);
+            this.uxAddKVCertFromFile.Size = new System.Drawing.Size(224, 26);
             this.uxAddKVCertFromFile.Text = "From &file...";
             this.uxAddKVCertFromFile.Click += new System.EventHandler(this.uxMenuItemAddKVCertificate_Click);
             // 
@@ -603,7 +629,9 @@
             this.uxButtonShare.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.uxButtonCopy,
             this.uxButtonCopyLink,
-            this.uxButtonSave});
+            this.uxButtonSave,
+            toolStripMenuItem1,
+            this.uxButtonExportToTsv});
             this.uxButtonShare.Enabled = false;
             this.uxButtonShare.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.group;
             this.uxButtonShare.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -638,6 +666,14 @@
             this.uxButtonSave.Text = "&Save...";
             this.uxButtonSave.ToolTipText = "Save item to file";
             this.uxButtonSave.Click += new System.EventHandler(this.uxButtonSave_Click);
+            // 
+            // uxButtonExportToTsv
+            // 
+            this.uxButtonExportToTsv.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.table;
+            this.uxButtonExportToTsv.Name = "uxButtonExportToTsv";
+            this.uxButtonExportToTsv.Size = new System.Drawing.Size(181, 26);
+            this.uxButtonExportToTsv.Text = "&Export to Tsv...";
+            this.uxButtonExportToTsv.Click += new System.EventHandler(this.uxButtonExportToTsv_Click);
             // 
             // uxButtonFavorite
             // 
@@ -845,6 +881,8 @@
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemCopy;
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemCopyLink;
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemSave;
+        private System.Windows.Forms.ToolStripMenuItem uxButtonExportToTsv;
+        private System.Windows.Forms.ToolStripMenuItem exportToTsvToolStripMenuItem;
     }
 }
 
