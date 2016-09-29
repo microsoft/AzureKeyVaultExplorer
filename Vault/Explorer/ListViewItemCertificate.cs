@@ -37,6 +37,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
             yield return new ReadOnlyPropertyDescriptor("Thumbprint", Thumbprint);
         }
 
+        public override ContentType GetContentType() => ContentType.Pkcs12;
+
         public override async Task<PropertyObject> GetAsync(CancellationToken cancellationToken)
         {
             var cb = await Session.CurrentVault.GetCertificateAsync(Name, null, cancellationToken);

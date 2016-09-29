@@ -53,9 +53,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
             RepopulateSubItems();
 
-            string status = (Enabled ? "Enabled" : "Disabled") + (Active ? ", Active" : ", Expired");
             ToolTipText += string.Format("Status:\t\t\t{0}\nCreation time:\t\t{1}\nLast updated time:\t{2}",
-                status,
+                Status,
                 Utils.NullableDateTimeToString(created),
                 Utils.NullableDateTimeToString(updated));
 
@@ -63,6 +62,8 @@ namespace Microsoft.PS.Common.Vault.Explorer
             _searchResult = false;
             SetGroup();
         }
+
+        public string Status => (Enabled ? "Enabled" : "Disabled") + (Active ? ", Active" : ", Expired");
 
         public ListViewGroupCollection Groups => Session.ListViewSecrets.Groups;
 
@@ -188,7 +189,24 @@ namespace Microsoft.PS.Common.Vault.Explorer
             return true;
         }
 
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (ListViewSubItem subItem in SubItems)
+            {
+                sb.AppendFormat("{0}\t", subItem.Text);
+            }
+            sb.AppendFormat("{0}\t", Status);
+            sb.AppendFormat("{0}\t", Utils.NullableDateTimeToString(NotBefore));
+            sb.AppendFormat("{0}\t", Utils.NullableDateTimeToString(Expires));
+            sb.AppendFormat("{0}", ContentTypeEnumConverter.GetDescription(GetContentType()));
+
+            return sb.ToString();
+        }
+
         protected abstract IEnumerable<PropertyDescriptor> GetCustomProperties();
+
+        public abstract ContentType GetContentType();
 
         public abstract Task<PropertyObject> GetAsync(CancellationToken cancellationToken);
 

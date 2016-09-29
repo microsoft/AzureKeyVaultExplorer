@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Linq;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -125,6 +126,28 @@ namespace Microsoft.PS.Common.Vault.Explorer
             Sort();
             RefreshGroupsHeader();
             EndUpdate();
+        }
+
+        public void ExportToTsv(string filename)
+        {
+            StringBuilder sb = new StringBuilder();
+            // Output column headers
+            foreach (ColumnHeader col in Columns)
+            {
+                sb.AppendFormat("{0}\t", col.Text);
+            }
+            sb.Append("Status\t");
+            sb.Append("Valid from time (UTC)\t");
+            sb.Append("Valid until time (UTC)\t");
+            sb.Append("Content Type");
+            sb.AppendLine();
+            // Take all items or in case of multiple selection only the selected ones
+            IEnumerable<ListViewItem> items = (SelectedItems.Count <= 1) ? Items.Cast<ListViewItem>() : SelectedItems.Cast<ListViewItem>();
+            foreach (ListViewItem item in items)
+            {
+                sb.AppendLine(item.ToString());
+            }
+            File.WriteAllText(filename, sb.ToString());
         }
 
         private void ListViewSecrets_ColumnClick(object sender, ColumnClickEventArgs e)
