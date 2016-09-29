@@ -197,7 +197,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             string tagsExpirationError = PropertyObject.AreCustomTagsValid();
             if (false == PropertyObject.IsExpirationValid)
             {
-                tagsExpirationError += "Expiration values are invalid: 'Valid from time' must be less then 'Valid until time'";
+                tagsExpirationError += $"Expiration values are invalid: 'Valid from time' must be less then 'Valid until time' and expiration period must be less or equal to {Utils.ExpirationToString(PropertyObject.SecretKind.MaxExpiration)}";
             }
             uxErrorProvider.SetError(uxPropertyGridSecret, string.IsNullOrEmpty(tagsExpirationError) ? null : tagsExpirationError);
 
@@ -228,7 +228,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
             foreach (var item in uxMenuSecretKind.Items) ((SecretKind)item).Checked = false;
             PropertyObject.SecretKind = sk;
             PropertyObject.PopulateCustomTags();
-            if (_mode == ItemDialogBaseMode.New) PropertyObject.PopulateExpiration();
+            // Populate default expiration and value template in case this is a new secret
+            if (_mode == ItemDialogBaseMode.New)
+            {
+                PropertyObject.PopulateExpiration();
+                uxTextBoxValue.Text = sk.ValueTemplate;
+            }
             sk.Checked = true;
             uxLinkLabelSecretKind.Text = sk.ToString();
             uxToolTip.SetToolTip(uxLinkLabelSecretKind, sk.Description);

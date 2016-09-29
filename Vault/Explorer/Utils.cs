@@ -41,6 +41,12 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             if (dt == null) return "";
             var ts = dt.Value - DateTime.UtcNow;
+            return ExpirationToString(ts);
+        }
+
+        public static string ExpirationToString(TimeSpan ts)
+        {
+            if (ts == TimeSpan.MaxValue) return "Never";
             if (ts.TotalDays < 0) return "Expired";
             if (ts.TotalDays >= 2) return $"{ts.TotalDays:N0} days";
             if (ts.TotalDays >= 1) return $"{ts.TotalDays:N0} day and {ts.Hours} hours";

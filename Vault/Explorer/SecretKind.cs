@@ -25,6 +25,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
         public readonly Regex ValueRegex;
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public readonly string ValueTemplate;
+
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public readonly string CertificateFormat;
 
         [JsonIgnore]
@@ -39,29 +42,41 @@ namespace Microsoft.PS.Common.Vault.Explorer
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public readonly TimeSpan DefaultExpiration;
 
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public readonly TimeSpan MaxExpiration;
+
         public SecretKind() : base("Custom")
         {
             Alias = "Custom";
             ToolTipText = Description = "The name must be a string 1-127 characters in length containing only 0-9, a-z, A-Z, and -.";
             NameRegex = Consts.ValidSecretNameRegex;
             ValueRegex = new Regex("^.{0,1048576}$", RegexOptions.Singleline | RegexOptions.Compiled);
+            ValueTemplate = "";
             CertificateFormat = null;
             RequiredCustomTags = new string[0];
             OptionalCustomTags = new string[0];
+            MaxExpiration = TimeSpan.MaxValue;
         }
 
         [JsonConstructor]
-        public SecretKind(string alias, string description, string nameRegex, string valueRegex, string certificateFormat, 
-            string[] requiredCustomTags, string[] optionalCustomTags, TimeSpan defaultExpiration) : base(alias)
+        public SecretKind(string alias, string description, string nameRegex, string valueRegex, string valueTemplate, 
+            string certificateFormat, string[] requiredCustomTags, string[] optionalCustomTags,
+            TimeSpan defaultExpiration, TimeSpan maxExpiration) : base(alias)
         {
             Alias = alias;
             ToolTipText = Description = description;
             NameRegex = new Regex(nameRegex, RegexOptions.Singleline | RegexOptions.Compiled);
             ValueRegex = new Regex(valueRegex, RegexOptions.Singleline | RegexOptions.Compiled);
+            ValueTemplate = valueTemplate;
             CertificateFormat = certificateFormat;
             RequiredCustomTags = requiredCustomTags ?? new string[0];
             OptionalCustomTags = optionalCustomTags ?? new string[0];
             DefaultExpiration = defaultExpiration;
+            MaxExpiration = default(TimeSpan) == maxExpiration ? TimeSpan.MaxValue : maxExpiration;
+            if (DefaultExpiration > MaxExpiration)
+            {
+                throw new ArgumentOutOfRangeException("DefaultExpiration or MaxExpiration", $"DefaultExpiration value must be less than MaxExpiration in secret kind {alias}");
+            }
             if (RequiredCustomTags.Length + OptionalCustomTags.Length > Consts.MaxNumberOfTags)
             {
                 throw new ArgumentOutOfRangeException("Total CustomTags.Length", $"Too many custom tags for secret kind {alias}, maximum number of tags for secret is only {Consts.MaxNumberOfTags}");
