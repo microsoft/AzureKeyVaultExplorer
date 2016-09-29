@@ -9,11 +9,20 @@ namespace Microsoft.PS.Common.Vault.Explorer
     public class NullableDateTimePickerEditor : UITypeEditor
     {
         IWindowsFormsEditorService editorService;
+        ToolTip expirationToolTip = new ToolTip();
         DateTimePicker picker = new DateTimePicker();
 
         public NullableDateTimePickerEditor()
         {
+            expirationToolTip.ShowAlways = true;
             picker.Format = DateTimePickerFormat.Long;
+            picker.ValueChanged += Picker_ValueChanged;
+        }
+
+        private void Picker_ValueChanged(object sender, EventArgs e)
+        {
+            TimeSpan ts = picker.Value - DateTime.UtcNow;
+            expirationToolTip.SetToolTip(picker, Utils.ExpirationToString(ts));
         }
 
         public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context) => UITypeEditorEditStyle.DropDown;
