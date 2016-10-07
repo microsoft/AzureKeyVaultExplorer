@@ -2,15 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using VaultLibrary;
 
-namespace Microsoft.PS.Common.Vault.Explorer
+namespace VaultExplorer
 {
     /// <summary>
     /// Base list view item which also presents itself nicely to PropertyGrid
@@ -69,7 +69,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
 
         public string Id => VaultHttpsUri.ToString();
 
-        public string ChangedBy => Common.Vault.Utils.GetChangedBy(Tags);
+        public string ChangedBy => VaultLibrary.Utils.GetChangedBy(Tags);
 
         public string Md5 => Utils.GetMd5(Tags);
 

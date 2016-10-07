@@ -12,7 +12,7 @@ using System.Windows.Forms;
 using Microsoft.Azure.KeyVault.Models;
 using Microsoft.Rest.Azure;
 
-namespace Microsoft.PS.Common.Vault.Explorer
+namespace VaultExplorer
 {
     /// <summary>
     /// User experience operation, to be used with using() keyword

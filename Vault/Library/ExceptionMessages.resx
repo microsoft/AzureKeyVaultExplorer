@@ -1,0 +1,336 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppDomainUnhandledException" xml:space="preserve">
+    <value>An unhandled exception has been detected in the current application domain {0}. See below for details.</value>
+  </data>
+  <data name="AppDomainUnhandledExceptionNoDetails" xml:space="preserve">
+    <value>An unhandled exception has been detected in the current application domain {0}. There was no exception object available for detailed information.</value>
+  </data>
+  <data name="ArgumentCannotBeDefault" xml:space="preserve">
+    <value>The specified argument {0} cannot be initialized with its default value.</value>
+  </data>
+  <data name="ArgumentCannotBeGreaterThanBaseline" xml:space="preserve">
+    <value>The specified argument {0} cannot be greater than its ceiling value of {1}.</value>
+  </data>
+  <data name="ArgumentCannotBeNegative" xml:space="preserve">
+    <value>The specified argument {0} cannot be initialized with a negative value.</value>
+  </data>
+  <data name="ArgumentCannotBeOutOfRange" xml:space="preserve">
+    <value>The specified argument {0} cannot be out of range ({1} - {2}).</value>
+  </data>
+  <data name="ArgumentCannotBeZeroOrNegative" xml:space="preserve">
+    <value>The specified argument {0} cannot be initialized with a zero or negative value.</value>
+  </data>
+  <data name="ArgumentCollectionCannotBeEmpty" xml:space="preserve">
+    <value>The specified argument {0} cannot be a null or empty collection.</value>
+  </data>
+  <data name="ArgumentNotInCollection" xml:space="preserve">
+    <value>The specified argument {0} is not in collection {1}.</value>
+  </data>
+  <data name="ArgumentsConditionNotSatisfied" xml:space="preserve">
+    <value>The values of the specified argument {0} do not satisfy the required condition.</value>
+  </data>
+  <data name="BlobDataCannotBeEmpty" xml:space="preserve">
+    <value>The data in the specified blob of type {0} cannot be null.</value>
+  </data>
+  <data name="BlobDownloadCannotBeRetried" xml:space="preserve">
+    <value>A failure has occurred while downloading blob {0} from the container {1}. The download operation cannot be retried as data consistency cannot be guaranteed. This could be due to the blob’s data stream being non-rewindable (non-seekable) or other conditions that cannot be compensated by a retry. Please refer to the inner exception for details.</value>
+  </data>
+  <data name="BlobPutAsyncOperationFailure" xml:space="preserve">
+    <value>Unable to upload the blob(s). The asynchronous operation has been terminated with an unexpected error. Please refer to the inner exception for details.</value>
+  </data>
+  <data name="BlobUploadCannotBeRetried" xml:space="preserve">
+    <value>A failure has occurred while uploading blob {0} in the container {1}. The upload operation cannot be retried as data consistency cannot be guaranteed. This could be due to the blob’s data stream being non-rewindable (non-seekable) or other conditions that cannot be compensated by a retry. Please refer to the inner exception for details.</value>
+  </data>
+  <data name="CannotCreateInstanceFromXmlReader" xml:space="preserve">
+    <value>An instance of {0} object cannot be created from the specified instance of XML reader. The reader is expected to be positioned on element {0} from namespace {1}. Encountered element {2} in namespace {3}.</value>
+  </data>
+  <data name="CannotHandleLargeMessageWithoutOverflowStore" xml:space="preserve">
+    <value>Transferring large messages requires an overflow message store. Please make sure that the overflow store was specified.</value>
+  </data>
+  <data name="CannotParseServiceBusConnectionString" xml:space="preserve">
+    <value>Unable to parse the specified Service Bus endpoint connection string {0}. The value appears to be in the wrong format. Please refer to the documentation for details.</value>
+  </data>
+  <data name="CannotParseStorageConnectionString" xml:space="preserve">
+    <value>Unable to parse the specified storage account connection string {0}. The value appears to be in the wrong format. Please refer to the documentation for details.</value>
+  </data>
+  <data name="ClientIdValueCannotBeUsedForComputingPartitionId" xml:space="preserve">
+    <value>The specified client ID value cannot be used for computation. The provided number results in an out-of-bound value.</value>
+  </data>
+  <data name="CloudWebAppBaseUnhandledException" xml:space="preserve">
+    <value>An unhandled exception occurred during the execution of the current web request. Please review the stack trace for more information about the error and where it originated in the code.</value>
+  </data>
+  <data name="ConfigSectionNotFound" xml:space="preserve">
+    <value>The application's configuration file (such as ServiceConfiguration.cscfg, app.config or web.config) doesn't contain a section {0}. This section is compulsory for the application in order to function properly. Please add this section into the configuration file.</value>
+  </data>
+  <data name="ConfigSectionTypeCannotBeDetermined" xml:space="preserve">
+    <value>The type of the configuration section {0} cannot be reliably determined. Instead of specifying the type {1}, use a more specific type or make sure that the configuration data possesses the type information. For more details, please refer to the relevant sectionsin the API documentation.</value>
+  </data>
+  <data name="ConnectionStringNotDefined" xml:space="preserve">
+    <value>A connection string for the {0} database has not been found in the application configuration. Please verify the current configuration and make sure that the ConnectionStrings section contains a valid definition of the connection string for {0}.</value>
+  </data>
+  <data name="ContainerNameContainsInvalidCharacters" xml:space="preserve">
+    <value>Container names must start with a letter or number, and can contain only letters, numbers, and the dash (-) character.</value>
+  </data>
+  <data name="ContainerNameInvalidDashSequence" xml:space="preserve">
+    <value>Every dash (-) character must be immediately preceded and followed by a letter or number.</value>
+  </data>
+  <data name="ContainerNameTooLong" xml:space="preserve">
+    <value>Container names must be from 3 through 63 characters long. Please refer to the "Naming Containers, Blobs, and Metadata" section in the MSDN library for more information.</value>
+  </data>
+  <data name="ContainerNameTooShort" xml:space="preserve">
+    <value>Container names must be at least 3 characters long. Please refer to the "Naming Containers, Blobs, and Metadata" section in the MSDN library for more information.</value>
+  </data>
+  <data name="DuplicatePrefixFoundInNamespaceCollection" xml:space="preserve">
+    <value>The configured XML namespace prefix has already been assigned to a different namespace. Please verify the XPath Query Library and make sure that all prefixes are unique.</value>
+  </data>
+  <data name="EndpointCollectionIsEmpty" xml:space="preserve">
+    <value>The specified collection of endpoint definitions doesn't not contain any items. The collection must not be empty.</value>
+  </data>
+  <data name="EtwWriteEventFailure" xml:space="preserve">
+    <value>Unable to write an event into the ETW stack. Error code: {0}.</value>
+  </data>
+  <data name="ExtensionObjectNotFound" xml:space="preserve">
+    <value>An instance of type {0} has not been found in the collection of registered extensions. Please make sure that an extension of this type is correctly and timely registered to enable its consumers to locate the instance at runtime.</value>
+  </data>
+  <data name="ExtensionObjectNotFoundInAspNetState" xml:space="preserve">
+    <value>The current ASP.NET application does not appear to have been correctly configured to work with the CloudFx extensibility model. The required state variable is missing from the application’s state. Please make sure that the ASP.NET application’s entry point (which is usually the Global.asax.cs file) inherits from the {0} type. By inheriting from this type, the ASP.NET application will be automatically enabled for extensibility with no further user actions required.</value>
+  </data>
+  <data name="IncomingMessageCannotBeDeserialized" xml:space="preserve">
+    <value>The incoming message cannot be deserialized successfully into an instance of type {0}. Please ensure that the sender correctly serialized the outbound messages and that both the sender and receiver share the same serialization component.</value>
+  </data>
+  <data name="IncomingMessageMissingRequiredProperty" xml:space="preserve">
+    <value>The incoming message cannot be processed. The required property {0} is missing from the message context. Please ensure that the sender correctly stamped the outbound messages with the above property.</value>
+  </data>
+  <data name="InsufficientNumberOfEndpoints" xml:space="preserve">
+    <value>The specified number of Service Bus endpoints ({0}) is insufficient for scale-out purposes. The recommended number of endpoints should be a percentage of the total number of publishers and subscribers, or at least greater than 2.</value>
+  </data>
+  <data name="InvalidArgumentValue" xml:space="preserve">
+    <value>The value of argument {0} must be {1}.</value>
+  </data>
+  <data name="InvalidCloudTableName" xml:space="preserve">
+    <value>The specified value {0} is not a valid Windows Azure table name.</value>
+  </data>
+  <data name="InvalidEnumValue" xml:space="preserve">
+    <value>The value of the argument {0} provided for the enumeration {1} is invalid.</value>
+  </data>
+  <data name="InvalidMd5" xml:space="preserve">
+    <value>The specified string argument {0} must be a valid MD5.</value>
+  </data>
+  <data name="InvalidServiceBusEndpointType" xml:space="preserve">
+    <value>The specified Service Bus endpoint definition {0} is of a wrong type {1}. The expected type is {2}.</value>
+  </data>
+  <data name="InvalidSha" xml:space="preserve">
+    <value>The specified string argument {0} must be valid Sha{1}.</value>
+  </data>
+  <data name="InvalidCtph" xml:space="preserve">
+    <value>The specified string argument {0} must be valid Ctph.</value>
+  </data>
+  <data name="InvalidShaPrefix" xml:space="preserve">
+    <value>The specified string argument {0} must be valid {1} prefix with at least 6 hex digits and upto 39 or 63 chars long accordingly.</value>
+  </data>
+  <data name="InvalidUseOfRoleConfigurationSettingCollection" xml:space="preserve">
+    <value>The requested action against the collection of Windows Azure role settings cannot be performed due to API restrictions. The settings cannot be modified, removed or retrieved by their index.</value>
+  </data>
+  <data name="PublishAsyncOperationFailure" xml:space="preserve">
+    <value>Unable to publish the message(s). The asynchronous operation has been terminated with an unexpected error. Please refer to the inner exception for details.</value>
+  </data>
+  <data name="PublishFailureEndpointNotFound" xml:space="preserve">
+    <value>Unable to publish the message. The definition for the endpoint {0} cannot be found. Please ensure that the specified endpoint definition has been registered in the endpoint collection.</value>
+  </data>
+  <data name="PublishFailureNoMatchingEndpointsFound" xml:space="preserve">
+    <value>Unable to publish the message. There were no endpoints found that match the specified name or pattern.</value>
+  </data>
+  <data name="QueueNameTemplateNameMustIncludePlaceholder" xml:space="preserve">
+    <value>The specified queue name template {0} must include a placeholder “{1}” which will be used for customizing the queue names to be able to create multiple queues for scaling purposes.</value>
+  </data>
+  <data name="QueuePutAsyncOperationFailure" xml:space="preserve">
+    <value>Unable to enqueue the message(s). The asynchronous operation has been terminated with an unexpected error. Please refer to the inner exception for details.</value>
+  </data>
+  <data name="RetryLimitExceeded" xml:space="preserve">
+    <value>The action has exceeded its defined retry limit.</value>
+  </data>
+  <data name="ServiceRegistryEndpointNotFound" xml:space="preserve">
+    <value>The specified endpoint address {0} has not been found in the Service Registry.</value>
+  </data>
+  <data name="SpecifiedServiceBusEndpointIsOfWrongType" xml:space="preserve">
+    <value>The definition for the Service Bus endpoint {0} is expected to have been of type {1}. The actual type of the endpoint is {2}. Please ensure that the endpoint type is set to the correct type.</value>
+  </data>
+  <data name="SpecifiedServiceBusEndpointTopicPathEmpty" xml:space="preserve">
+    <value>The definition for the Service Bus endpoint {0} has an empty topic path. The path must be set to the correct value.</value>
+  </data>
+  <data name="StorageAccountCollectionIsEmpty" xml:space="preserve">
+    <value>The specified collection of storage accounts doesn't not contain any items. The collection must not be empty.</value>
+  </data>
+  <data name="StringCannotBeEmpty" xml:space="preserve">
+    <value>The specified string argument {0} must not be empty.</value>
+  </data>
+  <data name="StringMustBeAValidTableName" xml:space="preserve">
+    <value>The specified string argument {0} must be a valid table name.</value>
+  </data>
+  <data name="StringMustMatchRegex" xml:space="preserve">
+    <value>The specified string argument '{0}' must match the given Regex pattern '{1}'.</value>
+  </data>
+  <data name="SubscribeOperationFailure" xml:space="preserve">
+    <value>Unable to subscribe to messages from the publish/subscribe channel of type {0}. The operation has been terminated with an unexpected error. Please refer to the inner exception for details.</value>
+  </data>
+  <data name="SubscriptionCannotBeCreatedOrFound" xml:space="preserve">
+    <value>The specified subscription name {0} cannot be found or cannot be created on topic {1}. Please check if the name is valid. The maximum supported length of subscription names is 290 characters. The name should only contain alphanumeric characters.</value>
+  </data>
+  <data name="SubscriptionNameMustIncludePlaceholder" xml:space="preserve">
+    <value>The specified subscription name {0} must include a placeholder “{1}” which will be used for customizing the subscription name for each individual non-competing subscriber.</value>
+  </data>
+  <data name="TableEntityCollectionPartitionKeyMismatch" xml:space="preserve">
+    <value>All entities must share the same PartitionKey property.</value>
+  </data>
+  <data name="TableEntityInvalidPartitionKey" xml:space="preserve">
+    <value>The specified table entity does not contain a partition key, or its value is null. Please make sure that the table entity inherits from one of the following types: {0} or has a public property called {1}. Please also make sure that the partition key value conforms to the requirements set out by the Table Storage service.</value>
+  </data>
+  <data name="TableEntityInvalidRowKey" xml:space="preserve">
+    <value>The specified table entity does not contain a row key, or its value is null. Please make sure that the table entity inherits from one of the following types: {0} or has a public property called {1}. Please also make sure that the row key value conforms to the requirements set out by the Table Storage service.</value>
+  </data>
+  <data name="TableEntityUnsupportedType" xml:space="preserve">
+    <value>The specified table entity type {0} cannot be used with this component. The supported entity types are: {1} or any type containing public properties called {2} and {3}. Please make sure you either use any of the supported types or both the Partition and Row key properties are defined as public properties.</value>
+  </data>
+  <data name="TableNameContainsInvalidCharacters" xml:space="preserve">
+    <value>Table names must be from 3 to 63 characters long, they may contain only alphanumeric characters and cannot begin with a numeric character.</value>
+  </data>
+  <data name="TableStorageOperationFailed" xml:space="preserve">
+    <value>Unable to complete the requested table storage operation. See inner exception(s) for details.</value>
+  </data>
+  <data name="TableStorageOperationFailedWithResponseCode" xml:space="preserve">
+    <value>Unable to complete the requested table storage operation. The Table Storage Service returned the following response code(s): {0}. See inner exception(s) for details.</value>
+  </data>
+  <data name="TopicCannotBeCreatedOrFound" xml:space="preserve">
+    <value>The specified topic name {0} cannot be found or cannot be created. Please check if the name is valid. The maximum supported length of topic path is 290 characters. The name should only contain alphanumeric characters.</value>
+  </data>
+  <data name="TraceProviderGuidCannotBeFound" xml:space="preserve">
+    <value>The specified trace provider GUID {0} cannot be found. Please make sure that a trace event provider with a matching GUID value has been registered with Trace Manager.</value>
+  </data>
+  <data name="TypeMissingRequiredAttribute" xml:space="preserve">
+    <value>The specified type {0} is missing the required attribute {1}. Please make sure that the type has been decorated with the above attribute.</value>
+  </data>
+  <data name="TypeNotCompatible" xml:space="preserve">
+    <value>The specified type {0} is not compatible with {1}.</value>
+  </data>
+  <data name="XPathQueryNotDefined" xml:space="preserve">
+    <value>A definition for the {0} XPath query has not been found in the XPath Query Library. Please make sure that the corresponding configuration file contains a valid definition for this query.</value>
+  </data>
+</root>

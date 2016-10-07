@@ -12,10 +12,11 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using VaultLibrary;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 
-namespace Microsoft.PS.Common.Vault.Explorer
+namespace VaultExplorer
 {
     public static class Utils
     {

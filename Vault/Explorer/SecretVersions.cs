@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace Microsoft.PS.Common.Vault.Explorer
+namespace VaultExplorer
 {
     public abstract class CustomVersion : ToolStripMenuItem
     {
@@ -35,7 +35,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
     {
         public readonly SecretItem SecretItem;
 
-        public SecretVersion(int index, SecretItem secretItem) : base(index, secretItem.Attributes.Created, secretItem.Attributes.Updated, Common.Vault.Utils.GetChangedBy(secretItem.Tags), secretItem.Identifier)
+        public SecretVersion(int index, SecretItem secretItem) : base(index, secretItem.Attributes.Created, secretItem.Attributes.Updated, VaultLibrary.Utils.GetChangedBy(secretItem.Tags), secretItem.Identifier)
         {
             SecretItem = secretItem;
         }
@@ -45,7 +45,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
     {
         public readonly CertificateItem CertificateItem;
 
-        public CertificateVersion(int index, CertificateItem certificateItem) : base(index, certificateItem.Attributes.Created, certificateItem.Attributes.Updated, Common.Vault.Utils.GetChangedBy(certificateItem.Tags), certificateItem.Identifier)
+        public CertificateVersion(int index, CertificateItem certificateItem) : base(index, certificateItem.Attributes.Created, certificateItem.Attributes.Updated, VaultLibrary.Utils.GetChangedBy(certificateItem.Tags), certificateItem.Identifier)
         {
             CertificateItem = certificateItem;
         }

@@ -4,15 +4,11 @@
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Environment.props))\Environment.props" Condition=" '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Environment.props))' != '' " />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="ClickOnce.props" Condition="$(ClickOnceInstallUpdateUrl) != ''" />
-  <!-- WD.Services.Core -->
-  <Import Project="$(PkgWD_Services_Core)\Build\WD.Services.Core.props" Condition="Exists('$(PkgWD_Services_Core)\Build\WD.Services.Core.props')" />
-  <!-- WD.Services.Vault -->
-  <Import Project="$(PkgWD_Services_Vault)\Build\WD.Services.Vault.props" Condition="Exists('$(PkgWD_Services_Vault)\Build\WD.Services.Vault.props')" />
   <PropertyGroup>
     <ProjectGuid>{0720CA4C-5D06-47FC-8DF9-2A42C40119A3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Microsoft.PS.Common.Vault.Explorer</RootNamespace>
+    <RootNamespace>VaultExplorer</RootNamespace>
     <AssemblyName>VaultExplorer</AssemblyName>
     <AssemblyDescription>Azure Key Vault Explorer</AssemblyDescription>
     <ErrorReport>prompt</ErrorReport>
@@ -38,6 +34,27 @@
     <DebugType>pdbonly</DebugType>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Rest.ClientRuntime.dll">
+      <HintPath>$(PkgMicrosoft_Rest_ClientRuntime)\lib\net45\Microsoft.Rest.ClientRuntime.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Rest.ClientRuntime.Azure.dll">
+      <HintPath>$(PkgMicrosoft_Rest_ClientRuntime_Azure)\lib\net45\Microsoft.Rest.ClientRuntime.Azure.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Azure.KeyVault.WebKey.dll">
+      <HintPath>$(PkgMicrosoft_Azure_KeyVault_WebKey)\lib\net45\Microsoft.Azure.KeyVault.WebKey.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Azure.KeyVault.dll">
+      <HintPath>$(PkgMicrosoft_Azure_KeyVault)\lib\net45\Microsoft.Azure.KeyVault.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>$(PkgNewtonsoft_Json)\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory">
+      <HintPath>$(PkgMicrosoft_IdentityModel_Clients_ActiveDirectory)\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory.Platform">
+      <HintPath>$(PkgMicrosoft_IdentityModel_Clients_ActiveDirectory)\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.ApplicationInsights">
       <HintPath>$(PkgMicrosoft_ApplicationInsights)\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
     </Reference>
@@ -75,6 +92,10 @@
     <ProjectReference Include="..\ClearClipboard\ClearClipboard.csproj">
       <Project>{9b19162f-ff53-45c4-b849-e293db19d7aa}</Project>
       <Name>ClearClipboard</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Library\VaultLibrary.csproj">
+      <Project>{18150c6e-12e1-42d3-b7ae-740e96ebb59a}</Project>
+      <Name>VaultLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

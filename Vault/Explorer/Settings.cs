@@ -11,7 +11,7 @@ using System.Drawing.Design;
 using System.Drawing;
 using Newtonsoft.Json;
 
-namespace Microsoft.PS.Common.Vault.Explorer
+namespace VaultExplorer
 {
     using UISettings = Properties.Settings;
 

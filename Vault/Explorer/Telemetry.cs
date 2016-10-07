@@ -12,7 +12,7 @@ using System.Windows.Forms;
 using Microsoft.ApplicationInsights.Channel;
 using System.Diagnostics;
 
-namespace Microsoft.PS.Common.Vault.Explorer
+namespace VaultExplorer
 {
     public static class Telemetry
     {
@@ -28,7 +28,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             TelemetryConfiguration config = TelemetryConfiguration.CreateDefault();
             config.InstrumentationKey = "ebe1f199-8317-4c4f-913c-5b569f1cba9f";
-            config.DisableTelemetry = Settings.Default.DisableTelemetry || CommonUtils.IsDebug;
+            config.DisableTelemetry = Settings.Default.DisableTelemetry || VaultLibrary.Utils.IsDebug;
             Default = new TelemetryClient(config) { InstrumentationKey = config.InstrumentationKey };
             config.TelemetryInitializers.Add(new TelemetryInitializer());
         }
