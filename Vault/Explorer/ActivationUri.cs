@@ -23,7 +23,7 @@ namespace VaultExplorer
             string vaultUri = (ApplicationDeployment.IsNetworkDeployed) ?
                 AppDomain.CurrentDomain.SetupInformation?.ActivationArguments?.ActivationData?.FirstOrDefault() :
                 (Environment.GetCommandLineArgs().Length == 2) ? Environment.GetCommandLineArgs()[1] : null;
-            // Arguments were not passed at all or activation happend via Application Reference (.appref-ms)
+            // Arguments were not passed at all or activation happened via Application Reference (.appref-ms)
             if (string.IsNullOrEmpty(vaultUri)) return Empty;
             if (vaultUri.StartsWith("file:", StringComparison.CurrentCultureIgnoreCase)) return Empty;
             // Online activation
