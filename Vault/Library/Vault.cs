@@ -228,7 +228,7 @@ namespace VaultLibrary
         /// <returns>A response message containing the updated secret from first vault</returns>
         public async Task<SecretBundle> SetSecretAsync(string secretName, string value, Dictionary<string, string> tags = null, string contentType = null, SecretAttributes secretAttributes = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            tags = Utils.AddChangedBy(tags, AuthenticatedUserName);
+            tags = Utils.AddMd5ChangedBy(tags, value, AuthenticatedUserName);
             var t0 = _keyVaultClients[0].SetSecretAsync(_keyVaultClients[0].VaultUri, secretName, value, tags, contentType, secretAttributes, cancellationToken);
             var t1 = Secondary ? _keyVaultClients[1].SetSecretAsync(_keyVaultClients[1].VaultUri, secretName, value, tags, contentType, secretAttributes, cancellationToken) : CompletedTask;
             await Task.WhenAll(t0, t1).ContinueWith((t) =>
@@ -261,7 +261,7 @@ namespace VaultLibrary
         /// <returns>A response message containing the updated secret from first vault</returns>
         public async Task<SecretBundle> UpdateSecretAsync(string secretName, string secretVersion = null, Dictionary<string, string> tags = null, string contentType = null, SecretAttributes secretAttributes = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            tags = Utils.AddChangedBy(tags, AuthenticatedUserName);
+            tags = Utils.AddMd5ChangedBy(tags, null, AuthenticatedUserName);
             secretVersion = secretVersion ?? string.Empty;
             var t0 = _keyVaultClients[0].UpdateSecretAsync(_keyVaultClients[0].VaultUri, secretName, secretVersion, contentType, secretAttributes, tags, cancellationToken);
             var t1 = Secondary ? _keyVaultClients[1].UpdateSecretAsync(_keyVaultClients[1].VaultUri, secretName, secretVersion, contentType, secretAttributes, tags, cancellationToken) : CompletedTask;
@@ -484,7 +484,8 @@ namespace VaultLibrary
         /// <returns>A response message containing the imported certificate.</returns>
         public async Task<CertificateBundle> ImportCertificateAsync(string certificateName, X509Certificate2Collection certificateCollection, CertificatePolicy certificatePolicy, CertificateAttributes certificateAttributes = null, IDictionary<string, string> tags = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            tags = Utils.AddChangedBy(tags, AuthenticatedUserName);
+            string thumbprint = certificateCollection.Cast<X509Certificate2>().FirstOrDefault()?.Thumbprint.ToLowerInvariant();
+            tags = Utils.AddMd5ChangedBy(tags, thumbprint, AuthenticatedUserName);
             var t0 = _keyVaultClients[0].ImportCertificateAsync(_keyVaultClients[0].VaultUri, certificateName, certificateCollection, certificatePolicy, certificateAttributes, tags, cancellationToken);
             var t1 = Secondary ? _keyVaultClients[1].ImportCertificateAsync(_keyVaultClients[1].VaultUri, certificateName, certificateCollection, certificatePolicy, certificateAttributes, tags, cancellationToken) : CompletedTask;
             await Task.WhenAll(t0, t1).ContinueWith((t) =>
@@ -547,7 +548,7 @@ namespace VaultLibrary
         /// <returns>A response message containing the updated certificate.</returns>
         public async Task<CertificateBundle> UpdateCertificateAsync(string certificateName, string certificateVersion = null, CertificatePolicy certificatePolicy = null, CertificateAttributes certificateAttributes = null, IDictionary<string, string> tags = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            tags = Utils.AddChangedBy(tags, AuthenticatedUserName);
+            tags = Utils.AddMd5ChangedBy(tags, null, AuthenticatedUserName);
             certificateVersion = certificateVersion ?? string.Empty;
             var t0 = _keyVaultClients[0].UpdateCertificateAsync(_keyVaultClients[0].VaultUri, certificateName, certificateVersion, certificatePolicy, certificateAttributes, tags, cancellationToken);
             var t1 = Secondary ? _keyVaultClients[1].UpdateCertificateAsync(_keyVaultClients[1].VaultUri, certificateName, certificateVersion, certificatePolicy, certificateAttributes, tags, cancellationToken) : CompletedTask;

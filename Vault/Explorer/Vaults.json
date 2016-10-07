@@ -170,6 +170,54 @@
       }
     ]
   },
+  "wdvgmeus1westprod": {
+    "$id": "8",
+    "ReadOnly": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessClientCertificate, Microsoft.PS.Common.Vault",
+        "ClientId": "1448974e-e07c-49a0-a4de-8e81cab388db",
+        "CertificateThumbprint": "90ef01ccd5ddabcc3942f823068fdc1db9f48803"
+      }
+    ],
+    "ReadWrite": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessClientCertificate, Microsoft.PS.Common.Vault",
+        "ClientId": "c07d2ef6-09ff-4c94-af7e-f6eeb07819f0",
+        "CertificateThumbprint": "d90783d5ada64960657ebc7ba0ce70419e6aab7a"
+      },
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault",
+        "DomainHint": "gme.gbl"
+      }
+    ]
+  },
+  "wdvgmeus1eastprod": {
+    "$ref": "8"
+  },
+  "wdvgmeeu1northprod": {
+    "$id": "9",
+    "ReadOnly": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessClientCertificate, Microsoft.PS.Common.Vault",
+        "ClientId": "1018ddf2-6378-4a65-8b54-f3315427e80b",
+        "CertificateThumbprint": "66a0c56e2ed8613f1a2aa2a3a9e73b6a46dada0d"
+      }
+    ],
+    "ReadWrite": [
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessClientCertificate, Microsoft.PS.Common.Vault",
+        "ClientId": "0e210ad3-a0bd-4127-8c32-37a2efe45fb7",
+        "CertificateThumbprint": "5ae18d92d651e1a1a6fedfdb6cecb2afce533b54"
+      },
+      {
+        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault",
+        "DomainHint": "gme.gbl"
+      }
+    ]
+  },
+  "wdvgmeeu1westprod": {
+    "$ref": "9"
+  },
   "defenderkeyvault": {
     "ReadOnly": [
       {
@@ -217,37 +265,5 @@
         "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
       }
     ]
-  },
-  "wcd-production-vault": {
-    "$id": "8",
-    "ReadOnly": [
-      {
-        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
-      }
-    ],
-    "ReadWrite": [
-      {
-        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
-      }
-    ]
-  },
-  "wcd-production-vault-dr": {
-    "$ref": "8"
-  },
-  "wcd-staging-vault": {
-    "$id": "9",
-    "ReadOnly": [
-      {
-        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
-      }
-    ],
-    "ReadWrite": [
-      {
-        "$type": "Microsoft.PS.Common.Vault.VaultAccessUserInteractive, Microsoft.PS.Common.Vault"
-      }
-    ]
-  },
-  "wcd-staging-vault-dr":  {
-    "$ref": "9"
   }
 }

@@ -54,25 +54,6 @@ namespace VaultExplorer
             return $"{ts.Hours} hours";
         }
 
-        public static string CalculateMd5(string value)
-        {
-            byte[] buff = Encoding.UTF8.GetBytes(value);
-            using (MD5 md5 = MD5.Create())
-            {
-                byte[] hash = md5.ComputeHash(buff);
-                return BitConverter.ToString(hash).Replace("-", string.Empty).ToLower();
-            }
-        }
-
-        public static string GetMd5(IDictionary<string, string> tags)
-        {
-            if ((tags == null) || (!tags.ContainsKey(Consts.Md5Key)))
-            {
-                return "";
-            }
-            return tags[Consts.Md5Key];
-        }
-
         public static string ByteArrayToHex(byte[] arr)
         {
             Guard.ArgumentNotNull(arr, nameof(arr));
