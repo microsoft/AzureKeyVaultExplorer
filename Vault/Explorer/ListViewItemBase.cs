@@ -71,7 +71,7 @@ namespace VaultExplorer
 
         public string ChangedBy => VaultLibrary.Utils.GetChangedBy(Tags);
 
-        public string Md5 => Utils.GetMd5(Tags);
+        public string Md5 => VaultLibrary.Utils.GetMd5(Tags);
 
         public string Link => $"https://aka.ms/ve?{VaultHttpsUri.VaultLink}";
 

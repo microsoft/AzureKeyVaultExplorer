@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,10 +17,14 @@ namespace VaultLibrary
             }
         }
 
-        public static Dictionary<string, string> AddChangedBy(IDictionary<string, string> tags, string changedBy)
+        public static Dictionary<string, string> AddMd5ChangedBy(IDictionary<string, string> tags, string value, string changedBy)
         {
             tags = tags ?? new Dictionary<string, string>();
             tags[Consts.ChangedByKey] = changedBy ?? $"{Environment.UserDomainName}\\{Environment.UserName}";
+            if (value != null)
+            {
+                tags[Consts.Md5Key] = CalculateMd5(value);
+            }
             return new Dictionary<string, string>(tags);
         }
 
@@ -30,6 +35,25 @@ namespace VaultLibrary
                 return "";
             }
             return tags[Consts.ChangedByKey];
+        }
+
+        public static string CalculateMd5(string value)
+        {
+            byte[] buff = Encoding.UTF8.GetBytes(value);
+            using (MD5 md5 = MD5.Create())
+            {
+                byte[] hash = md5.ComputeHash(buff);
+                return BitConverter.ToString(hash).Replace("-", string.Empty).ToLower();
+            }
+        }
+
+        public static string GetMd5(IDictionary<string, string> tags)
+        {
+            if ((tags == null) || (!tags.ContainsKey(Consts.Md5Key)))
+            {
+                return "";
+            }
+            return tags[Consts.Md5Key];
         }
 
         /// <summary>

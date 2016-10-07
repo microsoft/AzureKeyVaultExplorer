@@ -121,7 +121,7 @@ namespace VaultExplorer
         /// Md5 of the raw value
         /// </summary>
         [Browsable(false)]
-        public string Md5 => Utils.CalculateMd5(RawValue);
+        public string Md5 => VaultLibrary.Utils.CalculateMd5(RawValue);
 
         /// <summary>
         /// Current SecretKind for this secret object
@@ -199,8 +199,7 @@ namespace VaultExplorer
             {
                 result[tagItem.Name] = tagItem.Value;
             }
-            // Add Md5 tag
-            result[Consts.Md5Key] = Md5;
+            // Note: Md5 and ChangeBy tags are taken care in the VaultLibrary
             return result;
         }
 
@@ -212,7 +211,7 @@ namespace VaultExplorer
             if (null != dataObj)
             {
                 Clipboard.SetDataObject(dataObj, true);
-                Utils.ClearCliboard(Settings.Default.CopyToClipboardTimeToLive, Utils.CalculateMd5(dataObj.GetText()));
+                Utils.ClearCliboard(Settings.Default.CopyToClipboardTimeToLive, VaultLibrary.Utils.CalculateMd5(dataObj.GetText()));
                 if (showToast)
                 {
                     Utils.ShowToast($"{(_contentType.IsCertificate() ? "Certificate" : "Secret")} {Name} copied to clipboard");
