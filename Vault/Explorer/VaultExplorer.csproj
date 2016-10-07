@@ -259,7 +259,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="ClickOnce.props" />
-    <None Include="ClickOncePublish.cmd" />
     <None Include="CreateReleaseAnnotation.ps1" />
     <None Include="Resources\BigKey.png" />
     <None Include="Resources\cancel.png" />

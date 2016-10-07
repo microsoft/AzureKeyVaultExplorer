@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation. All rights reserved. 
+# Licensed under the MIT License. See License.txt in the project root for license information. 
+
 # Copied from https://github.com/Microsoft/ApplicationInsights-Home/blob/master/API/CreateReleaseAnnotation.ps1
 # See also https://azure.microsoft.com/en-us/documentation/articles/app-insights-annotations/
 # Sample usage .\CreateReleaseAnnotation.ps1 -applicationId "<appId>" -apiKey "<apiKey>" -releaseFilePath "<path to .exe with file version>" -releaseProperties @{"ReleaseDescription"="Release with annotation";"TriggerBy"="John Doe"}

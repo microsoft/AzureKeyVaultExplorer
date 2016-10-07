@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved. 
+// Licensed under the MIT License. See License.txt in the project root for license information. 
+
+using Newtonsoft.Json;
 
 // We keep old namespace for backward compatiblity reasons, to be able to deserialize old Vaults.json
 namespace Microsoft.PS.Common.Vault

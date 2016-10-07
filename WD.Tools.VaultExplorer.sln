@@ -9,6 +9,21 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VaultExplorer", "Vault\Expl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VaultLibrary", "Vault\Library\VaultLibrary.csproj", "{18150C6E-12E1-42D3-B7AE-740E96EBB59A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Root", "Root", "{6E6E5E45-EDF7-4082-AC97-FB28DB1D5229}"
+	ProjectSection(SolutionItems) = preProject
+		Environment.Custom.props = Environment.Custom.props
+		Environment.props = Environment.props
+		init.cmd = init.cmd
+		License.txt = License.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{023CB6B8-5A17-4482-B303-D65A9A0E7E33}"
+	ProjectSection(SolutionItems) = preProject
+		Vault\Build\AssemblyInfo.cs.t4 = Vault\Build\AssemblyInfo.cs.t4
+		Vault\Build\AutoVersioning.props = Vault\Build\AutoVersioning.props
+		Vault\Build\t4.targets = Vault\Build\t4.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
