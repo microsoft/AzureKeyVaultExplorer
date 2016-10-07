@@ -34,7 +34,7 @@
             TimeSpan interval;
             if (!TimeSpan.TryParse(args[0], out interval))
             {
-                Console.WriteLine("Error: Invalid internal {0}", args[0]);
+                Console.WriteLine("Error: Invalid interval {0}", args[0]);
                 return 1;
             }
             if (!validMd5.IsMatch(args[1]))
@@ -50,7 +50,7 @@
             {
                 if (!createdNew)
                 {
-                    Console.WriteLine("Old instance of ClearClipboard.exe is still running in this user session, signaling to it to die");
+                    Console.WriteLine("Old instance of ClearClipboard.exe is still running in this user session, signaling it to die");
                     ewh.Set();
                 }
                 ewh.Reset();

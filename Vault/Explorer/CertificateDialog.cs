@@ -33,7 +33,8 @@ namespace VaultExplorer
         {
             CertificateBundle cb = null;
             X509Certificate2 cert = null;
-            switch (ContentTypeUtils.FromExtension(fi.Extension))
+            ContentType contentType = ContentTypeUtils.FromExtension(fi.Extension);
+            switch (contentType)
             {
                 case ContentType.Certificate:
                     cert = new X509Certificate2(fi.FullName);
@@ -54,6 +55,8 @@ namespace VaultExplorer
                     cb = kvcf.Deserialize();
                     cert = new X509Certificate2(cb.Cer);
                     break;
+                default:
+                    throw new ArgumentException($"Unsupported ContentType {contentType}");
             }
             NewCertificate(cb, cert);
         }
