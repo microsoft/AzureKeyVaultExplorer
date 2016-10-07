@@ -7,8 +7,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using VaultLibrary;
 
-namespace Microsoft.PS.Common.Vault.Explorer
+namespace VaultExplorer
 {
     public class ActivationUri : VaultLinkUri
     {
@@ -38,7 +39,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
         {
             switch (Action)
             {
-                case Action.Default:
+                case VaultLibrary.Action.Default:
                     CopyToClipboard(vault);
                     break;
                 default:

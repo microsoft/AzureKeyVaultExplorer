@@ -18,8 +18,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using VaultLibrary;
 
-namespace Microsoft.PS.Common.Vault.Explorer
+namespace VaultExplorer
 {
     public partial class SubscriptionsManagerDialog : Form
     {
@@ -138,10 +139,10 @@ namespace Microsoft.PS.Common.Vault.Explorer
         // https://azure.microsoft.com/en-us/documentation/articles/guidance-naming-conventions/
         private static Regex s_resourceNameRegex = new Regex(@".*\/resourceGroups\/(?<GroupName>[a-zA-Z0-9_\-\.]{1,64})\/", RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
-        public readonly Azure.Management.KeyVault.Models.Vault Vault;
+        public readonly Microsoft.Azure.Management.KeyVault.Models.Vault Vault;
         public readonly string GroupName;
 
-        public ListViewItemVault(Azure.Management.KeyVault.Models.Vault vault) : base(vault.Name)
+        public ListViewItemVault(Microsoft.Azure.Management.KeyVault.Models.Vault vault) : base(vault.Name)
         {
             Vault = vault;
             Name = vault.Name;
@@ -156,9 +157,9 @@ namespace Microsoft.PS.Common.Vault.Explorer
     {
         private readonly Subscription _subscription;
         private readonly string _resourceGroupName;
-        private readonly Azure.Management.KeyVault.Models.Vault _vault;
+        private readonly Microsoft.Azure.Management.KeyVault.Models.Vault _vault;
 
-        public PropertyObjectVault(Subscription s, string resourceGroupName, Azure.Management.KeyVault.Models.Vault vault)
+        public PropertyObjectVault(Subscription s, string resourceGroupName, Microsoft.Azure.Management.KeyVault.Models.Vault vault)
         {
             _subscription = s;
             _resourceGroupName = resourceGroupName;

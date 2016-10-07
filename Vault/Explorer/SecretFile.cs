@@ -10,7 +10,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.PS.Common.Vault.Explorer
+namespace VaultExplorer
 {
     /// <summary>
     /// Represents .kv-secret file

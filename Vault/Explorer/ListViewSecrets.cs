@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using System.Collections;
 using System.Text.RegularExpressions;
 
-namespace Microsoft.PS.Common.Vault.Explorer
+namespace VaultExplorer
 {
     public partial class ListViewSecrets : ListView
     {

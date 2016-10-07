@@ -5,8 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using VaultLibrary;
 
-namespace Microsoft.PS.Common.Vault.Explorer
+namespace VaultExplorer
 {
     [JsonObject]
     public class CustomTag

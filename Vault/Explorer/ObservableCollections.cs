@@ -8,8 +8,9 @@ using System.ComponentModel.Design;
 using System.Drawing.Design;
 using System.Globalization;
 using System.Linq;
+using VaultLibrary;
 
-namespace Microsoft.PS.Common.Vault.Explorer
+namespace VaultExplorer
 {
     #region ObservableCustomCollection, ExpandableCollectionObjectConverter and ExpandableCollectionEditor
     /// <summary>

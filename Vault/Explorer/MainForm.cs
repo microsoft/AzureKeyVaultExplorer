@@ -1,5 +1,5 @@
 ﻿using Microsoft.Azure.KeyVault.Models;
-using Microsoft.PS.Common.Vault.Explorer.Properties;
+using VaultExplorer.Properties;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,10 +9,11 @@ using System.Security.Cryptography.X509Certificates;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace Microsoft.PS.Common.Vault.Explorer
+namespace VaultExplorer
 {
     using UISettings = Properties.Settings;
     using Action = System.Action;
+    using VaultLibrary;
 
     public partial class MainForm : FormTelemetry, ISession
     {
@@ -324,7 +325,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
                 if (uxOpenFileDialog.ShowDialog() != DialogResult.OK) return null;
                 fi = new FileInfo(uxOpenFileDialog.FileName);
             }
-            if (fi.Length > CommonConsts.MB)
+            if (fi.Length > Consts.MB)
             {
                 MessageBox.Show($"File {fi.FullName} size is {fi.Length:N0} bytes. Maximum file size allowed for secret value (before compression) is 1 MB.", Utils.AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;

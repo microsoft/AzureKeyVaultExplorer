@@ -10,7 +10,7 @@ using System.Threading;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.Azure.KeyVault.Models;
 
-namespace Microsoft.PS.Common.Vault.Explorer
+namespace VaultExplorer
 {
     /// <summary>
     /// Key Vault Certificate list view item which also presents itself nicely to PropertyGrid

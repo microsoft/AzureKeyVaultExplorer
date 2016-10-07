@@ -1,10 +1,12 @@
 ﻿using Microsoft.ApplicationInsights.DataContracts;
 using System;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Microsoft.PS.Common.Vault.Explorer
+namespace VaultExplorer
 {
     public static class Program
     {
@@ -21,6 +23,7 @@ namespace Microsoft.PS.Common.Vault.Explorer
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             Application.ThreadException += (s, e) => TrackExceptionAndShowError(e.Exception);
             AppDomain.CurrentDomain.UnhandledException += (s, e) => TrackExceptionAndShowError(e.ExceptionObject as Exception);
+            AppDomain.CurrentDomain.AssemblyResolve += (s, args) => ResolveMissingAssembly(args);
             // First run install steps
             Utils.ClickOnce_SetAddRemoveProgramsIcon();
             ActivationUri.RegisterVaultProtocol();
@@ -30,6 +33,22 @@ namespace Microsoft.PS.Common.Vault.Explorer
             {
                 Application.Run(form);
             }
+        }
+
+        /// <summary>
+        /// Microsoft.PS.Common.Vault.dll was renamed to VaultLibrary.dll
+        /// For backward compatibility reasons, to be able to deserialize old Vaults.json we resolve the missing
+        /// assembly and point to our new VaultLibrary.dll
+        /// </summary>
+        /// <seealso cref="BackwardCompatibility.cs"/>
+        private static Assembly ResolveMissingAssembly(ResolveEventArgs args)
+        {
+            if (args.Name == "Microsoft.PS.Common.Vault")
+            {
+                var vaultLibrary = from a in AppDomain.CurrentDomain.GetAssemblies() where a.GetName().Name == "VaultLibrary" select a;
+                return vaultLibrary.FirstOrDefault();
+            }
+            return null;
         }
 
         private static void TrackExceptionAndShowError(Exception e)

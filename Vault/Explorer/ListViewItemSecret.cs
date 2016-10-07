@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.Azure.KeyVault.Models;
 
-namespace Microsoft.PS.Common.Vault.Explorer
+namespace VaultExplorer
 {
     /// <summary>
     /// Secret list view item which also presents itself nicely to PropertyGrid

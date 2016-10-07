@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Microsoft.PS.Common.Vault.Explorer
+namespace VaultExplorer
 {
     public class AddFileEventArgs : EventArgs
     {

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClearClipboard", "Vault\Cle
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VaultExplorer", "Vault\Explorer\VaultExplorer.csproj", "{0720CA4C-5D06-47FC-8DF9-2A42C40119A3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VaultLibrary", "Vault\Library\VaultLibrary.csproj", "{18150C6E-12E1-42D3-B7AE-740E96EBB59A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,10 @@ Global
 		{0720CA4C-5D06-47FC-8DF9-2A42C40119A3}.Debug|x64.Build.0 = Debug|x64
 		{0720CA4C-5D06-47FC-8DF9-2A42C40119A3}.Release|x64.ActiveCfg = Release|x64
 		{0720CA4C-5D06-47FC-8DF9-2A42C40119A3}.Release|x64.Build.0 = Release|x64
+		{18150C6E-12E1-42D3-B7AE-740E96EBB59A}.Debug|x64.ActiveCfg = Debug|x64
+		{18150C6E-12E1-42D3-B7AE-740E96EBB59A}.Debug|x64.Build.0 = Debug|x64
+		{18150C6E-12E1-42D3-B7AE-740E96EBB59A}.Release|x64.ActiveCfg = Release|x64
+		{18150C6E-12E1-42D3-B7AE-740E96EBB59A}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

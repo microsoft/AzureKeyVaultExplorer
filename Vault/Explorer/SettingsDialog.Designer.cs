@@ -1,4 +1,4 @@
-﻿namespace Microsoft.PS.Common.Vault.Explorer
+﻿namespace VaultExplorer
 {
     partial class SettingsDialog
     {
@@ -186,7 +186,7 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::Microsoft.PS.Common.Vault.Explorer.Properties.Resources.BigKey;
+            this.pictureBox1.Image = global::VaultExplorer.Properties.Resources.BigKey;
             this.pictureBox1.Location = new System.Drawing.Point(6, 6);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(64, 64);
