@@ -1,4 +1,7 @@
-﻿using Microsoft.Azure;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved. 
+// Licensed under the MIT License. See License.txt in the project root for license information. 
+
+using Microsoft.Azure;
 using Microsoft.Azure.Management.KeyVault;
 using Microsoft.Azure.Management.KeyVault.Models;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
