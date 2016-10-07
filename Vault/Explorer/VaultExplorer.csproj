@@ -3,6 +3,7 @@
   <!-- Environment -->
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Environment.props))\Environment.props" Condition=" '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Environment.props))' != '' " />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="..\Build\AutoVersioning.props" />
   <Import Project="ClickOnce.props" Condition="$(ClickOnceInstallUpdateUrl) != ''" />
   <PropertyGroup>
     <ProjectGuid>{0720CA4C-5D06-47FC-8DF9-2A42C40119A3}</ProjectGuid>

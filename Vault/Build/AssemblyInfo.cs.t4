@@ -1,0 +1,72 @@
+﻿<#@ template language="C#" debug="true" #>
+<#@ assembly name="System.Runtime.Serialization.dll" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.IO" #>
+<#@ parameter name="AssemblyTitle" type="System.String" #>
+<#@ parameter name="AssemblyDescription" type="System.String" #>
+<#@ parameter name="AssemblyFileVersionOnly" type="System.String" #>
+<#
+
+// Execute any command with args and returns stdout
+Func<string, string, string> Exec = (string cmd, string args) =>
+{
+    Process process = new Process();
+    process.StartInfo.FileName = cmd;
+    process.StartInfo.Arguments = args;
+    process.StartInfo.UseShellExecute = false;
+    process.StartInfo.RedirectStandardOutput = true;
+    process.StartInfo.RedirectStandardError = true;
+    process.StartInfo.CreateNoWindow = true;
+
+    process.Start();
+    var result = process.StandardOutput.ReadToEnd();
+    if (!string.IsNullOrEmpty(result))
+    {
+        result = result.Trim();
+    }
+    var error = process.StandardError.ReadToEnd();
+    if (!string.IsNullOrEmpty(error))
+    {
+        error = error.Trim();
+    }
+    process.WaitForExit();
+    if (process.ExitCode != 0)
+    {
+        throw new ApplicationException(string.Format("[{0} {1}] -> [{2} ({3})]", cmd, args, result, error));
+    }
+    return result;
+};
+
+// Example for the output: 42ee367;2016-06-27T16:59:54-07:00
+string gitOutput = Exec("git.exe", "log -1 --pretty=format:%h;%cd --date=iso");
+string[] commitIdDate = gitOutput.Split(';');
+string shortCommitId = commitIdDate[0];
+DateTime commitDateUTC = DateTime.Parse(commitIdDate[1]).ToUniversalTime();
+
+bool assemblyFileVersionOnly = false;
+
+if (!string.IsNullOrEmpty(AssemblyFileVersionOnly))
+{
+    assemblyFileVersionOnly = bool.Parse(AssemblyFileVersionOnly);
+}
+
+#>
+// 
+// Auto-generated from 'AssemblyInfo.cs.t4' - DO NOT MODIFY BY HAND!
+// 
+
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+[assembly: AssemblyTitle("<#= AssemblyTitle #> (Commit: <#= shortCommitId #>)")]
+[assembly: AssemblyDescription("<#= AssemblyDescription #>")]
+[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyProduct("<#= AssemblyTitle #>")]
+[assembly: AssemblyCopyright("(c) Microsoft Corporation. All rights reserved.")]
+<# if (assemblyFileVersionOnly) { #>
+[assembly: AssemblyFileVersion("<#= string.Format("{0:yyyy}.{0:MMdd}.{0:HHmm}.{0:ss}", commitDateUTC) #>")]
+<# } else { #>
+[assembly: AssemblyVersion("<#= string.Format("{0:yyyy}.{0:MMdd}.{0:HHmm}.{0:ss}", commitDateUTC) #>")]
+<# } #>
+
