@@ -1,0 +1,179 @@
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <T4ToolPath>$(MSBuildThisFileDirectory)t4.exe</T4ToolPath>
+
+    <!-- The default output directory is the same as the input -->
+    <T4Output Condition="$(T4Output) == ''">.</T4Output>
+  </PropertyGroup>
+  
+  <!-- Inline task for parallel T4 transform execution -->
+  <UsingTask TaskName="T4TransformTask" 
+             TaskFactory="CodeTaskFactory" 
+             AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll"
+             >
+    
+    <ParameterGroup>
+      <ToolPath ParameterType="System.String" Required="true" />
+      <Inputs ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.Diagnostics" />
+      <Using Namespace="System.Linq" />
+      <Using Namespace="System.Threading.Tasks" />
+      <Code Type="Method" Language="cs">
+        <![CDATA[
+        public override bool Execute()
+        {
+            Func<string, bool> getBoolFlag = (flag) => 
+              {
+                  flag = flag.Trim();
+                
+                  if (!String.IsNullOrEmpty(flag))
+                  {
+                      return Boolean.Parse(flag);
+                  }
+                
+                  return false;
+              };
+
+            //
+            // Create a list of work items
+            //
+            var workItems = Inputs.Select(input => new 
+            {  
+                InputFile = input.ItemSpec, 
+
+                OutputFile = input.GetMetadata("T4OutputFile"), 
+                Options = input.GetMetadata("T4AdditionalOptions"), 
+                Preprocess = getBoolFlag(input.GetMetadata("T4PreprocessTemplate")), 
+                                                        
+                Output = new StringBuilder(), 
+            }).ToList();
+
+            var exitCodes = new int[workItems.Count];
+            
+            Log.LogMessage("(T4) Compiling {0} items ...", workItems.Count);
+
+            //
+            // Start a task for each work item
+            //
+            var tasks = workItems.Select((wi, n) => 
+              System.Threading.Tasks.Task.Factory.StartNew(delegate
+              {
+                  var preprocess = wi.Preprocess;
+                
+                  var psi = new ProcessStartInfo() 
+                  { 
+                      FileName = ToolPath, 
+                      Arguments = (preprocess ? "-pp " : "") + wi.InputFile + " " + wi.Options + " -out " + wi.OutputFile, 
+
+                      UseShellExecute = false, CreateNoWindow = true, 
+                      RedirectStandardOutput = true, RedirectStandardError = true, 
+                  };
+                
+                  using (var t4Proc = new Process())
+                  {
+                      t4Proc.OutputDataReceived += (s, e) => { wi.Output.AppendLine(e.Data); };
+                      t4Proc.ErrorDataReceived += (s, e) => { wi.Output.AppendLine(e.Data); };
+
+                      t4Proc.StartInfo = psi;
+                      t4Proc.Start();
+
+                      t4Proc.BeginOutputReadLine();
+                      t4Proc.BeginErrorReadLine();
+
+                      t4Proc.WaitForExit();
+
+                      t4Proc.CancelOutputRead();
+                      t4Proc.CancelErrorRead();
+
+                      exitCodes[n] = t4Proc.ExitCode;
+                  }
+                
+              }, TaskCreationOptions.LongRunning)).ToArray();
+          
+            //
+            // Wait for all tasks to complete
+            //
+            System.Threading.Tasks.Task.WaitAll(tasks);
+
+            var success = true;
+          
+            for (int n = 0; n < workItems.Count; n++)
+            {
+                var wi = workItems[n];
+
+                var output = wi.Output.ToString().Trim();
+                
+                if (!String.IsNullOrEmpty(output))
+                {
+                    Log.LogMessage(MessageImportance.High, output);
+                }
+              
+                var exitCode = exitCodes[n];
+                
+                if (exitCode != 0)
+                {
+                    success = false;
+                }
+            }
+          
+            //
+            // Indicate overall success or failure
+            //
+            if (!success)
+            {
+                Log.LogError("T4Transform task failed!");
+            }
+            
+            return success;
+        }
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+  
+  <ItemDefinitionGroup>
+    <T4Compile>
+      <T4OutputFile>$(T4Output)\%(RelativeDir)%(Filename)</T4OutputFile>
+      <!-- Note: no additional inputs by default -->
+      <T4AdditionalInputs />
+      <!-- Note: should be defined as 'non-empty' to force T4 compile -->
+      <T4ForceOutput />
+    </T4Compile>
+  </ItemDefinitionGroup>
+
+  <PropertyGroup>
+    <T4BeforeTargets Condition="$(T4BeforeTargets) == '' and $(T4AfterTargets) == ''">BeforeBuild</T4BeforeTargets>
+  </PropertyGroup>
+  
+  <!-- T4 build target -->
+  <Target Name="BuildT4"
+    BeforeTargets="$(T4BeforeTargets)"
+    AfterTargets="$(T4AfterTargets)"
+         
+    Inputs="@(T4Compile);%(T4AdditionalInputs)" 
+    Outputs="%(T4OutputFile)%(T4ForceOutput)"
+    >
+    
+    <!-- Display message -->
+    <Message Text="Compiling T4 templates - @(T4Compile) ..." />
+
+    <!-- Cleanup from previous run -->
+    <Delete Files="%(T4Compile.T4OutputFile)" />
+
+    <!-- Invoke the task for parallel transform -->
+    <T4TransformTask ToolPath="$(T4ToolPath)" Inputs="@(T4Compile)" />
+
+  </Target>
+  
+  <!-- Hook up the T4 clean target -->
+  <!-- T4 clean target -->
+  <Target Name="CleanT4" BeforeTargets="BeforeClean">
+    <Delete Files="%(T4Compile.T4OutputFile)" />
+  </Target>
+  
+</Project>
+

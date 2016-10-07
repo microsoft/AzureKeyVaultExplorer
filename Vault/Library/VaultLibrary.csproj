@@ -3,6 +3,7 @@
   <!-- Environment -->
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Environment.props))\Environment.props" Condition=" '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Environment.props))' != '' " />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="..\Build\AutoVersioning.props" />
   <PropertyGroup>
     <ProjectGuid>{18150C6E-12E1-42D3-B7AE-740E96EBB59A}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -10,6 +11,7 @@
     <RootNamespace>VaultLibrary</RootNamespace>
     <AssemblyName>VaultLibrary</AssemblyName>
     <FileAlignment>512</FileAlignment>
+    <AutoVersioning>true</AutoVersioning>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
