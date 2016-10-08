@@ -54,6 +54,9 @@
     <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory.Platform">
       <HintPath>$(PkgMicrosoft_IdentityModel_Clients_ActiveDirectory)\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll</HintPath>
     </Reference>
+    <Reference Include="System.Management.Automation">
+      <HintPath>$(PkgMicrosoft_PowerShell_5_ReferenceAssemblies)\lib\net4\System.Management.Automation.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
@@ -62,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BackwardCompatibility.cs" />
+    <Compile Include="Cmdlets.cs" />
     <Compile Include="ExceptionMessages.Designer.cs">
       <DependentUpon>ExceptionMessages.resx</DependentUpon>
       <AutoGen>True</AutoGen>
