@@ -13,9 +13,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using VaultLibrary;
+using Microsoft.Vault.Library;
 
-namespace VaultExplorer
+namespace Microsoft.Vault.Explorer
 {
     /// <summary>
     /// Base class to edit an object via PropertyGrid
@@ -124,7 +124,7 @@ namespace VaultExplorer
         /// Md5 of the raw value
         /// </summary>
         [Browsable(false)]
-        public string Md5 => VaultLibrary.Utils.CalculateMd5(RawValue);
+        public string Md5 => Microsoft.Vault.Library.Utils.CalculateMd5(RawValue);
 
         /// <summary>
         /// Current SecretKind for this secret object
@@ -202,7 +202,7 @@ namespace VaultExplorer
             {
                 result[tagItem.Name] = tagItem.Value;
             }
-            // Note: Md5 and ChangeBy tags are taken care in the VaultLibrary
+            // Note: Md5 and ChangeBy tags are taken care in the Microsoft.Vault.Library
             return result;
         }
 
@@ -214,7 +214,7 @@ namespace VaultExplorer
             if (null != dataObj)
             {
                 Clipboard.SetDataObject(dataObj, true);
-                Utils.ClearCliboard(Settings.Default.CopyToClipboardTimeToLive, VaultLibrary.Utils.CalculateMd5(dataObj.GetText()));
+                Utils.ClearCliboard(Settings.Default.CopyToClipboardTimeToLive, Microsoft.Vault.Library.Utils.CalculateMd5(dataObj.GetText()));
                 if (showToast)
                 {
                     Utils.ShowToast($"{(_contentType.IsCertificate() ? "Certificate" : "Secret")} {Name} copied to clipboard");

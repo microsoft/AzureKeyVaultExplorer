@@ -11,9 +11,10 @@ using System.ComponentModel.Design;
 using System.Drawing.Design;
 using System.Globalization;
 using System.Linq;
-using VaultLibrary;
+using Microsoft.Vault.Library;
+using Microsoft.Vault.Core;
 
-namespace VaultExplorer
+namespace Microsoft.Vault.Explorer
 {
     #region ObservableCustomCollection, ExpandableCollectionObjectConverter and ExpandableCollectionEditor
     /// <summary>

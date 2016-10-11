@@ -1,19 +1,18 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. 
 // Licensed under the MIT License. See License.txt in the project root for license information. 
 
-using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Deployment.Application;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Windows.Forms;
-using VaultLibrary;
-
-namespace VaultExplorer
+namespace Microsoft.Vault.Explorer
 {
+    using Microsoft.Win32;
+    using System;
+    using System.Collections.Generic;
+    using System.Deployment.Application;
+    using System.IO;
+    using System.Linq;
+    using System.Threading;
+    using System.Windows.Forms;
+    using Microsoft.Vault.Library;
+
     public class ActivationUri : VaultLinkUri
     {
         private static readonly string OnlineActivationUri = $"https://elize.blob.core.windows.net/{Utils.ProductName}/{Utils.ProductName}.application";
@@ -42,7 +41,7 @@ namespace VaultExplorer
         {
             switch (Action)
             {
-                case VaultLibrary.Action.Default:
+                case Microsoft.Vault.Library.Action.Default:
                     CopyToClipboard(vault);
                     break;
                 default:

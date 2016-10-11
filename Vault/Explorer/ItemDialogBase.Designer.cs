@@ -1,4 +1,4 @@
-﻿namespace VaultExplorer
+﻿namespace Microsoft.Vault.Explorer
 {
     partial class ItemDialogBase<T, U> : FormTelemetry where T : PropertyObject where U : class
     {
@@ -75,7 +75,7 @@
             // uxLinkLabelSecretKind
             // 
             this.uxLinkLabelSecretKind.Dock = System.Windows.Forms.DockStyle.Top;
-            this.uxLinkLabelSecretKind.Image = global::VaultExplorer.Properties.Resources.information;
+            this.uxLinkLabelSecretKind.Image = global::Microsoft.Vault.Explorer.Properties.Resources.information;
             this.uxLinkLabelSecretKind.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.uxLinkLabelSecretKind.Location = new System.Drawing.Point(20, 8);
             this.uxLinkLabelSecretKind.Margin = new System.Windows.Forms.Padding(0);

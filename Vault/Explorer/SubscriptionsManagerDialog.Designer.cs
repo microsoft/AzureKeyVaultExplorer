@@ -1,4 +1,4 @@
-﻿namespace VaultExplorer
+﻿namespace Microsoft.Vault.Explorer
 {
     partial class SubscriptionsManagerDialog
     {
@@ -226,7 +226,7 @@
             this.uxButtonCancelOperation.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.uxButtonCancelOperation.AutoSize = false;
             this.uxButtonCancelOperation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.uxButtonCancelOperation.Image = global::VaultExplorer.Properties.Resources.cancel;
+            this.uxButtonCancelOperation.Image = global::Microsoft.Vault.Explorer.Properties.Resources.cancel;
             this.uxButtonCancelOperation.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonCancelOperation.Name = "uxButtonCancelOperation";
             this.uxButtonCancelOperation.Size = new System.Drawing.Size(24, 25);

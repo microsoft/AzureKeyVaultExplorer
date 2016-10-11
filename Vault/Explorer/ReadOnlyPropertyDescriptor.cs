@@ -4,7 +4,7 @@
 using System;
 using System.ComponentModel;
 
-namespace VaultExplorer
+namespace Microsoft.Vault.Explorer
 {
     public class ReadOnlyPropertyDescriptor : PropertyDescriptor
     {

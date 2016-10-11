@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VaultExplorer
+namespace Microsoft.Vault.Explorer
 {
     /// <summary>
     /// Deletes file if file location is under %TEMP% folder, to be used with using pattern

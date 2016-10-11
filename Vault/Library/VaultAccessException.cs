@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VaultLibrary
+namespace Microsoft.Vault.Library
 {
     using System;
 

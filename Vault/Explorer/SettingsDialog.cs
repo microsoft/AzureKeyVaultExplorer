@@ -13,9 +13,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using VaultLibrary;
+using Microsoft.Vault.Library;
 
-namespace VaultExplorer
+namespace Microsoft.Vault.Explorer
 {
     public partial class SettingsDialog : FormTelemetry
     {

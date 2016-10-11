@@ -1,8 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. 
 // Licensed under the MIT License. See License.txt in the project root for license information. 
 
-namespace VaultLibrary
+namespace Microsoft.Vault.Library
 {
+    using Core;
     using Microsoft.Azure.KeyVault;
     using Microsoft.Azure.KeyVault.Models;
     using Microsoft.IdentityModel.Clients.ActiveDirectory;
@@ -32,6 +33,7 @@ namespace VaultLibrary
         private bool Secondary => (_keyVaultClients.Length == 2);
 
         public readonly string VaultsConfigFile;
+        public readonly string[] VaultNames;
         public readonly VaultsConfig VaultsConfig;
 
         private static readonly Task CompletedTask = Task.FromResult(0); // Dummy completed task to be used for secondary operations, in case we work with only Primary vault
@@ -61,17 +63,18 @@ namespace VaultLibrary
             Guard.ArgumentNotNull(vaultsConfig, nameof(vaultsConfig));
             Guard.ArgumentCollectionNotEmpty(vaultNames, nameof(vaultNames));
             VaultsConfig = vaultsConfig;
-            switch (vaultNames.Length)
+            VaultNames = (from v in vaultNames where !string.IsNullOrEmpty(v) select v).ToArray();
+            switch (VaultNames.Length)
             {
                 case 1:
                     _keyVaultClients = new KeyVaultClientEx[1]
                     {
-                        CreateKeyVaultClientEx(accessType, vaultNames[0]),
+                        CreateKeyVaultClientEx(accessType, VaultNames[0]),
                     };
                     break;
                 case 2:
-                    string primaryVaultName = vaultNames[0];
-                    string secondaryVaultName = vaultNames[1];
+                    string primaryVaultName = VaultNames[0];
+                    string secondaryVaultName = VaultNames[1];
                     if (0 == string.Compare(primaryVaultName, secondaryVaultName, true))
                     {
                         throw new ArgumentException($"Primary vault name {primaryVaultName} is equal to secondary vault name {secondaryVaultName}");
@@ -83,7 +86,7 @@ namespace VaultLibrary
                     };
                     break;
                 default:
-                    throw new ArgumentException($"Vault names length must be 1 or 2 only", nameof(vaultNames));
+                    throw new ArgumentException($"Vault names length must be 1 or 2 only", nameof(VaultNames));
             }
         }
 

@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace VaultLibrary
+namespace Microsoft.Vault.Library
 {
     [JsonDictionary]
     public class VaultsConfig : Dictionary<string, VaultAccessType>

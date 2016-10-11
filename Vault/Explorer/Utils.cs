@@ -15,11 +15,12 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using VaultLibrary;
+using Microsoft.Vault.Library;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
+using Microsoft.Vault.Core;
 
-namespace VaultExplorer
+namespace Microsoft.Vault.Explorer
 {
     public static class Utils
     {

@@ -1,4 +1,4 @@
-﻿namespace VaultExplorer
+﻿namespace Microsoft.Vault.Explorer
 {
     partial class MainForm
     {
@@ -45,7 +45,7 @@
             System.Windows.Forms.ToolStripStatusLabel usStatusLabelSpring;
             System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.uxListViewSecrets = new VaultExplorer.ListViewSecrets();
+            this.uxListViewSecrets = new Microsoft.Vault.Explorer.ListViewSecrets();
             this.uxContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.uxMenuItemAdd = new System.Windows.Forms.ToolStripMenuItem();
             this.uxAddSecret2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -129,7 +129,7 @@
             // 
             // splitContainer1
             // 
-            splitContainer1.DataBindings.Add(new System.Windows.Forms.Binding("SplitterDistance", global::VaultExplorer.Properties.Settings.Default, "MainFormSplitterDistance", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            splitContainer1.DataBindings.Add(new System.Windows.Forms.Binding("SplitterDistance", global::Microsoft.Vault.Explorer.Properties.Settings.Default, "MainFormSplitterDistance", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             splitContainer1.Location = new System.Drawing.Point(0, 0);
             splitContainer1.Margin = new System.Windows.Forms.Padding(2);
@@ -144,7 +144,7 @@
             // 
             splitContainer1.Panel2.Controls.Add(this.uxPropertyGridSecret);
             splitContainer1.Size = new System.Drawing.Size(1029, 451);
-            splitContainer1.SplitterDistance = global::VaultExplorer.Properties.Settings.Default.MainFormSplitterDistance;
+            splitContainer1.SplitterDistance = global::Microsoft.Vault.Explorer.Properties.Settings.Default.MainFormSplitterDistance;
             splitContainer1.SplitterWidth = 5;
             splitContainer1.TabIndex = 8;
             // 
@@ -190,7 +190,7 @@
             this.uxAddKVCert2,
             this.uxAddFile2});
             this.uxMenuItemAdd.Enabled = false;
-            this.uxMenuItemAdd.Image = global::VaultExplorer.Properties.Resources.lock_add;
+            this.uxMenuItemAdd.Image = global::Microsoft.Vault.Explorer.Properties.Resources.lock_add;
             this.uxMenuItemAdd.Name = "uxMenuItemAdd";
             this.uxMenuItemAdd.Size = new System.Drawing.Size(162, 26);
             this.uxMenuItemAdd.Text = "&Add";
@@ -199,7 +199,7 @@
             // 
             // uxAddSecret2
             // 
-            this.uxAddSecret2.Image = global::VaultExplorer.Properties.Resources.key;
+            this.uxAddSecret2.Image = global::Microsoft.Vault.Explorer.Properties.Resources.key;
             this.uxAddSecret2.Name = "uxAddSecret2";
             this.uxAddSecret2.Size = new System.Drawing.Size(180, 22);
             this.uxAddSecret2.Text = "&Secret...";
@@ -211,7 +211,7 @@
             this.uxAddCertFromFile2,
             this.uxAddCertFromUserStore2,
             this.uxAddCertFromMachineStore2});
-            this.uxAddCert2.Image = global::VaultExplorer.Properties.Resources.certificate;
+            this.uxAddCert2.Image = global::Microsoft.Vault.Explorer.Properties.Resources.certificate;
             this.uxAddCert2.Name = "uxAddCert2";
             this.uxAddCert2.Size = new System.Drawing.Size(180, 22);
             this.uxAddCert2.Text = "Certificate...";
@@ -244,7 +244,7 @@
             this.uxAddKVCertFromFile2,
             this.uxAddKVCertFromUserStore2,
             this.uxAddKVCertFromMachineStore2});
-            this.uxAddKVCert2.Image = global::VaultExplorer.Properties.Resources.certificate2;
+            this.uxAddKVCert2.Image = global::Microsoft.Vault.Explorer.Properties.Resources.certificate2;
             this.uxAddKVCert2.Name = "uxAddKVCert2";
             this.uxAddKVCert2.Size = new System.Drawing.Size(180, 22);
             this.uxAddKVCert2.Text = "Key Vault Certificate";
@@ -272,7 +272,7 @@
             // 
             // uxAddFile2
             // 
-            this.uxAddFile2.Image = global::VaultExplorer.Properties.Resources.folder_key;
+            this.uxAddFile2.Image = global::Microsoft.Vault.Explorer.Properties.Resources.folder_key;
             this.uxAddFile2.Name = "uxAddFile2";
             this.uxAddFile2.Size = new System.Drawing.Size(180, 22);
             this.uxAddFile2.Text = "&File...";
@@ -281,7 +281,7 @@
             // uxMenuItemEdit
             // 
             this.uxMenuItemEdit.Enabled = false;
-            this.uxMenuItemEdit.Image = global::VaultExplorer.Properties.Resources.lock_edit;
+            this.uxMenuItemEdit.Image = global::Microsoft.Vault.Explorer.Properties.Resources.lock_edit;
             this.uxMenuItemEdit.Name = "uxMenuItemEdit";
             this.uxMenuItemEdit.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
             this.uxMenuItemEdit.Size = new System.Drawing.Size(162, 26);
@@ -292,7 +292,7 @@
             // uxMenuItemToggle
             // 
             this.uxMenuItemToggle.Enabled = false;
-            this.uxMenuItemToggle.Image = global::VaultExplorer.Properties.Resources.lock_break;
+            this.uxMenuItemToggle.Image = global::Microsoft.Vault.Explorer.Properties.Resources.lock_break;
             this.uxMenuItemToggle.Name = "uxMenuItemToggle";
             this.uxMenuItemToggle.Size = new System.Drawing.Size(162, 26);
             this.uxMenuItemToggle.Text = "Disabl&e...";
@@ -302,7 +302,7 @@
             // uxMenuItemDelete
             // 
             this.uxMenuItemDelete.Enabled = false;
-            this.uxMenuItemDelete.Image = global::VaultExplorer.Properties.Resources.lock_delete;
+            this.uxMenuItemDelete.Image = global::Microsoft.Vault.Explorer.Properties.Resources.lock_delete;
             this.uxMenuItemDelete.Name = "uxMenuItemDelete";
             this.uxMenuItemDelete.ShortcutKeys = System.Windows.Forms.Keys.Delete;
             this.uxMenuItemDelete.Size = new System.Drawing.Size(162, 26);
@@ -324,14 +324,14 @@
             toolStripMenuItem2,
             this.exportToTsvToolStripMenuItem});
             this.uxMenuItemShare.Enabled = false;
-            this.uxMenuItemShare.Image = global::VaultExplorer.Properties.Resources.group;
+            this.uxMenuItemShare.Image = global::Microsoft.Vault.Explorer.Properties.Resources.group;
             this.uxMenuItemShare.Name = "uxMenuItemShare";
             this.uxMenuItemShare.Size = new System.Drawing.Size(162, 26);
             this.uxMenuItemShare.Text = "&Share";
             // 
             // uxMenuItemCopy
             // 
-            this.uxMenuItemCopy.Image = global::VaultExplorer.Properties.Resources.page_copy;
+            this.uxMenuItemCopy.Image = global::Microsoft.Vault.Explorer.Properties.Resources.page_copy;
             this.uxMenuItemCopy.Name = "uxMenuItemCopy";
             this.uxMenuItemCopy.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
             this.uxMenuItemCopy.Size = new System.Drawing.Size(198, 22);
@@ -340,7 +340,7 @@
             // 
             // uxMenuItemCopyLink
             // 
-            this.uxMenuItemCopyLink.Image = global::VaultExplorer.Properties.Resources.link;
+            this.uxMenuItemCopyLink.Image = global::Microsoft.Vault.Explorer.Properties.Resources.link;
             this.uxMenuItemCopyLink.Name = "uxMenuItemCopyLink";
             this.uxMenuItemCopyLink.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.C)));
@@ -351,7 +351,7 @@
             // 
             // uxMenuItemSave
             // 
-            this.uxMenuItemSave.Image = global::VaultExplorer.Properties.Resources.disk;
+            this.uxMenuItemSave.Image = global::Microsoft.Vault.Explorer.Properties.Resources.disk;
             this.uxMenuItemSave.Name = "uxMenuItemSave";
             this.uxMenuItemSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.uxMenuItemSave.Size = new System.Drawing.Size(198, 22);
@@ -366,7 +366,7 @@
             // 
             // exportToTsvToolStripMenuItem
             // 
-            this.exportToTsvToolStripMenuItem.Image = global::VaultExplorer.Properties.Resources.table;
+            this.exportToTsvToolStripMenuItem.Image = global::Microsoft.Vault.Explorer.Properties.Resources.table;
             this.exportToTsvToolStripMenuItem.Name = "exportToTsvToolStripMenuItem";
             this.exportToTsvToolStripMenuItem.Size = new System.Drawing.Size(236, 26);
             this.exportToTsvToolStripMenuItem.Text = "&Export to Tsv...";
@@ -375,7 +375,7 @@
             // uxMenuItemFavorite
             // 
             this.uxMenuItemFavorite.Enabled = false;
-            this.uxMenuItemFavorite.Image = global::VaultExplorer.Properties.Resources.star;
+            this.uxMenuItemFavorite.Image = global::Microsoft.Vault.Explorer.Properties.Resources.star;
             this.uxMenuItemFavorite.Name = "uxMenuItemFavorite";
             this.uxMenuItemFavorite.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
             this.uxMenuItemFavorite.Size = new System.Drawing.Size(162, 26);
@@ -391,7 +391,7 @@
             // uxMenuItemRefresh
             // 
             this.uxMenuItemRefresh.Enabled = false;
-            this.uxMenuItemRefresh.Image = global::VaultExplorer.Properties.Resources.lock_go;
+            this.uxMenuItemRefresh.Image = global::Microsoft.Vault.Explorer.Properties.Resources.lock_go;
             this.uxMenuItemRefresh.Name = "uxMenuItemRefresh";
             this.uxMenuItemRefresh.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
             this.uxMenuItemRefresh.Size = new System.Drawing.Size(162, 26);
@@ -487,7 +487,7 @@
             this.uxAddKVCert,
             this.uxAddFile});
             this.uxButtonAdd.Enabled = false;
-            this.uxButtonAdd.Image = global::VaultExplorer.Properties.Resources.lock_add;
+            this.uxButtonAdd.Image = global::Microsoft.Vault.Explorer.Properties.Resources.lock_add;
             this.uxButtonAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonAdd.Name = "uxButtonAdd";
             this.uxButtonAdd.Size = new System.Drawing.Size(65, 24);
@@ -497,7 +497,7 @@
             // 
             // uxAddSecret
             // 
-            this.uxAddSecret.Image = global::VaultExplorer.Properties.Resources.key;
+            this.uxAddSecret.Image = global::Microsoft.Vault.Explorer.Properties.Resources.key;
             this.uxAddSecret.Name = "uxAddSecret";
             this.uxAddSecret.Size = new System.Drawing.Size(180, 22);
             this.uxAddSecret.Text = "&Secret...";
@@ -509,7 +509,7 @@
             this.uxAddCertFromFile,
             this.uxAddCertFromUserStore,
             this.uxAddCertFromMachineStore});
-            this.uxAddCert.Image = global::VaultExplorer.Properties.Resources.certificate;
+            this.uxAddCert.Image = global::Microsoft.Vault.Explorer.Properties.Resources.certificate;
             this.uxAddCert.Name = "uxAddCert";
             this.uxAddCert.Size = new System.Drawing.Size(180, 22);
             this.uxAddCert.Text = "Ce&rtificate";
@@ -541,7 +541,7 @@
             this.uxAddKVCertFromFile,
             this.uxAddKVCertFromUserStore,
             this.uxAddKVCertFromMachineStore});
-            this.uxAddKVCert.Image = global::VaultExplorer.Properties.Resources.certificate2;
+            this.uxAddKVCert.Image = global::Microsoft.Vault.Explorer.Properties.Resources.certificate2;
             this.uxAddKVCert.Name = "uxAddKVCert";
             this.uxAddKVCert.Size = new System.Drawing.Size(180, 22);
             this.uxAddKVCert.Text = "Key Vault &Certificate";
@@ -569,7 +569,7 @@
             // 
             // uxAddFile
             // 
-            this.uxAddFile.Image = global::VaultExplorer.Properties.Resources.folder_key;
+            this.uxAddFile.Image = global::Microsoft.Vault.Explorer.Properties.Resources.folder_key;
             this.uxAddFile.Name = "uxAddFile";
             this.uxAddFile.Size = new System.Drawing.Size(180, 22);
             this.uxAddFile.Text = "&File...";
@@ -578,7 +578,7 @@
             // uxButtonEdit
             // 
             this.uxButtonEdit.Enabled = false;
-            this.uxButtonEdit.Image = global::VaultExplorer.Properties.Resources.lock_edit;
+            this.uxButtonEdit.Image = global::Microsoft.Vault.Explorer.Properties.Resources.lock_edit;
             this.uxButtonEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonEdit.Name = "uxButtonEdit";
             this.uxButtonEdit.Size = new System.Drawing.Size(51, 24);
@@ -589,7 +589,7 @@
             // uxButtonToggle
             // 
             this.uxButtonToggle.Enabled = false;
-            this.uxButtonToggle.Image = global::VaultExplorer.Properties.Resources.lock_break;
+            this.uxButtonToggle.Image = global::Microsoft.Vault.Explorer.Properties.Resources.lock_break;
             this.uxButtonToggle.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonToggle.Name = "uxButtonToggle";
             this.uxButtonToggle.Size = new System.Drawing.Size(69, 24);
@@ -600,7 +600,7 @@
             // uxButtonDelete
             // 
             this.uxButtonDelete.Enabled = false;
-            this.uxButtonDelete.Image = global::VaultExplorer.Properties.Resources.lock_delete;
+            this.uxButtonDelete.Image = global::Microsoft.Vault.Explorer.Properties.Resources.lock_delete;
             this.uxButtonDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonDelete.Name = "uxButtonDelete";
             this.uxButtonDelete.Size = new System.Drawing.Size(64, 24);
@@ -611,7 +611,7 @@
             // uxImageSearch
             // 
             this.uxImageSearch.Enabled = false;
-            this.uxImageSearch.Image = global::VaultExplorer.Properties.Resources.magnifier;
+            this.uxImageSearch.Image = global::Microsoft.Vault.Explorer.Properties.Resources.magnifier;
             this.uxImageSearch.Name = "uxImageSearch";
             this.uxImageSearch.Size = new System.Drawing.Size(20, 24);
             this.uxImageSearch.ToolTipText = "Regular expression search\nExamples: elize, enabled=false";
@@ -633,7 +633,7 @@
             toolStripMenuItem1,
             this.uxButtonExportToTsv});
             this.uxButtonShare.Enabled = false;
-            this.uxButtonShare.Image = global::VaultExplorer.Properties.Resources.group;
+            this.uxButtonShare.Image = global::Microsoft.Vault.Explorer.Properties.Resources.group;
             this.uxButtonShare.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonShare.Name = "uxButtonShare";
             this.uxButtonShare.Size = new System.Drawing.Size(69, 24);
@@ -642,7 +642,7 @@
             // 
             // uxButtonCopy
             // 
-            this.uxButtonCopy.Image = global::VaultExplorer.Properties.Resources.page_copy;
+            this.uxButtonCopy.Image = global::Microsoft.Vault.Explorer.Properties.Resources.page_copy;
             this.uxButtonCopy.Name = "uxButtonCopy";
             this.uxButtonCopy.Size = new System.Drawing.Size(124, 22);
             this.uxButtonCopy.Text = "&Copy";
@@ -651,7 +651,7 @@
             // 
             // uxButtonCopyLink
             // 
-            this.uxButtonCopyLink.Image = global::VaultExplorer.Properties.Resources.link;
+            this.uxButtonCopyLink.Image = global::Microsoft.Vault.Explorer.Properties.Resources.link;
             this.uxButtonCopyLink.Name = "uxButtonCopyLink";
             this.uxButtonCopyLink.Size = new System.Drawing.Size(124, 22);
             this.uxButtonCopyLink.Text = "Copy &link";
@@ -660,7 +660,7 @@
             // 
             // uxButtonSave
             // 
-            this.uxButtonSave.Image = global::VaultExplorer.Properties.Resources.disk;
+            this.uxButtonSave.Image = global::Microsoft.Vault.Explorer.Properties.Resources.disk;
             this.uxButtonSave.Name = "uxButtonSave";
             this.uxButtonSave.Size = new System.Drawing.Size(124, 22);
             this.uxButtonSave.Text = "&Save...";
@@ -669,7 +669,7 @@
             // 
             // uxButtonExportToTsv
             // 
-            this.uxButtonExportToTsv.Image = global::VaultExplorer.Properties.Resources.table;
+            this.uxButtonExportToTsv.Image = global::Microsoft.Vault.Explorer.Properties.Resources.table;
             this.uxButtonExportToTsv.Name = "uxButtonExportToTsv";
             this.uxButtonExportToTsv.Size = new System.Drawing.Size(181, 26);
             this.uxButtonExportToTsv.Text = "&Export to Tsv...";
@@ -678,7 +678,7 @@
             // uxButtonFavorite
             // 
             this.uxButtonFavorite.Enabled = false;
-            this.uxButtonFavorite.Image = global::VaultExplorer.Properties.Resources.star;
+            this.uxButtonFavorite.Image = global::Microsoft.Vault.Explorer.Properties.Resources.star;
             this.uxButtonFavorite.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonFavorite.Name = "uxButtonFavorite";
             this.uxButtonFavorite.Size = new System.Drawing.Size(73, 24);
@@ -688,7 +688,7 @@
             // 
             // uxButtonSettings
             // 
-            this.uxButtonSettings.Image = global::VaultExplorer.Properties.Resources.wrench;
+            this.uxButtonSettings.Image = global::Microsoft.Vault.Explorer.Properties.Resources.wrench;
             this.uxButtonSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uxButtonSettings.Name = "uxButtonSettings";
             this.uxButtonSettings.Size = new System.Drawing.Size(73, 24);
@@ -795,9 +795,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1029, 500);
             this.Controls.Add(this.toolStripContainer1);
-            this.DataBindings.Add(new System.Windows.Forms.Binding("Location", global::VaultExplorer.Properties.Settings.Default, "MainFormLocation", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.DataBindings.Add(new System.Windows.Forms.Binding("Location", global::Microsoft.Vault.Explorer.Properties.Settings.Default, "MainFormLocation", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Location = global::VaultExplorer.Properties.Settings.Default.MainFormLocation;
+            this.Location = global::Microsoft.Vault.Explorer.Properties.Settings.Default.MainFormLocation;
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MinimumSize = new System.Drawing.Size(602, 486);
             this.Name = "MainForm";

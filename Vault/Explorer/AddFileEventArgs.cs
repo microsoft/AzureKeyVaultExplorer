@@ -3,7 +3,7 @@
 
 using System;
 
-namespace VaultExplorer
+namespace Microsoft.Vault.Explorer
 {
     public class AddFileEventArgs : EventArgs
     {

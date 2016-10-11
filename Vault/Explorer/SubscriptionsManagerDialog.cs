@@ -21,9 +21,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using VaultLibrary;
+using Microsoft.Vault.Library;
 
-namespace VaultExplorer
+namespace Microsoft.Vault.Explorer
 {
     public partial class SubscriptionsManagerDialog : Form
     {

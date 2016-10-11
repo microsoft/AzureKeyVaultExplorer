@@ -11,9 +11,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using VaultLibrary;
+using Microsoft.Vault.Library;
 
-namespace VaultExplorer
+namespace Microsoft.Vault.Explorer
 {
     /// <summary>
     /// Base list view item which also presents itself nicely to PropertyGrid
@@ -72,9 +72,9 @@ namespace VaultExplorer
 
         public string Id => VaultHttpsUri.ToString();
 
-        public string ChangedBy => VaultLibrary.Utils.GetChangedBy(Tags);
+        public string ChangedBy => Microsoft.Vault.Library.Utils.GetChangedBy(Tags);
 
-        public string Md5 => VaultLibrary.Utils.GetMd5(Tags);
+        public string Md5 => Microsoft.Vault.Library.Utils.GetMd5(Tags);
 
         public string Link => $"https://aka.ms/ve?{VaultHttpsUri.VaultLink}";
 

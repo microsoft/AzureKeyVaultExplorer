@@ -18,19 +18,19 @@
     "$id": "1",
     "ReadOnly": [
       {
-        "$type": "VaultLibrary.VaultAccessClientCertificate, VaultLibrary",
+        "$type": "Microsoft.Vault.Library.VaultAccessClientCertificate, Microsoft.Vault.Library",
         "ClientId": "5073cdea-01c2-4268-aab3-16b8cbf87210",
         "CertificateThumbprint": "015c61f14b25316fc3550a3d050a98e65cd4e5e7"
       }
     ],
     "ReadWrite": [
       {
-        "$type": "VaultLibrary.VaultAccessClientCertificate, VaultLibrary",
+        "$type": "Microsoft.Vault.Library.VaultAccessClientCertificate, Microsoft.Vault.Library",
         "ClientId": "9eeccc29-9b01-4462-acff-c44c0311294c",
         "CertificateThumbprint": "ed2df9d40d455208f47af0aaea4d7cb99ca38ebf"
       },
       {
-        "$type": "VaultLibrary.VaultAccessUserInteractive, VaultLibrary",
+        "$type": "Microsoft.Vault.Library.VaultAccessUserInteractive, Microsoft.Vault.Library",
         "DomainHint": "microsoft.com"
       }
     ]
@@ -42,19 +42,19 @@
     "$id": "2",
     "ReadOnly": [
       {
-        "$type": "VaultLibrary.VaultAccessClientCertificate, VaultLibrary",
+        "$type": "Microsoft.Vault.Library.VaultAccessClientCertificate, Microsoft.Vault.Library",
         "ClientId": "0b84f533-bcb1-433d-bccd-100cdbf42226",
         "CertificateThumbprint": "7845f791edc38ae4ec7347bf225f35a521f8556e"
       }
     ],
     "ReadWrite": [
       {
-        "$type": "VaultLibrary.VaultAccessClientCertificate, VaultLibrary",
+        "$type": "Microsoft.Vault.Library.VaultAccessClientCertificate, Microsoft.Vault.Library",
         "ClientId": "410a42a1-7c71-490b-8d62-193d07ce3a07",
         "CertificateThumbprint": "7a78debd4fd0cdc32758d204ffe8139f30d05373"
       },
       {
-        "$type": "VaultLibrary.VaultAccessUserInteractive, VaultLibrary"
+        "$type": "Microsoft.Vault.Library.VaultAccessUserInteractive, Microsoft.Vault.Library"
       }
     ]
   },
@@ -65,19 +65,19 @@
     "$id": "3",
     "ReadOnly": [
       {
-        "$type": "VaultLibrary.VaultAccessClientCertificate, VaultLibrary",
+        "$type": "Microsoft.Vault.Library.VaultAccessClientCertificate, Microsoft.Vault.Library",
         "ClientId": "820a9860-ed10-48f7-a716-31661e19a12a",
         "CertificateThumbprint": "90ef01ccd5ddabcc3942f823068fdc1db9f48803"
       }
     ],
     "ReadWrite": [
       {
-        "$type": "VaultLibrary.VaultAccessClientCertificate, VaultLibrary",
+        "$type": "Microsoft.Vault.Library.VaultAccessClientCertificate, Microsoft.Vault.Library",
         "ClientId": "832b3f43-eb5e-4564-a540-51862ec5bf93",
         "CertificateThumbprint": "d90783d5ada64960657ebc7ba0ce70419e6aab7a"
       },
       {
-        "$type": "VaultLibrary.VaultAccessUserInteractive, VaultLibrary"
+        "$type": "Microsoft.Vault.Library.VaultAccessUserInteractive, Microsoft.Vault.Library"
       }
     ]
   },
@@ -88,19 +88,19 @@
     "$id": "4",
     "ReadOnly": [
       {
-        "$type": "VaultLibrary.VaultAccessClientCertificate, VaultLibrary",
+        "$type": "Microsoft.Vault.Library.VaultAccessClientCertificate, Microsoft.Vault.Library",
         "ClientId": "eea8a693-2733-4f3a-8c43-32bb8d148f8e",
         "CertificateThumbprint": "dae8faa9a6c5f11cd6fccdcfa0cdbbf535ed6e32"
       }
     ],
     "ReadWrite": [
       {
-        "$type": "VaultLibrary.VaultAccessClientCertificate, VaultLibrary",
+        "$type": "Microsoft.Vault.Library.VaultAccessClientCertificate, Microsoft.Vault.Library",
         "ClientId": "8e7da139-9e49-406f-a63c-30c670fb8773",
         "CertificateThumbprint": "bd9514ad9decd6eb3e29b4badbc58c6d94514f8b"
       },
       {
-        "$type": "VaultLibrary.VaultAccessUserInteractive, VaultLibrary"
+        "$type": "Microsoft.Vault.Library.VaultAccessUserInteractive, Microsoft.Vault.Library"
       }
     ]
   },
@@ -111,19 +111,19 @@
     "$id": "5",
     "ReadOnly": [
       {
-        "$type": "VaultLibrary.VaultAccessClientCertificate, VaultLibrary",
+        "$type": "Microsoft.Vault.Library.VaultAccessClientCertificate, Microsoft.Vault.Library",
         "ClientId": "5f3086c4-d42e-4d31-bae6-83beeccc7032",
         "CertificateThumbprint": "66a0c56e2ed8613f1a2aa2a3a9e73b6a46dada0d"
       }
     ],
     "ReadWrite": [
       {
-        "$type": "VaultLibrary.VaultAccessClientCertificate, VaultLibrary",
+        "$type": "Microsoft.Vault.Library.VaultAccessClientCertificate, Microsoft.Vault.Library",
         "ClientId": "2493fe38-cdd1-4820-b138-e6a8b2e2c1cd",
         "CertificateThumbprint": "5ae18d92d651e1a1a6fedfdb6cecb2afce533b54"
       },
       {
-        "$type": "VaultLibrary.VaultAccessUserInteractive, VaultLibrary"
+        "$type": "Microsoft.Vault.Library.VaultAccessUserInteractive, Microsoft.Vault.Library"
       }
     ]
   },
@@ -134,19 +134,19 @@
     "$id": "6",
     "ReadOnly": [
       {
-        "$type": "VaultLibrary.VaultAccessClientCertificate, VaultLibrary",
+        "$type": "Microsoft.Vault.Library.VaultAccessClientCertificate, Microsoft.Vault.Library",
         "ClientId": "f5fe4a51-d378-4d3c-834e-42fd6ae5f7df",
         "CertificateThumbprint": "7b81e3836c75f69e06b3f290e65c9a5d68c23961"
       }
     ],
     "ReadWrite": [
       {
-        "$type": "VaultLibrary.VaultAccessClientCertificate, VaultLibrary",
+        "$type": "Microsoft.Vault.Library.VaultAccessClientCertificate, Microsoft.Vault.Library",
         "ClientId": "67cb4202-1cd1-4f90-8123-1c36fca36f22",
         "CertificateThumbprint": "95412626a4d8f1b4f92c2660f84aa9aa11e84fba"
       },
       {
-        "$type": "VaultLibrary.VaultAccessUserInteractive, VaultLibrary"
+        "$type": "Microsoft.Vault.Library.VaultAccessUserInteractive, Microsoft.Vault.Library"
       }
     ]
   },
@@ -157,19 +157,19 @@
     "$id": "7",
     "ReadOnly": [
       {
-        "$type": "VaultLibrary.VaultAccessClientCertificate, VaultLibrary",
+        "$type": "Microsoft.Vault.Library.VaultAccessClientCertificate, Microsoft.Vault.Library",
         "ClientId": "c77304bb-aa5d-4820-9626-0f340407180d",
         "CertificateThumbprint": "d0110dd2ad033ccb9e7dbeeec4f21392d1a222ee"
       }
     ],
     "ReadWrite": [
       {
-        "$type": "VaultLibrary.VaultAccessClientCertificate, VaultLibrary",
+        "$type": "Microsoft.Vault.Library.VaultAccessClientCertificate, Microsoft.Vault.Library",
         "ClientId": "1d03412c-d7c4-4d28-a2b9-214d2d35857b",
         "CertificateThumbprint": "9b013ac97b469fe1c39a0e12a850da72c2892460"
       },
       {
-        "$type": "VaultLibrary.VaultAccessUserInteractive, VaultLibrary"
+        "$type": "Microsoft.Vault.Library.VaultAccessUserInteractive, Microsoft.Vault.Library"
       }
     ]
   },
@@ -177,19 +177,19 @@
     "$id": "8",
     "ReadOnly": [
       {
-        "$type": "VaultLibrary.VaultAccessClientCertificate, VaultLibrary",
+        "$type": "Microsoft.Vault.Library.VaultAccessClientCertificate, Microsoft.Vault.Library",
         "ClientId": "1448974e-e07c-49a0-a4de-8e81cab388db",
         "CertificateThumbprint": "90ef01ccd5ddabcc3942f823068fdc1db9f48803"
       }
     ],
     "ReadWrite": [
       {
-        "$type": "VaultLibrary.VaultAccessClientCertificate, VaultLibrary",
+        "$type": "Microsoft.Vault.Library.VaultAccessClientCertificate, Microsoft.Vault.Library",
         "ClientId": "c07d2ef6-09ff-4c94-af7e-f6eeb07819f0",
         "CertificateThumbprint": "d90783d5ada64960657ebc7ba0ce70419e6aab7a"
       },
       {
-        "$type": "VaultLibrary.VaultAccessUserInteractive, VaultLibrary",
+        "$type": "Microsoft.Vault.Library.VaultAccessUserInteractive, Microsoft.Vault.Library",
         "DomainHint": "gme.gbl"
       }
     ]
@@ -201,19 +201,19 @@
     "$id": "9",
     "ReadOnly": [
       {
-        "$type": "VaultLibrary.VaultAccessClientCertificate, VaultLibrary",
+        "$type": "Microsoft.Vault.Library.VaultAccessClientCertificate, Microsoft.Vault.Library",
         "ClientId": "1018ddf2-6378-4a65-8b54-f3315427e80b",
         "CertificateThumbprint": "66a0c56e2ed8613f1a2aa2a3a9e73b6a46dada0d"
       }
     ],
     "ReadWrite": [
       {
-        "$type": "VaultLibrary.VaultAccessClientCertificate, VaultLibrary",
+        "$type": "Microsoft.Vault.Library.VaultAccessClientCertificate, Microsoft.Vault.Library",
         "ClientId": "0e210ad3-a0bd-4127-8c32-37a2efe45fb7",
         "CertificateThumbprint": "5ae18d92d651e1a1a6fedfdb6cecb2afce533b54"
       },
       {
-        "$type": "VaultLibrary.VaultAccessUserInteractive, VaultLibrary",
+        "$type": "Microsoft.Vault.Library.VaultAccessUserInteractive, Microsoft.Vault.Library",
         "DomainHint": "gme.gbl"
       }
     ]
@@ -224,48 +224,48 @@
   "defenderkeyvault": {
     "ReadOnly": [
       {
-        "$type": "VaultLibrary.VaultAccessUserInteractive, VaultLibrary"
+        "$type": "Microsoft.Vault.Library.VaultAccessUserInteractive, Microsoft.Vault.Library"
       }
     ],
     "ReadWrite": [
       {
-        "$type": "VaultLibrary.VaultAccessUserInteractive, VaultLibrary"
+        "$type": "Microsoft.Vault.Library.VaultAccessUserInteractive, Microsoft.Vault.Library"
       }
     ]
   },
   "defenderkeyvaultdev": {
     "ReadOnly": [
       {
-        "$type": "VaultLibrary.VaultAccessUserInteractive, VaultLibrary"
+        "$type": "Microsoft.Vault.Library.VaultAccessUserInteractive, Microsoft.Vault.Library"
       }
     ],
     "ReadWrite": [
       {
-        "$type": "VaultLibrary.VaultAccessUserInteractive, VaultLibrary"
+        "$type": "Microsoft.Vault.Library.VaultAccessUserInteractive, Microsoft.Vault.Library"
       }
     ]
   },
   "defenderkeyvaultresearch": {
     "ReadOnly": [
       {
-        "$type": "VaultLibrary.VaultAccessUserInteractive, VaultLibrary"
+        "$type": "Microsoft.Vault.Library.VaultAccessUserInteractive, Microsoft.Vault.Library"
       }
     ],
     "ReadWrite": [
       {
-        "$type": "VaultLibrary.VaultAccessUserInteractive, VaultLibrary"
+        "$type": "Microsoft.Vault.Library.VaultAccessUserInteractive, Microsoft.Vault.Library"
       }
     ]
   },
   "defenderkeyvaultbuild": {
     "ReadOnly": [
       {
-        "$type": "VaultLibrary.VaultAccessUserInteractive, VaultLibrary"
+        "$type": "Microsoft.Vault.Library.VaultAccessUserInteractive, Microsoft.Vault.Library"
       }
     ],
     "ReadWrite": [
       {
-        "$type": "VaultLibrary.VaultAccessUserInteractive, VaultLibrary"
+        "$type": "Microsoft.Vault.Library.VaultAccessUserInteractive, Microsoft.Vault.Library"
       }
     ]
   }

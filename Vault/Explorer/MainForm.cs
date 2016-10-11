@@ -1,22 +1,23 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. 
 // Licensed under the MIT License. See License.txt in the project root for license information. 
 
-using Microsoft.Azure.KeyVault.Models;
-using VaultExplorer.Properties;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.Security.Cryptography.X509Certificates;
-using System.Linq;
-using System.Windows.Forms;
-
-namespace VaultExplorer
+namespace Microsoft.Vault.Explorer
 {
+    using Microsoft.Azure.KeyVault.Models;
+    using Microsoft.Vault.Explorer.Properties;
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Drawing;
+    using System.IO;
+    using System.Security.Cryptography.X509Certificates;
+    using System.Linq;
+    using System.Windows.Forms;
+
     using UISettings = Properties.Settings;
     using Action = System.Action;
-    using VaultLibrary;
+    using Microsoft.Vault.Library;
+    using Core;
 
     public partial class MainForm : FormTelemetry, ISession
     {

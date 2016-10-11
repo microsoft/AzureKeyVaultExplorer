@@ -9,7 +9,7 @@
     <ProjectGuid>{0720CA4C-5D06-47FC-8DF9-2A42C40119A3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VaultExplorer</RootNamespace>
+    <RootNamespace>Microsoft.Vault.Explorer</RootNamespace>
     <AssemblyName>VaultExplorer</AssemblyName>
     <AssemblyDescription>Azure Key Vault Explorer</AssemblyDescription>
     <ErrorReport>prompt</ErrorReport>
@@ -96,6 +96,10 @@
     <ProjectReference Include="..\ClearClipboard\ClearClipboard.csproj">
       <Project>{9b19162f-ff53-45c4-b849-e293db19d7aa}</Project>
       <Name>ClearClipboard</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{b2f371e2-51e3-49dd-8568-3955242a6088}</Project>
+      <Name>Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Library\VaultLibrary.csproj">
       <Project>{18150c6e-12e1-42d3-b7ae-740e96ebb59a}</Project>
@@ -257,6 +261,9 @@
     <Content Include="$(OutputPath)\$(AssemblyName).BuildInfo.config">
       <Link>$(AssemblyName).BuildInfo.config</Link>
       <Visible>False</Visible>
+    </Content>
+    <Content Include="Vault.psm1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
