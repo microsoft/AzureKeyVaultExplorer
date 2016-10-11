@@ -24,24 +24,40 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{023CB6B8
 		Vault\Build\t4.targets = Vault\Build\t4.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Vault\Core\Core.csproj", "{B2F371E2-51E3-49DD-8568-3955242A6088}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9B19162F-FF53-45C4-B849-E293DB19D7AA}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{9B19162F-FF53-45C4-B849-E293DB19D7AA}.Debug|x64.ActiveCfg = Debug|x64
 		{9B19162F-FF53-45C4-B849-E293DB19D7AA}.Debug|x64.Build.0 = Debug|x64
+		{9B19162F-FF53-45C4-B849-E293DB19D7AA}.Release|Any CPU.ActiveCfg = Release|x64
 		{9B19162F-FF53-45C4-B849-E293DB19D7AA}.Release|x64.ActiveCfg = Release|x64
 		{9B19162F-FF53-45C4-B849-E293DB19D7AA}.Release|x64.Build.0 = Release|x64
+		{0720CA4C-5D06-47FC-8DF9-2A42C40119A3}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{0720CA4C-5D06-47FC-8DF9-2A42C40119A3}.Debug|x64.ActiveCfg = Debug|x64
 		{0720CA4C-5D06-47FC-8DF9-2A42C40119A3}.Debug|x64.Build.0 = Debug|x64
+		{0720CA4C-5D06-47FC-8DF9-2A42C40119A3}.Release|Any CPU.ActiveCfg = Release|x64
 		{0720CA4C-5D06-47FC-8DF9-2A42C40119A3}.Release|x64.ActiveCfg = Release|x64
 		{0720CA4C-5D06-47FC-8DF9-2A42C40119A3}.Release|x64.Build.0 = Release|x64
+		{18150C6E-12E1-42D3-B7AE-740E96EBB59A}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{18150C6E-12E1-42D3-B7AE-740E96EBB59A}.Debug|x64.ActiveCfg = Debug|x64
 		{18150C6E-12E1-42D3-B7AE-740E96EBB59A}.Debug|x64.Build.0 = Debug|x64
+		{18150C6E-12E1-42D3-B7AE-740E96EBB59A}.Release|Any CPU.ActiveCfg = Release|x64
 		{18150C6E-12E1-42D3-B7AE-740E96EBB59A}.Release|x64.ActiveCfg = Release|x64
 		{18150C6E-12E1-42D3-B7AE-740E96EBB59A}.Release|x64.Build.0 = Release|x64
+		{B2F371E2-51E3-49DD-8568-3955242A6088}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{B2F371E2-51E3-49DD-8568-3955242A6088}.Debug|x64.ActiveCfg = Debug|x64
+		{B2F371E2-51E3-49DD-8568-3955242A6088}.Debug|x64.Build.0 = Debug|x64
+		{B2F371E2-51E3-49DD-8568-3955242A6088}.Release|Any CPU.ActiveCfg = Release|x64
+		{B2F371E2-51E3-49DD-8568-3955242A6088}.Release|x64.ActiveCfg = Release|x64
+		{B2F371E2-51E3-49DD-8568-3955242A6088}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

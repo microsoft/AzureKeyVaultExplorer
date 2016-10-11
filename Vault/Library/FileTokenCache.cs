@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VaultLibrary
+namespace Microsoft.Vault.Library
 {
     public class FileTokenCache : TokenCache
     {

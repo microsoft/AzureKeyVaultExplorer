@@ -10,9 +10,9 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using VaultLibrary;
+using Microsoft.Vault.Library;
 
-namespace VaultExplorer
+namespace Microsoft.Vault.Explorer
 {
     /// <summary>
     /// Certificate (.cer, .crt, .pfx, .p12, .pfxb64, .p12b64) based secret value JSON object

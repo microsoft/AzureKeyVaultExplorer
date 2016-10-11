@@ -9,9 +9,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using VaultLibrary;
+using Microsoft.Vault.Library;
+using Microsoft.Vault.Core;
 
-namespace VaultExplorer
+namespace Microsoft.Vault.Explorer
 {
     [JsonObject]
     public class SecretKind : ToolStripMenuItem

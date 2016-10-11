@@ -8,8 +8,8 @@
     <ProjectGuid>{18150C6E-12E1-42D3-B7AE-740E96EBB59A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VaultLibrary</RootNamespace>
-    <AssemblyName>VaultLibrary</AssemblyName>
+    <RootNamespace>Microsoft.Vault.Library</RootNamespace>
+    <AssemblyName>Microsoft.Vault.Library</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <AutoVersioning>true</AutoVersioning>
   </PropertyGroup>
@@ -65,21 +65,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BackwardCompatibility.cs" />
-    <Compile Include="Cmdlets.cs" />
-    <Compile Include="ExceptionMessages.Designer.cs">
-      <DependentUpon>ExceptionMessages.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="CertificateNotFoundException.cs" />
-    <Compile Include="Guard.cs" />
+    <Compile Include="Consts.cs" />
     <Compile Include="MemoryTokenCache.cs" />
     <Compile Include="FileTokenCache.cs" />
     <Compile Include="KeyVaultClientEx.cs" />
-    <Compile Include="RandomThreadSafe.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="VaultAccess.cs" />
-    <Compile Include="Consts.cs" />
     <Compile Include="SecretException.cs" />
     <Compile Include="Vault.cs" />
     <Compile Include="VaultAccessException.cs" />
@@ -88,10 +80,10 @@
     <Compile Include="VaultUris.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ExceptionMessages.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{b2f371e2-51e3-49dd-8568-3955242a6088}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

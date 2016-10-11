@@ -7,21 +7,21 @@ using Newtonsoft.Json;
 namespace Microsoft.PS.Common.Vault
 {
     [JsonObject]
-    public class VaultAccessUserInteractive : VaultLibrary.VaultAccessUserInteractive
+    public class VaultAccessUserInteractive : Microsoft.Vault.Library.VaultAccessUserInteractive
     {
         [JsonConstructor]
         public VaultAccessUserInteractive(string domainHint) : base(domainHint) { }
     }
 
     [JsonObject]
-    public class VaultAccessClientCredential : VaultLibrary.VaultAccessClientCredential
+    public class VaultAccessClientCredential : Microsoft.Vault.Library.VaultAccessClientCredential
     {
         [JsonConstructor]
         public VaultAccessClientCredential(string clientId, string clientSecret) : base(clientId, clientSecret) { }
     }
 
     [JsonObject]
-    public class VaultAccessClientCertificate : VaultLibrary.VaultAccessClientCertificate
+    public class VaultAccessClientCertificate : Microsoft.Vault.Library.VaultAccessClientCertificate
     {
         [JsonConstructor]
         public VaultAccessClientCertificate(string clientId, string certificateThumbprint) : base(clientId, certificateThumbprint) { }

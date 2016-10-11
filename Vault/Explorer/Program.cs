@@ -9,7 +9,7 @@ using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace VaultExplorer
+namespace Microsoft.Vault.Explorer
 {
     public static class Program
     {
@@ -39,16 +39,16 @@ namespace VaultExplorer
         }
 
         /// <summary>
-        /// Microsoft.PS.Common.Vault.dll was renamed to VaultLibrary.dll
+        /// Microsoft.PS.Common.Vault.dll was renamed to Microsoft.Vault.Library.dll
         /// For backward compatibility reasons, to be able to deserialize old Vaults.json we resolve the missing
-        /// assembly and point to our new VaultLibrary.dll
+        /// assembly and point to our new Microsoft.Vault.Library.dll
         /// </summary>
         /// <seealso cref="BackwardCompatibility.cs"/>
         private static Assembly ResolveMissingAssembly(ResolveEventArgs args)
         {
             if (args.Name == "Microsoft.PS.Common.Vault")
             {
-                var vaultLibrary = from a in AppDomain.CurrentDomain.GetAssemblies() where a.GetName().Name == "VaultLibrary" select a;
+                var vaultLibrary = from a in AppDomain.CurrentDomain.GetAssemblies() where a.GetName().Name == "Microsoft.Vault.Library" select a;
                 return vaultLibrary.FirstOrDefault();
             }
             return null;

@@ -7,7 +7,7 @@ using System.Drawing.Design;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
-namespace VaultExplorer
+namespace Microsoft.Vault.Explorer
 {
     public class NullableDateTimePickerEditor : UITypeEditor
     {

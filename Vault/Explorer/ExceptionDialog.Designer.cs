@@ -1,4 +1,4 @@
-﻿namespace VaultExplorer
+﻿namespace Microsoft.Vault.Explorer
 {
     partial class ExceptionDialog
     {
@@ -40,7 +40,7 @@
             // 
             // pictureBox1
             // 
-            pictureBox1.Image = global::VaultExplorer.Properties.Resources.error;
+            pictureBox1.Image = global::Microsoft.Vault.Explorer.Properties.Resources.error;
             pictureBox1.Location = new System.Drawing.Point(12, 12);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new System.Drawing.Size(48, 48);
