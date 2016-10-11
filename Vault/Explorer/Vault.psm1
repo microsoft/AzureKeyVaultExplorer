@@ -3,11 +3,13 @@
 
 <#
 .SYNOPSIS
-    Obtain Azure vault object reference (low level)
+    Obtain Azure vault object reference from specified Vaults.json
+    configuration file with single or dual name of the vault(s)
 
 .DESCRIPTION
-    Obtain Azure vault (namespace) object reference
-    for the specified environment (Geo, Environment)
+    Obtain Microsoft.Vault.Library.Vault object reference from specified
+    Vaults.json configuration file with single or dual name of the vault(s)
+    This function will also update $Global:CurrentAzureVault variable
 
 .NOTES
     Author: Eli Zeitlin
@@ -24,10 +26,16 @@ function Get-AzureVaultObject(
     [string]$secondVaultName = ""
     )
 {
-    # return the vault object (reference)
-    $accessType = [VaultLibrary.VaultAccessTypeEnum]::ReadWrite
+    $accessType = [Microsoft.Vault.Library.VaultAccessTypeEnum]::ReadWrite
 
-    New-Object VaultLibrary.Vault @($vaultsConfigFile, $accessType, $firstVaultName, $secondVaultName)
+    # return the vault object (reference)
+    $Global:CurrentAzureVault = New-Object Microsoft.Vault.Library.Vault @($vaultsConfigFile, $accessType, $firstVaultName, $secondVaultName)
+
+    $title = "Vaults: $firstVaultName $secondVaultName"
+    $host.ui.RawUI.WindowTitle = $title
+    Write-Host $title -ForegroundColor Green
+
+    return $Global:CurrentAzureVault 
 }
 
 <#
@@ -39,8 +47,8 @@ function Get-AzureVaultObject(
     associated metadata (properties/tags) to it
 
 .NOTES
-    Author: Kalin Toshev
-    Date:   May 12, 2016
+    Author: Eli Zeitlin
+    Date:   October 10, 2016
 #>
 function Write-AzureVaultSecret(
     # vault object reference, obtained via Get-AzureVaultObject
@@ -69,6 +77,19 @@ function Write-AzureVaultSecret(
         ([Threading.CancellationToken]::None)) | select -exp Result
 }
 
+function Get-VaultOrCurrent(
+    [Microsoft.Vault.Library.Vault]$vault = $null
+    )
+{
+    if ($vault -eq $null) {
+        $vault = $Global:CurrentAzureVault
+    }
+    if ($vault -eq $null) {
+        Write-Error 'Provided $vault object and $Global:CurrentAzureVault are both NULLs'
+    }
+    return $vault
+}
+
 <#
 .SYNOPSIS
     Obtain Azure vault secrets 
@@ -78,37 +99,34 @@ function Write-AzureVaultSecret(
     (Geo, Environment)
 
 .NOTES
-    Author: Kalin Toshev
-    Date:   May 06, 2016
+    Author: Eli Zeitlin
+    Date:   October 10, 2016
 #>
 function Get-AzureVaultSecrets(
-    [ValidateSet('devus', 'ppeus', 'produs', 'prodau', 'prodeu', 'prodas', 'prodbr')]
-    [string]$env = 'devus'
+    [Microsoft.Vault.Library.Vault]$vault = $null
     )
 {
-    $vault = Get-AzureVaultObject -env $env
+    $vault = Get-VaultOrCurrent($vault)
 
     # pull the list of secrets
     $secrets = $vault.ListSecretsAsync() | select -exp Result
 
     # compose and return the list
-    $secrets | select -exp Identifier | select -exp Name | % { 
-
-        $secret = $vault.GetSecretAsync($_).Result
+    $secrets | % { 
 
         New-Object psobject -prop ([ordered]@{ 
 
             # name of the secret
-            Name = $_; 
+            Name = $_.Identifier.Name;
 
-            # secret value
-            Value = $secret.Value;
-
-            # secret tags
-            Tags = $secret.Tags;
+            # attributes of the secret
+            Attributes = $_.Attributes;
 
             # content type
-            ContentType = $secret.ContentType;
+            ContentType = $_.ContentType;
+
+            # secret tags
+            Tags = $_.Tags;
         }) 
     }
 }
@@ -116,7 +134,7 @@ function Get-AzureVaultSecrets(
 # Register the assembly resolver
 function Register-AssemblyResolver
 {
-    $path = Get-ChildItem -r -Path $PSScriptRoot 'VaultLibrary.dll' | select -first 1
+    $path = Get-ChildItem -r -Path $PSScriptRoot 'Microsoft.Vault.Core.dll' | select -first 1
     
     if (-not $path)
     {
@@ -127,17 +145,17 @@ function Register-AssemblyResolver
     
     $assemblyMap = New-Object "System.Collections.Generic.Dictionary[string,string]"
     $assemblyMap.Add("Newtonsoft.Json", "Newtonsoft.Json.dll")
-    $assemblyMap.Add("VaultLibrary", "VaultLibrary.dll")
+    $assemblyMap.Add("Microsoft.Vault.Library", "Microsoft.Vault.Library.dll")
     
-    [Microsoft.PS.Common.Powershell.AssemblyResolver]::Register($PSScriptRoot, $assemblyMap)
+    [Microsoft.Vault.Core.AssemblyResolver]::Register($PSScriptRoot, $assemblyMap)
 }
 
-#Register-AssemblyResolver
+Register-AssemblyResolver
 
 # Load dependent assemblies
 $assemblies = @(
     'Newtonsoft.Json.dll',
-    'VaultLibrary.dll'
+    'Microsoft.Vault.Library.dll'
 )
 
 $assemblies | % {

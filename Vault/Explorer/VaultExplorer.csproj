@@ -249,6 +249,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\table.png" />
+    <None Include="Resources\powershell.png" />
     <Content Include="VaultAliases.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
