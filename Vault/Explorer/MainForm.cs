@@ -182,7 +182,7 @@ namespace Microsoft.Vault.Explorer
         {
             using (var op = NewUxOperationWithProgress(uxMenuItemRefresh, uxComboBoxVaultAlias, uxButtonAdd, uxMenuItemAdd, 
                 uxButtonEdit, uxMenuItemEdit, uxButtonToggle, uxMenuItemToggle, uxButtonDelete, uxMenuItemDelete, uxImageSearch, uxTextBoxSearch, 
-                uxButtonShare, uxMenuItemShare, uxButtonFavorite, uxMenuItemFavorite)) 
+                uxButtonShare, uxMenuItemShare, uxButtonFavorite, uxMenuItemFavorite, uxButtonPowershell)) 
             {
                 try
                 {
@@ -240,7 +240,7 @@ namespace Microsoft.Vault.Explorer
                     {
                         UxOperation.ToggleControls(false, uxButtonAdd, uxMenuItemAdd,
                             uxButtonEdit, uxMenuItemEdit, uxButtonToggle, uxMenuItemToggle, uxButtonDelete, uxMenuItemDelete, uxImageSearch, uxTextBoxSearch,
-                            uxButtonShare, uxMenuItemShare, uxButtonFavorite, uxMenuItemFavorite);
+                            uxButtonShare, uxMenuItemShare, uxButtonFavorite, uxMenuItemFavorite, uxButtonPowershell);
                     }
                     else // We were able to list from one or from both collections
                     {
@@ -581,6 +581,12 @@ namespace Microsoft.Vault.Explorer
                 }
                 uxListViewSecrets_SelectedIndexChanged(null, EventArgs.Empty);
             }
+        }
+
+        private void uxButtonPowershell_Click(object sender, EventArgs e)
+        {
+            string secondVaultName = (CurrentVault.VaultNames.Length == 2) ? CurrentVault.VaultNames[1] : "";
+            Utils.LaunchPowerShell(CurrentVault.VaultsConfigFile, CurrentVault.VaultNames[0], secondVaultName);
         }
 
         private void uxButtonSettings_Click(object sender, EventArgs e)

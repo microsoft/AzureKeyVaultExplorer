@@ -250,6 +250,16 @@ namespace Microsoft.Vault.Explorer
             Process.Start(sInfo);
         }
 
+        public static void LaunchPowerShell(string vaultsJsonFile, string firstVaultName, string secondVaultName)
+        {
+            ProcessStartInfo sInfo = new ProcessStartInfo("powershell.exe", $"-NoExit -ExecutionPolicy Unrestricted -Command \"& {{ $ErrorActionPreference = 'Stop'; Import-Module .\\Vault.psm1; $null = Get-AzureVaultObject {vaultsJsonFile} {firstVaultName} {secondVaultName} }}\"")
+            {
+                UseShellExecute = true,
+                LoadUserProfile = true
+            };
+            Process.Start(sInfo);
+        }
+
         public static void ShowToast(string body)
         {
             // Get a toast XML template
