@@ -44,7 +44,7 @@ namespace Microsoft.Vault.Explorer
         {
             string body = uxTextBoxVersions.Text;
             body = body.Replace("\n", "%0A").Replace(" ", "%20");
-            ProcessStartInfo sInfo = new ProcessStartInfo(string.Format("mailto://elize@microsoft.com?subject={0}&body={1}", Utils.AppName, body));
+            ProcessStartInfo sInfo = new ProcessStartInfo(string.Format("mailto://Azure Key Vault Explorer Developers <vedev@microsoft.com>?subject={0}&body={1}", Utils.AppName, body));
             Process.Start(sInfo);
         }
 

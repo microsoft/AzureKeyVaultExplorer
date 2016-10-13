@@ -65,9 +65,6 @@
     <Reference Include="ICSharpCode.TextEditor">
       <HintPath>$(PkgICSharpCode_TextEditor)\lib\Net20\ICSharpCode.TextEditor.dll</HintPath>
     </Reference>
-    <Reference Include="System.Management.Automation">
-      <HintPath>$(PkgMicrosoft_PowerShell_5_ReferenceAssemblies)\lib\net4\System.Management.Automation.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
