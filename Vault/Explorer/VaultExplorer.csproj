@@ -263,7 +263,10 @@
       <Link>$(AssemblyName).BuildInfo.config</Link>
       <Visible>False</Visible>
     </Content>
-    <Content Include="Vault.psm1">
+    <Content Include="VaultModule.psm1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Vault.ps1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

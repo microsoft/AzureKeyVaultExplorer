@@ -252,7 +252,9 @@ namespace Microsoft.Vault.Explorer
 
         public static void LaunchPowerShell(string vaultsJsonFile, string firstVaultName, string secondVaultName)
         {
-            ProcessStartInfo sInfo = new ProcessStartInfo("powershell.exe", $"-NoExit -ExecutionPolicy Unrestricted -Command \"& {{ $ErrorActionPreference = 'Stop'; Import-Module .\\Vault.psm1; $null = Get-AzureVaultObject {vaultsJsonFile} {firstVaultName} {secondVaultName} }}\"")
+            string vaultPs1 = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Vault.ps1");
+            ProcessStartInfo sInfo = new ProcessStartInfo("powershell.exe",
+                $"-NoExit -NoLogo -ExecutionPolicy Unrestricted -File \"{vaultPs1}\" \"{vaultsJsonFile}\" \"{firstVaultName}\" \"{secondVaultName}\"")
             {
                 UseShellExecute = true,
                 LoadUserProfile = true
