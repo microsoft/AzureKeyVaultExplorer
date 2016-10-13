@@ -561,12 +561,15 @@ namespace Microsoft.Vault.Explorer
 
         private void uxButtonExportToTsv_Click(object sender, EventArgs e)
         {
-            uxSaveFileDialog.FileName = $"{CurrentVaultAlias.Alias}_{DateTime.Now.ToString("yyyy-MM-dd")}";
-            uxSaveFileDialog.DefaultExt = ".tsv";
-            uxSaveFileDialog.FilterIndex = ContentType.Tsv.ToFilterIndex();
-            if (uxSaveFileDialog.ShowDialog() == DialogResult.OK)
+            using (var op = NewUxOperation(uxButtonExportToTsv))
             {
-                uxListViewSecrets.ExportToTsv(uxSaveFileDialog.FileName);
+                uxSaveFileDialog.FileName = $"{CurrentVaultAlias.Alias}_{DateTime.Now.ToString("yyyy-MM-dd")}";
+                uxSaveFileDialog.DefaultExt = ".tsv";
+                uxSaveFileDialog.FilterIndex = ContentType.Tsv.ToFilterIndex();
+                if (uxSaveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    uxListViewSecrets.ExportToTsv(uxSaveFileDialog.FileName);
+                }
             }
         }
 
@@ -585,16 +588,26 @@ namespace Microsoft.Vault.Explorer
 
         private void uxButtonPowershell_Click(object sender, EventArgs e)
         {
-            string secondVaultName = (CurrentVault.VaultNames.Length == 2) ? CurrentVault.VaultNames[1] : "";
-            Utils.LaunchPowerShell(CurrentVault.VaultsConfigFile, CurrentVault.VaultNames[0], secondVaultName);
+            if (CurrentVault != null)
+            {
+                using (var op = NewUxOperation(uxButtonPowershell))
+                {
+                    string firstVaultName = (CurrentVault.VaultNames.Length > 0) ? CurrentVault.VaultNames[0] : "";
+                    string secondVaultName = (CurrentVault.VaultNames.Length > 1) ? CurrentVault.VaultNames[1] : "";
+                    Utils.LaunchPowerShell(CurrentVault.VaultsConfigFile, firstVaultName, secondVaultName);
+                }
+            }
         }
 
         private void uxButtonSettings_Click(object sender, EventArgs e)
         {
-            var dlg = new SettingsDialog();
-            if (dlg.ShowDialog() == DialogResult.OK)
+            using (var op = NewUxOperation(uxButtonSettings))
             {
-                ApplySettings();
+                var dlg = new SettingsDialog();
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    ApplySettings();
+                }
             }
         }
 

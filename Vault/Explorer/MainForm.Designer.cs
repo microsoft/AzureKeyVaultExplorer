@@ -65,7 +65,7 @@
             this.uxMenuItemCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemCopyLink = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemSave = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportToTsvToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.uxMenuItemExportToTsv = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemFavorite = new System.Windows.Forms.ToolStripMenuItem();
             this.uxMenuItemRefresh = new System.Windows.Forms.ToolStripMenuItem();
             this.uxPropertyGridSecret = new System.Windows.Forms.PropertyGrid();
@@ -323,7 +323,7 @@
             this.uxMenuItemCopyLink,
             this.uxMenuItemSave,
             toolStripMenuItem2,
-            this.exportToTsvToolStripMenuItem});
+            this.uxMenuItemExportToTsv});
             this.uxMenuItemShare.Enabled = false;
             this.uxMenuItemShare.Image = global::Microsoft.Vault.Explorer.Properties.Resources.group;
             this.uxMenuItemShare.Name = "uxMenuItemShare";
@@ -367,11 +367,12 @@
             // 
             // exportToTsvToolStripMenuItem
             // 
-            this.exportToTsvToolStripMenuItem.Image = global::Microsoft.Vault.Explorer.Properties.Resources.table;
-            this.exportToTsvToolStripMenuItem.Name = "exportToTsvToolStripMenuItem";
-            this.exportToTsvToolStripMenuItem.Size = new System.Drawing.Size(236, 26);
-            this.exportToTsvToolStripMenuItem.Text = "&Export to Tsv...";
-            this.exportToTsvToolStripMenuItem.Click += new System.EventHandler(this.uxButtonExportToTsv_Click);
+            this.uxMenuItemExportToTsv.Image = global::Microsoft.Vault.Explorer.Properties.Resources.table;
+            this.uxMenuItemExportToTsv.Name = "exportToTsvToolStripMenuItem";
+            this.uxMenuItemExportToTsv.Size = new System.Drawing.Size(236, 26);
+            this.uxMenuItemExportToTsv.Text = "&Export to Tsv...";
+            this.uxMenuItemExportToTsv.ToolTipText = "Export all or selected items to .tsv file";
+            this.uxMenuItemExportToTsv.Click += new System.EventHandler(this.uxButtonExportToTsv_Click);
             // 
             // uxMenuItemFavorite
             // 
@@ -674,6 +675,7 @@
             this.uxButtonExportToTsv.Name = "uxButtonExportToTsv";
             this.uxButtonExportToTsv.Size = new System.Drawing.Size(178, 26);
             this.uxButtonExportToTsv.Text = "&Export to Tsv...";
+            this.uxButtonExportToTsv.ToolTipText = "Export all or selected items to .tsv file";
             this.uxButtonExportToTsv.Click += new System.EventHandler(this.uxButtonExportToTsv_Click);
             // 
             // uxButtonFavorite
@@ -695,7 +697,7 @@
             this.uxButtonPowershell.Name = "uxButtonPowershell";
             this.uxButtonPowershell.Size = new System.Drawing.Size(105, 25);
             this.uxButtonPowershell.Text = "&PowerShell";
-            this.uxButtonPowershell.ToolTipText = "Open PowerShell session";
+            this.uxButtonPowershell.ToolTipText = "Open PowerShell session with current vault(s)";
             this.uxButtonPowershell.Click += new System.EventHandler(this.uxButtonPowershell_Click);
             // 
             // uxButtonSettings
@@ -895,7 +897,7 @@
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemCopyLink;
         private System.Windows.Forms.ToolStripMenuItem uxMenuItemSave;
         private System.Windows.Forms.ToolStripMenuItem uxButtonExportToTsv;
-        private System.Windows.Forms.ToolStripMenuItem exportToTsvToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem uxMenuItemExportToTsv;
         private System.Windows.Forms.ToolStripButton uxButtonPowershell;
     }
 }
