@@ -247,6 +247,8 @@ function Register-AssemblyResolver
     $assemblyMap = New-Object "System.Collections.Generic.Dictionary[string,string]"
     $assemblyMap.Add("Newtonsoft.Json", "Newtonsoft.Json.dll")
     $assemblyMap.Add("Microsoft.Vault.Library", "Microsoft.Vault.Library.dll")
+    # For backward compatibility reasons, to be able to deserialize old Vaults.json we resolve the assembly and point to our new Microsoft.Vault.Library.dll
+    $assemblyMap.Add("Microsoft.PS.Common.Vault", "Microsoft.Vault.Library.dll")
     
     [Microsoft.Vault.Core.AssemblyResolver]::Register($PSScriptRoot, $assemblyMap)
 }
