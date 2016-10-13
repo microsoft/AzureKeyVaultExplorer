@@ -254,7 +254,7 @@ namespace Microsoft.Vault.Explorer
         {
             string vaultPs1 = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Vault.ps1");
             ProcessStartInfo sInfo = new ProcessStartInfo("powershell.exe",
-                $"-NoExit -NoLogo -ExecutionPolicy Unrestricted -File \"{vaultPs1}\" \"{vaultsJsonFile}\" \"{firstVaultName}\" \"{secondVaultName}\"")
+                $"-NoExit -NoProfile -NoLogo -ExecutionPolicy Unrestricted -File \"{vaultPs1}\" \"{vaultsJsonFile}\" \"{firstVaultName}\" \"{secondVaultName}\"")
             {
                 UseShellExecute = true,
                 LoadUserProfile = true
