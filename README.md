@@ -37,18 +37,18 @@ Contact: [Azure Key Vault Explorer Developers](mailto:Azure Key Vault Explorer D
 * Auto update of the bits
 
 ## How to add or open new vaults
-There are 4 ways how you can make Vault Explorer to work with your vaults:
-1. In case Vault Explorer is not installed on the box, you may just run: `https://aka.ms/ve?vault://[ENTER HERE YOUR VAULT NAME]`
-2. In case Vault Explorer already installed on the box, you can just hit Win+R type vault://[ENTER HERE YOUR VAULT NAME] and hit Enter
-3. Run Vault Explorer, open vault combo box, select last item "Pick vault from subscription..."
-4. This is the recommended way, as it gives you a full control around vaults, aliases, access and secret kinds.
+There are 4 ways how you can make Vault Explorer to work with your vaults:  
+1. In case Vault Explorer is not installed on the box, you may just run: `https://aka.ms/ve?vault://[ENTER HERE YOUR VAULT NAME]`  
+2. In case Vault Explorer already installed on the box, you can just hit Win+R type `vault://[ENTER HERE YOUR VAULT NAME]` and hit Enter  
+3. Run Vault Explorer, open vault combo box, select last item "Pick vault from subscription..."  
+4. Below is *the recommended way*, as it gives you a full control around vaults, aliases, access and secret kinds.  
 Just complete the below fairly easy manual steps *once*:
 * Run Vault Explorer
 * Click on Settings, then go to About tab, and hit Install Location.
-* Copy Vaults.json, VaultAliases.json and SecretKinds.json (see below in the Configuration section what these files are)
-* Put all three files in some local folder let say "C:\Users\<YourAlias>\My Documents\VaultExplorerConfig\" or some share folder which will be accessible for your team
+* Copy Vaults.json, SecretKinds.json, CustomTags.json and VaultAliases.json (see below in the Configuration section what these files are)
+* Put all four files in some local folder let say "C:\Users\<YourAlias>\My Documents\VaultExplorerConfig\" or some share folder which will be accessible to your team
 * Edit each file accordingly, read the Configuration section below 
-* Go back to Options tab in the Settings dialog, and change "Root location" from .\ to point to where you put all three files
+* Go back to Options tab in the Settings dialog, and change "Root location" from .\ to point to where you put all four files
 * Hit OK button
 
 ## Keyboard and mouse shortcuts
