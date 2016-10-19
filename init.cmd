@@ -13,7 +13,7 @@ doskey root=pushd "%RepoRoot%"
 set NUGET_EXE_PATH="%~dp0.init\nuget\nuget.exe"
 doskey nuget=%NUGET_EXE_PATH% $*
 
-set MSBUILD_BASE_ARGS=/v:minimal /fl /flp:verbosity=normal /m
+set MSBUILD_BASE_ARGS=/v:minimal /fl /flp:verbosity=normal /m /p:Platform=x64
 doskey bz=msbuild %MSBUILD_BASE_ARGS% $*
 doskey br=msbuild %MSBUILD_BASE_ARGS% /p:Configuration=Release $*
 doskey bzr=msbuild %MSBUILD_BASE_ARGS% /p:BuildRelease=true $*
