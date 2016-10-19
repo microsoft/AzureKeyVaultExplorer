@@ -179,8 +179,9 @@ Here an example for vault alias element in the array:
 ### User.config
 XML file which controls user settings, will be created only if user changed the default values via Settings dialog and clicked OK button.
 Here an example for location of the file:  
-```%LocalAppData%\Apps\2.0\Data\2310EVQO.1C1\Q6P3APKG.HY4\vaul..tion_7446cb71d1187222_07e0.03f5_fc3133cd208276e1\Data\2016.1013.1742.39\user.config```
-
+```
+%LocalAppData%\Apps\2.0\Data\2310EVQO.1C1\Q6P3APKG.HY4\vaul..tion_7446cb71d1187222_07e0.03f5_fc3133cd208276e1\Data\2016.1013.1742.39\user.config
+```
 ## Screen shots
 
 #### Main window
