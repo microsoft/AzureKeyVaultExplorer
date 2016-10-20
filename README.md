@@ -162,7 +162,7 @@ Here an example for few custom tags:
 ```
 
 ### VaultAliases.json
-Defines an array of vault aliases. Each vault alias is a simple class with the following properties: of  for each alias and relevant secret kinds
+Defines an array of vault aliases. Each vault alias is a simple class with the following properties:
 * Alias - nice alias for the vault(s)
 * VaultNames - array with single or dual vault names which are defined in *Vaults.json*
 * SecretKinds - array with at least one secret kind which are defined in *SecretKinds.json*, this controls which secret kinds are allowed for the vault(s)
