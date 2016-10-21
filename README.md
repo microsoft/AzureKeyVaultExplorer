@@ -7,6 +7,26 @@ Azure Key Vault Explorer - be productive when working with secrets!
 Authors: Eli Zeitlin, Gokhan Ozhan, Anna Zeitlin  
 Contact: [Azure Key Vault Explorer Developers](mailto:Azure Key Vault Explorer Developers <vedev@microsoft.com>>)
 
+## Table of Contents
+  * [Key features](#key-features)
+  * [How to add or open new vaults](#how-to-add-or-open-new-vaults)
+  * [Keyboard and mouse shortcuts](#keyboard-and-mouse-shortcuts)
+  * [Configuration](#configuration)
+    * [Vaults.json](#vaultsjson)
+    * [SecretKinds.json](#secretkindsjson)
+    * [CustomTags.json](#customtagsjson)
+    * [VaultAliases.json](#vaultaliasesjson)
+    * [User.config](#userconfig)
+  * [Telemetry](#telemetry)
+  * [Screen shots](#screen-shots)
+      * [Main window](#main-window)
+      * [Search and copy secret to clipboard](#search-and-copy-secret-to-clipboard)
+      * [Edit secret](#edit-secret)
+      * [Rollback to specific secret version](#rollback-to-specific-secret-version)
+      * [Edit secret tags](#edit-secret-tags)
+      * [Edit Key Vault certificate](#edit-key-vault-certificate)
+      * [Settings window](#settings-window)
+
 ## Key features
 * Best user experience for authentication, you will be prompted at most *once* to enter your credentials
 * All types of authentications are supported: Certificate, Secret and User based with 2FA (including PHX or GME)
