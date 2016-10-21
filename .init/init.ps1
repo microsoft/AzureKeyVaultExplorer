@@ -1,34 +1,19 @@
+# Copyright (c) Microsoft Corporation. All rights reserved. 
+# Licensed under the MIT License. See License.txt in the project root for license information. 
+
 # Stop on error
 $errorActionPreference = 'Stop'
 
 # Common NuGet package feeds (scanned in this order)
 $pkgFeeds = @(
     # NuGet official feed
-    "nuget.org",
-
-    # WD Services (External)
-    "WD.Services.External",
-
-    # WD Services (App)
-    "WD.Services.App",
-
-    # WD Services (App-Debug)
-    "WD.Services.App-Debug"
+    "nuget.org"
 )
 
 # Obtain the path to nuget.exe
 $nuGetExe = (Join-Path $PSScriptRoot nuget\nuget.exe)
 
-# Pick %AppData%\NuGet\NuGet.config when running from build agent, it has <packageSourceCredentials> to access all our VSO NuGet feeds,
-# otherwise pick the .\NuGet\NuGetPS.config and rely on VisualStudio.Services.NuGet.CredentialProvider to authenticate to our VSO NuGet feeds
-if ($env:USERNAME -eq 'buildagent')
-{
-    $nuGetCfg = (Join-Path $env:APPDATA nuget\NuGet.Config)
-}
-else
-{
-    $nuGetCfg = (Join-Path $PSScriptRoot nuget\NuGetPS.Config)
-}
+$nuGetCfg = (Join-Path $PSScriptRoot nuget\nuget.config)
 
 # NuGet (restored) packages root
 $nuGetPackageRoot = Join-Path $PSScriptRoot '..\.packages'

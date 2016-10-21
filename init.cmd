@@ -1,5 +1,8 @@
 @echo off
 
+REM Copyright (c) Microsoft Corporation. All rights reserved. 
+REM Licensed under the MIT License. See License.txt in the project root for license information. 
+
 REM 
 REM Setup minimal command line environment, based on the root location
 REM
