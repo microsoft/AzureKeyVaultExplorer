@@ -1,1 +1,0 @@
-@powershell -ExecutionPolicy Unrestricted -Command "iex \"^& '%~dp0\nugetpush.ps1' '%~dp0\nuget.exe'\""
