@@ -49,7 +49,7 @@ namespace Microsoft.Vault.Explorer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1050, 520")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1170, 520")]
         public global::System.Drawing.Size MainFormWindowSize {
             get {
                 return ((global::System.Drawing.Size)(this["MainFormWindowSize"]));
