@@ -41,8 +41,10 @@ namespace Microsoft.Vault.Explorer
         {
             InitializeComponent();
             _httpClient = new HttpClient();
-            uxComboBoxAccounts.Items.Add(new AccountItem("microsoft.com"));
-            uxComboBoxAccounts.Items.Add(new AccountItem("gme.gbl"));
+            foreach (string domainHint in Settings.Default.DomainHintsList)
+            {
+                uxComboBoxAccounts.Items.Add(new AccountItem(domainHint));
+            }
             uxComboBoxAccounts.SelectedIndex = 0;
         }
 

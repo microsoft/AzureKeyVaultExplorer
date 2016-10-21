@@ -37,24 +37,6 @@ namespace Microsoft.Vault.Explorer
         }
 
         [UserScopedSetting()]
-        [DefaultSettingValue("false")]
-        [DisplayName("Disable telemetry")]
-        [Description("Value indicating whether sending of telemetry to Application Insights is disabled.")]
-        [Browsable(false)]
-        [Category("General")]
-        public bool DisableTelemetry
-        {
-            get
-            {
-                return ((bool)(this[nameof(DisableTelemetry)]));
-            }
-            set
-            {
-                this[nameof(DisableTelemetry)] = value;
-            }
-        }
-
-        [UserScopedSetting()]
         [DefaultSettingValue("00:00:30")]
         [DisplayName("Clear secret from clipboard after")]
         [Description("Interval for secret to stay in the clipboard once copied to the clipboard.")]
@@ -142,6 +124,25 @@ namespace Microsoft.Vault.Explorer
                 this[nameof(DisabledItemColor)] = value;
             }
         }
+
+        [UserScopedSetting()]
+        [DefaultSettingValue("false")]
+        [DisplayName("Disable telemetry")]
+        [Description("Value indicating whether sending of telemetry to Application Insights is disabled. Telemetry includes only type of user actions, their duration and sometimes exceptions.")]
+        [Browsable(true)]
+        [Category("General")]
+        public bool DisableTelemetry
+        {
+            get
+            {
+                return ((bool)(this[nameof(DisableTelemetry)]));
+            }
+            set
+            {
+                this[nameof(DisableTelemetry)] = value;
+            }
+        }
+
 
         [UserScopedSetting()]
         [DefaultSettingValue("Courier New, 9.75pt")]
@@ -302,11 +303,36 @@ namespace Microsoft.Vault.Explorer
         }
 
         [UserScopedSetting()]
-        [DefaultSettingValue(@"{}")]
-        [DisplayName("Favorite secrets")]
-        [Description("List of favorite secrets per vault alias.")]
-        [Category("General")]
+        [DefaultSettingValue("microsoft.com\r\ngme.gbl")]
+        [DisplayName("Domain hints")]
+        [Description("Multi-line string of domain hints to use in the subscriptions manager dialog.")]
+        [Category("Vaults configuration")]
         [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
+        public string DomainHints
+        {
+            get
+            {
+                return ((string)(this[nameof(DomainHints)]));
+            }
+            set
+            {
+                this[nameof(DomainHints)] = value;
+            }
+        }
+
+        [Browsable(false)]
+        public IEnumerable<string> DomainHintsList
+        {
+            get
+            {
+                return from s in DomainHints.Split('\n') where !string.IsNullOrWhiteSpace(s) select s.Trim();
+            }
+        }
+
+
+        [UserScopedSetting()]
+        [DefaultSettingValue(@"{}")]
+        [Browsable(false)]
         public string FavoriteSecretsJson
         {
             get

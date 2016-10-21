@@ -1,5 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="VaultExplorer.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Microsoft.Vault.Explorer.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
     <Setting Name="MainFormLocation" Type="System.Drawing.Point" Scope="User">
@@ -9,7 +9,7 @@
       <Value Profile="(Default)">260</Value>
     </Setting>
     <Setting Name="MainFormWindowSize" Type="System.Drawing.Size" Scope="User">
-      <Value Profile="(Default)">1050, 520</Value>
+      <Value Profile="(Default)">1170, 520</Value>
     </Setting>
     <Setting Name="MainFormSecretsSorting" Type="System.Windows.Forms.SortOrder" Scope="User">
       <Value Profile="(Default)">Ascending</Value>

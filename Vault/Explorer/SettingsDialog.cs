@@ -73,8 +73,10 @@ namespace Microsoft.Vault.Explorer
 
         private void uxLinkLabelClearTokenCache_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            new FileTokenCache("microsoft.com").Clear();
-            new FileTokenCache("gme.gbl").Clear();
+            foreach (string domainHint in Settings.Default.DomainHintsList)
+            {
+                new FileTokenCache(domainHint).Clear();
+            }
         }
     }
 }
