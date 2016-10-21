@@ -182,6 +182,16 @@ Here an example for location of the file:
 ```
 %LocalAppData%\Apps\2.0\Data\2310EVQO.1C1\Q6P3APKG.HY4\vaul..tion_7446cb71d1187222_07e0.03f5_fc3133cd208276e1\Data\2016.1013.1742.39\user.config
 ```
+
+## Telemetry
+By default Azure Key Vault Explorer collects and sends aggregated telemetry to Application Insights about usage of the tool. Telemetry includes only the following:
+* Type of user actions - which button / menu item was clicked
+* Action duration – how long time particular action took (for example: action to save a secret)
+* Exceptions – only in case action failed, for diagnostic purposes only exception information is collected
+
+All collected telemetry is stored for no more than 90 days.
+Telemetry can be disabled in the Settings dialog. Set *Disable telemetry* to *True*, hit *OK* button and restart the application.
+
 ## Screen shots
 
 #### Main window
