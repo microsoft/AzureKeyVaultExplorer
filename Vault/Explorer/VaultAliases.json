@@ -11,68 +11,13 @@
 
 [
   {
-    "Alias": "WD.Services US Int",
-    "VaultNames": [ "wdvaultus1westint", "wdvaultus1eastint" ],
+    "Alias": "Dual Foo Vaults in US west and east",
+    "VaultNames": [ "FooVaultInUsWest", "FooVaultInUsEast" ],
     "SecretKinds": [ "Custom", "WD.Certificate", "WD.ServiceFabricService.Configuration.Secret", "WCD.StorageAccount", "WCD.SQLAccount", "WCD.WindowsAccount", "WCD.PfxCertificate", "WCD.CerCertificate", "WCD.ServiceBus", "WCD.DataFactory", "WCD.ApiKey", "WCD.RedisCache", "WCD.AppKey" ]
   },
   {
-    "Alias": "WD.Services US PPE",
-    "VaultNames": [ "wdvaultus1westppe", "wdvaultus1eastppe" ],
-    "SecretKinds": [ "Custom", "WD.Certificate", "WD.ServiceFabricService.Configuration.Secret" ]
-  },
-  {
-    "Alias": "WD.Services US Prod",
-    "VaultNames": [ "wdvaultus1westprod", "wdvaultus1eastprod" ],
-    "SecretKinds": [ "Custom", "WD.Certificate", "WD.ServiceFabricService.Configuration.Secret" ]
-  },
-  {
-    "Alias": "WD.Services US Prod GME",
-    "VaultNames": [ "wdvgmeus1westprod", "wdvgmeus1eastprod" ],
-    "SecretKinds": [ "Custom", "WD.Certificate", "WD.ServiceFabricService.Configuration.Secret" ]
-  },
-  {
-    "Alias": "WD.Services AU Prod",
-    "VaultNames": [ "wdvaultau1eastprod", "wdvaultau1southeastprod" ],
-    "SecretKinds": [ "Custom", "WD.Certificate", "WD.ServiceFabricService.Configuration.Secret" ]
-  },
-  {
-    "Alias": "WD.Services EU Prod",
-    "VaultNames": [ "wdvaulteu1northprod", "wdvaulteu1westprod" ],
-    "SecretKinds": [ "Custom", "WD.Certificate", "WD.ServiceFabricService.Configuration.Secret" ]
-  },
-  {
-    "Alias": "WD.Services EU Prod GME",
-    "VaultNames": [ "wdvgmeeu1northprod", "wdvgmeeu1westprod" ],
-    "SecretKinds": [ "Custom", "WD.Certificate", "WD.ServiceFabricService.Configuration.Secret" ]
-  },
-  {
-    "Alias": "WD.Services AS Prod",
-    "VaultNames": [ "wdvaultas1eastprod", "wdvaultas1southeastprod" ],
-    "SecretKinds": [ "Custom", "WD.Certificate", "WD.ServiceFabricService.Configuration.Secret" ]
-  },
-  {
-    "Alias": "WD.Services BR Prod",
-    "VaultNames": [ "wdvaultbr1southprod" ],
-    "SecretKinds": [ "Custom", "WD.Certificate", "WD.ServiceFabricService.Configuration.Secret" ]
-  },
-  {
-    "Alias": "Defender Key Vault Ops",
-    "VaultNames": [ "defenderkeyvault" ],
-    "SecretKinds": [ "Custom", "WD.Certificate" ]
-  },
-  {
-    "Alias": "Defender Key Vault Dev",
-    "VaultNames": [ "defenderkeyvaultdev" ],
-    "SecretKinds": [ "Custom", "WD.Certificate" ]
-  },
-  {
-    "Alias": "Defender Key Vault Research",
-    "VaultNames": [ "defenderkeyvaultresearch" ],
-    "SecretKinds": [ "Custom", "WD.Certificate" ]
-  },
-  {
-    "Alias": "Defender Key Vault Build",
-    "VaultNames": [ "defenderkeyvaultbuild" ],
+    "Alias": "Single Bar Vault in Europe",
+    "VaultNames": [ "BarVaultInEurope" ],
     "SecretKinds": [ "Custom", "WD.Certificate" ]
   }
 ]
