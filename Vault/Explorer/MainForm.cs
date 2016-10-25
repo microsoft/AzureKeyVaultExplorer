@@ -28,6 +28,8 @@ namespace Microsoft.Vault.Explorer
         private bool _keyDownOccured;
         private ToolStripButton uxButtonCancel;
         private readonly Dictionary<string, VaultAlias> _tempVaultAliases; // Temporary picked VaultAliases via SubscriptionsManager
+        private const string AddNewVaultText = "How to add new vault here...";
+        private const string PickVaultText = "Pick vault from subscription...";
 
         #region ISession
 
@@ -124,7 +126,8 @@ namespace Microsoft.Vault.Explorer
             }
             uxComboBoxVaultAlias.Items.AddRange(va.ToArray());
             uxComboBoxVaultAlias.Items.AddRange(_tempVaultAliases.Values.ToArray());
-            uxComboBoxVaultAlias.Items.Add("Pick vault from subscription...");
+            uxComboBoxVaultAlias.Items.Add(AddNewVaultText);
+            uxComboBoxVaultAlias.Items.Add(PickVaultText);
             uxComboBoxVaultAlias.SelectedItem = prevSelectedItem;
         }
 
@@ -149,15 +152,24 @@ namespace Microsoft.Vault.Explorer
             if ((CurrentVaultAlias?.Alias == uxComboBoxVaultAlias.SelectedItem.ToString()) && (uxListViewSecrets.Items.Count > 0)) return false;
             if (uxComboBoxVaultAlias.SelectedItem is string)
             {
-                var smd = new SubscriptionsManagerDialog();
-                if (smd.ShowDialog() != DialogResult.OK)
+                switch (uxComboBoxVaultAlias.SelectedItem.ToString())
                 {
-                    uxComboBoxVaultAlias.SelectedItem = CurrentVaultAlias;
-                    return false;
+                    case AddNewVaultText:
+                        uxButtonHelp.PerformClick();
+                        uxComboBoxVaultAlias.SelectedItem = CurrentVaultAlias;
+                        return false;
+                    case PickVaultText:
+                        var smd = new SubscriptionsManagerDialog();
+                        if (smd.ShowDialog() != DialogResult.OK)
+                        {
+                            uxComboBoxVaultAlias.SelectedItem = CurrentVaultAlias;
+                            return false;
+                        }
+                        _tempVaultAliases[smd.CurrentVaultAlias.Alias] = smd.CurrentVaultAlias;
+                        uxComboBoxVaultAlias.Items.Insert(uxComboBoxVaultAlias.Items.Count - 1, smd.CurrentVaultAlias);
+                        uxComboBoxVaultAlias.SelectedItem = smd.CurrentVaultAlias;
+                        break;
                 }
-                _tempVaultAliases[smd.CurrentVaultAlias.Alias] = smd.CurrentVaultAlias;
-                uxComboBoxVaultAlias.Items.Insert(uxComboBoxVaultAlias.Items.Count - 1, smd.CurrentVaultAlias);
-                uxComboBoxVaultAlias.SelectedItem = smd.CurrentVaultAlias;
             }
             CurrentVaultAlias = (VaultAlias)uxComboBoxVaultAlias.SelectedItem;
             bool itemSelected = (null != CurrentVaultAlias);
