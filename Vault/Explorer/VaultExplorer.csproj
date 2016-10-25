@@ -245,12 +245,13 @@
     <Content Include="$(AssemblyName).png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Resources\move_link.cur" />
+
+    <Content Include="License.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="CustomTags.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Resources\table.png" />
-    <None Include="Resources\powershell.png" />
     <Content Include="VaultAliases.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -302,9 +303,12 @@
     <None Include="Resources\medal_bronze_delete.png" />
     <None Include="Resources\move_secret.cur" />
     <None Include="Resources\move_value.cur" />
+    <None Include="Resources\move_link.cur" />
     <None Include="Resources\page_copy.png" />
     <None Include="Resources\star.png" />
     <None Include="Resources\wrench.png" />
+    <None Include="Resources\table.png" />
+    <None Include="Resources\powershell.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterCompile">
