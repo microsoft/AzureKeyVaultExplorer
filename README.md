@@ -46,6 +46,7 @@ Contact: [Azure Key Vault Explorer Developers](mailto:Azure Key Vault Explorer D
 * Fast regex based search to quickly find the secret by any metadata
 * Customizable regex based secret kinds to verify secret name and value and auto extract non-secret info to Tags, plus guide use with secret value template
 * Custom required and optional tags per secret
+* Custom tags as columns in the list view (Right click on columns header bar)
 * Syntax highlight for well-known formats, such as: json, xml, config
 * Build it auditing for all operations
 * Disable or expiry item in a click of a button
