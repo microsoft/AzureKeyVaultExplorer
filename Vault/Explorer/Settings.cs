@@ -303,10 +303,27 @@ namespace Microsoft.Vault.Explorer
         }
 
         [UserScopedSetting()]
+        [DefaultSettingValue("https://login.windows.net/72f988bf-86f1-41af-91ab-2d7cd011db47")]
+        [DisplayName("Authority")]
+        [Description("Address of the authority to issue access token in the subscriptions manager dialog.")]
+        [Category("Subscriptions dialog")]
+        public string Authority
+        {
+            get
+            {
+                return ((string)(this[nameof(Authority)]));
+            }
+            set
+            {
+                this[nameof(Authority)] = value;
+            }
+        }
+
+        [UserScopedSetting()]
         [DefaultSettingValue("microsoft.com\r\ngme.gbl")]
         [DisplayName("Domain hints")]
         [Description("Multi-line string of domain hints to use in the subscriptions manager dialog.")]
-        [Category("Vaults configuration")]
+        [Category("Subscriptions dialog")]
         [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
         public string DomainHints
         {

@@ -59,7 +59,7 @@
             uxTabControl.Location = new System.Drawing.Point(12, 12);
             uxTabControl.Name = "uxTabControl";
             uxTabControl.SelectedIndex = 0;
-            uxTabControl.Size = new System.Drawing.Size(521, 497);
+            uxTabControl.Size = new System.Drawing.Size(521, 566);
             uxTabControl.TabIndex = 4;
             // 
             // uxTabPageOptions
@@ -68,7 +68,7 @@
             this.uxTabPageOptions.Location = new System.Drawing.Point(4, 25);
             this.uxTabPageOptions.Name = "uxTabPageOptions";
             this.uxTabPageOptions.Padding = new System.Windows.Forms.Padding(3);
-            this.uxTabPageOptions.Size = new System.Drawing.Size(513, 468);
+            this.uxTabPageOptions.Size = new System.Drawing.Size(513, 537);
             this.uxTabPageOptions.TabIndex = 0;
             this.uxTabPageOptions.Text = "Options";
             this.uxTabPageOptions.UseVisualStyleBackColor = true;
@@ -79,7 +79,7 @@
             this.uxPropertyGrid.Location = new System.Drawing.Point(3, 3);
             this.uxPropertyGrid.Name = "uxPropertyGrid";
             this.uxPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.Categorized;
-            this.uxPropertyGrid.Size = new System.Drawing.Size(507, 462);
+            this.uxPropertyGrid.Size = new System.Drawing.Size(507, 531);
             this.uxPropertyGrid.TabIndex = 0;
             this.uxPropertyGrid.ToolbarVisible = false;
             // 
@@ -198,7 +198,7 @@
             // 
             this.uxButtonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.uxButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.uxButtonCancel.Location = new System.Drawing.Point(432, 516);
+            this.uxButtonCancel.Location = new System.Drawing.Point(432, 585);
             this.uxButtonCancel.Margin = new System.Windows.Forms.Padding(4);
             this.uxButtonCancel.Name = "uxButtonCancel";
             this.uxButtonCancel.Size = new System.Drawing.Size(100, 28);
@@ -211,7 +211,7 @@
             this.uxButtonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.uxButtonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.uxButtonOK.Enabled = false;
-            this.uxButtonOK.Location = new System.Drawing.Point(324, 516);
+            this.uxButtonOK.Location = new System.Drawing.Point(324, 585);
             this.uxButtonOK.Margin = new System.Windows.Forms.Padding(4);
             this.uxButtonOK.Name = "uxButtonOK";
             this.uxButtonOK.Size = new System.Drawing.Size(100, 28);
@@ -226,7 +226,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.uxButtonCancel;
-            this.ClientSize = new System.Drawing.Size(545, 557);
+            this.ClientSize = new System.Drawing.Size(545, 626);
             this.Controls.Add(uxTabControl);
             this.Controls.Add(this.uxButtonCancel);
             this.Controls.Add(this.uxButtonOK);

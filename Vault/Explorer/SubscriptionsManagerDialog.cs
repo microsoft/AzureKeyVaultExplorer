@@ -29,6 +29,12 @@ namespace Microsoft.Vault.Explorer
     {
         const string ApiVersion = "api-version=2016-07-01";
         const string ManagmentEndpoint = "https://management.azure.com/";
+        const string AddDomainHintText = "How to add new domain hint here...";
+        const string AddDomainHintInstructions = @"To add new domain hint, just follow below steps:
+1) In the main window open Settings dialog
+2) Add domain hint line to 'Domain hints' property
+3) Click on 'OK' button to save and close Settings dialog
+4) Open Subscriptions Manager dialog";
 
         private AccountItem _currentAccountItem;
         private AuthenticationResult _currentAuthResult;
@@ -45,6 +51,7 @@ namespace Microsoft.Vault.Explorer
             {
                 uxComboBoxAccounts.Items.Add(new AccountItem(domainHint));
             }
+            uxComboBoxAccounts.Items.Add(AddDomainHintText);
             uxComboBoxAccounts.SelectedIndex = 0;
         }
 
@@ -52,6 +59,12 @@ namespace Microsoft.Vault.Explorer
 
         private async void uxComboBoxAccounts_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (uxComboBoxAccounts.SelectedItem is string)
+            {
+                MessageBox.Show(AddDomainHintInstructions, Utils.AppName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                uxComboBoxAccounts.SelectedItem = null;
+                return;
+            }
             _currentAccountItem = (AccountItem)uxComboBoxAccounts.SelectedItem;
             if (null == _currentAccountItem) return;
             using (var op = NewUxOperationWithProgress(uxComboBoxAccounts))
@@ -110,15 +123,13 @@ namespace Microsoft.Vault.Explorer
 
     public class AccountItem
     {
-        const string Authority = "https://login.windows.net/72f988bf-86f1-41af-91ab-2d7cd011db47";
-
         public readonly AuthenticationContext AuthContext;
 
         public readonly string DomainHint;
 
         public AccountItem(string domainHint)
         {
-            AuthContext = new AuthenticationContext(Authority, new FileTokenCache(domainHint));
+            AuthContext = new AuthenticationContext(Settings.Default.Authority, new FileTokenCache(domainHint));
             DomainHint = domainHint;
         }
 
