@@ -32,6 +32,7 @@
             this.uxTabPageOptions = new System.Windows.Forms.TabPage();
             this.uxPropertyGrid = new System.Windows.Forms.PropertyGrid();
             this.uxTabPageAbout = new System.Windows.Forms.TabPage();
+            this.uxTextBoxLicense = new System.Windows.Forms.TextBox();
             this.uxLinkLabelUserSettingsLocation = new System.Windows.Forms.LinkLabel();
             this.uxTextBoxVersions = new System.Windows.Forms.TextBox();
             this.uxLinkLabelInstallLocation = new System.Windows.Forms.LinkLabel();
@@ -60,7 +61,7 @@
             uxTabControl.Name = "uxTabControl";
             uxTabControl.SelectedIndex = 0;
             uxTabControl.Size = new System.Drawing.Size(521, 566);
-            uxTabControl.TabIndex = 4;
+            uxTabControl.TabIndex = 0;
             // 
             // uxTabPageOptions
             // 
@@ -86,6 +87,7 @@
             // uxTabPageAbout
             // 
             this.uxTabPageAbout.BackColor = System.Drawing.SystemColors.Window;
+            this.uxTabPageAbout.Controls.Add(this.uxTextBoxLicense);
             this.uxTabPageAbout.Controls.Add(this.uxLinkLabelUserSettingsLocation);
             this.uxTabPageAbout.Controls.Add(this.uxTextBoxVersions);
             this.uxTabPageAbout.Controls.Add(this.uxLinkLabelInstallLocation);
@@ -97,43 +99,55 @@
             this.uxTabPageAbout.Location = new System.Drawing.Point(4, 25);
             this.uxTabPageAbout.Name = "uxTabPageAbout";
             this.uxTabPageAbout.Padding = new System.Windows.Forms.Padding(3);
-            this.uxTabPageAbout.Size = new System.Drawing.Size(513, 468);
+            this.uxTabPageAbout.Size = new System.Drawing.Size(513, 537);
             this.uxTabPageAbout.TabIndex = 1;
             this.uxTabPageAbout.Text = "About";
+            // 
+            // uxTextBoxLicense
+            // 
+            this.uxTextBoxLicense.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.uxTextBoxLicense.Location = new System.Drawing.Point(6, 386);
+            this.uxTextBoxLicense.Multiline = true;
+            this.uxTextBoxLicense.Name = "uxTextBoxLicense";
+            this.uxTextBoxLicense.ReadOnly = true;
+            this.uxTextBoxLicense.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.uxTextBoxLicense.Size = new System.Drawing.Size(501, 145);
+            this.uxTextBoxLicense.TabIndex = 7;
             // 
             // uxLinkLabelUserSettingsLocation
             // 
             this.uxLinkLabelUserSettingsLocation.AutoSize = true;
-            this.uxLinkLabelUserSettingsLocation.Location = new System.Drawing.Point(6, 249);
+            this.uxLinkLabelUserSettingsLocation.Location = new System.Drawing.Point(6, 205);
             this.uxLinkLabelUserSettingsLocation.Name = "uxLinkLabelUserSettingsLocation";
             this.uxLinkLabelUserSettingsLocation.Size = new System.Drawing.Size(156, 17);
-            this.uxLinkLabelUserSettingsLocation.TabIndex = 16;
+            this.uxLinkLabelUserSettingsLocation.TabIndex = 4;
             this.uxLinkLabelUserSettingsLocation.TabStop = true;
             this.uxLinkLabelUserSettingsLocation.Text = "User settings location...";
             this.uxLinkLabelUserSettingsLocation.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.uxLinkLabelUserSettingsLocation_LinkClicked);
             // 
             // uxTextBoxVersions
             // 
-            this.uxTextBoxVersions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.uxTextBoxVersions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.uxTextBoxVersions.BackColor = System.Drawing.SystemColors.Window;
             this.uxTextBoxVersions.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.uxTextBoxVersions.Location = new System.Drawing.Point(9, 304);
+            this.uxTextBoxVersions.Location = new System.Drawing.Point(9, 264);
             this.uxTextBoxVersions.Multiline = true;
             this.uxTextBoxVersions.Name = "uxTextBoxVersions";
             this.uxTextBoxVersions.ReadOnly = true;
-            this.uxTextBoxVersions.Size = new System.Drawing.Size(447, 116);
-            this.uxTextBoxVersions.TabIndex = 15;
+            this.uxTextBoxVersions.Size = new System.Drawing.Size(498, 116);
+            this.uxTextBoxVersions.TabIndex = 6;
             this.uxTextBoxVersions.Text = "Version: x.x.x.x";
             // 
             // uxLinkLabelInstallLocation
             // 
             this.uxLinkLabelInstallLocation.AutoSize = true;
-            this.uxLinkLabelInstallLocation.Location = new System.Drawing.Point(6, 226);
+            this.uxLinkLabelInstallLocation.Location = new System.Drawing.Point(6, 182);
             this.uxLinkLabelInstallLocation.Name = "uxLinkLabelInstallLocation";
             this.uxLinkLabelInstallLocation.Size = new System.Drawing.Size(109, 17);
-            this.uxLinkLabelInstallLocation.TabIndex = 14;
+            this.uxLinkLabelInstallLocation.TabIndex = 3;
             this.uxLinkLabelInstallLocation.TabStop = true;
             this.uxLinkLabelInstallLocation.Text = "Install location...";
             this.uxLinkLabelInstallLocation.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.uxLinkLabelInstallLocation_LinkClicked);
@@ -141,10 +155,10 @@
             // uxLinkLabelClearTokenCache
             // 
             this.uxLinkLabelClearTokenCache.AutoSize = true;
-            this.uxLinkLabelClearTokenCache.Location = new System.Drawing.Point(6, 273);
+            this.uxLinkLabelClearTokenCache.Location = new System.Drawing.Point(6, 229);
             this.uxLinkLabelClearTokenCache.Name = "uxLinkLabelClearTokenCache";
             this.uxLinkLabelClearTokenCache.Size = new System.Drawing.Size(170, 17);
-            this.uxLinkLabelClearTokenCache.TabIndex = 12;
+            this.uxLinkLabelClearTokenCache.TabIndex = 5;
             this.uxLinkLabelClearTokenCache.TabStop = true;
             this.uxLinkLabelClearTokenCache.Text = "Clear access token cache";
             this.uxLinkLabelClearTokenCache.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.uxLinkLabelClearTokenCache_LinkClicked);
@@ -152,23 +166,23 @@
             // uxLinkLabelSendFeedback
             // 
             this.uxLinkLabelSendFeedback.AutoSize = true;
-            this.uxLinkLabelSendFeedback.Location = new System.Drawing.Point(6, 187);
+            this.uxLinkLabelSendFeedback.Location = new System.Drawing.Point(6, 145);
             this.uxLinkLabelSendFeedback.Name = "uxLinkLabelSendFeedback";
-            this.uxLinkLabelSendFeedback.Size = new System.Drawing.Size(346, 17);
-            this.uxLinkLabelSendFeedback.TabIndex = 13;
+            this.uxLinkLabelSendFeedback.Size = new System.Drawing.Size(342, 17);
+            this.uxLinkLabelSendFeedback.TabIndex = 2;
             this.uxLinkLabelSendFeedback.TabStop = true;
-            this.uxLinkLabelSendFeedback.Text = "Like it, Questions or Comments? Send me feedback...";
+            this.uxLinkLabelSendFeedback.Text = "Like it, Questions or Comments? Send us feedback...";
             this.uxLinkLabelSendFeedback.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.uxLinkLabelSendFeedback_LinkClicked);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 87);
+            this.label2.Location = new System.Drawing.Point(6, 83);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(327, 85);
-            this.label2.TabIndex = 11;
-            this.label2.Text = "Copyright (c) 2016 Microsoft Corporation\r\n\r\n\r\n\r\nWritten by Eli Zeitlin and few ot" +
-    "her great engineers";
+            this.label2.Size = new System.Drawing.Size(290, 51);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "Copyright (c) 2016 Microsoft Corporation\r\n\r\nWritten by Eli Zeitlin and few other " +
+    "engineers";
             // 
             // uxLinkLabelTitle
             // 
@@ -178,7 +192,7 @@
             this.uxLinkLabelTitle.Location = new System.Drawing.Point(76, 6);
             this.uxLinkLabelTitle.Name = "uxLinkLabelTitle";
             this.uxLinkLabelTitle.Size = new System.Drawing.Size(380, 64);
-            this.uxLinkLabelTitle.TabIndex = 1;
+            this.uxLinkLabelTitle.TabIndex = 0;
             this.uxLinkLabelTitle.TabStop = true;
             this.uxLinkLabelTitle.Text = "Azure Key Vault Explorer";
             this.uxLinkLabelTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -262,5 +276,6 @@
         private System.Windows.Forms.LinkLabel uxLinkLabelSendFeedback;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.LinkLabel uxLinkLabelUserSettingsLocation;
+        private System.Windows.Forms.TextBox uxTextBoxLicense;
     }
 }

@@ -27,6 +27,12 @@ namespace Microsoft.Vault.Explorer
             uxPropertyGrid.SelectedObject = _currentSettings = new Settings();
             _currentSettings.PropertyChanged += (object sender, PropertyChangedEventArgs e) => { uxButtonOK.Enabled = true; };
             uxTextBoxVersions.Text = FetchVersions();
+
+            string licenseTxt = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "License.txt");
+            if (File.Exists(licenseTxt))
+            {
+                uxTextBoxLicense.Text = File.ReadAllText(licenseTxt).Replace("\n", "\r\n");
+            }
         }
 
         private void uxButtonOK_Click(object sender, EventArgs e)
