@@ -118,6 +118,11 @@ In case of dual vaults (primary and secondary) use $id and $ref to avoid duplica
         "CertificateThumbprint": "ed2df9d40d455208f47af0aaea4d7cb99ca38ebf"
       },
       {
+        "$type": "Microsoft.Vault.Library.VaultAccessClientCredential, Microsoft.Vault.Library",
+        "ClientId": "2f2b2cef-b970-46fa-8d0b-d5fc40786d9c",
+        "ClientSecret": "aXRoIEJhc2U2NCBmb3Jtsdfsdf5534YXQ/IFRoZW4="
+      },
+      {
         "$type": "Microsoft.Vault.Library.VaultAccessUserInteractive, Microsoft.Vault.Library",
         "DomainHint": "gme.gbl" 
       }
