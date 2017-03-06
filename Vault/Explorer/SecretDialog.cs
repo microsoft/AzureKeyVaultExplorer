@@ -48,8 +48,29 @@ namespace Microsoft.Vault.Explorer
                 ContextMenuStrip = uxMenuNewValue
             };
             uxTextBoxValue.TextChanged += uxTextBoxValue_TextChanged;
-            var sk = Utils.LoadFromJsonFile<SecretKinds>(Settings.Default.SecretKindsJsonFileLocation);
-            uxMenuSecretKind.Items.AddRange((from name in _session.CurrentVaultAlias.SecretKinds select sk[name]).ToArray());
+            var secretKinds = Utils.LoadFromJsonFile<SecretKinds>(Settings.Default.SecretKindsJsonFileLocation);
+            List<string> unknownSk = new List<string>();
+            
+            foreach (var secretKind in _session.CurrentVaultAlias.SecretKinds)
+            {
+                SecretKind sk;
+                if (secretKinds.TryGetValue(secretKind, out sk))
+                {
+                    uxMenuSecretKind.Items.Add(sk);
+                }
+                else
+                {
+                    unknownSk.Add(secretKind);
+                }
+            }
+
+            if (unknownSk.Count > 0)
+            {
+                MessageBox.Show(this,
+                    $"Secret kinds '{string.Join(",", unknownSk)}' in vault alias '{_session.CurrentVaultAlias.Alias}' are being ignored because they are not found in {Settings.Default.SecretKindsJsonFileLocation}",
+                    "Configuration Error", MessageBoxButtons.OK);
+            }
+
             uxSplitContainer_Panel1_SizeChanged(null, EventArgs.Empty);
             ActiveControl = uxTextBoxName;
         }
