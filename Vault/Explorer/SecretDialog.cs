@@ -48,8 +48,18 @@ namespace Microsoft.Vault.Explorer
                 ContextMenuStrip = uxMenuNewValue
             };
             uxTextBoxValue.TextChanged += uxTextBoxValue_TextChanged;
-            var sk = Utils.LoadFromJsonFile<SecretKinds>(Settings.Default.SecretKindsJsonFileLocation);
-            uxMenuSecretKind.Items.AddRange((from name in _session.CurrentVaultAlias.SecretKinds select sk[name]).ToArray());
+            List<string> unknownSk;
+            List<SecretKind> secretKinds = LoadSecretKinds(_session.CurrentVaultAlias, out unknownSk);
+
+            if (unknownSk.Count > 0)
+            {
+                MessageBox.Show(this,
+                    $"Secret kinds '{string.Join(",", unknownSk)}' in vault alias '{_session.CurrentVaultAlias.Alias}' are being ignored because they are not found in {Settings.Default.SecretKindsJsonFileLocation}",
+                    "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
+            uxMenuSecretKind.Items.AddRange(secretKinds.ToArray());
+
             uxSplitContainer_Panel1_SizeChanged(null, EventArgs.Empty);
             ActiveControl = uxTextBoxName;
         }
@@ -130,6 +140,28 @@ namespace Microsoft.Vault.Explorer
             int i = 0;
             uxMenuVersions.Items.AddRange((from v in versions orderby v.Attributes.Created descending select new SecretVersion(i++, v)).ToArray());
             uxMenuVersions_ItemClicked(null, new ToolStripItemClickedEventArgs(uxMenuVersions.Items[0])); // Pass sender as NULL so _changed will be set to false
+        }
+
+        private static List<SecretKind> LoadSecretKinds(VaultAlias vaultAlias, out List<string> unknownSk)
+        {
+            SecretKinds allSecretKinds = Utils.LoadFromJsonFile<SecretKinds>(Settings.Default.SecretKindsJsonFileLocation);
+            List<SecretKind> validatedSecretKinds = new List<SecretKind>(vaultAlias.SecretKinds.Length);
+            unknownSk = new List<string>();
+
+            foreach (var secretKind in vaultAlias.SecretKinds)
+            {
+                SecretKind sk;
+                if (allSecretKinds.TryGetValue(secretKind, out sk))
+                {
+                    validatedSecretKinds.Add(sk);
+                }
+                else
+                {
+                    unknownSk.Add(secretKind);
+                }
+            }
+
+            return validatedSecretKinds;
         }
 
         private void RefreshSecretObject(SecretBundle s)
