@@ -2,8 +2,6 @@
 
 Azure Key Vault Explorer - be productive when working with secrets!
 
-#### [Click here to install the latest version (https://aka.ms/ve)](https://aka.ms/ve)
-
 Authors: Eli Zeitlin, Gokhan Ozhan, Anna Zeitlin  
 Contact: [Azure Key Vault Explorer Developers](mailto:Azure Key Vault Explorer Developers <vedev@microsoft.com>>)
 

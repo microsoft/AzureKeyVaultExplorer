@@ -1,0 +1,53 @@
+// --------------------------------------------------------------------------------------
+// Windows Defender Services - Azure Key Vaults Configuration
+// Author: Eli Zeitlin
+//
+// Supported Vault Access types are:
+// 1. VaultAccessClientCertificate - client id (application id) in AzureAD will be selected with right certificate thumbprint (sha1) of the application's principal to get the access
+// 2. VaultAccessClientCredential - client id and client secret will be used to get the access
+// 3. VaultAccessUserInteractive - client id (powershell app id) and user credentials will be used to get the access
+//
+// In case of dual vaults (primary and secondary) use $id and $ref to avoid duplication
+//
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See License.txt in the project root for license information.
+// --------------------------------------------------------------------------------------
+
+{
+  "FooVaultInUsWest": {
+    "$id": "1",
+    "ReadOnly": [
+      {
+        "$type": "Microsoft.Vault.Library.VaultAccessClientCertificate, Microsoft.Vault.Library",
+        "ClientId": "00000000-0000-0000-0000-000000000000",
+        "CertificateThumbprint": "1111111111111111111111111111111111111111"
+      }
+    ],
+    "ReadWrite": [
+      {
+        "$type": "Microsoft.Vault.Library.VaultAccessClientCertificate, Microsoft.Vault.Library",
+        "ClientId": "22222222-2222-2222-2222-222222222222",
+        "CertificateThumbprint": "3333333333333333333333333333333333333333"
+      },
+      {
+        "$type": "Microsoft.Vault.Library.VaultAccessUserInteractive, Microsoft.Vault.Library",
+        "DomainHint": "microsoft.com"
+      }
+    ]
+  },
+  "FooVaultInUsEast": {
+    "$ref": "1"
+  },
+  "BarVaultInEurope": {
+    "ReadOnly": [
+      {
+        "$type": "Microsoft.Vault.Library.VaultAccessUserInteractive, Microsoft.Vault.Library"
+      }
+    ],
+    "ReadWrite": [
+      {
+        "$type": "Microsoft.Vault.Library.VaultAccessUserInteractive, Microsoft.Vault.Library"
+      }
+    ]
+  }
+}
