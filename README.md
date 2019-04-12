@@ -2,8 +2,10 @@
 
 Azure Key Vault Explorer - be productive when working with secrets!
 
+Install: https://aka.ms/ve
+
 Authors: Eli Zeitlin, Gokhan Ozhan, Anna Zeitlin  
-Contact: [Azure Key Vault Explorer Developers](mailto:Azure Key Vault Explorer Developers <vedev@microsoft.com>>)
+Contact: [Azure Key Vault Explorer Developers](mailto:vedev@microsoft.com)
 
 ## Table of Contents
   * [Key features](#key-features)
@@ -32,7 +34,7 @@ Contact: [Azure Key Vault Explorer Developers](mailto:Azure Key Vault Explorer D
 * Support single or dual vaults
 * Upload and download certificate (.pfx, .p12 and .cer) files
 * Import and export certificates to user or machine stores in just few clicks
-* Support both secret based certitifactes and new Azure Key Vault Certificates, for more details see here:  http://aka.ms/kvssl 
+* Support both secret based certificates and new Azure Key Vault Certificates, for more details see here:  http://aka.ms/kvssl 
 * Secret compression, to allow secrets which are bigger than 25 KB limit
 * Drag and Drop of certificates and secrets to / from Windows Explorer or another instance of Vault Explorer
 * Copy secret to clipboard for a configurable short time, just hit Ctrl + C
