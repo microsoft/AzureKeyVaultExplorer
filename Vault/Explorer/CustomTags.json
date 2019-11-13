@@ -5,19 +5,28 @@
 //
 // Author: Eli Zeitlin
 //
-// Copyright (c) Microsoft Corporation. All rights reserved. 
-// Licensed under the MIT License. See License.txt in the project root for license information. 
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See License.txt in the project root for license information.
 // --------------------------------------------------------------------------------------
-
+// Examples
+/*
 {
   "WCD.Squad": {
     "Name": "Squad",
     "DefaultValue": "foo",
-    "ValueRegex": "^(foo|bar)$"
+    "ValueRegex": ".{0,256}",
+    "ValueList": [
+      "foo",
+      "bar"
+    ]
   },
   "WCD.Description": {
     "Name": "Description",
     "DefaultValue": "",
     "ValueRegex": ".{0,256}"
   }
+}
+*/
+{
+
 }

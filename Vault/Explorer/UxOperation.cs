@@ -115,7 +115,7 @@ namespace Microsoft.Vault.Explorer
             ProgressBarVisibility(false);
             if (exceptions.Count == tasks.Length) // In case all tasks failed with Forbidden, show message box to user
             {
-                MessageBox.Show($"Operation to {actionName} {_currentVaultAlias.Alias} ({string.Join(", ", _currentVaultAlias.VaultNames)}) denied for {Environment.UserDomainName}\\{Environment.UserName}.\n\nYou are probably missing a certificate in CurrentUser\\My or LocalMachine\\My stores, or you are not part of the appropriate security group.",
+                MessageBox.Show($"Operation to {actionName} {_currentVaultAlias.Alias} ({string.Join(", ", _currentVaultAlias.VaultNames)}) denied.\n\nYou are probably missing a certificate in CurrentUser\\My or LocalMachine\\My stores, or you are not part of the appropriate security group.",
                     Utils.AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

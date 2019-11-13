@@ -4,6 +4,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,9 +14,11 @@ using Microsoft.Vault.Core;
 
 namespace Microsoft.Vault.Explorer
 {
+    
     [JsonObject]
     public class CustomTag
     {
+
         [JsonProperty]
         public readonly string Name;
 
@@ -25,8 +28,14 @@ namespace Microsoft.Vault.Explorer
         [JsonProperty]
         public readonly Regex ValueRegex;
 
+        [JsonProperty]
+        public readonly Dictionary<string,List<TagValues>> ValueList = new Dictionary<string, List<TagValues>>();
+
+        [JsonProperty]
+        public readonly List<TagValues> CustomTagValueList = new List<TagValues>();
+
         [JsonConstructor]
-        public CustomTag(string name, string defaultValue, string valueRegex)
+        public CustomTag(string name, string defaultValue, string valueRegex, string[] valueList)
         {
             Guard.ArgumentNotNullOrWhitespace(name, nameof(name));
             if (name.Length > Consts.MaxTagNameLength)
@@ -36,11 +45,22 @@ namespace Microsoft.Vault.Explorer
             Name = name;
             DefaultValue = defaultValue;
             ValueRegex = new Regex(valueRegex, RegexOptions.Singleline | RegexOptions.Compiled);
+
+            // Convert the array to a list
+            if (valueList != null)
+            {
+                foreach (string v in valueList)
+                {
+                    CustomTagValueList.Add(new TagValues(v));
+                }
+                ValueList.Add(name,CustomTagValueList);
+            }
+
         }
 
         public override string ToString() => Name;
 
-        public TagItem ToTagItem() => new TagItem(Name, DefaultValue);
+        public TagItem ToTagItem() => new TagItem(Name, DefaultValue, ValueList);
 
         public string Verify(TagItem tagItem, bool required)
         {
@@ -51,6 +71,7 @@ namespace Microsoft.Vault.Explorer
             var m = ValueRegex.Match(tagItem.Value);
             return m.Success ? "" : $"Tag {Name} value must match the following regex: {ValueRegex}\n";
         }
+
     }
 
     [JsonDictionary]
@@ -67,4 +88,19 @@ namespace Microsoft.Vault.Explorer
             }
         }
     }
+
+    // Used for storing a list of values for a tag
+    public class TagValues
+    {
+        public String tagvalue;
+        public override String ToString()
+        {
+            return tagvalue;
+        }
+        public TagValues(string tag) { tagvalue = tag; }
+        public TagValues() : base() { }
+    }
+
+    
+
 }

@@ -181,8 +181,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(290, 51);
             this.label2.TabIndex = 1;
-            this.label2.Text = "Copyright (c) 2016 Microsoft Corporation\r\n\r\nWritten by Eli Zeitlin and few other " +
-    "engineers";
+            this.label2.Text = "Copyright (c) 2018 Microsoft Corporation\r\n\r\n";
             // 
             // uxLinkLabelTitle
             // 

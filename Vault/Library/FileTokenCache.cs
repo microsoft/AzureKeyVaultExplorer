@@ -15,7 +15,7 @@ namespace Microsoft.Vault.Library
 {
     public class FileTokenCache : TokenCache
     {
-        public readonly string FileName;
+        public string FileName;
         private static readonly object FileLock = new object();
 
         public FileTokenCache() : this("microsoft.com") { }
@@ -26,13 +26,62 @@ namespace Microsoft.Vault.Library
         /// </summary>
         /// <param name="domainHint">For example: microsoft.com or gme.gbl</param>
         public FileTokenCache(string domainHint)
-        {            
+        {
             FileName = Environment.ExpandEnvironmentVariables(string.Format(Consts.VaultTokenCacheFileName, domainHint));
             Directory.CreateDirectory(Path.GetDirectoryName(FileName));
             this.AfterAccess = AfterAccessNotification;
             this.BeforeAccess = BeforeAccessNotification;
             BeforeAccessNotification(null);
         }
+
+        /// <summary>
+        /// Gets all login names for which there is a token cached locally.
+        /// </summary>
+        public static string[] GetAllFileTokenCacheLoginNames()
+        {
+            string[] paths = Directory.GetFiles(Environment.ExpandEnvironmentVariables(Consts.VaultTokenCacheDirectory));
+            for (int i = 0; i < paths.Length; i++)
+            {
+                //Gets filename from path.
+                paths[i] = paths[i].Split('\\').Last();
+
+                //Gets login name from filename.
+                paths[i] = paths[i].Split('_')[1];
+            }
+            return paths;
+        }
+
+        /// <summary>
+        /// Empties all persistent stores.
+        /// </summary>
+        public static void ClearAllFileTokenCaches()
+        {
+            string[] tokenNames = GetAllFileTokenCacheLoginNames();
+            foreach(string token in tokenNames)
+            {
+                new FileTokenCache(token).Clear();
+            }
+        }
+
+        /// <summary>
+        /// Renames the cache.
+        /// </summary>
+        /// <param name="newName"></param>
+        public void Rename(string newName)
+        {
+            newName = Environment.ExpandEnvironmentVariables(string.Format(Consts.VaultTokenCacheFileName, newName));
+            if (File.Exists(newName))
+            {
+                File.Delete(newName);
+            }
+            File.Move(FileName, newName);
+
+            FileName = newName;
+            this.AfterAccess = AfterAccessNotification;
+            this.BeforeAccess = BeforeAccessNotification;
+            BeforeAccessNotification(null);
+        }
+
 
         /// <summary>
         /// Empties the persistent store

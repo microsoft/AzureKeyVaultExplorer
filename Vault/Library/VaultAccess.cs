@@ -31,9 +31,9 @@ namespace Microsoft.Vault.Library
             Order = order;
         }
 
-        protected abstract AuthenticationResult AcquireTokenInternal(AuthenticationContext authenticationContext, string resource);
+        protected abstract AuthenticationResult AcquireTokenInternal(AuthenticationContext authenticationContext, string resource, string userAlias = "");
 
-        public AuthenticationResult AcquireToken(AuthenticationContext authenticationContext, string resource)
+        public AuthenticationResult AcquireToken(AuthenticationContext authenticationContext, string resource, string userAlias="")
         {
             // first, try to get a token silently
             if (authenticationContext.TokenCache != null)
@@ -52,7 +52,7 @@ namespace Microsoft.Vault.Library
                     }
                 }
             }
-            return AcquireTokenInternal(authenticationContext, resource);
+            return AcquireTokenInternal(authenticationContext, resource, userAlias);
         }
     }
 
@@ -64,19 +64,37 @@ namespace Microsoft.Vault.Library
         [JsonProperty]
         public readonly string DomainHint;
 
-        [JsonConstructor]
+        [JsonProperty]
+        public readonly string UserAliasType;
+
         public VaultAccessUserInteractive(string domainHint) : base(PowerShellApplicationId, 2)
         {
             DomainHint = string.IsNullOrEmpty(domainHint) ? "microsoft.com" : domainHint;
         }
 
-        protected override AuthenticationResult AcquireTokenInternal(AuthenticationContext authenticationContext, string resource)
+        [JsonConstructor]
+        public VaultAccessUserInteractive(string domainHint, string UserAlias) : base(PowerShellApplicationId, 2)
+        {
+            DomainHint = string.IsNullOrEmpty(domainHint) ? "microsoft.com" : domainHint;
+            UserAliasType = string.IsNullOrEmpty(UserAlias) ? Environment.UserName : UserAlias;
+        }
+
+        protected override AuthenticationResult AcquireTokenInternal(AuthenticationContext authenticationContext, string resource, string userAlias)
         {
             if (false == Environment.UserInteractive)
             {
                 throw new VaultAccessException($@"Current process PID: {Process.GetCurrentProcess().Id} is running in non user interactive mode. Username: {Environment.UserDomainName}\{Environment.UserName} Machine name: {Environment.MachineName}");
             }
-            return authenticationContext.AcquireTokenAsync(resource, ClientId, new Uri("urn:ietf:wg:oauth:2.0:oob"), new PlatformParameters(PromptBehavior.Auto), UserIdentifier.AnyUser, $"login_hint={Environment.UserName}@{DomainHint}&domain_hint={DomainHint}").GetAwaiter().GetResult();
+            // Attempt to login with provided user alias.
+            else if(!string.IsNullOrEmpty(userAlias))
+            {
+                return authenticationContext.AcquireTokenAsync(resource, ClientId, new Uri("urn:ietf:wg:oauth:2.0:oob"), new PlatformParameters(PromptBehavior.Auto), UserIdentifier.AnyUser, $"login_hint={userAlias}@{DomainHint}&domain_hint={DomainHint}").GetAwaiter().GetResult();
+            }
+            // No alias provided so force login prompt.
+            else
+            {
+                return authenticationContext.AcquireTokenAsync(resource, ClientId, new Uri("urn:ietf:wg:oauth:2.0:oob"), new PlatformParameters(PromptBehavior.Always), UserIdentifier.AnyUser).GetAwaiter().GetResult();
+            }
         }
 
         public override string ToString() => $"{nameof(VaultAccessUserInteractive)}";
@@ -95,7 +113,7 @@ namespace Microsoft.Vault.Library
             ClientSecret = clientSecret;
         }
 
-        protected override AuthenticationResult AcquireTokenInternal(AuthenticationContext authenticationContext, string resource)
+        protected override AuthenticationResult AcquireTokenInternal(AuthenticationContext authenticationContext, string resource, string userAlias = "")
         {
             return authenticationContext.AcquireTokenAsync(resource, new ClientCredential(ClientId, ClientSecret)).GetAwaiter().GetResult();
         }
@@ -167,7 +185,7 @@ namespace Microsoft.Vault.Library
             }
         }
 
-        protected override AuthenticationResult AcquireTokenInternal(AuthenticationContext authenticationContext, string resource)
+        protected override AuthenticationResult AcquireTokenInternal(AuthenticationContext authenticationContext, string resource, string userAlias = "")
         {
             return authenticationContext.AcquireTokenAsync(resource, new ClientAssertionCertificate(ClientId, Certificate)).GetAwaiter().GetResult();
         }

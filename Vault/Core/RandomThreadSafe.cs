@@ -11,16 +11,16 @@ namespace Microsoft.Vault.Core
         /// <summary>
         /// Random class instance per thread (TLS) and with lazy creation
         /// </summary>
-        private static readonly ThreadLocal<Lazy<Random>> _random = new ThreadLocal<Lazy<Random>>(() => new Lazy<Random>(() => new Random(Guid.NewGuid().GetHashCode())));
+        private static readonly ThreadLocal<Lazy<CryptoRandomGenerator>> _random = new ThreadLocal<Lazy<CryptoRandomGenerator>>(() => new Lazy<CryptoRandomGenerator>(() => new CryptoRandomGenerator()));
 
-        public static Random Instance
+        public static CryptoRandomGenerator Instance
         {
             get
             {
-                Random result = _random.Value.Value;
+                CryptoRandomGenerator result = _random.Value.Value;
                 if (null == result)
                 {
-                    throw new OutOfMemoryException("Could not allocate random number generator.");
+                    throw new OutOfMemoryException("Could not allocate crypto random number generator.");
                 }
                 return result;
             }

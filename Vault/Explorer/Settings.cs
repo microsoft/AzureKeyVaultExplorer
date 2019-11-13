@@ -143,75 +143,6 @@ namespace Microsoft.Vault.Explorer
             }
         }
 
-
-        [UserScopedSetting()]
-        [DefaultSettingValue("Courier New, 9.75pt")]
-        [DisplayName("Secret font")]
-        [Description("Font to use for secret value and name in the secret dialog.")]
-        [Category("Secret dialog")]
-        public Font SecretFont
-        {
-            get
-            {
-                return ((Font)(this[nameof(SecretFont)]));
-            }
-            set
-            {
-                this[nameof(SecretFont)] = value;
-            }
-        }
-
-        [UserScopedSetting()]
-        [DefaultSettingValue("true")]
-        [DisplayName("Show line numbers")]
-        [Description("Display or hide line numbering in the secret dialog.")]
-        [Category("Secret dialog")]
-        public bool ShowLineNumbers
-        {
-            get
-            {
-                return ((bool)(this[nameof(ShowLineNumbers)]));
-            }
-            set
-            {
-                this[nameof(ShowLineNumbers)] = value;
-            }
-        }
-
-        [UserScopedSetting()]
-        [DefaultSettingValue("true")]
-        [DisplayName("Convert tabs to spaces")]
-        [Description("Convert tabs to spaces in the secret dialog.")]
-        [Category("Secret dialog")]
-        public bool ConvertTabsToSpaces
-        {
-            get
-            {
-                return ((bool)(this[nameof(ConvertTabsToSpaces)]));
-            }
-            set
-            {
-                this[nameof(ConvertTabsToSpaces)] = value;
-            }
-        }
-
-        [UserScopedSetting()]
-        [DefaultSettingValue("4")]
-        [DisplayName("Tab indent size")]
-        [Description("Tab indent size in the secret dialog.")]
-        [Category("Secret dialog")]
-        public int TabIndent
-        {
-            get
-            {
-                return ((int)(this[nameof(TabIndent)]));
-            }
-            set
-            {
-                this[nameof(TabIndent)] = value;
-            }
-        }
-
         [UserScopedSetting()]
         [DefaultSettingValue(@".\")]
         [DisplayName("Root location")]
@@ -320,32 +251,53 @@ namespace Microsoft.Vault.Explorer
         }
 
         [UserScopedSetting()]
-        [DefaultSettingValue("microsoft.com\r\ngme.gbl")]
-        [DisplayName("Domain hints")]
-        [Description("Multi-line string of domain hints to use in the subscriptions manager dialog.")]
+        [DefaultSettingValue("https://sts.windows.net/124edf19-b350-4797-aefc-3206115ffdb3")]
+        [DisplayName("Authority")]
+        [Description("Address of the GME authority to issue access token in the subscriptions manager dialog.")]
         [Category("Subscriptions dialog")]
-        [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
-        public string DomainHints
+        public string GmeAuthority
         {
             get
             {
-                return ((string)(this[nameof(DomainHints)]));
+                return ((string)(this[nameof(GmeAuthority)]));
             }
             set
             {
-                this[nameof(DomainHints)] = value;
+                this[nameof(GmeAuthority)] = value;
+            }
+        }
+
+        [UserScopedSetting()]
+        [DisplayName("User Account Names")]
+        [Description("Multi-line string of user account names to use in the subscriptions manager dialog.")]
+        [Category("Subscriptions dialog")]
+        [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
+        public string UserAccountNames
+        {
+            get
+            {
+                return ((string)(this[nameof(UserAccountNames)]));
+            }
+            set
+            {
+                this[nameof(UserAccountNames)] = value;
             }
         }
 
         [Browsable(false)]
-        public IEnumerable<string> DomainHintsList
+        public IEnumerable<string> UserAccountNamesList
         {
             get
             {
-                return from s in DomainHints.Split('\n') where !string.IsNullOrWhiteSpace(s) select s.Trim();
+                // Set default if empty
+                if(string.IsNullOrEmpty(UserAccountNames))
+                {
+                    UserAccountNames = $"{Environment.UserName}@microsoft.com";
+                }
+
+                return from s in UserAccountNames.Split('\n') where !string.IsNullOrWhiteSpace(s) select s.Trim();
             }
         }
-
 
         [UserScopedSetting()]
         [DefaultSettingValue(@"{}")]
@@ -372,6 +324,16 @@ namespace Microsoft.Vault.Explorer
             // new lines and spaces so user.config will look pretty
             this[nameof(FavoriteSecretsJson)] = "\n" + JsonConvert.SerializeObject(_favoriteSecretsDictionary, Formatting.Indented) + "\n                ";
             base.Save();
+        }
+
+        // Adds and saves new user alias in app settings.
+        public void AddUserAccountName(string userAccountName)
+        {
+            if (!UserAccountNames.Contains(userAccountName))
+            {
+                this[nameof(UserAccountNames)] = UserAccountNames + "\n" + userAccountName;
+                base.Save();
+            }
         }
     }
 }

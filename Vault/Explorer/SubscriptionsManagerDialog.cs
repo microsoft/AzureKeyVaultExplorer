@@ -29,6 +29,7 @@ namespace Microsoft.Vault.Explorer
     {
         const string ApiVersion = "api-version=2016-07-01";
         const string ManagmentEndpoint = "https://management.azure.com/";
+        const string AddAccountText = "Add New Account";
         const string AddDomainHintText = "How to add new domain hint here...";
         const string AddDomainHintInstructions = @"To add new domain hint, just follow below steps:
 1) In the main window open Settings dialog
@@ -47,10 +48,14 @@ namespace Microsoft.Vault.Explorer
         {
             InitializeComponent();
             _httpClient = new HttpClient();
-            foreach (string domainHint in Settings.Default.DomainHintsList)
+
+            // Create Default accounts based on domain hints and aliases.
+            foreach (string userAccountName in Settings.Default.UserAccountNamesList)
             {
-                uxComboBoxAccounts.Items.Add(new AccountItem(domainHint));
+                string[] accounts = userAccountName.Split('@');
+                uxComboBoxAccounts.Items.Add(new AccountItem(accounts[1], accounts[0]));
             }
+            uxComboBoxAccounts.Items.Add(AddAccountText);
             uxComboBoxAccounts.Items.Add(AddDomainHintText);
             uxComboBoxAccounts.SelectedIndex = 0;
         }
@@ -59,18 +64,34 @@ namespace Microsoft.Vault.Explorer
 
         private async void uxComboBoxAccounts_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (uxComboBoxAccounts.SelectedItem is string)
+            switch(uxComboBoxAccounts.SelectedItem)
             {
-                MessageBox.Show(AddDomainHintInstructions, Utils.AppName, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                uxComboBoxAccounts.SelectedItem = null;
-                return;
+                case null:
+                    return;
+                    
+                case AddAccountText:
+                    AddNewAccount();
+                    break;
+
+                case AddDomainHintText:
+                    // Display instructions on how to add domain hint
+                    MessageBox.Show(AddDomainHintInstructions, Utils.AppName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    uxComboBoxAccounts.SelectedItem = null;
+                    return;
+
+                case AccountItem account:
+                    // Authenticate into selected account
+                    _currentAccountItem = account;
+                    GetAuthenticationToken();
+                    _currentAccountItem.UserAlias = _currentAuthResult.UserInfo.DisplayableId.Split('@')[0];
+                    break;
+
+                default:
+                    return;
             }
-            _currentAccountItem = (AccountItem)uxComboBoxAccounts.SelectedItem;
-            if (null == _currentAccountItem) return;
+
             using (var op = NewUxOperationWithProgress(uxComboBoxAccounts))
             {
-                var vaui = new VaultAccessUserInteractive(_currentAccountItem.DomainHint);
-                _currentAuthResult = vaui.AcquireToken(_currentAccountItem.AuthContext, ManagmentEndpoint);
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_currentAuthResult.AccessTokenType, _currentAuthResult.AccessToken);
                 var hrm = await _httpClient.GetAsync($"{ManagmentEndpoint}subscriptions?{ApiVersion}", op.CancellationToken);
                 var json = await hrm.Content.ReadAsStringAsync();
@@ -114,8 +135,34 @@ namespace Microsoft.Vault.Explorer
                 var vault = await _currentKeyVaultMgmtClient.Vaults.GetAsync(v.GroupName, v.Name);
                 uxPropertyGridVault.SelectedObject = new PropertyObjectVault(s.Subscription, v.GroupName, vault);
                 uxButtonOK.Enabled = true;
-                CurrentVaultAlias = new VaultAlias(v.Name, new string[] { v.Name }, new string[] { "Custom" }) { DomainHint = _currentAccountItem.DomainHint };
+                CurrentVaultAlias = new VaultAlias(v.Name, new string[] { v.Name }, new string[] { "Custom" }) { DomainHint = _currentAccountItem.DomainHint, UserAlias = _currentAccountItem.UserAlias};
             }
+        }
+
+        private void AddNewAccount()
+        {
+            // Create temp account item for new account
+            _currentAccountItem = new AccountItem(Guid.NewGuid().ToString());
+            GetAuthenticationToken();
+
+            // Get new user account and add it to default settings
+            string userAccountName = _currentAuthResult.UserInfo.DisplayableId;
+            string[] userLogin = userAccountName.Split('@');
+            _currentAccountItem.UserAlias = userLogin[0];
+            _currentAccountItem.DomainHint = userLogin[1];
+            Settings.Default.AddUserAccountName(userAccountName);
+
+            // Rename cache to be associated with user login
+            ((FileTokenCache)_currentAccountItem.AuthContext.TokenCache).Rename(userAccountName);
+            uxComboBoxAccounts.Items.Insert(0, userAccountName);
+            uxComboBoxAccounts.SelectedIndex = 0;
+        }
+
+        // Attempt to authenticate with current account.
+        private void GetAuthenticationToken()
+        {
+            VaultAccessUserInteractive vaui = new VaultAccessUserInteractive(_currentAccountItem.DomainHint, _currentAccountItem.UserAlias);
+            _currentAuthResult = vaui.AcquireToken(_currentAccountItem.AuthContext, ManagmentEndpoint, _currentAccountItem.UserAlias);
         }
     }
 
@@ -123,17 +170,20 @@ namespace Microsoft.Vault.Explorer
 
     public class AccountItem
     {
-        public readonly AuthenticationContext AuthContext;
+        public AuthenticationContext AuthContext;
 
-        public readonly string DomainHint;
+        public string DomainHint;
+        public string UserAlias;
 
-        public AccountItem(string domainHint)
+        public AccountItem(string domainHint, string userAlias=null)
         {
-            AuthContext = new AuthenticationContext(Settings.Default.Authority, new FileTokenCache(domainHint));
             DomainHint = domainHint;
+            UserAlias = userAlias ?? Environment.UserName;
+            string authority = domainHint.ToLower().Contains("gme") ? Settings.Default.GmeAuthority : Settings.Default.Authority;
+            AuthContext = new AuthenticationContext(authority, new FileTokenCache(this.ToString()));
         }
 
-        public override string ToString() => $"{Environment.UserName}@{DomainHint}";
+        public override string ToString() => $"{UserAlias}@{DomainHint}";
     }
 
     public class ListViewItemSubscription : ListViewItem

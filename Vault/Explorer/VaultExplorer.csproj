@@ -3,7 +3,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. 
 // Licensed under the MIT License. See License.txt in the project root for license information. 
 -->
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="16.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- Environment -->
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Environment.props))\Environment.props" Condition=" '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Environment.props))' != '' " />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -38,6 +38,11 @@
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
   </PropertyGroup>
+  <PropertyGroup Condition="Exists('$(DOWNLOADSECUREFILE_SECUREFILEPATH)')">
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(DOWNLOADSECUREFILE_SECUREFILEPATH)</AssemblyOriginatorKeyFile>
+    <DelaySign>true</DelaySign>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Rest.ClientRuntime.dll">
       <HintPath>$(PkgMicrosoft_Rest_ClientRuntime)\lib\net45\Microsoft.Rest.ClientRuntime.dll</HintPath>
@@ -66,8 +71,9 @@
     <Reference Include="Microsoft.Azure.Management.KeyVault.dll">
       <HintPath>$(PkgMicrosoft_Azure_Management_KeyVault)\lib\net45\Microsoft.Azure.Management.KeyVault.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.TextEditor">
-      <HintPath>$(PkgICSharpCode_TextEditor)\lib\Net20\ICSharpCode.TextEditor.dll</HintPath>
+    <Reference Include="ScintillaNET">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(Pkgjacobslusser_ScintillaNET_3_6_3)\lib\net40\ScintillaNET.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -110,6 +116,7 @@
   <ItemGroup>
     <Compile Include="ActivationUri.cs" />
     <Compile Include="AddFileEventArgs.cs" />
+    <Compile Include="AutoClosingMessageBox.cs" />
     <Compile Include="CustomTag.cs" />
     <Compile Include="ISession.cs" />
     <Compile Include="ItemDialogBase.cs">
@@ -235,6 +242,7 @@
     <EmbeddedResource Include="SubscriptionsManagerDialog.resx">
       <DependentUpon>SubscriptionsManagerDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -245,7 +253,6 @@
     <Content Include="$(AssemblyName).png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-
     <Content Include="License.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -261,10 +268,10 @@
     <Content Include="Vaults.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="$(OutputPath)\$(AssemblyName).BuildInfo.config">
+    <!--<Content Include="$(OutputPath)\$(AssemblyName).BuildInfo.config">
       <Link>$(AssemblyName).BuildInfo.config</Link>
       <Visible>False</Visible>
-    </Content>
+    </Content>-->
     <Content Include="VaultModule.psm1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

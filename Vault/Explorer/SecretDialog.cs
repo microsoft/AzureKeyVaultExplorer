@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. 
 // Licensed under the MIT License. See License.txt in the project root for license information. 
-
-using ICSharpCode.TextEditor;
+using ScintillaNET;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.KeyVault.Models;
 using Newtonsoft.Json;
@@ -24,7 +23,7 @@ namespace Microsoft.Vault.Explorer
     public partial class SecretDialog : ItemDialogBase<PropertyObjectSecret, SecretBundle>
     {
         private CertificateValueObject _certificateObj;
-        private readonly TextEditorControl uxTextBoxValue;
+        private Scintilla uxTextBoxValue;
 
         private SecretDialog(ISession session, string title, ItemDialogBaseMode mode) : base(session, title, mode)
         {
@@ -32,22 +31,8 @@ namespace Microsoft.Vault.Explorer
             uxErrorProvider.SetIconAlignment(uxSplitContainer, ErrorIconAlignment.TopLeft);
             uxErrorProvider.SetIconAlignment(uxPropertyGridSecret, ErrorIconAlignment.TopLeft);
             uxErrorProvider.SetIconPadding(uxPropertyGridSecret, -16);
-            uxTextBoxValue = new TextEditorControl()
-            {
-                Parent = uxSplitContainer.Panel1,
-                BorderStyle = BorderStyle.FixedSingle,
-                Dock = DockStyle.Fill,
-                ShowMatchingBracket = true,
-                ConvertTabsToSpaces = Settings.Default.ConvertTabsToSpaces,
-                TabIndent = Settings.Default.TabIndent,
-                VRulerRow = 120,
-                TabIndex = 4,
-                AllowDrop = false,
-                Font = Settings.Default.SecretFont,
-                ShowLineNumbers = Settings.Default.ShowLineNumbers,
-                ContextMenuStrip = uxMenuNewValue
-            };
-            uxTextBoxValue.TextChanged += uxTextBoxValue_TextChanged;
+
+            SetUpTextBoxValue();
             List<string> unknownSk;
             List<SecretKind> secretKinds = LoadSecretKinds(_session.CurrentVaultAlias, out unknownSk);
 
@@ -59,7 +44,6 @@ namespace Microsoft.Vault.Explorer
             }
 
             uxMenuSecretKind.Items.AddRange(secretKinds.ToArray());
-
             uxSplitContainer_Panel1_SizeChanged(null, EventArgs.Empty);
             ActiveControl = uxTextBoxName;
         }
@@ -72,7 +56,9 @@ namespace Microsoft.Vault.Explorer
             _changed = true;
             var s = new SecretBundle() { Attributes = new SecretAttributes(), ContentType = ContentTypeEnumConverter.GetDescription(ContentType.Text) };
             RefreshSecretObject(s);
-            uxMenuSecretKind.Items[0].PerformClick();            
+            SecretKind defaultSK = TryGetDefaultSecretKind();
+            int defaultIndex = uxMenuSecretKind.Items.IndexOf(defaultSK);
+            uxMenuSecretKind.Items[defaultIndex].PerformClick();            
         }
 
         /// <summary>
@@ -81,7 +67,6 @@ namespace Microsoft.Vault.Explorer
         public SecretDialog(ISession session, FileInfo fi) : this(session)
         {
             uxTextBoxName.Text = Utils.ConvertToValidSecretName(Path.GetFileNameWithoutExtension(fi.Name));
-
             PropertyObject.ContentType = ContentTypeUtils.FromExtension(fi.Extension);
             string password = null;
             switch (PropertyObject.ContentType)
@@ -145,57 +130,134 @@ namespace Microsoft.Vault.Explorer
         private static List<SecretKind> LoadSecretKinds(VaultAlias vaultAlias, out List<string> unknownSk)
         {
             SecretKinds allSecretKinds = Utils.LoadFromJsonFile<SecretKinds>(Settings.Default.SecretKindsJsonFileLocation);
-            List<SecretKind> validatedSecretKinds = new List<SecretKind>(vaultAlias.SecretKinds.Length);
+            List<SecretKind> validatedSecretKinds = new List<SecretKind>(allSecretKinds.Count) ?? new List<SecretKind>(vaultAlias.SecretKinds.Length);
             unknownSk = new List<string>();
 
-            foreach (var secretKind in vaultAlias.SecretKinds)
+            // If there are no SecretKinds in the VaultAliases.json for a vault OR if it's a vault Not in VaultAliases, return ALL SecretKinds.
+            if (vaultAlias.SecretKinds == null || (vaultAlias.SecretKinds.Length == 1 && (string)vaultAlias.SecretKinds.GetValue(0) == "Custom"))
             {
-                SecretKind sk;
-                if (allSecretKinds.TryGetValue(secretKind, out sk))
+                foreach (var key in allSecretKinds.Keys)
                 {
+                    SecretKind sk;
+                    allSecretKinds.TryGetValue(key, out sk);
                     validatedSecretKinds.Add(sk);
                 }
-                else
+            }
+            // Otherwise, return just the specified SecretKinds
+            else
+            {
+                foreach (var secretKind in vaultAlias.SecretKinds)
                 {
-                    unknownSk.Add(secretKind);
+
+                    SecretKind sk;
+                    if (allSecretKinds.TryGetValue(secretKind, out sk))
+                    {
+                        validatedSecretKinds.Add(sk);
+                    }
+                    else
+                    {
+                        unknownSk.Add(secretKind);
+                    }
                 }
             }
 
-            return validatedSecretKinds;
+            // Sort the Secret Kinds
+            List<SecretKind> orderedValidatedSecretKinds = validatedSecretKinds.OrderBy(o => o.Alias).ToList();
+
+            return orderedValidatedSecretKinds;
         }
 
         private void RefreshSecretObject(SecretBundle s)
         {
             PropertyObject = new PropertyObjectSecret(s, SecretObject_PropertyChanged);
             uxPropertyGridSecret.SelectedObject = PropertyObject;
-            uxTextBoxValue.SetHighlighting(PropertyObject.ContentType.ToSyntaxHighlightingMode());
             uxTextBoxName.Text = PropertyObject.Name;
-            ToggleCertificateMode(PropertyObject.ContentType.IsCertificate());
             uxTextBoxValue.Text = PropertyObject.Value;
+
+            // Handle Scintilla framework bug where text is not updated.
+            if(uxTextBoxValue.Text != PropertyObject.Value)
+            {
+                // Remove and create new textbox with value
+                uxSplitContainer.Panel1.Controls.Remove(uxTextBoxValue);
+                SetUpTextBoxValue();
+                uxTextBoxValue.Text = PropertyObject.Value;
+            }
+
+            ToggleCertificateMode(PropertyObject.ContentType.IsCertificate());
             uxTextBoxValue.Refresh();
+        }
+
+        private void SetUpTextBoxValue()
+        {
+            uxTextBoxValue = new Scintilla();
+            uxSplitContainer.Panel1.Controls.Add(uxTextBoxValue);
+
+            // basic config
+            uxTextBoxValue.Dock = System.Windows.Forms.DockStyle.Fill;
+            uxTextBoxValue.TextChanged += uxTextBoxValue_TextChanged;
+
+            //initial view config
+            uxTextBoxValue.WrapMode = WrapMode.None;
+            uxTextBoxValue.IndentationGuides = IndentView.LookBoth;
         }
 
         private void AutoDetectSecretKind()
         {
-            SecretKind autoDetectSecretKind = (SecretKind)uxMenuSecretKind.Items[0]; // Default is the first one which is always Custom
-            foreach (var item in uxMenuSecretKind.Items) // Auto detect 'last' secret kind based on the name only
+            SecretKind defaultSecretKind = TryGetDefaultSecretKind(); // Default is the first one which is always Custom
+            SecretKind autoDetectSecretKind = new SecretKind(defaultSecretKind.Alias); 
+            TagItem currentSKTag = PropertyObject.Tags.GetOrNull(new TagItem(Consts.SecretKindKey, ""));
+            bool shouldAddNew = true;
+
+            // Read the CustomTags and determine the SecretKind
+            foreach (SecretKind sk in uxMenuSecretKind.Items) // Auto detect 'last' secret kind based on the name only
             {
-                SecretKind sk = (SecretKind)item;
-                autoDetectSecretKind = sk.NameRegex.IsMatch(uxTextBoxName.Text) ? sk : autoDetectSecretKind;
+
+                if (currentSKTag == null)
+                {
+                    autoDetectSecretKind = defaultSecretKind;
+                    shouldAddNew = false;
+                    break;
+                }
+
+                // If the current Secret Kind is in the list of menu items,
+                if (currentSKTag.Value == sk.Alias)
+                {
+                    autoDetectSecretKind = sk;
+                    shouldAddNew = false;
+                    break;
+                }
             }
+            if (shouldAddNew)
+            {
+                autoDetectSecretKind = new SecretKind(currentSKTag.Value);
+                uxMenuSecretKind.Items.Add(autoDetectSecretKind);
+            }
+
             // Apply last found secret kind, only when both Content Type and SecretKind are certificate or both not, otherwise fallback to Custom (the first one)
             if ((!PropertyObject.ContentType.IsCertificate() || !autoDetectSecretKind.IsCertificate) &&
                 (PropertyObject.ContentType.IsCertificate() || autoDetectSecretKind.IsCertificate))
             {
-                autoDetectSecretKind = (SecretKind)uxMenuSecretKind.Items[0];
+                autoDetectSecretKind = TryGetDefaultSecretKind();
             }
             _certificateObj = PropertyObject.ContentType.IsCertificate() ? CertificateValueObject.FromValue(uxTextBoxValue.Text) : null;
             autoDetectSecretKind?.PerformClick();
         }
 
+        private SecretKind TryGetDefaultSecretKind(string alias = "Custom")
+        {
+            foreach (SecretKind sk in uxMenuSecretKind.Items)
+            {
+                if (sk.Alias == alias)
+                {
+                    return sk;
+                }
+            }
+            return (SecretKind)uxMenuSecretKind.Items[0];
+        }
+
         private void ToggleCertificateMode(bool enable)
         {
-            uxTextBoxValue.IsReadOnly = enable;
+            uxTextBoxValue.ReadOnly = enable;
             uxLinkLabelViewCertificate.Visible = enable;
         }
 
@@ -227,7 +289,6 @@ namespace Microsoft.Vault.Explorer
                 AutoDetectSecretKind();
                 RefreshCertificate(_certificateObj);
                 uxTextBoxValue_TextChanged(sender, null);
-                uxTextBoxValue.SetHighlighting(PropertyObject.ContentType.ToSyntaxHighlightingMode());
             }
 
             string tagsExpirationError = PropertyObject.AreCustomTagsValid();
@@ -243,7 +304,6 @@ namespace Microsoft.Vault.Explorer
         private void uxTimerValueTypingCompleted_Tick(object sender, EventArgs e)
         {
             uxTimerValueTypingCompleted.Stop();
-
             bool valueValid = PropertyObject.IsValueValid;
             uxErrorProvider.SetError(uxSplitContainer, valueValid ? null : $"Secret value must match the following regex:\n{PropertyObject.SecretKind.ValueRegex}");
 
@@ -262,6 +322,8 @@ namespace Microsoft.Vault.Explorer
             var sk = (SecretKind)e.ClickedItem;
             if (sk.Checked) return; // Same item was clicked
             foreach (var item in uxMenuSecretKind.Items) ((SecretKind)item).Checked = false;
+
+            PropertyObject.AddOrUpdateSecretKind(sk);
             PropertyObject.SecretKind = sk;
             PropertyObject.PopulateCustomTags();
             // Populate default expiration and value template in case this is a new secret
@@ -292,21 +354,21 @@ namespace Microsoft.Vault.Explorer
 
         private void uxMenuItemNewPassword_Click(object sender, EventArgs e)
         {
-            if (uxTextBoxValue.IsReadOnly) return;
+            if (uxTextBoxValue.ReadOnly) return;
             uxTextBoxValue.Text = Utils.NewSecurePassword();
             uxTextBoxValue.Refresh();
         }
 
         private void uxMenuItemNewGuid_Click(object sender, EventArgs e)
         {
-            if (uxTextBoxValue.IsReadOnly) return;
+            if (uxTextBoxValue.ReadOnly) return;
             uxTextBoxValue.Text = Guid.NewGuid().ToString("D");
             uxTextBoxValue.Refresh();
         }
 
         private void uxMenuItemNewApiKey_Click(object sender, EventArgs e)
         {
-            if (uxTextBoxValue.IsReadOnly) return;
+            if (uxTextBoxValue.ReadOnly) return;
             uxTextBoxValue.Text = Utils.NewApiKey();
             uxTextBoxValue.Refresh();
         }
