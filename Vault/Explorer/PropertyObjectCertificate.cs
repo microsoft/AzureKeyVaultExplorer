@@ -151,7 +151,11 @@ namespace Microsoft.Vault.Explorer
                     File.WriteAllBytes(fullName, Certificate.Export(X509ContentType.Cert));
                     break;
                 case ContentType.Pkcs12:
-                    File.WriteAllBytes(fullName, Certificate.Export(X509ContentType.Pkcs12));
+                    string password = null;
+                    var pwdDlg = new PasswordDialog();
+                    pwdDlg.ShowDialog();
+                    password = pwdDlg.Password;
+                    File.WriteAllBytes(fullName, Certificate.Export(X509ContentType.Pkcs12, password));
                     break;
                 default:                    
                     File.WriteAllText(fullName, Certificate.ToString());
@@ -165,6 +169,8 @@ namespace Microsoft.Vault.Explorer
         }
 
         public override void PopulateCustomTags() { }
+
+        public override void AddOrUpdateSecretKind(SecretKind sk) { }
 
         public override void PopulateExpiration() { }
 

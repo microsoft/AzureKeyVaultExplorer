@@ -474,12 +474,13 @@
             // 
             // uxComboBoxVaultAlias
             // 
-            this.uxComboBoxVaultAlias.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.uxComboBoxVaultAlias.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.uxComboBoxVaultAlias.MaxDropDownItems = 16;
             this.uxComboBoxVaultAlias.Name = "uxComboBoxVaultAlias";
             this.uxComboBoxVaultAlias.Size = new System.Drawing.Size(250, 28);
             this.uxComboBoxVaultAlias.DropDown += new System.EventHandler(this.uxComboBoxVaultAlias_DropDown);
             this.uxComboBoxVaultAlias.DropDownClosed += new System.EventHandler(this.uxComboBoxVaultAlias_DropDownClosed);
+            this.uxComboBoxVaultAlias.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             // 
             // uxButtonAdd
             // 

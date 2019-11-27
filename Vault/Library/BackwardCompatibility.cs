@@ -10,7 +10,7 @@ namespace Microsoft.PS.Common.Vault
     public class VaultAccessUserInteractive : Microsoft.Vault.Library.VaultAccessUserInteractive
     {
         [JsonConstructor]
-        public VaultAccessUserInteractive(string domainHint) : base(domainHint) { }
+        public VaultAccessUserInteractive(string domainHint, string userAlias) : base(domainHint) { }
     }
 
     [JsonObject]

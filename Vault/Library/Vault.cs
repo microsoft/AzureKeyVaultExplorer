@@ -37,6 +37,7 @@ namespace Microsoft.Vault.Library
         public readonly VaultsConfig VaultsConfig;
 
         private static readonly Task CompletedTask = Task.FromResult(0); // Dummy completed task to be used for secondary operations, in case we work with only Primary vault
+        private static readonly object Lock = new object();
 
         /// <summary>
         /// UserPrincipalName, in UPN format of the currently authenticated user, in case of cert based access the value will be: {Environment.UserDomainName}\{Environment.UserName}
@@ -154,39 +155,48 @@ namespace Microsoft.Vault.Library
         private KeyVaultClientEx CreateKeyVaultClientEx(VaultAccessTypeEnum accessType, string vaultName) =>
             new KeyVaultClientEx(vaultName, (authority, resource, scope) =>
         {
-            Utils.GuardVaultName(vaultName);
-            if (false == VaultsConfig.ContainsKey(vaultName))
-            {
-                throw new KeyNotFoundException($"{vaultName} is not found in {VaultsConfigFile}");
-            }
-            VaultAccessType vat = VaultsConfig[vaultName];
-            VaultAccess[] vas = (accessType == VaultAccessTypeEnum.ReadOnly) ? vat.ReadOnly : vat.ReadWrite;
-
-            // Order possible VaultAccess options by Order property
-            IEnumerable<VaultAccess> vaSorted = from va in vas orderby va.Order select va;
-
-            // In case VaultAccessUserInteractive is in the list, we will use our FileTokenCache with provided domainHint, otherwise use MemoryTokenCache
-            string domainHint = (from va in vaSorted where va is VaultAccessUserInteractive select (VaultAccessUserInteractive)va).FirstOrDefault()?.DomainHint;
-
-            var authenticationContext = new AuthenticationContext(authority, string.IsNullOrEmpty(domainHint) ? new MemoryTokenCache() : (TokenCache)new FileTokenCache(domainHint));
-
-            Queue<Exception> exceptions = new Queue<Exception>();
-            string vaultAccessTypes = "";
-            foreach (VaultAccess va in vaSorted)
-            {
-                try
+            lock (Lock)
+            { 
+                Utils.GuardVaultName(vaultName);
+                if (false == VaultsConfig.ContainsKey(vaultName))
                 {
-                    var authResult = va.AcquireToken(authenticationContext, resource);
-                    AuthenticatedUserName = authResult.UserInfo?.DisplayableId ?? $"{Environment.UserDomainName}\\{Environment.UserName}";
-                    return Task.FromResult(authResult.AccessToken);
+                    throw new KeyNotFoundException($"{vaultName} is not found in {VaultsConfigFile}");
                 }
-                catch (Exception e)
+                VaultAccessType vat = VaultsConfig[vaultName];
+                VaultAccess[] vas = (accessType == VaultAccessTypeEnum.ReadOnly) ? vat.ReadOnly : vat.ReadWrite;
+
+                // Order possible VaultAccess options by Order property
+                IEnumerable<VaultAccess> vaSorted = from va in vas orderby va.Order select va;
+
+                // In case VaultAccessUserInteractive is in the list, we will use our FileTokenCache with provided domainHint, otherwise use MemoryTokenCache
+                string domainHint = (from va in vaSorted where va is VaultAccessUserInteractive select (VaultAccessUserInteractive)va).FirstOrDefault()?.DomainHint;
+                string userAliasType = (from va in vaSorted where va is VaultAccessUserInteractive select (VaultAccessUserInteractive)va).FirstOrDefault()?.UserAliasType;
+
+                // Token cache name is unique per login credentials as it uses alias type or env user name and domain hint.
+                string tokenCacheName = $"{(userAliasType ?? Environment.UserName)}@{domainHint ?? "microsoft.com"}";
+
+                // If either user alias or domain hint are empty, cache in memory instead.
+                var authenticationContext = new AuthenticationContext(authority, string.IsNullOrEmpty(domainHint) && string.IsNullOrEmpty(userAliasType) ? new MemoryTokenCache() : (TokenCache)new FileTokenCache(tokenCacheName));
+
+                Queue<Exception> exceptions = new Queue<Exception>();
+                string vaultAccessTypes = "";
+                foreach (VaultAccess va in vaSorted)
                 {
-                    vaultAccessTypes += $" {va}";
-                    exceptions.Enqueue(e);
+                    try
+                    {
+                        // If user alias type is different from environment, force login prompt, otherwise silently login
+                        var authResult = va.AcquireToken(authenticationContext, resource, userAliasType == Environment.UserName ? Environment.UserName:"");
+                        AuthenticatedUserName = authResult.UserInfo?.DisplayableId ?? $"{Environment.UserDomainName}\\{Environment.UserName}";
+                        return Task.FromResult(authResult.AccessToken);
+                    }
+                    catch (Exception e)
+                    {
+                        vaultAccessTypes += $" {va}";
+                        exceptions.Enqueue(e);
+                    }
                 }
+                throw new VaultAccessException($"Failed to get access to {vaultName} with all possible vault access type(s){vaultAccessTypes}", exceptions.ToArray());
             }
-            throw new VaultAccessException($"Failed to get access to {vaultName} with all possible vault access type(s){vaultAccessTypes}", exceptions.ToArray());
         });
 
         #endregion

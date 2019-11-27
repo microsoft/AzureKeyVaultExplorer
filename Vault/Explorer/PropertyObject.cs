@@ -185,6 +185,8 @@ namespace Microsoft.Vault.Explorer
 
         public abstract void PopulateCustomTags();
 
+        public abstract void AddOrUpdateSecretKind(SecretKind sk);
+
         public abstract string AreCustomTagsValid();
 
         public abstract void PopulateExpiration();

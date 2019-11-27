@@ -168,11 +168,18 @@ namespace Microsoft.Vault.Explorer
                         _tempVaultAliases[smd.CurrentVaultAlias.Alias] = smd.CurrentVaultAlias;
                         uxComboBoxVaultAlias.Items.Insert(uxComboBoxVaultAlias.Items.Count - 1, smd.CurrentVaultAlias);
                         uxComboBoxVaultAlias.SelectedItem = smd.CurrentVaultAlias;
+
+                        // Set user alias and domain hint manually as they are not set from the assignment
+                        ((VaultAlias)uxComboBoxVaultAlias.SelectedItem).UserAlias = smd.CurrentVaultAlias.UserAlias;
+                        ((VaultAlias)uxComboBoxVaultAlias.SelectedItem).DomainHint = smd.CurrentVaultAlias.DomainHint;
                         break;
                 }
             }
             CurrentVaultAlias = (VaultAlias)uxComboBoxVaultAlias.SelectedItem;
             bool itemSelected = (null != CurrentVaultAlias);
+            uxComboBoxVaultAlias.SelectedText = CurrentVaultAlias.Alias;
+            // In some cases, the combobox will be blank. Setting the text on a blank combobox will null the selected item. So, always ensure the selecteditem is set when setting the selected text.
+            uxComboBoxVaultAlias.SelectedItem = CurrentVaultAlias;            
             uxComboBoxVaultAlias.ToolTipText = itemSelected ? "Vault names: " + string.Join(", ", CurrentVaultAlias.VaultNames) : "";
             uxMenuItemRefresh.Enabled = itemSelected;
             return itemSelected;
@@ -181,12 +188,12 @@ namespace Microsoft.Vault.Explorer
         private void SetCurrentVault()
         {
             CurrentVault = new Vault(Utils.FullPathToJsonFile(Settings.Default.VaultsJsonFileLocation), VaultAccessTypeEnum.ReadWrite, CurrentVaultAlias.VaultNames);
-            // In case current Vaults.json doesn't contain provided vault name during activation, add one assuming UserInteractive access
-            if (false == CurrentVault.VaultsConfig.ContainsKey(CurrentVaultAlias.VaultNames[0]))
+            // In case that subscription is chosen by the dialog, overwrite permissions taken from vaults.json
+            if (CurrentVaultAlias.UserAlias!=null)
             {
-                CurrentVault.VaultsConfig.Add(CurrentVaultAlias.VaultNames[0], new VaultAccessType(
-                    new VaultAccess[] { new VaultAccessUserInteractive(CurrentVaultAlias.DomainHint) },
-                    new VaultAccess[] { new VaultAccessUserInteractive(CurrentVaultAlias.DomainHint) }));
+                CurrentVault.VaultsConfig[CurrentVaultAlias.VaultNames[0]]= new VaultAccessType(
+                    new VaultAccess[] { new VaultAccessUserInteractive(CurrentVaultAlias.DomainHint, CurrentVaultAlias.UserAlias) },
+                    new VaultAccess[] { new VaultAccessUserInteractive(CurrentVaultAlias.DomainHint, CurrentVaultAlias.UserAlias) });
             }
         }
 

@@ -79,10 +79,7 @@ namespace Microsoft.Vault.Explorer
 
         private void uxLinkLabelClearTokenCache_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            foreach (string domainHint in Settings.Default.DomainHintsList)
-            {
-                new FileTokenCache(domainHint).Clear();
-            }
+            FileTokenCache.ClearAllFileTokenCaches();
         }
     }
 }

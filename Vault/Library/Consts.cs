@@ -49,6 +49,8 @@ namespace Microsoft.Vault.Library
 
         public const string ChangedByKey = "ChangedBy";
 
+        public const string SecretKindKey = "SecretKind";
+
         internal const string VaultsJsonConfig = "Vaults.json";
 
         internal const string AzureVaultUriFormat = "https://{0}.vault.azure.net";
@@ -65,6 +67,8 @@ namespace Microsoft.Vault.Library
 
         internal const int GetCertificateVersionsMaxResults = 25;
 
-        internal const string VaultTokenCacheFileName = @"%AppData%\Microsoft\Vault\TokenCache_{0}_cc73e24a-63f3-4d9f-878c-53b85fecd872.dat"; // {0} - DomainHint
+        internal const string VaultTokenCacheDirectory = @"%AppData%\Microsoft\Vault";
+
+        internal const string VaultTokenCacheFileName = VaultTokenCacheDirectory + @"\TokenCache_{0}_cc73e24a-63f3-4d9f-878c-53b85fecd872.dat"; // {0} - DomainHint
     }
 }

@@ -5,19 +5,24 @@
 //
 // Author: Eli Zeitlin
 //
-// Copyright (c) Microsoft Corporation. All rights reserved. 
-// Licensed under the MIT License. See License.txt in the project root for license information. 
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See License.txt in the project root for license information.
 // --------------------------------------------------------------------------------------
-
+// Examples
+/* 
 [
   {
     "Alias": "Dual Foo Vaults in US west and east",
     "VaultNames": [ "FooVaultInUsWest", "FooVaultInUsEast" ],
-    "SecretKinds": [ "Custom", "WD.Certificate", "WD.ServiceFabricService.Configuration.Secret", "WCD.StorageAccount", "WCD.SQLAccount", "WCD.WindowsAccount", "WCD.PfxCertificate", "WCD.CerCertificate", "WCD.ServiceBus", "WCD.DataFactory", "WCD.ApiKey", "WCD.RedisCache", "WCD.AppKey" ]
+    "SecretKinds": [ "MySecret1", "MySecret2" ]
   },
   {
     "Alias": "Single Bar Vault in Europe",
     "VaultNames": [ "BarVaultInEurope" ],
-    "SecretKinds": [ "Custom", "WD.Certificate" ]
+    "SecretKinds": [ "MySecret" ]
   }
+]
+*/
+[
+
 ]

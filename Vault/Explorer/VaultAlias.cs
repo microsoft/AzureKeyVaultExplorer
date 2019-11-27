@@ -32,6 +32,8 @@ namespace Microsoft.Vault.Explorer
 
         public string DomainHint;
 
+        public string UserAlias;
+
         [JsonConstructor]
         public VaultAlias(string alias, string[] vaultNames, string[] secretKinds)
         {

@@ -63,6 +63,19 @@ namespace Microsoft.Vault.Explorer
             MaxExpiration = TimeSpan.MaxValue;
         }
 
+        public SecretKind(string alias) : base(alias)
+        {
+            Alias = alias;
+            ToolTipText = Description = "The name must be a string 1-127 characters in length containing only 0-9, a-z, A-Z, and -.";
+            NameRegex = Consts.ValidSecretNameRegex;
+            ValueRegex = new Regex("^.{0,1048576}$", RegexOptions.Singleline | RegexOptions.Compiled);
+            ValueTemplate = "";
+            CertificateFormat = null;
+            RequiredCustomTags = new string[0];
+            OptionalCustomTags = new string[0];
+            MaxExpiration = TimeSpan.MaxValue;
+        }
+
         [JsonConstructor]
         public SecretKind(string alias, string description, string nameRegex, string valueRegex, string valueTemplate, 
             string certificateFormat, string[] requiredCustomTags, string[] optionalCustomTags,

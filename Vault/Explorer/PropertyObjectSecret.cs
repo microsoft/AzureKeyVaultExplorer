@@ -3,6 +3,7 @@
 
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.KeyVault.Models;
+using Microsoft.Vault.Library;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -79,6 +80,35 @@ namespace Microsoft.Vault.Explorer
             {
                 if (false == _customTags.ContainsKey(tagId)) continue;
                 Tags.AddOrKeep(_customTags[tagId].ToTagItem());
+            }
+        }
+
+        // This method updates the SecretKind tag in Custom Tags
+        public override void AddOrUpdateSecretKind(SecretKind sk)
+        {
+            TagItem newTag = new TagItem(Consts.SecretKindKey, sk.Alias);
+            TagItem oldTag = this.Tags.GetOrNull(newTag);
+
+            // Don't add the SecretKind to a secret that doesn't have any custom tags
+            if ((null == _customTags) || (_customTags.Count == 0)) return;
+            
+            // Don't add the SecretKind to a secret that's defaulted to Custom
+            if (sk.Alias == "Custom" && !this.Tags.Contains(newTag)) return;
+            
+            // Don't add the SecretKind to a secret that is defaulted to Custom and doesn't have any custom tags.
+            if (oldTag == null && newTag.Value == "Custom") return;
+
+            if (oldTag == null) // Add the SecretKind tag
+            {
+                Tags.AddOrReplace(newTag);
+            }
+            else if (oldTag.Value != newTag.Value) // Update the SecretKind tag
+            {
+                Tags.AddOrReplace(newTag);
+            }
+            else // Leave the SecretKind tag alone
+            {
+                Tags.AddOrReplace(oldTag);
             }
         }
 

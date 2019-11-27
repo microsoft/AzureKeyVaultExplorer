@@ -35,7 +35,6 @@ namespace Microsoft.Vault.Explorer
             _session = session;
             Text = title;
             _mode = mode;
-            uxTextBoxName.Font = Settings.Default.SecretFont;
         }
 
         protected virtual void InvalidateOkButton()
