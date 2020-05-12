@@ -90,7 +90,7 @@ namespace Microsoft.Vault.Explorer
             TagItem oldTag = this.Tags.GetOrNull(newTag);
 
             // Don't add the SecretKind to a secret that doesn't have any custom tags
-            if ((null == _customTags) || (_customTags.Count == 0)) return;
+            if (null == _customTags) return;
             
             // Don't add the SecretKind to a secret that's defaulted to Custom
             if (sk.Alias == "Custom" && !this.Tags.Contains(newTag)) return;
