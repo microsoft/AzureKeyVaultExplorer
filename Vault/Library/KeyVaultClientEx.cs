@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. 
 // Licensed under the MIT License. See License.txt in the project root for license information. 
 
+using Azure.Security.KeyVault.Certificates;
+using Azure.Security.KeyVault.Secrets;
 using Microsoft.Azure.KeyVault;
 using System;
 using System.Collections.Generic;
@@ -13,12 +15,33 @@ namespace Microsoft.Vault.Library
     /// <summary>
     /// Simple wrapper around KeyVaultClient
     /// </summary>
-    internal class KeyVaultClientEx : KeyVaultClient
+    internal class SecretClientEx : SecretClient
     {
         public readonly string VaultName;
         public readonly string VaultUri;
 
-        public KeyVaultClientEx(string vaultName, AuthenticationCallback authenticationCallback) : base(authenticationCallback)
+        public SecretClientEx(string vaultName)
+        {
+            Utils.GuardVaultName(vaultName);
+            VaultName = vaultName;
+            VaultUri = string.Format(Consts.AzureVaultUriFormat, VaultName);
+        }
+
+        private string ToIdentifier(string endpoint, string name, string version) => $"{VaultUri}/{endpoint}/{name}" + (string.IsNullOrEmpty(version) ? "" : $"/{version}");
+
+        public string ToSecretIdentifier(string secretName, string version = null) => ToIdentifier(Consts.SecretsEndpoint, secretName, version);
+
+        public string ToCertificateIdentifier(string certificateName, string version = null) => ToIdentifier(Consts.CertificatesEndpoint, certificateName, version);
+
+        public override string ToString() => VaultUri;
+    }
+
+    internal class CertificateClientEx : CertificateClient
+    {
+        public readonly string VaultName;
+        public readonly string VaultUri;
+
+        public CertificateClientEx(string vaultName)
         {
             Utils.GuardVaultName(vaultName);
             VaultName = vaultName;
