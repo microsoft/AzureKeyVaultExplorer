@@ -88,10 +88,12 @@ namespace Microsoft.Vault.Explorer
         {
             KeyVaultCertificate cb = (KeyVaultCertificate)originalObject;
             PropertyObjectCertificate certNew = (PropertyObjectCertificate)newObject;
-            CertificateProperties properties = new CertificateProperties(certNew.Name);
-            properties.Enabled = certNew.Enabled;
-            //properties.ExpiresOn = certNew.Expires;
-            //properties.NotBefore = certNew.NotBefore;
+            CertificateProperties properties = new CertificateProperties(certNew.Name)
+            {
+                Enabled = certNew.Enabled,
+                //ExpiresOn = certNew.Expires,
+                //NotBefore = certNew.NotBefore
+            };
             await Session.CurrentVault.UpdateCertificatePolicyAsync(certNew.Name, certNew.CertificatePolicy, cancellationToken);
             cb = await Session.CurrentVault.UpdateCertificateAsync(properties, cancellationToken);
             return new ListViewItemCertificate(Session, cb);

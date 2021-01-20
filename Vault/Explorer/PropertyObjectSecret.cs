@@ -139,13 +139,6 @@ namespace Microsoft.Vault.Explorer
                 DateTime.UtcNow.Add(SecretKind.DefaultExpiration);
         }
 
-        //public SecretAttributes ToSecretAttributes() => new SecretAttributes()
-        //{
-        //    Enabled = Enabled,
-        //    Expires = Expires,
-        //    NotBefore = NotBefore
-        //};
-
         public override string GetKeyVaultFileExtension() => ContentType.KeyVaultSecret.ToExtension();
 
         public override DataObject GetClipboardValue()

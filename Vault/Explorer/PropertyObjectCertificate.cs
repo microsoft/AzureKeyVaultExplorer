@@ -23,7 +23,7 @@ namespace Microsoft.Vault.Explorer
     [DefaultProperty("Certificate")]
     public class PropertyObjectCertificate : PropertyObject
     {
-        public readonly KeyVaultCertificate KeyVaultCertificate;
+        public readonly KeyVaultCertificateWithPolicy KeyVaultCertificate;
         public readonly CertificatePolicy CertificatePolicy;
 
         [Category("General")]
@@ -106,7 +106,7 @@ namespace Microsoft.Vault.Explorer
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public string IssuerReference => CertificatePolicy.IssuerName;
 
-        public PropertyObjectCertificate(KeyVaultCertificate keyVaultCertificate, CertificatePolicy policy, X509Certificate2 certificate, PropertyChangedEventHandler propertyChanged) :
+        public PropertyObjectCertificate(KeyVaultCertificateWithPolicy keyVaultCertificate, CertificatePolicy policy, X509Certificate2 certificate, PropertyChangedEventHandler propertyChanged) :
             base(keyVaultCertificate.Id, keyVaultCertificate.Name, keyVaultCertificate.Properties.Tags, keyVaultCertificate.Properties.Enabled, keyVaultCertificate.Properties.ExpiresOn, keyVaultCertificate.Properties.NotBefore, propertyChanged)
         {
             KeyVaultCertificate = keyVaultCertificate;
@@ -125,8 +125,6 @@ namespace Microsoft.Vault.Explorer
             LifetimeActions = olac;
             LifetimeActions.SetPropertyChangedEventHandler(propertyChanged);
         }
-
-        //public CertificateProperties ToCertificateProperties() => new CertificateProperties() { Enabled = Enabled, Expires = Expires, NotBefore = NotBefore };
 
         public override string GetKeyVaultFileExtension() => ContentType.KeyVaultCertificate.ToExtension();
 

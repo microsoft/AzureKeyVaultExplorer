@@ -31,8 +31,6 @@ namespace Microsoft.Vault.Explorer
             ContentType = ContentTypeEnumConverter.GetValue(attributes.ContentType);
         }
 
-        //public ListViewItemSecret(ISession session, SecretItem si) : this(session, si.Identifier, si.Attributes, si.ContentType, si.Tags) { }
-
         public ListViewItemSecret(ISession session, KeyVaultSecret s) : this(session, s.Properties) { }
 
         protected override IEnumerable<PropertyDescriptor> GetCustomProperties()
@@ -89,11 +87,13 @@ namespace Microsoft.Vault.Explorer
             PropertyObjectSecret posNew = (PropertyObjectSecret)newObject;
             KeyVaultSecret s = null;
             SecretProperties sp = null;
-            SecretProperties properties = new SecretProperties(posNew.Name);
-            properties.ContentType = ContentTypeEnumConverter.GetDescription(posNew.ContentType);
-            properties.Enabled = posNew.Enabled;
-            properties.ExpiresOn = posNew.Expires;
-            properties.NotBefore = posNew.NotBefore;
+            SecretProperties properties = new SecretProperties(posNew.Name) {
+                ContentType = ContentTypeEnumConverter.GetDescription(posNew.ContentType),
+                Enabled = posNew.Enabled,
+                ExpiresOn = posNew.Expires,
+                NotBefore = posNew.NotBefore
+            };
+           
             // New secret, secret rename or new value
             if ((sOriginal == null) || (sOriginal.Name != posNew.Name) || (sOriginal.Value != posNew.RawValue))
             {

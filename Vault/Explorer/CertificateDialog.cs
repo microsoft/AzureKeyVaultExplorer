@@ -96,7 +96,7 @@ namespace Microsoft.Vault.Explorer
             uxTextBoxName.Text = Utils.ConvertToValidSecretName(cert.GetNameInfo(X509NameType.SimpleName, false));
         }
 
-        private void RefreshCertificateObject(KeyVaultCertificate cb, CertificatePolicy cp, X509Certificate2 certificate)
+        private void RefreshCertificateObject(KeyVaultCertificateWithPolicy cb, CertificatePolicy cp, X509Certificate2 certificate)
         {
             uxPropertyGridSecret.SelectedObject = PropertyObject = new PropertyObjectCertificate(cb, cp, certificate, SecretObject_PropertyChanged);
             uxTextBoxName.Text = PropertyObject.Name;
