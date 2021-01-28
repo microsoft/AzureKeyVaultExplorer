@@ -52,28 +52,10 @@ namespace Microsoft.Vault.Explorer
         public Uri SecretId => KeyVaultCertificate.SecretId;
 
         [Category("Policy")]
-        [DisplayName("Attributes")]
+        [DisplayName("CertificatePolicy")]
         [ReadOnly(true)]
         [TypeConverter(typeof(ExpandableObjectConverter))]
         public CertificatePolicy PolicyAttributes => CertificatePolicy;
-
-        [Category("Policy")]
-        [DisplayName("Certificate properties")]
-        [ReadOnly(true)]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        public CertificatePolicy X509CertificateProperties => CertificatePolicy;
-
-        [Category("Policy")]
-        [DisplayName("Key properties")]
-        [ReadOnly(true)]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        public CertificatePolicy KeyProperties => CertificatePolicy;
-
-        [Category("Policy")]
-        [DisplayName("Secret properties")]
-        [ReadOnly(true)]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        public CertificatePolicy SecretProperties => CertificatePolicy;
 
         private ObservableLifetimeActionsCollection _lifetimeActions;
         [Category("Policy")]

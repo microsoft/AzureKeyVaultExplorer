@@ -28,7 +28,7 @@ namespace Microsoft.Vault.Explorer
         public readonly ISession Session;
         public readonly int GroupIndex;
         public readonly Uri Identifier;
-        public readonly string ObjectName;
+        public readonly string VaultName;
         public readonly VaultHttpsUri VaultHttpsUri;
         public readonly IDictionary<string, string> Tags;
         public readonly bool Enabled;
@@ -44,7 +44,7 @@ namespace Microsoft.Vault.Explorer
             Session = session;
             GroupIndex = groupIndex;
             Identifier = identifier;
-            Name = name;
+            VaultName = name;
             VaultHttpsUri = new VaultHttpsUri(identifier.ToString());
             Tags = tags;
             Enabled = enabled ?? true;
@@ -94,7 +94,7 @@ namespace Microsoft.Vault.Explorer
         public void RepopulateSubItems()
         {
             SubItems.Clear();
-            SubItems[0].Name = SubItems[0].Text = ObjectName;
+            SubItems[0].Name = SubItems[0].Text = VaultName;
             SubItems.Add(new ListViewSubItem(this, Utils.NullableDateTimeToString(Updated)) { Tag = Updated }); // Add Tag so ListViewItemSorter will sort DateTime correctly
             SubItems.Add(ChangedBy);
             SubItems.Add(new ListViewSubItem(this, Utils.ExpirationToString(Expires)) { Tag = Expires }); // Add Tag so ListViewItemSorter will sort TimeSpan correctly

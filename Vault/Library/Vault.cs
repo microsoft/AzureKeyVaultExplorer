@@ -28,8 +28,8 @@ namespace Microsoft.Vault.Library
     /// </remarks>
     public class Vault
     {
-        private readonly SecretClient[] _secretClients;
-        private readonly CertificateClient[] _certificateClients;
+        private readonly SecretClientEx[] _secretClients;
+        private readonly CertificateClientEx[] _certificateClients;
         private bool Secondary => (_secretClients.Length == 2);
 
         public readonly string VaultsConfigFile;
