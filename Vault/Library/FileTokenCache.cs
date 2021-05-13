@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. 
 // Licensed under the MIT License. See License.txt in the project root for license information. 
 
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +10,7 @@ using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
+
 
 namespace Microsoft.Vault.Library
 {
