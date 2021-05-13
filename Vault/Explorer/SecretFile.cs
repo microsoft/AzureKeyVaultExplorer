@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. 
 // Licensed under the MIT License. See License.txt in the project root for license information. 
 
-using Microsoft.Azure.KeyVault;
-using Microsoft.Azure.KeyVault.Models;
+using Azure.Security.KeyVault.Certificates;
+using Azure.Security.KeyVault.Secrets;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
@@ -19,20 +19,20 @@ namespace Microsoft.Vault.Explorer
     /// Represents .kv-secret file
     /// </summary>
     [JsonObject]
-    public class KeyVaultSecretFile : KeyVaultFile<SecretBundle>
+    public class KeyVaultSecretFile : KeyVaultFile<KeyVaultSecret>
     {
         public KeyVaultSecretFile() : base() { }
-        public KeyVaultSecretFile(SecretBundle secret) : base(secret) { }
+        public KeyVaultSecretFile(KeyVaultSecret secret) : base(secret) { }
     }
 
     /// <summary>
     /// Represents .kv-certificate file
     /// </summary>
     [JsonObject]
-    public class KeyVaultCertificateFile : KeyVaultFile<CertificateBundle>
+    public class KeyVaultCertificateFile : KeyVaultFile<KeyVaultCertificateWithPolicy>
     {
         public KeyVaultCertificateFile() : base() { }
-        public KeyVaultCertificateFile(CertificateBundle cb) : base(cb) { }
+        public KeyVaultCertificateFile(KeyVaultCertificateWithPolicy cb) : base(cb) { }
     }
 
     [JsonObject]

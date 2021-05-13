@@ -57,7 +57,7 @@ namespace Microsoft.Vault.Explorer
                 case VaultUriCollection.Keys:
                     return;
                 case VaultUriCollection.Certificates:
-                    var cb = vault.GetCertificateAsync(ItemName, Version, CancellationToken.None).GetAwaiter().GetResult();
+                    var cb = vault.GetCertificateAsync(ItemName, CancellationToken.None).GetAwaiter().GetResult();
                     var cert = vault.GetCertificateWithExportableKeysAsync(ItemName, Version, CancellationToken.None).GetAwaiter().GetResult();
                     po = new PropertyObjectCertificate(cb, cb.Policy, cert, null);
                     break;
