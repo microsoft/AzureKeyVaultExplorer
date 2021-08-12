@@ -15,6 +15,8 @@
     <RootNamespace>Microsoft.Vault.Core</RootNamespace>
     <AssemblyName>Microsoft.Vault.Core</AssemblyName>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
