@@ -25,6 +25,8 @@
     <PlatformTarget Condition="'$(BuildingInsideVisualStudio)' != ''">AnyCPU</PlatformTarget>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch Condition="'$(BuildingInsideVisualStudio)' != ''">None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <AutoVersioning>true</AutoVersioning>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -44,6 +46,9 @@
     <DelaySign>true</DelaySign>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Azure.Security.KeyVault.Certificates">
+      <HintPath>C:\Users\v-wenjyu\.nuget\packages\azure.security.keyvault.certificates\4.2.0\lib\netstandard2.0\Azure.Security.KeyVault.Certificates.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Rest.ClientRuntime.dll">
       <HintPath>$(PkgMicrosoft_Rest_ClientRuntime)\lib\net45\Microsoft.Rest.ClientRuntime.dll</HintPath>
     </Reference>
