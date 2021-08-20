@@ -1,7 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. 
 // Licensed under the MIT License. See License.txt in the project root for license information. 
 
-using Microsoft.Azure.KeyVault;
+//using Microsoft.Azure.KeyVault;
+using Azure.Security.KeyVault.Secrets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +14,12 @@ namespace Microsoft.Vault.Library
     /// <summary>
     /// Simple wrapper around KeyVaultClient
     /// </summary>
-    internal class KeyVaultClientEx : KeyVaultClient
+    internal class SecretClientEx : SecretClient
     {
         public readonly string VaultName;
-        public readonly string VaultUri;
+        public new readonly string VaultUri;
 
-        public KeyVaultClientEx(string vaultName, AuthenticationCallback authenticationCallback) : base(authenticationCallback)
+        public SecretClientEx(string vaultName)
         {
             Utils.GuardVaultName(vaultName);
             VaultName = vaultName;
