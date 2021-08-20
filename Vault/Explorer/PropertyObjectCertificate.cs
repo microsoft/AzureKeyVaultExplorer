@@ -1,8 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. 
 // Licensed under the MIT License. See License.txt in the project root for license information. 
 
-using Microsoft.Azure.KeyVault;
-using Microsoft.Azure.KeyVault.Models;
+using Azure.Security.KeyVault.Certificates;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -24,7 +23,7 @@ namespace Microsoft.Vault.Explorer
     [DefaultProperty("Certificate")]
     public class PropertyObjectCertificate : PropertyObject
     {
-        public readonly CertificateBundle CertificateBundle;
+        public readonly KeyVaultCertificateWithPolicy KeyVaultCertificate;
         public readonly CertificatePolicy CertificatePolicy;
 
         [Category("General")]
@@ -40,41 +39,23 @@ namespace Microsoft.Vault.Explorer
         [Category("Identifiers")]
         [DisplayName("Certificate")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        public CertificateIdentifier Id => CertificateBundle.CertificateIdentifier;
+        public Uri Id => KeyVaultCertificate.Id;
 
         [Category("Identifiers")]
         [DisplayName("Key")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        public KeyIdentifier KeyId => CertificateBundle.KeyIdentifier;
+        public Uri KeyId => KeyVaultCertificate.KeyId;
 
         [Category("Identifiers")]
         [DisplayName("Secret")]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        public SecretIdentifier SecretId => CertificateBundle.SecretIdentifier;
+        public Uri SecretId => KeyVaultCertificate.SecretId;
 
         [Category("Policy")]
-        [DisplayName("Attributes")]
+        [DisplayName("CertificatePolicy")]
         [ReadOnly(true)]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        public CertificateAttributes PolicyAttributes => CertificatePolicy.Attributes;
-
-        [Category("Policy")]
-        [DisplayName("Certificate properties")]
-        [ReadOnly(true)]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        public X509CertificateProperties X509CertificateProperties => CertificatePolicy.X509CertificateProperties;
-
-        [Category("Policy")]
-        [DisplayName("Key properties")]
-        [ReadOnly(true)]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        public KeyProperties KeyProperties => CertificatePolicy.KeyProperties;
-
-        [Category("Policy")]
-        [DisplayName("Secret properties")]
-        [ReadOnly(true)]
-        [TypeConverter(typeof(ExpandableObjectConverter))]
-        public SecretProperties SecretProperties => CertificatePolicy.SecretProperties;
+        public CertificatePolicy PolicyAttributes => CertificatePolicy;
 
         private ObservableLifetimeActionsCollection _lifetimeActions;
         [Category("Policy")]
@@ -92,7 +73,11 @@ namespace Microsoft.Vault.Explorer
                 _lifetimeActions = value;
                 if (null != CertificatePolicy)
                 {
-                    CertificatePolicy.LifetimeActions = LifetimeActionsToList();
+                    CertificatePolicy.LifetimeActions.Clear();
+                    foreach (var lifetimeaction in LifetimeActionsToList())
+                    {
+                        CertificatePolicy.LifetimeActions.Add(lifetimeaction);
+                    }
                 }
             }
         }
@@ -101,12 +86,12 @@ namespace Microsoft.Vault.Explorer
         [DisplayName("Issuer parameters")]
         [ReadOnly(true)]
         [TypeConverter(typeof(ExpandableObjectConverter))]
-        public IssuerParameters IssuerReference => CertificatePolicy.IssuerParameters;
+        public string IssuerReference => CertificatePolicy.IssuerName;
 
-        public PropertyObjectCertificate(CertificateBundle certificateBundle, CertificatePolicy policy, X509Certificate2 certificate, PropertyChangedEventHandler propertyChanged) :
-            base(certificateBundle.CertificateIdentifier, certificateBundle.Tags, certificateBundle.Attributes.Enabled, certificateBundle.Attributes.Expires, certificateBundle.Attributes.NotBefore, propertyChanged)
+        public PropertyObjectCertificate(KeyVaultCertificateWithPolicy keyVaultCertificate, CertificatePolicy policy, X509Certificate2 certificate, PropertyChangedEventHandler propertyChanged) :
+            base(keyVaultCertificate.Id, keyVaultCertificate.Name, keyVaultCertificate.Properties.Tags, keyVaultCertificate.Properties.Enabled, keyVaultCertificate.Properties.ExpiresOn, keyVaultCertificate.Properties.NotBefore, propertyChanged)
         {
-            CertificateBundle = certificateBundle;
+            KeyVaultCertificate = keyVaultCertificate;
             CertificatePolicy = policy;
             Certificate = certificate;
             _contentType = ContentType.Pkcs12;
@@ -116,14 +101,12 @@ namespace Microsoft.Vault.Explorer
             {
                 foreach (var la in CertificatePolicy.LifetimeActions)
                 {
-                    olac.Add(new LifetimeActionItem() { Type = la.Action.ActionType, DaysBeforeExpiry = la.Trigger.DaysBeforeExpiry, LifetimePercentage = la.Trigger.LifetimePercentage });
+                    olac.Add(new LifetimeActionItem() { Type = la.Action, DaysBeforeExpiry = la.DaysBeforeExpiry, LifetimePercentage = la.LifetimePercentage });
                 }
             }
             LifetimeActions = olac;
             LifetimeActions.SetPropertyChangedEventHandler(propertyChanged);
         }
-
-        public CertificateAttributes ToCertificateAttributes() => new CertificateAttributes() { Enabled = Enabled, Expires = Expires, NotBefore = NotBefore };
 
         public override string GetKeyVaultFileExtension() => ContentType.KeyVaultCertificate.ToExtension();
 
@@ -142,7 +125,7 @@ namespace Microsoft.Vault.Explorer
                 case ContentType.KeyVaultSecret:
                     throw new InvalidOperationException("One can't save key vault certificate as key vault secret");
                 case ContentType.KeyVaultCertificate: // Serialize the entire secret as encrypted JSON for current user
-                    File.WriteAllText(fullName, new KeyVaultCertificateFile(CertificateBundle).Serialize());
+                    File.WriteAllText(fullName, new KeyVaultCertificateFile(KeyVaultCertificate).Serialize());
                     break;
                 case ContentType.KeyVaultLink:
                     File.WriteAllText(fullName, GetLinkAsInternetShortcut());
@@ -177,7 +160,13 @@ namespace Microsoft.Vault.Explorer
         public override string AreCustomTagsValid() => ""; // Return always valid
 
         private IList<LifetimeAction> LifetimeActionsToList() =>
-            (from lai in LifetimeActions select new LifetimeAction(new Trigger(lai.LifetimePercentage, lai.DaysBeforeExpiry), new Microsoft.Azure.KeyVault.Models.Action(lai.Type))).ToList();
+            (from lai in LifetimeActions
+             select new LifetimeAction(lai.Type)
+             {
+                 DaysBeforeExpiry = lai.DaysBeforeExpiry,
+                 LifetimePercentage = lai.LifetimePercentage
+             }
+            ).ToList();
     }
 
     public class CertificateUIEditor : UITypeEditor
