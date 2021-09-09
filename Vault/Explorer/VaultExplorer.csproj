@@ -76,9 +76,8 @@
     <Reference Include="Microsoft.Azure.Management.KeyVault.dll">
       <HintPath>$(PkgMicrosoft_Azure_Management_KeyVault)\lib\net45\Microsoft.Azure.Management.KeyVault.dll</HintPath>
     </Reference>
-    <Reference Include="ScintillaNET">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(Pkgjacobslusser_ScintillaNET_3_6_3)\lib\net40\ScintillaNET.dll</HintPath>
+    <Reference Include="ScintillaNET, Version=3.6.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\jacobslusser.ScintillaNET.3.6.3\lib\net40\ScintillaNET.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />

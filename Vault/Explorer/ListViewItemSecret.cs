@@ -22,7 +22,7 @@ namespace Microsoft.Vault.Explorer
         public readonly string ContentTypeStr;
         public readonly ContentType ContentType;
 
-        private ListViewItemSecret(ISession session, SecretProperties attributes) :
+        public ListViewItemSecret(ISession session, SecretProperties attributes) :
             base(session, ContentTypeEnumConverter.GetValue(attributes.ContentType).IsCertificate() ? CertificatesGroup : SecretsGroup,
                 attributes.Id, attributes.Name, attributes.Tags, attributes.Enabled, attributes.CreatedOn, attributes.UpdatedOn, attributes.NotBefore, attributes.ExpiresOn)
         {

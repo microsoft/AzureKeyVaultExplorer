@@ -161,7 +161,7 @@ namespace Microsoft.Vault.Explorer
 
         private IList<LifetimeAction> LifetimeActionsToList() =>
             (from lai in LifetimeActions
-             select new LifetimeAction(lai.Type)
+             select new LifetimeAction((CertificatePolicyAction)lai.Type)
              {
                  DaysBeforeExpiry = lai.DaysBeforeExpiry,
                  LifetimePercentage = lai.LifetimePercentage

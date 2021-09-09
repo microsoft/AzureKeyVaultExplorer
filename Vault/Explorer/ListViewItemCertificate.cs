@@ -22,7 +22,7 @@ namespace Microsoft.Vault.Explorer
         public readonly CertificateProperties CertificateProperties;
         public readonly string Thumbprint;
 
-        private ListViewItemCertificate(ISession session, CertificateProperties certificateProperties) :
+        public ListViewItemCertificate(ISession session, CertificateProperties certificateProperties) :
             base(session, KeyVaultCertificatesGroup, certificateProperties.Id, certificateProperties.Name, certificateProperties.Tags, certificateProperties.Enabled, certificateProperties.CreatedOn, certificateProperties.UpdatedOn, certificateProperties.NotBefore, certificateProperties.ExpiresOn)
         {
             CertificateProperties = certificateProperties;
