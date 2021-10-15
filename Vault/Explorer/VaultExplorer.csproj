@@ -49,6 +49,9 @@
     <Reference Include="Azure.Security.KeyVault.Certificates">
       <HintPath>C:\Users\v-wenjyu\.nuget\packages\azure.security.keyvault.certificates\4.2.0\lib\netstandard2.0\Azure.Security.KeyVault.Certificates.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Identity.Client, Version=4.36.2.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Identity.Client.4.36.2\lib\net461\Microsoft.Identity.Client.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Rest.ClientRuntime.dll">
       <HintPath>$(PkgMicrosoft_Rest_ClientRuntime)\lib\net45\Microsoft.Rest.ClientRuntime.dll</HintPath>
     </Reference>
@@ -84,6 +87,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Design" />
+    <Reference Include="System.IdentityModel" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />

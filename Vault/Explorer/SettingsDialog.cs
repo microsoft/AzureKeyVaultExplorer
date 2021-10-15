@@ -79,7 +79,7 @@ namespace Microsoft.Vault.Explorer
 
         private void uxLinkLabelClearTokenCache_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            FileTokenCache.ClearAllFileTokenCaches();
+            CachePersistence.ClearAllFileTokenCaches();
         }
     }
 }

@@ -46,6 +46,9 @@
   <ItemGroup>
     <PackageReference Include="Azure.Security.KeyVault.Certificates" Version="4.2.0" />
     <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.2.0" />
+    <PackageReference Include="Microsoft.Identity.Client">
+      <Version>4.36.2</Version>
+    </PackageReference>
     <Reference Include="Microsoft.Rest.ClientRuntime.dll">
       <HintPath>$(PkgMicrosoft_Rest_ClientRuntime)\lib\net45\Microsoft.Rest.ClientRuntime.dll</HintPath>
     </Reference>

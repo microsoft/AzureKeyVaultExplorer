@@ -4,12 +4,14 @@
 namespace Microsoft.Vault.Library
 {
     using Core;
-    using Microsoft.IdentityModel.Clients.ActiveDirectory;
+    using Microsoft.Identity.Client;
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Security.Cryptography.X509Certificates;
+    using System.Threading.Tasks;
+    using System.Windows.Forms;
 
     [JsonObject]
     public abstract class VaultAccess
@@ -31,28 +33,39 @@ namespace Microsoft.Vault.Library
             Order = order;
         }
 
-        protected abstract AuthenticationResult AcquireTokenInternal(AuthenticationContext authenticationContext, string resource, string userAlias = "");
+        protected abstract AuthenticationResult AcquireTokenInternal(IPublicClientApplication app, IEnumerable<string> scopes, IAccount user);
 
-        public AuthenticationResult AcquireToken(AuthenticationContext authenticationContext, string resource, string userAlias="")
+        public async Task<AuthenticationResult> AcquireToken(IPublicClientApplication app, IEnumerable<string> scopes, IAccount user)
         {
-            // first, try to get a token silently
-            if (authenticationContext.TokenCache != null)
+            AuthenticationResult result = null;
+            Exception exception = null;
+            try
+            {
+                result = await app.AcquireTokenSilent(scopes, user).ExecuteAsync();
+                return result;
+            }
+            catch (MsalUiRequiredException exc)
             {
                 try
                 {
-                    return authenticationContext.AcquireTokenSilentAsync(resource, ClientId).GetAwaiter().GetResult();
+                    result = await app.AcquireTokenSilent(scopes, user).ExecuteAsync();
+                    return result;
                 }
-                catch (AdalException ex)
+                catch (Exception ex)
                 {
-                    // There is no token in the cache; fallback -> prompt the user to sign-in.
-                    if (ex.ErrorCode != "failed_to_acquire_token_silently")
-                    {
-                        // An unexpected error occurred.
-                        throw;
-                    }
+                    exception = ex;
                 }
             }
-            return AcquireTokenInternal(authenticationContext, resource, userAlias);
+            catch (Exception ex)
+            {
+                exception = ex;
+            }
+
+            if (exception != null)
+            {
+                MessageBox.Show(exception.Message, "Failed to get token", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return null;
         }
     }
 
@@ -79,21 +92,16 @@ namespace Microsoft.Vault.Library
             UserAliasType = string.IsNullOrEmpty(UserAlias) ? Environment.UserName : UserAlias;
         }
 
-        protected override AuthenticationResult AcquireTokenInternal(AuthenticationContext authenticationContext, string resource, string userAlias)
+        protected override AuthenticationResult AcquireTokenInternal(IPublicClientApplication app, IEnumerable<string> scopes, IAccount user)
         {
             if (false == Environment.UserInteractive)
             {
                 throw new VaultAccessException($@"Current process PID: {Process.GetCurrentProcess().Id} is running in non user interactive mode. Username: {Environment.UserDomainName}\{Environment.UserName} Machine name: {Environment.MachineName}");
             }
             // Attempt to login with provided user alias.
-            else if(!string.IsNullOrEmpty(userAlias))
-            {
-                return authenticationContext.AcquireTokenAsync(resource, ClientId, new Uri("urn:ietf:wg:oauth:2.0:oob"), new PlatformParameters(PromptBehavior.Auto), UserIdentifier.AnyUser, $"login_hint={userAlias}@{DomainHint}&domain_hint={DomainHint}").GetAwaiter().GetResult();
-            }
-            // No alias provided so force login prompt.
             else
             {
-                return authenticationContext.AcquireTokenAsync(resource, ClientId, new Uri("urn:ietf:wg:oauth:2.0:oob"), new PlatformParameters(PromptBehavior.Always), UserIdentifier.AnyUser).GetAwaiter().GetResult();
+                return app.AcquireTokenSilent(scopes, user).ExecuteAsync().Result;
             }
         }
 
@@ -113,9 +121,9 @@ namespace Microsoft.Vault.Library
             ClientSecret = clientSecret;
         }
 
-        protected override AuthenticationResult AcquireTokenInternal(AuthenticationContext authenticationContext, string resource, string userAlias = "")
+        protected override AuthenticationResult AcquireTokenInternal(IPublicClientApplication app, IEnumerable<string> scopes, IAccount user)
         {
-            return authenticationContext.AcquireTokenAsync(resource, new ClientCredential(ClientId, ClientSecret)).GetAwaiter().GetResult();
+            return app.AcquireTokenSilent(scopes, user).ExecuteAsync().Result;
         }
 
         public override string ToString() => $"{nameof(VaultAccessClientCredential)}";
@@ -185,9 +193,9 @@ namespace Microsoft.Vault.Library
             }
         }
 
-        protected override AuthenticationResult AcquireTokenInternal(AuthenticationContext authenticationContext, string resource, string userAlias = "")
+        protected override AuthenticationResult AcquireTokenInternal(IPublicClientApplication app, IEnumerable<string> scopes, IAccount user)
         {
-            return authenticationContext.AcquireTokenAsync(resource, new ClientAssertionCertificate(ClientId, Certificate)).GetAwaiter().GetResult();
+            return app.AcquireTokenSilent(scopes, user).ExecuteAsync().Result;
         }
 
         public override string ToString() => $"{nameof(VaultAccessClientCertificate)}";
