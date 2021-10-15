@@ -82,8 +82,7 @@
     <Compile Include="CertificateClientEx.cs" />
     <Compile Include="CertificateNotFoundException.cs" />
     <Compile Include="Consts.cs" />
-    <Compile Include="MemoryTokenCache.cs" />
-    <Compile Include="FileTokenCache.cs" />
+    <Compile Include="CachePersistence.cs" />
     <Compile Include="SecretClientEx.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="VaultAccess.cs" />

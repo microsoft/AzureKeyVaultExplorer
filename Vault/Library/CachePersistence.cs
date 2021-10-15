@@ -18,7 +18,7 @@ namespace Microsoft.Vault.Library
 
         /// <summary>
         /// Initializes the cache against a local file.
-        /// If the file is already present, it loads its content in the ADAL cache
+        /// If the file is already present, it loads its content in the MSAL cache
         /// </summary>
         /// <param name="domainHint">For example: microsoft.com or gme.gbl</param>
         public CachePersistence(string domainHint)
