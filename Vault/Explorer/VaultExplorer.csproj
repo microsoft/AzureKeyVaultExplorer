@@ -46,8 +46,8 @@
     <DelaySign>true</DelaySign>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Azure.Security.KeyVault.Certificates">
-      <HintPath>C:\Users\v-wenjyu\.nuget\packages\azure.security.keyvault.certificates\4.2.0\lib\netstandard2.0\Azure.Security.KeyVault.Certificates.dll</HintPath>
+    <Reference Include="Azure.Identity">
+      <HintPath>C:\Users\v-wenjyu\.nuget\packages\azure.identity\1.5.0\lib\netstandard2.0\Azure.Identity.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Identity.Client, Version=4.36.2.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Identity.Client.4.36.2\lib\net461\Microsoft.Identity.Client.dll</HintPath>

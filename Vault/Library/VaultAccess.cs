@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. 
 // Licensed under the MIT License. See License.txt in the project root for license information. 
-
+using Azure.Identity;
 namespace Microsoft.Vault.Library
 {
     using Core;
@@ -33,28 +33,20 @@ namespace Microsoft.Vault.Library
             Order = order;
         }
 
-        protected abstract AuthenticationResult AcquireTokenInternal(IPublicClientApplication app, IEnumerable<string> scopes, IAccount user);
+        protected abstract InteractiveBrowserCredential AcquireTokenInternal(AuthenticationRecord auth, string userAlias = "");
 
-        public async Task<AuthenticationResult> AcquireToken(IPublicClientApplication app, IEnumerable<string> scopes, IAccount user)
+        public InteractiveBrowserCredential AcquireToken(AuthenticationRecord auth, string userAlias="")
         {
-            AuthenticationResult result = null;
             Exception exception = null;
             try
             {
-                result = await app.AcquireTokenSilent(scopes, user).ExecuteAsync();
-                return result;
-            }
-            catch (MsalUiRequiredException exc)
-            {
-                try
-                {
-                    result = await app.AcquireTokenSilent(scopes, user).ExecuteAsync();
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    exception = ex;
-                }
+                var credential = new InteractiveBrowserCredential(
+                    new InteractiveBrowserCredentialOptions
+                    {
+                        TokenCachePersistenceOptions = new TokenCachePersistenceOptions(),
+                        AuthenticationRecord = auth
+                    });
+                return credential;
             }
             catch (Exception ex)
             {
@@ -92,7 +84,7 @@ namespace Microsoft.Vault.Library
             UserAliasType = string.IsNullOrEmpty(UserAlias) ? Environment.UserName : UserAlias;
         }
 
-        protected override AuthenticationResult AcquireTokenInternal(IPublicClientApplication app, IEnumerable<string> scopes, IAccount user)
+        protected override InteractiveBrowserCredential AcquireTokenInternal(AuthenticationRecord auth, string userAlias = "")
         {
             if (false == Environment.UserInteractive)
             {
@@ -101,7 +93,13 @@ namespace Microsoft.Vault.Library
             // Attempt to login with provided user alias.
             else
             {
-                return app.AcquireTokenSilent(scopes, user).ExecuteAsync().Result;
+                var credential = new InteractiveBrowserCredential(
+                    new InteractiveBrowserCredentialOptions
+                    {
+                        TokenCachePersistenceOptions = new TokenCachePersistenceOptions(),
+                        AuthenticationRecord = auth
+                    });
+                return credential;
             }
         }
 
@@ -121,9 +119,15 @@ namespace Microsoft.Vault.Library
             ClientSecret = clientSecret;
         }
 
-        protected override AuthenticationResult AcquireTokenInternal(IPublicClientApplication app, IEnumerable<string> scopes, IAccount user)
+        protected override InteractiveBrowserCredential AcquireTokenInternal(AuthenticationRecord auth, string userAlias = "")
         {
-            return app.AcquireTokenSilent(scopes, user).ExecuteAsync().Result;
+            var credential = new InteractiveBrowserCredential(
+                new InteractiveBrowserCredentialOptions
+                {
+                    TokenCachePersistenceOptions = new TokenCachePersistenceOptions(),
+                    AuthenticationRecord = auth
+                });
+            return credential;
         }
 
         public override string ToString() => $"{nameof(VaultAccessClientCredential)}";
@@ -193,9 +197,15 @@ namespace Microsoft.Vault.Library
             }
         }
 
-        protected override AuthenticationResult AcquireTokenInternal(IPublicClientApplication app, IEnumerable<string> scopes, IAccount user)
+        protected override InteractiveBrowserCredential AcquireTokenInternal(AuthenticationRecord auth, string userAlias = "")
         {
-            return app.AcquireTokenSilent(scopes, user).ExecuteAsync().Result;
+            var credential = new InteractiveBrowserCredential(
+                new InteractiveBrowserCredentialOptions
+                {
+                    TokenCachePersistenceOptions = new TokenCachePersistenceOptions(),
+                    AuthenticationRecord = auth
+                });
+            return credential;
         }
 
         public override string ToString() => $"{nameof(VaultAccessClientCertificate)}";

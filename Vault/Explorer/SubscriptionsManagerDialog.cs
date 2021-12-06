@@ -10,19 +10,13 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Drawing.Design;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using Azure.Identity;
 using System.Windows.Forms;
 using Microsoft.Vault.Library;
-using System.IO;
 
 namespace Microsoft.Vault.Explorer
 {
@@ -41,10 +35,9 @@ namespace Microsoft.Vault.Explorer
 
         private AccountItem _currentAccountItem;
         private AuthenticationResult _currentAuthResult;
+        private InteractiveBrowserCredential _credential;
         private KeyVaultManagementClient _currentKeyVaultMgmtClient;
         private readonly HttpClient _httpClient;
-        private IEnumerable<string> _scopes;
-        private IAccount _user;
 
         public VaultAlias CurrentVaultAlias { get; private set; }
 
@@ -57,7 +50,7 @@ namespace Microsoft.Vault.Explorer
             foreach (string userAccountName in Settings.Default.UserAccountNamesList)
             {
                 string[] accounts = userAccountName.Split('@');
-                uxComboBoxAccounts.Items.Add(new AccountItem(accounts[1], accounts[0], _scopes, _user));
+                uxComboBoxAccounts.Items.Add(new AccountItem(accounts[1], accounts[0]));
             }
             uxComboBoxAccounts.Items.Add(AddAccountText);
             uxComboBoxAccounts.Items.Add(AddDomainHintText);
@@ -87,7 +80,7 @@ namespace Microsoft.Vault.Explorer
                     // Authenticate into selected account
                     _currentAccountItem = account;
                     GetAuthenticationToken();
-                    _currentAccountItem.UserAlias = _currentAuthResult.Account.Username.Split('@')[0];
+                    _currentAccountItem.UserAlias = _currentAuthResult.Account.Username;
                     break;
 
                 default:
@@ -96,7 +89,7 @@ namespace Microsoft.Vault.Explorer
 
             using (var op = NewUxOperationWithProgress(uxComboBoxAccounts))
             {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_currentAuthResult.TokenType, _currentAuthResult.AccessToken);
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_credential.GetToken().GetType().ToString(), _credential.GetToken());
                 var hrm = await _httpClient.GetAsync($"{ManagmentEndpoint}subscriptions?{ApiVersion}", op.CancellationToken);
                 var json = await hrm.Content.ReadAsStringAsync();
                 var subs = JsonConvert.DeserializeObject<SubscriptionsResponse>(json);
@@ -117,7 +110,7 @@ namespace Microsoft.Vault.Explorer
             if (null == s) return;
             using (var op = NewUxOperationWithProgress(uxComboBoxAccounts))
             {
-                var tvcc = new TokenCredentials(_currentAuthResult.AccessToken);
+                var tvcc = new TokenCredentials(_credential.GetToken());
                 _currentKeyVaultMgmtClient = new KeyVaultManagementClient(tvcc) { SubscriptionId = s.Subscription.SubscriptionId.ToString() };
                 var vaults = await _currentKeyVaultMgmtClient.Vaults.ListAsync(null, op.CancellationToken);
                 uxListViewVaults.Items.Clear();
@@ -146,18 +139,19 @@ namespace Microsoft.Vault.Explorer
         private void AddNewAccount()
         {
             // Create temp account item for new account
-            _currentAccountItem = new AccountItem(Guid.NewGuid().ToString(), ClientId, _scopes, _user);
+            _currentAccountItem = new AccountItem(Guid.NewGuid().ToString());
             GetAuthenticationToken();
 
             // Get new user account and add it to default settings
             string userAccountName = _currentAuthResult.Account.Username;
+            AuthenticationRecord authentication = _credential.Authenticate();
             string[] userLogin = userAccountName.Split('@');
             _currentAccountItem.UserAlias = userLogin[0];
             _currentAccountItem.DomainHint = userLogin[1];
             Settings.Default.AddUserAccountName(userAccountName);
 
             // Rename cache to be associated with user login
-            ((CachePersistence)_currentAccountItem.app.UserTokenCache).Rename(userAccountName);
+            (_currentAccountItem.cachePersistence).Rename(userAccountName, authentication);
             uxComboBoxAccounts.Items.Insert(0, userAccountName);
             uxComboBoxAccounts.SelectedIndex = 0;
         }
@@ -166,7 +160,7 @@ namespace Microsoft.Vault.Explorer
         private void GetAuthenticationToken()
         {
             VaultAccessUserInteractive vaui = new VaultAccessUserInteractive(_currentAccountItem.DomainHint, _currentAccountItem.UserAlias);
-            _currentAuthResult = vaui.AcquireToken(_currentAccountItem.app, _currentAccountItem.Scopes, _currentAccountItem.User).Result;
+            _credential = vaui.AcquireToken(_currentAccountItem.authRecord, _currentAccountItem.UserAlias);
         }
     }
 
@@ -174,63 +168,22 @@ namespace Microsoft.Vault.Explorer
 
     public class AccountItem
     {
-        public IPublicClientApplication app;
+        public AuthenticationRecord authRecord;
+        public CachePersistence cachePersistence;
 
         public string DomainHint;
         public string UserAlias;
-        public string ClientId;
-        public IEnumerable<string> Scopes;
-        public IAccount User;
         private static readonly object FileLock = new object();
         public static string FileName = Environment.ExpandEnvironmentVariables(string.Format(Consts.VaultTokenCacheFileName, "microsoft.com"));
 
-        public AccountItem(string domainHint, string clientId, IEnumerable<string> scopes, IAccount user, string userAlias = null)
+        public AccountItem(string domainHint, string userAlias = null)
         {
             DomainHint = domainHint;
             UserAlias = userAlias ?? Environment.UserName;
-            ClientId = clientId;
-            Scopes = scopes;
-            User = user;
-            string authority = domainHint.ToLower().Contains("gme") ? Settings.Default.GmeAuthority : Settings.Default.Authority;
-            app = PublicClientApplicationBuilder.Create(ClientId).WithAuthority(authority).Build();
-            ITokenCache usertokenCache = app.UserTokenCache;
-            usertokenCache.SetBeforeAccess(BeforeAccessNotification);
-            usertokenCache.SetAfterAccess(AfterAccessNotification);
+            cachePersistence = new CachePersistence(this.ToString(), authRecord);
         }
 
         public override string ToString() => $"{UserAlias}@{DomainHint}";
-
-        /// <summary>
-        /// Triggered right before MSAL needs to access the cache
-        /// Reload the cache from the persistent store in case it changed since the last access
-        /// </summary>
-        /// <param name="args"></param>
-        public static void BeforeAccessNotification(TokenCacheNotificationArgs args)
-        {
-            lock (FileLock)
-            {
-                args.TokenCache.DeserializeMsalV3(File.Exists(FileName)
-                    ? File.ReadAllBytes(FileName)
-                    : null);
-            }
-        }
-
-        /// <summary>
-        /// Triggered right after MSAL accessed the cache
-        /// </summary>
-        /// <param name="args"></param>
-        public static void AfterAccessNotification(TokenCacheNotificationArgs args)
-        {
-            // if the access operation resulted in a cache update
-            if (args.HasStateChanged)
-            {
-                lock (FileLock)
-                {
-                    // reflect changes in the persistent store
-                    File.WriteAllBytes(FileName, args.TokenCache.SerializeMsalV3());
-                }
-            }
-        }
     }
 
     public class ListViewItemSubscription : ListViewItem

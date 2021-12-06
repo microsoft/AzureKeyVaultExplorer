@@ -1,40 +1,33 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. 
 // Licensed under the MIT License. See License.txt in the project root for license information. 
 
-using Microsoft.Identity.Client;
 using System;
 using System.IO;
 using System.Linq;
+using Azure.Identity;
 
 namespace Microsoft.Vault.Library
 {
     public class CachePersistence
     {
-        public static string FileName = Environment.ExpandEnvironmentVariables(string.Format(Consts.VaultTokenCacheFileName, "microsoft.com"));
-        private static readonly TokenCache UsertokenCache = new TokenCache();
+        public string FileName;
         private static readonly object FileLock = new object();
+        const string TOKEN_CACHE_NAME = "MyTokenCache";
 
-        public CachePersistence() : this("microsoft.com") { }
-
+        public CachePersistence(string domainHint)
+        {
+            FileName = Environment.ExpandEnvironmentVariables(string.Format(Consts.VaultTokenCacheFileName, domainHint));
+        }
         /// <summary>
         /// Initializes the cache against a local file.
         /// If the file is already present, it loads its content in the MSAL cache
         /// </summary>
         /// <param name="domainHint">For example: microsoft.com or gme.gbl</param>
-        public CachePersistence(string domainHint)
+        public CachePersistence(string domainHint, AuthenticationRecord authRecord)
         {
             FileName = Environment.ExpandEnvironmentVariables(string.Format(Consts.VaultTokenCacheFileName, domainHint));
             Directory.CreateDirectory(Path.GetDirectoryName(FileName));
-        }
-
-        public static TokenCache GetUserCache()
-        {
-            lock (FileLock)
-            {
-                UsertokenCache.SetBeforeAccess(BeforeAccessNotification);
-                UsertokenCache.SetAfterAccess(AfterAccessNotification);
-                return UsertokenCache;
-            }
+            AfterAccessNotification(authRecord);
         }
 
         /// <summary>
@@ -78,7 +71,7 @@ namespace Microsoft.Vault.Library
         /// Renames the cache.
         /// </summary>
         /// <param name="newName"></param>
-        public void Rename(string newName)
+        public void Rename(string newName, AuthenticationRecord authRecord)
         {
             newName = Environment.ExpandEnvironmentVariables(string.Format(Consts.VaultTokenCacheFileName, newName));
             if (File.Exists(newName))
@@ -88,8 +81,8 @@ namespace Microsoft.Vault.Library
             File.Move(FileName, newName);
 
             FileName = newName;
-            UsertokenCache.SetBeforeAccess(BeforeAccessNotification);
-            UsertokenCache.SetAfterAccess(AfterAccessNotification);
+            this.BeforeAccessNotification(authRecord);
+            this.AfterAccessNotification(authRecord);
             BeforeAccessNotification(null);
         }
 
@@ -97,31 +90,43 @@ namespace Microsoft.Vault.Library
         /// Triggered right before MSAL needs to access the cache
         /// Reload the cache from the persistent store in case it changed since the last access
         /// </summary>
-        /// <param name="args"></param>
-        public static void BeforeAccessNotification(TokenCacheNotificationArgs args)
+        void BeforeAccessNotification(AuthenticationRecord authRecord)
         {
             lock (FileLock)
             {
-                args.TokenCache.DeserializeMsalV3(File.Exists(FileName)
-                    ? File.ReadAllBytes(FileName)
-                    : null);
+                // Load the previously serialized AuthenticationRecord from disk and deserialize it.
+                var authRecordStream = new FileStream(FileName, FileMode.Open, FileAccess.Read);
+                authRecord = AuthenticationRecord.Deserialize(authRecordStream);
+
+                // Construct a new client with our TokenCachePersistenceOptions with the addition of the AuthenticationRecord property.
+                // This tells the credential to use the same token cache in addition to which account to try and fetch from cache when GetToken is called.
+                var credential = new InteractiveBrowserCredential(
+                    new InteractiveBrowserCredentialOptions
+                    {
+                        TokenCachePersistenceOptions = new TokenCachePersistenceOptions { Name = TOKEN_CACHE_NAME },
+                        AuthenticationRecord = authRecord
+                    });
             }
         }
 
         /// <summary>
         /// Triggered right after MSAL accessed the cache
         /// </summary>
-        /// <param name="args"></param>
-        public static void AfterAccessNotification(TokenCacheNotificationArgs args)
+        void AfterAccessNotification(AuthenticationRecord authRecord)
         {
-            // if the access operation resulted in a cache update
-            if (args.HasStateChanged)
+            lock (FileLock)
             {
-                lock (FileLock)
-                {
-                    // reflect changes in the persistent store
-                    File.WriteAllBytes(FileName, args.TokenCache.SerializeMsalV3());
-                }
+                // Construct a credential with TokenCachePersistenceOptions specified to ensure that the token cache is persisted to disk.
+                // We can also optionally specify a name for the cache to avoid having it cleared by other applications.
+                var credential = new InteractiveBrowserCredential(
+                    new InteractiveBrowserCredentialOptions { TokenCachePersistenceOptions = new TokenCachePersistenceOptions { Name = TOKEN_CACHE_NAME } });
+
+                // Call AuthenticateAsync to fetch a new AuthenticationRecord.
+                authRecord = credential.Authenticate();
+
+                // Serialize the AuthenticationRecord to disk so that it can be re-used across executions of this initialization code.
+                var authRecordStream = new FileStream(FileName, FileMode.Create, FileAccess.Write);
+                authRecord.SerializeAsync(authRecordStream);
             }
         }
     }
