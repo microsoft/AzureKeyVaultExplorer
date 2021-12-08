@@ -16,6 +16,7 @@ using System.Text.RegularExpressions;
 using Azure.Identity;
 using System.Windows.Forms;
 using Microsoft.Vault.Library;
+using Azure.Core;
 
 namespace Microsoft.Vault.Explorer
 {
@@ -87,7 +88,7 @@ namespace Microsoft.Vault.Explorer
 
             using (var op = NewUxOperationWithProgress(uxComboBoxAccounts))
             {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_credential.GetToken().GetType().ToString(), _credential.GetToken());
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_credential.GetToken(new TokenRequestContext()).GetType().ToString(), _credential.GetToken(new TokenRequestContext()).Token);
                 var hrm = await _httpClient.GetAsync($"{ManagmentEndpoint}subscriptions?{ApiVersion}", op.CancellationToken);
                 var json = await hrm.Content.ReadAsStringAsync();
                 var subs = JsonConvert.DeserializeObject<SubscriptionsResponse>(json);
@@ -108,7 +109,7 @@ namespace Microsoft.Vault.Explorer
             if (null == s) return;
             using (var op = NewUxOperationWithProgress(uxComboBoxAccounts))
             {
-                var tvcc = new TokenCredentials(_credential.GetToken());
+                var tvcc = new TokenCredentials(_credential.GetToken(new TokenRequestContext()).Token);
                 _currentKeyVaultMgmtClient = new KeyVaultManagementClient(tvcc) { SubscriptionId = s.Subscription.SubscriptionId.ToString() };
                 var vaults = await _currentKeyVaultMgmtClient.Vaults.ListAsync(null, op.CancellationToken);
                 uxListViewVaults.Items.Clear();
