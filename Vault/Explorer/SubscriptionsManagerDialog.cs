@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See License.txt in the project root for license information. 
 
 using Microsoft.Azure;
-using Microsoft.Identity.Client;
 using Microsoft.Azure.Management.KeyVault;
 using Microsoft.Azure.Management.KeyVault.Models;
 using Microsoft.Rest;
@@ -34,7 +33,6 @@ namespace Microsoft.Vault.Explorer
 4) Open Subscriptions Manager dialog";
 
         private AccountItem _currentAccountItem;
-        private AuthenticationResult _currentAuthResult;
         private InteractiveBrowserCredential _credential;
         private KeyVaultManagementClient _currentKeyVaultMgmtClient;
         private readonly HttpClient _httpClient;
@@ -80,7 +78,7 @@ namespace Microsoft.Vault.Explorer
                     // Authenticate into selected account
                     _currentAccountItem = account;
                     GetAuthenticationToken();
-                    _currentAccountItem.UserAlias = _currentAuthResult.Account.Username;
+                    _currentAccountItem.UserAlias = _credential.Authenticate().Username;
                     break;
 
                 default:
@@ -143,7 +141,7 @@ namespace Microsoft.Vault.Explorer
             GetAuthenticationToken();
 
             // Get new user account and add it to default settings
-            string userAccountName = _currentAuthResult.Account.Username;
+            string userAccountName = _credential.Authenticate().Username;
             AuthenticationRecord authentication = _credential.Authenticate();
             string[] userLogin = userAccountName.Split('@');
             _currentAccountItem.UserAlias = userLogin[0];
