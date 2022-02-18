@@ -83,7 +83,7 @@ namespace Microsoft.Vault.Explorer
         private void NewCertificate(KeyVaultCertificateWithPolicy cb, X509Certificate2 cert)
         {
             _certificatePolicy = cb?.Policy;
-            _certificatePolicy = _certificatePolicy ?? new CertificatePolicy("", "")
+            _certificatePolicy = _certificatePolicy ?? new CertificatePolicy(cert.Issuer, cert.Subject)
             {
                 Exportable = true,
                 KeySize = 2048,
@@ -91,7 +91,6 @@ namespace Microsoft.Vault.Explorer
                 ReuseKey = false,
                 ContentType = CertificateContentType.Pkcs12
             };
-            //cb = cb ?? new KeyVaultCertificateWithPolicy();
             RefreshCertificateObject(cb, _certificatePolicy, cert);
             uxTextBoxName.Text = Utils.ConvertToValidSecretName(cert.GetNameInfo(X509NameType.SimpleName, false));
         }
@@ -124,6 +123,11 @@ namespace Microsoft.Vault.Explorer
             }
             RefreshCertificateObject(cb, _certificatePolicy, cert);
             return cb;
+        }
+
+        private void CertificateDialog_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

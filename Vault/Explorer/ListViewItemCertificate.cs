@@ -1,11 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. 
 // Licensed under the MIT License. See License.txt in the project root for license information. 
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
@@ -58,11 +56,7 @@ namespace Microsoft.Vault.Explorer
 
         public override async Task<ListViewItemBase> ResetExpirationAsync(CancellationToken cancellationToken)
         {
-            var ca = new CertificateProperties(Name)
-            {
-                //NotBefore = (this.NotBefore == null) ? (DateTime?)null : DateTime.UtcNow.AddHours(-1),
-                //ExpiresOn = (this.Expires == null) ? (DateTime?)null : DateTime.UtcNow.AddYears(1)
-            };
+            var ca = new CertificateProperties(Name);
             KeyVaultCertificate cb = await Session.CurrentVault.UpdateCertificateAsync(ca, cancellationToken); // Reset only NotBefore and Expires CertificateProperties
             return new ListViewItemCertificate(Session, cb);
         }
@@ -90,8 +84,6 @@ namespace Microsoft.Vault.Explorer
             CertificateProperties properties = new CertificateProperties(certNew.Name)
             {
                 Enabled = certNew.Enabled,
-                //ExpiresOn = certNew.Expires,
-                //NotBefore = certNew.NotBefore
             };
             await Session.CurrentVault.UpdateCertificatePolicyAsync(certNew.Name, certNew.CertificatePolicy, cancellationToken);
             cb = await Session.CurrentVault.UpdateCertificateAsync(properties, cancellationToken);

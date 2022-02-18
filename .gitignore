@@ -11,3 +11,4 @@ msbuild.log
 *.tmp
 ~*.docx
 ~*.xlsx
+packages/*

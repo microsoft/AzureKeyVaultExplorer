@@ -52,6 +52,12 @@
     <Reference Include="Azure.Identity, Version=1.5.0.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Azure.Identity.1.5.0\lib\netstandard2.0\Azure.Identity.dll</HintPath>
     </Reference>
+    <Reference Include="Azure.Security.KeyVault.Certificates, Version=4.2.0.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Azure.Security.KeyVault.Certificates.4.2.0\lib\netstandard2.0\Azure.Security.KeyVault.Certificates.dll</HintPath>
+    </Reference>
+    <Reference Include="Azure.Security.KeyVault.Secrets, Version=4.2.0.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Azure.Security.KeyVault.Secrets.4.2.0\lib\netstandard2.0\Azure.Security.KeyVault.Secrets.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Bcl.AsyncInterfaces.1.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>

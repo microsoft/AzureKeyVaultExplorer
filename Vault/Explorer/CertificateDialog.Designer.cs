@@ -42,12 +42,11 @@
             tableLayoutPanel1.ColumnCount = 2;
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tableLayoutPanel1.Location = new System.Drawing.Point(17, 9);
-            tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4);
+            tableLayoutPanel1.Location = new System.Drawing.Point(13, 7);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 1;
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tableLayoutPanel1.Size = new System.Drawing.Size(794, 0);
+            tableLayoutPanel1.Size = new System.Drawing.Size(596, 0);
             tableLayoutPanel1.TabIndex = 8;
             // 
             // uxPropertyGridSecret
@@ -57,21 +56,23 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.uxPropertyGridSecret.DisabledItemForeColor = System.Drawing.SystemColors.WindowText;
             this.uxPropertyGridSecret.HelpVisible = false;
-            this.uxPropertyGridSecret.Location = new System.Drawing.Point(20, 90);
-            this.uxPropertyGridSecret.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.uxPropertyGridSecret.Location = new System.Drawing.Point(17, 64);
+            this.uxPropertyGridSecret.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.uxPropertyGridSecret.Name = "uxPropertyGridSecret";
-            this.uxPropertyGridSecret.Size = new System.Drawing.Size(791, 474);
+            this.uxPropertyGridSecret.Size = new System.Drawing.Size(593, 385);
             this.uxPropertyGridSecret.TabIndex = 0;
             this.uxPropertyGridSecret.ToolbarVisible = false;
             // 
             // CertificateDialog
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(828, 610);
+            this.ClientSize = new System.Drawing.Size(621, 496);
             this.Controls.Add(this.uxPropertyGridSecret);
             this.Controls.Add(tableLayoutPanel1);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "CertificateDialog";
+            this.Load += new System.EventHandler(this.CertificateDialog_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
