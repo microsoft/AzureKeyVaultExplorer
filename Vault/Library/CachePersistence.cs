@@ -50,12 +50,12 @@ namespace Microsoft.Vault.Library
         /// <summary>
         /// Empties all persistent stores.
         /// </summary>
-        public void ClearAllFileTokenCaches()
+        public static void ClearAllFileTokenCaches()
         {
             string[] tokenNames = GetAllFileTokenCacheLoginNames();
             foreach (string token in tokenNames)
             {
-                File.Delete(FileName);
+                new CachePersistence(token).Clear();
             }
         }
 

@@ -82,11 +82,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BackwardCompatibility.cs" />
-    <Compile Include="CertificateClientEx.cs" />
     <Compile Include="CertificateNotFoundException.cs" />
     <Compile Include="Consts.cs" />
     <Compile Include="CachePersistence.cs" />
-    <Compile Include="SecretClientEx.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="VaultAccess.cs" />
     <Compile Include="SecretException.cs" />
