@@ -4,6 +4,8 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using Azure.Identity;
 
 namespace Microsoft.Vault.Library
@@ -50,12 +52,12 @@ namespace Microsoft.Vault.Library
         /// <summary>
         /// Empties all persistent stores.
         /// </summary>
-        public void ClearAllFileTokenCaches()
+        public static void ClearAllFileTokenCaches()
         {
             string[] tokenNames = GetAllFileTokenCacheLoginNames();
             foreach (string token in tokenNames)
             {
-                File.Delete(FileName);
+                new CachePersistence(token).Clear();
             }
         }
 
@@ -106,6 +108,8 @@ namespace Microsoft.Vault.Library
                         TokenCachePersistenceOptions = new TokenCachePersistenceOptions { Name = TOKEN_CACHE_NAME },
                         AuthenticationRecord = authRecord
                     });
+
+                var chainedTokenCredential = new ChainedTokenCredential(credential, new DefaultAzureCredential());
             }
         }
 
@@ -124,10 +128,93 @@ namespace Microsoft.Vault.Library
                 // Call AuthenticateAsync to fetch a new AuthenticationRecord.
                 authRecord = credential.Authenticate();
 
+                // Create the original data to be encrypted
+                var toEncrypt = Encoding.ASCII.GetBytes(authRecord.ToString());
+
+                // Create some random entropy.
+                byte[] entropy = CreateRandomEntropy();
+
                 // Serialize the AuthenticationRecord to disk so that it can be re-used across executions of this initialization code.
-                var authRecordStream = new FileStream(FileName, FileMode.Create, FileAccess.Write);
-                authRecord.SerializeAsync(authRecordStream);
+                var authRecordStream = new FileStream(FileName, FileMode.OpenOrCreate);
+
+                // Encrypt a copy of the data to the stream.
+                int bytesWritten = EncryptDataToStream(toEncrypt, entropy, DataProtectionScope.CurrentUser, authRecordStream);
+
+                authRecordStream.Close();
             }
+        }
+
+        public static byte[] CreateRandomEntropy()
+        {
+            // Create a byte array to hold the random value.
+            byte[] entropy = new byte[16];
+
+            // Create a new instance of the RNGCryptoServiceProvider.
+            // Fill the array with a random value.
+            new RNGCryptoServiceProvider().GetBytes(entropy);
+
+            // Return the array.
+            return entropy;
+        }
+
+        public static int EncryptDataToStream(byte[] Buffer, byte[] Entropy, DataProtectionScope Scope, Stream S)
+        {
+            if (Buffer == null)
+                throw new ArgumentNullException("Buffer");
+            if (Buffer.Length <= 0)
+                throw new ArgumentException("Buffer");
+            if (Entropy == null)
+                throw new ArgumentNullException("Entropy");
+            if (Entropy.Length <= 0)
+                throw new ArgumentException("Entropy");
+            if (S == null)
+                throw new ArgumentNullException("S");
+
+            int length = 0;
+
+            // Encrypt the data and store the result in a new byte array. The original data remains unchanged.
+            byte[] encryptedData = ProtectedData.Protect(Buffer, Entropy, Scope);
+
+            // Write the encrypted data to a stream.
+            if (S.CanWrite && encryptedData != null)
+            {
+                S.Write(encryptedData, 0, encryptedData.Length);
+
+                length = encryptedData.Length;
+            }
+
+            // Return the length that was written to the stream.
+            return length;
+        }
+
+        public static byte[] DecryptDataFromStream(byte[] Entropy, DataProtectionScope Scope, Stream S, int Length)
+        {
+            if (S == null)
+                throw new ArgumentNullException("S");
+            if (Length <= 0)
+                throw new ArgumentException("Length");
+            if (Entropy == null)
+                throw new ArgumentNullException("Entropy");
+            if (Entropy.Length <= 0)
+                throw new ArgumentException("Entropy");
+
+            byte[] inBuffer = new byte[Length];
+            byte[] outBuffer;
+
+            // Read the encrypted data from a stream.
+            if (S.CanRead)
+            {
+                S.Read(inBuffer, 0, Length);
+
+                outBuffer = ProtectedData.Unprotect(inBuffer, Entropy, Scope);
+            }
+            else
+            {
+                throw new IOException("Could not read the stream.");
+            }
+
+            // Return the length that was written to the stream.
+            return outBuffer;
         }
     }
 }
