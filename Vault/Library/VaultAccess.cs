@@ -50,12 +50,7 @@ namespace Microsoft.Vault.Library
             }
             catch (Exception ex)
             {
-                exception = ex;
-            }
-
-            if (exception != null)
-            {
-                MessageBox.Show(exception.Message, "Failed to get token", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Failed to get token", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return null;
         }

@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See License.txt in the project root for license information. 
 using Azure.Security.KeyVault.Certificates;
 using Azure.Security.KeyVault.Secrets;
+using Azure.Identity;
 namespace Microsoft.Vault.Library
 {
     using Core;
@@ -27,8 +28,8 @@ namespace Microsoft.Vault.Library
     /// </remarks>
     public class Vault
     {
-        private readonly SecretClientEx[] _secretClients;
-        private readonly CertificateClientEx[] _certificateClients;
+        private readonly SecretClient[] _secretClients;
+        private readonly CertificateClient[] _certificateClients;
         private bool Secondary => (_secretClients.Length == 2);
 
         public readonly string VaultsConfigFile;
@@ -67,7 +68,7 @@ namespace Microsoft.Vault.Library
             switch (VaultNames.Length)
             {
                 case 1:
-                    _secretClients = new SecretClientEx[1]
+                    _secretClients = new SecretClient[1]
                     {
                         CreateKeyVaultClientEx(accessType, VaultNames[0]),
                     };
@@ -79,7 +80,7 @@ namespace Microsoft.Vault.Library
                     {
                         throw new ArgumentException($"Primary vault name {primaryVaultName} is equal to secondary vault name {secondaryVaultName}");
                     }
-                    _secretClients = new SecretClientEx[2]
+                    _secretClients = new SecretClient[2]
                     {
                         CreateKeyVaultClientEx(accessType, primaryVaultName),
                         CreateKeyVaultClientEx(accessType, secondaryVaultName),
@@ -151,9 +152,9 @@ namespace Microsoft.Vault.Library
             return JsonConvert.DeserializeObject<VaultsConfig>(File.ReadAllText(vaultsConfigFile), settings);
         }
 
-        private SecretClientEx CreateKeyVaultClientEx(VaultAccessTypeEnum accessType, string vaultName)
+        private SecretClient CreateKeyVaultClientEx(VaultAccessTypeEnum accessType, string vaultName)
         {
-            return new SecretClientEx(vaultName);
+            return new SecretClient(new Uri(vaultName), new DefaultAzureCredential());
         }
 
         #endregion
