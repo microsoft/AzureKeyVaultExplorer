@@ -14,6 +14,7 @@ namespace Microsoft.Vault.Library
     {
         public string FileName;
         private static readonly object FileLock = new object();
+        private static readonly RNGCryptoServiceProvider RNGCryp = new RNGCryptoServiceProvider();
         const string TOKEN_CACHE_NAME = "MyTokenCache";
 
         public CachePersistence(string domainHint)
@@ -129,10 +130,13 @@ namespace Microsoft.Vault.Library
                 authRecord = credential.Authenticate();
 
                 // Create the original data to be encrypted
-                var toEncrypt = Encoding.ASCII.GetBytes(authRecord.ToString());
+                var toEncrypt = Encoding.UTF8.GetBytes(authRecord.ToString());
 
                 // Create some random entropy.
-                byte[] entropy = CreateRandomEntropy();
+                byte[] entropy = new byte[16];
+
+                // Fill the array with a random value.
+                RNGCryp.GetBytes(entropy);
 
                 // Serialize the AuthenticationRecord to disk so that it can be re-used across executions of this initialization code.
                 var authRecordStream = new FileStream(FileName, FileMode.OpenOrCreate);
@@ -142,19 +146,6 @@ namespace Microsoft.Vault.Library
 
                 authRecordStream.Close();
             }
-        }
-
-        public static byte[] CreateRandomEntropy()
-        {
-            // Create a byte array to hold the random value.
-            byte[] entropy = new byte[16];
-
-            // Create a new instance of the RNGCryptoServiceProvider.
-            // Fill the array with a random value.
-            new RNGCryptoServiceProvider().GetBytes(entropy);
-
-            // Return the array.
-            return entropy;
         }
 
         public static int EncryptDataToStream(byte[] Buffer, byte[] Entropy, DataProtectionScope Scope, Stream S)
