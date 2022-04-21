@@ -14,6 +14,8 @@ namespace Microsoft.Vault.Library
     {
         public string FileName;
         private static readonly object FileLock = new object();
+        private byte[] entropy = new byte[16];
+        private int bytesWritten;
         private static readonly RNGCryptoServiceProvider RNGCryp = new RNGCryptoServiceProvider();
         const string TOKEN_CACHE_NAME = "MyTokenCache";
 
@@ -89,17 +91,15 @@ namespace Microsoft.Vault.Library
             BeforeAccessNotification(null);
         }
 
-        /// <summary>
-        /// Triggered right before MSAL needs to access the cache
-        /// Reload the cache from the persistent store in case it changed since the last access
-        /// </summary>
         void BeforeAccessNotification(AuthenticationRecord authRecord)
         {
             lock (FileLock)
             {
                 // Load the previously serialized AuthenticationRecord from disk and deserialize it.
                 var authRecordStream = new FileStream(FileName, FileMode.Open, FileAccess.Read);
-                authRecord = AuthenticationRecord.Deserialize(authRecordStream);
+                byte[] decryptData = DecryptDataFromStream(entropy, DataProtectionScope.CurrentUser, authRecordStream, bytesWritten);
+                MemoryStream memoryStream = new MemoryStream(decryptData);
+                authRecord = AuthenticationRecord.Deserialize(memoryStream);
 
                 // Construct a new client with our TokenCachePersistenceOptions with the addition of the AuthenticationRecord property.
                 // This tells the credential to use the same token cache in addition to which account to try and fetch from cache when GetToken is called.
@@ -132,9 +132,6 @@ namespace Microsoft.Vault.Library
                 // Create the original data to be encrypted
                 var toEncrypt = Encoding.UTF8.GetBytes(authRecord.ToString());
 
-                // Create some random entropy.
-                byte[] entropy = new byte[16];
-
                 // Fill the array with a random value.
                 RNGCryp.GetBytes(entropy);
 
@@ -142,7 +139,7 @@ namespace Microsoft.Vault.Library
                 var authRecordStream = new FileStream(FileName, FileMode.OpenOrCreate);
 
                 // Encrypt a copy of the data to the stream.
-                int bytesWritten = EncryptDataToStream(toEncrypt, entropy, DataProtectionScope.CurrentUser, authRecordStream);
+                bytesWritten = EncryptDataToStream(toEncrypt, entropy, DataProtectionScope.CurrentUser, authRecordStream);
 
                 authRecordStream.Close();
             }
