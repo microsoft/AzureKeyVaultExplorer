@@ -96,7 +96,7 @@ namespace Microsoft.Vault.Library
             lock (FileLock)
             {
                 // Load the previously serialized AuthenticationRecord from disk and deserialize it.
-                var authRecordStream = new FileStream(FileName, FileMode.Open, FileAccess.Read);
+                var authRecordStream = new FileStream(FileName, FileMode.Open);
                 byte[] decryptData = DecryptDataFromStream(entropy, DataProtectionScope.CurrentUser, authRecordStream, bytesWritten);
                 MemoryStream memoryStream = new MemoryStream(decryptData);
                 authRecord = AuthenticationRecord.Deserialize(memoryStream);
