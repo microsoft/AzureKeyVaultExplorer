@@ -98,8 +98,9 @@ namespace Microsoft.Vault.Library
                 // Load the previously serialized AuthenticationRecord from disk and deserialize it.
                 var authRecordStream = new FileStream(FileName, FileMode.Open);
                 byte[] decryptData = DecryptDataFromStream(entropy, DataProtectionScope.CurrentUser, authRecordStream, bytesWritten);
-                MemoryStream memoryStream = new MemoryStream(decryptData);
-                authRecord = AuthenticationRecord.Deserialize(memoryStream);
+                using (MemoryStream memoryStream = new MemoryStream(decryptData)) {
+                    authRecord = AuthenticationRecord.Deserialize(memoryStream);
+                }
 
                 // Construct a new client with our TokenCachePersistenceOptions with the addition of the AuthenticationRecord property.
                 // This tells the credential to use the same token cache in addition to which account to try and fetch from cache when GetToken is called.
@@ -110,7 +111,6 @@ namespace Microsoft.Vault.Library
                         AuthenticationRecord = authRecord
                     });
 
-                var chainedTokenCredential = new ChainedTokenCredential(credential, new DefaultAzureCredential());
             }
         }
 
