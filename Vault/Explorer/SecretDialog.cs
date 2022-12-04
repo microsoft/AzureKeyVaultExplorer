@@ -266,6 +266,7 @@ namespace Microsoft.Vault.Explorer
             _certificateObj = cvo;
             if (_certificateObj != null)
             {
+                uxTextBoxValue.ReadOnly = false;
                 _certificateObj.FillTagsAndExpiration(PropertyObject);
                 uxTextBoxValue.Text = _certificateObj.ToValue(PropertyObject.SecretKind.CertificateFormat);
                 uxTextBoxValue.Refresh();
