@@ -1,8 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. 
 // Licensed under the MIT License. See License.txt in the project root for license information. 
 
-using Microsoft.Azure.KeyVault;
-using Microsoft.Azure.KeyVault.Models;
+using Azure.Security.KeyVault.Secrets;
 using Microsoft.Vault.Library;
 using Newtonsoft.Json;
 using System;
@@ -28,7 +27,7 @@ namespace Microsoft.Vault.Explorer
         /// <summary>
         /// Original secret
         /// </summary>
-        private readonly SecretBundle _secret;
+        private readonly KeyVaultSecret _secret;
 
         private readonly CustomTags _customTags;
 
@@ -48,11 +47,11 @@ namespace Microsoft.Vault.Explorer
             }
         }
 
-        public PropertyObjectSecret(SecretBundle secret, PropertyChangedEventHandler propertyChanged) :
-            base(secret.SecretIdentifier, secret.Tags, secret.Attributes.Enabled, secret.Attributes.Expires, secret.Attributes.NotBefore, propertyChanged)
+        public PropertyObjectSecret(KeyVaultSecret secret, PropertyChangedEventHandler propertyChanged) :
+            base(secret.Id, secret.Name, secret.Properties.Tags, secret.Properties.Enabled, secret.Properties.ExpiresOn, secret.Properties.NotBefore, propertyChanged)
         {
             _secret = secret;
-            _contentType = ContentTypeEnumConverter.GetValue(secret.ContentType);
+            _contentType = ContentTypeEnumConverter.GetValue(secret.Properties.ContentType);
             _value = _contentType.FromRawValue(secret.Value);
             _customTags = Utils.LoadFromJsonFile<CustomTags>(Settings.Default.CustomTagsJsonFileLocation, isOptional: true);
         }
@@ -91,10 +90,10 @@ namespace Microsoft.Vault.Explorer
 
             // Don't add the SecretKind to a secret that doesn't have any custom tags
             if (null == _customTags) return;
-            
+
             // Don't add the SecretKind to a secret that's defaulted to Custom
             if (sk.Alias == "Custom" && !this.Tags.Contains(newTag)) return;
-            
+
             // Don't add the SecretKind to a secret that is defaulted to Custom and doesn't have any custom tags.
             if (oldTag == null && newTag.Value == "Custom") return;
 
@@ -139,13 +138,6 @@ namespace Microsoft.Vault.Explorer
             Expires = (default(TimeSpan) == SecretKind.DefaultExpiration) ? (DateTime?)null :
                 DateTime.UtcNow.Add(SecretKind.DefaultExpiration);
         }
-
-        public SecretAttributes ToSecretAttributes() => new SecretAttributes()
-        {
-            Enabled = Enabled,
-            Expires = Expires,
-            NotBefore = NotBefore
-        };
 
         public override string GetKeyVaultFileExtension() => ContentType.KeyVaultSecret.ToExtension();
 

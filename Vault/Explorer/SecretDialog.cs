@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. 
 // Licensed under the MIT License. See License.txt in the project root for license information. 
 using ScintillaNET;
-using Microsoft.Azure.KeyVault;
-using Microsoft.Azure.KeyVault.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -17,10 +15,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Vault.Library;
+using Azure.Security.KeyVault.Secrets;
 
 namespace Microsoft.Vault.Explorer
 {
-    public partial class SecretDialog : ItemDialogBase<PropertyObjectSecret, SecretBundle>
+    public partial class SecretDialog : ItemDialogBase<PropertyObjectSecret, KeyVaultSecret>
     {
         private CertificateValueObject _certificateObj;
         private Scintilla uxTextBoxValue;
@@ -54,7 +53,8 @@ namespace Microsoft.Vault.Explorer
         public SecretDialog(ISession session) : this(session, "New secret", ItemDialogBaseMode.New)
         {
             _changed = true;
-            var s = new SecretBundle() { Attributes = new SecretAttributes(), ContentType = ContentTypeEnumConverter.GetDescription(ContentType.Text) };
+            var s = new KeyVaultSecret(null, null);
+            s.Properties.ContentType = ContentTypeEnumConverter.GetDescription(ContentType.Text);
             RefreshSecretObject(s);
             SecretKind defaultSK = TryGetDefaultSecretKind();
             int defaultIndex = uxMenuSecretKind.Items.IndexOf(defaultSK);
@@ -85,9 +85,9 @@ namespace Microsoft.Vault.Explorer
                     break;
                 case ContentType.KeyVaultSecret:
                     var kvsf = Utils.LoadFromJsonFile<KeyVaultSecretFile>(fi.FullName);
-                    SecretBundle s = kvsf.Deserialize();
+                    KeyVaultSecret s = kvsf.Deserialize();
                     uxPropertyGridSecret.SelectedObject = PropertyObject = new PropertyObjectSecret(s, SecretObject_PropertyChanged);
-                    uxTextBoxName.Text = s.SecretIdentifier?.Name;
+                    uxTextBoxName.Text = s?.Name;
                     uxTextBoxValue.Text = s.Value;
                     return;
                 default:
@@ -119,11 +119,11 @@ namespace Microsoft.Vault.Explorer
         /// <summary>
         /// Edit or Copy secret
         /// </summary>
-        public SecretDialog(ISession session, string name, IEnumerable<SecretItem> versions) : this(session, "Edit secret", ItemDialogBaseMode.Edit)
+        public SecretDialog(ISession session, string name, IEnumerable<SecretProperties> versions) : this(session, "Edit secret", ItemDialogBaseMode.Edit)
         {
             Text += $" {name}";
             int i = 0;
-            uxMenuVersions.Items.AddRange((from v in versions orderby v.Attributes.Created descending select new SecretVersion(i++, v)).ToArray());
+            uxMenuVersions.Items.AddRange((from v in versions orderby v.CreatedOn descending select new SecretVersion(i++, v)).ToArray());
             uxMenuVersions_ItemClicked(null, new ToolStripItemClickedEventArgs(uxMenuVersions.Items[0])); // Pass sender as NULL so _changed will be set to false
         }
 
@@ -167,7 +167,7 @@ namespace Microsoft.Vault.Explorer
             return orderedValidatedSecretKinds;
         }
 
-        private void RefreshSecretObject(SecretBundle s)
+        private void RefreshSecretObject(KeyVaultSecret s)
         {
             PropertyObject = new PropertyObjectSecret(s, SecretObject_PropertyChanged);
             uxPropertyGridSecret.SelectedObject = PropertyObject;
@@ -342,10 +342,10 @@ namespace Microsoft.Vault.Explorer
             uxPropertyGridSecret.Refresh();
         }
 
-        protected override async Task<SecretBundle> OnVersionChangeAsync(CustomVersion cv)
+        protected override async Task<KeyVaultSecret> OnVersionChangeAsync(CustomVersion cv)
         {
             SecretVersion sv = (SecretVersion)cv;
-            var s = await _session.CurrentVault.GetSecretAsync(sv.SecretItem.Identifier.Name, sv.SecretItem.Identifier.Version);            
+            var s = await _session.CurrentVault.GetSecretAsync(sv.SecretItem.Name, sv.SecretItem.Version);
             RefreshSecretObject(s);
             AutoDetectSecretKind();
             return s;

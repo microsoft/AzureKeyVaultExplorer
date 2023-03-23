@@ -1,15 +1,17 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved. 
 // Licensed under the MIT License. See License.txt in the project root for license information. 
-
+using Azure.Identity;
 namespace Microsoft.Vault.Library
 {
     using Core;
-    using Microsoft.IdentityModel.Clients.ActiveDirectory;
+    using Microsoft.Identity.Client;
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Security.Cryptography.X509Certificates;
+    using System.Threading.Tasks;
+    using System.Windows.Forms;
 
     [JsonObject]
     public abstract class VaultAccess
@@ -31,28 +33,26 @@ namespace Microsoft.Vault.Library
             Order = order;
         }
 
-        protected abstract AuthenticationResult AcquireTokenInternal(AuthenticationContext authenticationContext, string resource, string userAlias = "");
+        protected abstract InteractiveBrowserCredential AcquireTokenInternal(AuthenticationRecord auth, string userAlias = "");
 
-        public AuthenticationResult AcquireToken(AuthenticationContext authenticationContext, string resource, string userAlias="")
+        public InteractiveBrowserCredential AcquireToken(AuthenticationRecord auth, string userAlias="")
         {
-            // first, try to get a token silently
-            if (authenticationContext.TokenCache != null)
+            Exception exception = null;
+            try
             {
-                try
-                {
-                    return authenticationContext.AcquireTokenSilentAsync(resource, ClientId).GetAwaiter().GetResult();
-                }
-                catch (AdalException ex)
-                {
-                    // There is no token in the cache; fallback -> prompt the user to sign-in.
-                    if (ex.ErrorCode != "failed_to_acquire_token_silently")
+                var credential = new InteractiveBrowserCredential(
+                    new InteractiveBrowserCredentialOptions
                     {
-                        // An unexpected error occurred.
-                        throw;
-                    }
-                }
+                        TokenCachePersistenceOptions = new TokenCachePersistenceOptions(),
+                        AuthenticationRecord = auth
+                    });
+                return credential;
             }
-            return AcquireTokenInternal(authenticationContext, resource, userAlias);
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Failed to get token", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return null;
         }
     }
 
@@ -79,21 +79,22 @@ namespace Microsoft.Vault.Library
             UserAliasType = string.IsNullOrEmpty(UserAlias) ? Environment.UserName : UserAlias;
         }
 
-        protected override AuthenticationResult AcquireTokenInternal(AuthenticationContext authenticationContext, string resource, string userAlias)
+        protected override InteractiveBrowserCredential AcquireTokenInternal(AuthenticationRecord auth, string userAlias = "")
         {
             if (false == Environment.UserInteractive)
             {
                 throw new VaultAccessException($@"Current process PID: {Process.GetCurrentProcess().Id} is running in non user interactive mode. Username: {Environment.UserDomainName}\{Environment.UserName} Machine name: {Environment.MachineName}");
             }
             // Attempt to login with provided user alias.
-            else if(!string.IsNullOrEmpty(userAlias))
-            {
-                return authenticationContext.AcquireTokenAsync(resource, ClientId, new Uri("urn:ietf:wg:oauth:2.0:oob"), new PlatformParameters(PromptBehavior.Auto), UserIdentifier.AnyUser, $"login_hint={userAlias}@{DomainHint}&domain_hint={DomainHint}").GetAwaiter().GetResult();
-            }
-            // No alias provided so force login prompt.
             else
             {
-                return authenticationContext.AcquireTokenAsync(resource, ClientId, new Uri("urn:ietf:wg:oauth:2.0:oob"), new PlatformParameters(PromptBehavior.Always), UserIdentifier.AnyUser).GetAwaiter().GetResult();
+                var credential = new InteractiveBrowserCredential(
+                    new InteractiveBrowserCredentialOptions
+                    {
+                        TokenCachePersistenceOptions = new TokenCachePersistenceOptions(),
+                        AuthenticationRecord = auth
+                    });
+                return credential;
             }
         }
 
@@ -113,9 +114,15 @@ namespace Microsoft.Vault.Library
             ClientSecret = clientSecret;
         }
 
-        protected override AuthenticationResult AcquireTokenInternal(AuthenticationContext authenticationContext, string resource, string userAlias = "")
+        protected override InteractiveBrowserCredential AcquireTokenInternal(AuthenticationRecord auth, string userAlias = "")
         {
-            return authenticationContext.AcquireTokenAsync(resource, new ClientCredential(ClientId, ClientSecret)).GetAwaiter().GetResult();
+            var credential = new InteractiveBrowserCredential(
+                new InteractiveBrowserCredentialOptions
+                {
+                    TokenCachePersistenceOptions = new TokenCachePersistenceOptions(),
+                    AuthenticationRecord = auth
+                });
+            return credential;
         }
 
         public override string ToString() => $"{nameof(VaultAccessClientCredential)}";
@@ -185,9 +192,15 @@ namespace Microsoft.Vault.Library
             }
         }
 
-        protected override AuthenticationResult AcquireTokenInternal(AuthenticationContext authenticationContext, string resource, string userAlias = "")
+        protected override InteractiveBrowserCredential AcquireTokenInternal(AuthenticationRecord auth, string userAlias = "")
         {
-            return authenticationContext.AcquireTokenAsync(resource, new ClientAssertionCertificate(ClientId, Certificate)).GetAwaiter().GetResult();
+            var credential = new InteractiveBrowserCredential(
+                new InteractiveBrowserCredentialOptions
+                {
+                    TokenCachePersistenceOptions = new TokenCachePersistenceOptions(),
+                    AuthenticationRecord = auth
+                });
+            return credential;
         }
 
         public override string ToString() => $"{nameof(VaultAccessClientCertificate)}";

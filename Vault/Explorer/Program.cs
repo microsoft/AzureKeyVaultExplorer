@@ -59,7 +59,7 @@ namespace Microsoft.Vault.Explorer
         /// </summary>
         private static void DeleteTokenCacheOnApplicationExit()
         {
-            FileTokenCache.ClearAllFileTokenCaches();
+            CachePersistence.ClearAllFileTokenCaches();
         }
 
         /// <summary>
